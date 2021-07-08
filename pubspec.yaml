@@ -53,6 +53,28 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/splash.png
+    - assets/home_selected.png
+    - assets/home_unselected.png
+    - assets/book_selected.png
+    - assets/book_unselected.png
+    - assets/news_selected.png
+    - assets/news_unselected.png
+    - assets/quick_selected.png
+    - assets/quick_unselected.png
+    - assets/chat_selected.png
+    - assets/chat_unselected.png
+    - assets/profile.png
+    - assets/joinus.png
+    - assets/donate.png
+    - assets/about.png
+    - assets/app_language.png
+    - assets/content.png
+    - assets/notifications.png
+    - assets/dark.png
+    - assets/faq.png
+    - assets/share.png
+    - assets/advertise.png
+    - assets/contactus.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

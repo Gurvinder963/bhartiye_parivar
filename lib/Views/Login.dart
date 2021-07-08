@@ -223,54 +223,6 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   }
 
 
-
-
-
-
-  Widget _divider() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 5,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-                color:Color(0xffFFFFFF),
-              ),
-            ),
-          ),
-          Text('OR', style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w400)),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                  thickness: 1,
-                  color:Color(0xffFFFFFF)
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-        ],
-      ),
-    );
-  }
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -466,22 +418,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     );
   }
 }
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = const Color(0xffea5d49);
-    Path path = Path()
-      ..relativeLineTo(0, 250)
-      ..quadraticBezierTo(size.width / 2, 350.0, size.width, 250)
-      ..relativeLineTo(0, -250)
-      ..close();
 
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
 
 
 

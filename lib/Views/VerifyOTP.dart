@@ -226,54 +226,6 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   }
 
 
-
-
-
-
-  Widget _divider() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 5,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-                color:Color(0xffFFFFFF),
-              ),
-            ),
-          ),
-          Text('OR', style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w400)),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                  thickness: 1,
-                  color:Color(0xffFFFFFF)
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-        ],
-      ),
-    );
-  }
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
 
