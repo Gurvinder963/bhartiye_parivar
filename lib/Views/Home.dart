@@ -16,7 +16,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/services.dart';
-
+import 'DonatedSuccessfuly.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
@@ -230,7 +230,7 @@ class navigationDrawer extends StatelessWidget {
               onTap: () =>{ Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
-              return DonateUsPage();
+              return DonatedSuccessfulyPage();
               }
               ) )}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),

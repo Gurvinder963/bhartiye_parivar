@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import '../Utils/AppColors.dart';
+import '../Utils/AppStrings.dart';
 
 
 class PayToAccountPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class PayToAccountPageState extends State<PayToAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(AppColors.BaseColor),
         title: Text('Account Transfer'),
       ),
       body:   Container(
@@ -38,21 +40,22 @@ class PayToAccountPageState extends State<PayToAccountPage> {
               children: [
 
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10,10,10,10),
+                  padding: EdgeInsets.fromLTRB(10,30,10,10),
                   child:  Text("You can make NEFT/RTGS/IMPS or \nBank deposit to the account below.\n This is VPA service by Razorpay",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
                 ),
 
         Card( elevation: 2,
-            margin: EdgeInsets.fromLTRB(20,10,20,10),
-            color: Color(0xFFffffff),
+            margin: EdgeInsets.fromLTRB(10,40,10,10),
+
+            color: Color(0xFFe3e3e3),
 
         child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
             Padding(
-            padding: EdgeInsets.fromLTRB(30,10,30,10),
+            padding: EdgeInsets.fromLTRB(30,30,30,10),
       child:  Text("Name : Bhartiya Parivar",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
     ),
@@ -73,7 +76,7 @@ class PayToAccountPageState extends State<PayToAccountPage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(30,10,30,10),
+                padding: EdgeInsets.fromLTRB(30,10,30,30),
                 child:  Text("Bank Name : YES Bank",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),

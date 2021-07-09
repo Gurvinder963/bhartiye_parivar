@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'PayToAccount.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
-
-
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DonateUsPage extends StatefulWidget {
   @override
@@ -17,15 +17,56 @@ class DonateUsPage extends StatefulWidget {
 
 
 class DonateUsPageState extends State<DonateUsPage> {
-  String _chosenValue= AppStrings.OnlinePayment;
+  String _chosenValue= "Select";
+  static const platform = const MethodChannel("razorpay_flutter");
 
+   Razorpay _razorpay;
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName, toastLength: Toast.LENGTH_SHORT);
+  }
+  void openCheckout() async {
+    var options = {
+      'key': 'rzp_test_54VVLcnAL17lQz',
+      'amount': myControllerPhone.text,
+      'name': 'Gurvinder Singh',
+      'description': 'Donate',
+      'prefill': {'contact': '9799125180', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
+  }
   @override
   void dispose() {
-
-    // Clean up the controller when the widget is disposed.
-    myControllerPhone.dispose();
-
     super.dispose();
+    myControllerPhone.dispose();
+    _razorpay.clear();
   }
   final myControllerPhone = TextEditingController();
   @override
@@ -40,13 +81,25 @@ class DonateUsPageState extends State<DonateUsPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _entryField("Phone"),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10,10,10,10),
-            child: new Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor: Colors.orange,
-                ),
-                child: DropdownButton<String>(
+
+          SizedBox(height: 20),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              width: 300,
+              child:
+          Text(
+            "Method of Payment",
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: 11,
+                fontWeight: FontWeight.w500),
+          )),
+
+          Container(
+              width: 300,
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child:
+                DropdownButton<String>(
                   isExpanded: true,
                   focusColor:Colors.white,
                   value: _chosenValue,
@@ -88,7 +141,7 @@ class DonateUsPageState extends State<DonateUsPage> {
 
                   },
                 )),
-          ),
+
           _submitButton(),
           Divider(
             color: Colors.orange,
@@ -97,7 +150,7 @@ class DonateUsPageState extends State<DonateUsPage> {
           Padding(
             padding: EdgeInsets.fromLTRB(10,10,10,10),
             child:  Text("Why donate us", textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
+                style: TextStyle( fontSize: 14,color: Colors.black)),
           ),
 
         ])
@@ -115,7 +168,7 @@ class DonateUsPageState extends State<DonateUsPage> {
                 VerifyOTPPage()
             ), ModalRoute.withName("/VerifyOTP")
         );*/
-
+        openCheckout();
 
       },
 
@@ -148,7 +201,7 @@ class DonateUsPageState extends State<DonateUsPage> {
 
 
     return Container(
-      width: 200,
+      width: 300,
       margin: EdgeInsets.symmetric(vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,9 +214,9 @@ class DonateUsPageState extends State<DonateUsPage> {
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              hintText:"Donation Amount",
+              labelText:"Donation Amount",
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: 13,color: Colors.grey),
               hintStyle: TextStyle(fontSize: 13,color: Colors.black),
 
               border: UnderlineInputBorder(
