@@ -17,8 +17,9 @@ import 'package:flutter/services.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import '../Repository/MainRepository.dart';
 import '../Views/CreateProfile.dart';
-
+import '../Utils/AppColors.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
@@ -230,7 +231,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.brown, //or set color with: Color(0xFF0000FF)
+        statusBarColor: Color(AppColors.StatusBarColor),  //or set color with: Color(0xFF0000FF)
     ));
     return SafeArea(
       child: Scaffold(
@@ -250,7 +251,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Color(AppColors.BaseColor),
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(0.0),
                             bottomRight: Radius.circular(40.0),
@@ -328,12 +329,25 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                             textFieldAlignment: MainAxisAlignment.spaceAround,
                             fieldStyle: FieldStyle.underline,
                             onCompleted: (pin) {
-                              Navigator.pushAndRemoveUntil(context,
+                           Navigator.pushAndRemoveUntil(context,
                                   MaterialPageRoute(builder:
                                       (context) =>
                                           CreateProfilePage()
                                   ), ModalRoute.withName("/CreateProfile")
                               );
+
+                           /*   var body=json.encode({"email": "zoya@gmail.com", "password": "123456","fcm_token":"","SSapp_version":Constants.Version_Code.toString(),"androidOS_version":baseOs,"device_manufacture":"samsung","device_model":"jio","referrer":"ty55554","last_login_ip":"dfjkd"});
+
+                              MainRepository mainRepository=new MainRepository();
+                              mainRepository.fetchLoginData(body).then((value) => {
+                              print(value.data)
+
+
+
+                              });
+*/
+
+
                             },
                           ),
 
@@ -367,7 +381,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
       child: Container(
         width: 250,
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.fromLTRB(0,10,0,30),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -377,28 +391,13 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
         child: Text(
           'Give miss call to verify',
-          style: TextStyle(fontSize: 18, color: Colors.orange,fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, color:Color(AppColors.BaseColor),fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 }
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = const Color(0xffea5d49);
-    Path path = Path()
-      ..relativeLineTo(0, 250)
-      ..quadraticBezierTo(size.width / 2, 350.0, size.width, 250)
-      ..relativeLineTo(0, -250)
-      ..close();
 
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
 
 
 

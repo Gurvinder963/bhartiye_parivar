@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 
-
+import '../Utils/AppColors.dart';
 
 
 
@@ -227,7 +227,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.brown, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor), //or set color with: Color(0xFF0000FF)
     ));
     return SafeArea(
       child: Scaffold(
@@ -247,7 +247,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 
             decoration: BoxDecoration(
-                color: Colors.orange,
+                color: Color(AppColors.BaseColor),
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(0.0),
                   bottomRight: Radius.circular(40.0),
@@ -309,7 +309,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       CountryListPick(
 
                         appBar: AppBar(
-                          backgroundColor: Colors.orange,
+                          backgroundColor: Color(AppColors.BaseColor),
                           title: Text('Pick your country'),
                         ),
 
@@ -394,7 +394,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
       child: Container(
         width: 150,
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.fromLTRB(0,10,0,30),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -409,7 +409,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xffFF8C00), Color(0xffFF8C00)])),
+                colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
           style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),

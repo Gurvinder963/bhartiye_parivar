@@ -8,6 +8,7 @@ import '../Utils/AppStrings.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+
 class DonateUsPage extends StatefulWidget {
   @override
   DonateUsPageState createState() {
@@ -189,7 +190,7 @@ class DonateUsPageState extends State<DonateUsPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xffFF8C00), Color(0xffFF8C00)])),
+                colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Submit',
           style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),

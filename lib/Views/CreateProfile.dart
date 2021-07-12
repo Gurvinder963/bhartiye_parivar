@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 import '../Views/Home.dart';
-
+import '../Utils/AppColors.dart';
 
 
 
@@ -301,7 +301,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.brown, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor),//or set color with: Color(0xFF0000FF)
     ));
     return SafeArea(
       child: Scaffold(
@@ -321,7 +321,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Color(AppColors.BaseColor),
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(0.0),
                             bottomRight: Radius.circular(40.0),
@@ -451,7 +451,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
       child: Container(
         width: 150,
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.fromLTRB(0,15,0,30),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -466,7 +466,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xffFF8C00), Color(0xffFF8C00)])),
+                colors: [ Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
           style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),

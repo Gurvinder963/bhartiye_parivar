@@ -7,7 +7,7 @@ import 'package:country_list_pick/country_list_pick.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'VerifyOTP.dart';
-
+import '../Utils/AppColors.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -28,6 +28,7 @@ import 'Books.dart';
 import 'News.dart';
 import 'Quick.dart';
 import 'Chat.dart';
+import 'ContentLanguage.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -117,7 +118,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
       return Scaffold(
         appBar: AppBar(
-          title: Text('भारतीय परिवार'),
+          backgroundColor: Color(AppColors.BaseColor),
+          title: Text('भारतीय परिवार', style: TextStyle(fontSize: 22,color: Color(0xFFFFFFFF))),
         ),
         drawer: navigationDrawer(),
         body: _children[selectedIndex],
@@ -125,7 +127,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
 
 
-          backgroundColor: Colors.orange,
+          backgroundColor: Color(AppColors.BaseColor),
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
@@ -264,7 +266,16 @@ class navigationDrawer extends StatelessWidget {
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
               text: 'Content Language',
-              onTap: () =>{}
+              onTap: () =>{
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return ContentLanguagePage();
+                        }
+                    ) )
+
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
@@ -293,6 +304,7 @@ class navigationDrawer extends StatelessWidget {
           ),
 
           Divider(
+            height: 2,
             color: Colors.orange,
           ),
           createDrawerBodyItem(

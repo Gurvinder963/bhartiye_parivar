@@ -15,7 +15,7 @@ import 'Culture.dart';
 import 'Twitter.dart';
 import 'History.dart';
 import 'Instagram.dart';
-
+import '../Utils/AppColors.dart';
 
 
 class HomeChildPage extends StatefulWidget {
@@ -46,9 +46,14 @@ class HomeChildPageState extends State<HomeChildPage> {
           length: 13,
           child: Scaffold(
             appBar: AppBar(
+              backgroundColor: Color(AppColors.BaseColor),
               toolbarHeight: kMinInteractiveDimension,
               flexibleSpace: TabBar(
                 isScrollable: true,
+                unselectedLabelColor: Color(0xFF666666),
+                labelColor: Colors.white,
+                indicatorWeight: 2,
+                indicatorColor: Colors.white,
                 tabs: [
                   Tab(child: Text('Main')),
                   Tab(child: Text('Trending')),
