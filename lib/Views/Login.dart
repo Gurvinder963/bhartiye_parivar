@@ -287,7 +287,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                     ),
                   ),
                 ),
-                Card( elevation: 2,
+                Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 2,
                     margin: EdgeInsets.fromLTRB(30,10,30,10),
                     color: Color(0xFFffffff),
 
@@ -382,13 +386,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder:
-                (context) =>
-                    VerifyOTPPage()
-            ), ModalRoute.withName("/VerifyOTP")
-        );
 
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return VerifyOTPPage();
+                }
+            ) );
 
       },
 

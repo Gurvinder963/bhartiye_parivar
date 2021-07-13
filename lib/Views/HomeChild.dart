@@ -46,6 +46,7 @@ class HomeChildPageState extends State<HomeChildPage> {
           length: 13,
           child: Scaffold(
             appBar: AppBar(
+              leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
               toolbarHeight: kMinInteractiveDimension,
               flexibleSpace: TabBar(

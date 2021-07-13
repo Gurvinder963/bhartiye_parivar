@@ -56,8 +56,9 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
 
-  final myControllerPhone = TextEditingController();
-  final myControllerContryCode = TextEditingController();
+  final myControllerName = TextEditingController();
+  final myControllerAge = TextEditingController();
+  final myControllerPinCode= TextEditingController();
 
   String fcm_token;
 
@@ -87,7 +88,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
           TextField(
 
-            controller: myControllerPhone,
+            controller: myControllerPinCode,
             obscureText: false,
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
@@ -127,7 +128,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
           TextField(
 
-            controller: myControllerPhone,
+            controller: myControllerAge,
             obscureText: false,
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
@@ -168,7 +169,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
           TextField(
 
-            controller: myControllerPhone,
+            controller: myControllerName,
             obscureText: false,
             style: TextStyle(color: Colors.black),
 
@@ -197,53 +198,14 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     );
   }
 
-  Widget _entryFieldCountryCode(String title, {bool isPassword = false}) {
 
-    myControllerContryCode.text="+91";
-    return Container(
-      width: 60,
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-
-          TextField(
-
-            controller: myControllerContryCode,
-            obscureText: false,
-            style: TextStyle(color: Colors.black),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-
-
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
-
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              contentPadding: EdgeInsets.all(12),
-            ),
-          )
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    myControllerContryCode.text="+91";
+   // myControllerContryCode.text="+91";
 
 
 
@@ -257,8 +219,9 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   void dispose() {
 
     // Clean up the controller when the widget is disposed.
-    myControllerPhone.dispose();
-    myControllerContryCode.dispose();
+    myControllerName.dispose();
+    myControllerAge.dispose();
+    myControllerPinCode.dispose();
     super.dispose();
   }
 
@@ -361,7 +324,11 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                         ),
                       ),
                     ),
-                    Card( elevation: 2,
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 2,
                         margin: EdgeInsets.fromLTRB(30,10,30,10),
                         color: Color(0xFFffffff),
 
@@ -385,11 +352,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                           _entryFieldAge("Age"),
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
-                            child: new Theme(
-                          data: Theme.of(context).copyWith(
-                            canvasColor: Colors.orange,
-                          ),
-                      child: DropdownButton<String>(
+                            child:  DropdownButton<String>(
                               isExpanded: true,
                               focusColor:Colors.white,
                               value: _chosenValue,
@@ -421,7 +384,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                                   _chosenValue = value;
                                 });
                               },
-                            )),
+                            ),
                           ),
 
 
@@ -439,13 +402,18 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        Navigator.pushAndRemoveUntil(context,
+      /*  Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder:
                 (context) =>
                 HomePage()
             ), ModalRoute.withName("/HomePage")
-        );
-
+        );*/
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return HomePage();
+                }
+            ) );
 
       },
 

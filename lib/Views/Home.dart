@@ -229,24 +229,24 @@ class navigationDrawer extends StatelessWidget {
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/joinus.png'), width: 20,height: 20,),
               text: 'Join us',
-              onTap: () =>{ Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              onTap: () =>{ /*Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
               return DonatedSuccessfulyPage();
               }
-              ) )}
+              ) )*/}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/donate.png'), width: 20,height: 20,),
               text: 'Donate us',
               onTap: () =>{
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
                           return DonateUsPage();
                         }
-                    ) )
+                    ) )*/
 
               }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
@@ -267,12 +267,12 @@ class navigationDrawer extends StatelessWidget {
               icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
               text: 'Content Language',
               onTap: () =>{
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
                           return ContentLanguagePage();
                         }
-                    ) )
+                    ) )*/
 
 
               }

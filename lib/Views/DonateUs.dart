@@ -169,7 +169,7 @@ class DonateUsPageState extends State<DonateUsPage> {
                 VerifyOTPPage()
             ), ModalRoute.withName("/VerifyOTP")
         );*/
-        openCheckout();
+      //  openCheckout();
 
       },
 

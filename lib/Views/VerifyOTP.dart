@@ -291,7 +291,11 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                         ),
                       ),
                     ),
-                    Card( elevation: 2,
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 2,
                         margin: EdgeInsets.fromLTRB(30,10,30,10),
                         color: Color(0xFFffffff),
 
@@ -329,12 +333,15 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                             textFieldAlignment: MainAxisAlignment.spaceAround,
                             fieldStyle: FieldStyle.underline,
                             onCompleted: (pin) {
-                           Navigator.pushAndRemoveUntil(context,
-                                  MaterialPageRoute(builder:
-                                      (context) =>
-                                          CreateProfilePage()
-                                  ), ModalRoute.withName("/CreateProfile")
-                              );
+
+                              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return CreateProfilePage();
+                                      }
+                                  ) );
+
+
 
                            /*   var body=json.encode({"email": "zoya@gmail.com", "password": "123456","fcm_token":"","SSapp_version":Constants.Version_Code.toString(),"androidOS_version":baseOs,"device_manufacture":"samsung","device_model":"jio","referrer":"ty55554","last_login_ip":"dfjkd"});
 
