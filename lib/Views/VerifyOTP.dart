@@ -244,7 +244,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
                 Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height/2,
+                    height: (MediaQuery.of(context).size.height/2)-20,
 
 
                     child: Container(
@@ -271,8 +271,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                     SizedBox(height: 20),
                     new Image(
                       image: new AssetImage("assets/splash.png"),
-                      width: 150,
-                      height:  150,
+                      width: 140,
+                      height:  140,
                       color: null,
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.center,
@@ -286,12 +286,14 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           fontSize: 25.0,
                           letterSpacing: 1.5,
                           color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
 
                         ),
                       ),
                     ),
-                    Card(
+                    SizedBox(
+                      height: (MediaQuery.of(context).size.height)*0.62,
+                      child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -299,7 +301,9 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                         margin: EdgeInsets.fromLTRB(30,10,30,10),
                         color: Color(0xFFffffff),
 
-                        child:Column( crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+                        child:Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
                           SizedBox(height: 20),
 
 
@@ -313,63 +317,68 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Not correct ?", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 11,color: Colors.red)),
+                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13,color: Colors.red)),
                           ),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Waiting for automatically detect an SMS sent", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 11,color: Colors.black)),
+                                style: TextStyle( fontSize: 12,color: Colors.black)),
                           ),
 
-                          SizedBox(height: 30),
-                          OTPTextField(
-                            length: 4,
-                            width: 300,
-                            fieldWidth: 40,
-                            style: TextStyle(
-                                fontSize: 14
+                          SizedBox(height: 40),
+
+                          Theme(
+                            data: ThemeData(
+                              inputDecorationTheme: InputDecorationTheme(
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                              ),
                             ),
-                            textFieldAlignment: MainAxisAlignment.spaceAround,
-                            fieldStyle: FieldStyle.underline,
-                            onCompleted: (pin) {
+                            child: OTPTextField(
+                              length: 4,
+                              width: 300,
+                              fieldWidth: 40,
+                              style: TextStyle(
+                                  fontSize: 14
+                              ),
+                              textFieldAlignment: MainAxisAlignment.spaceAround,
+                              fieldStyle: FieldStyle.underline,
+                              onCompleted: (pin) {
 
-                              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return CreateProfilePage();
-                                      }
-                                  ) );
-
-
-
-                           /*   var body=json.encode({"email": "zoya@gmail.com", "password": "123456","fcm_token":"","SSapp_version":Constants.Version_Code.toString(),"androidOS_version":baseOs,"device_manufacture":"samsung","device_model":"jio","referrer":"ty55554","last_login_ip":"dfjkd"});
-
-                              MainRepository mainRepository=new MainRepository();
-                              mainRepository.fetchLoginData(body).then((value) => {
-                              print(value.data)
-
-
-
-                              });
-*/
-
-
-                            },
+                                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return CreateProfilePage();
+                                        }
+                                    ) );
+                              },
+                            ),
                           ),
+
+
+
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Enter 4 DIGIT CODE", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 13,color: Colors.black)),
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13,color: Colors.black)),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,40,10,10),
+                            padding: EdgeInsets.fromLTRB(10,50,10,10),
                             child:  Text("Didn't recieve the code ?", textAlign: TextAlign.center,
                                 style: TextStyle( fontSize: 13,color: Colors.black)),
                           ),
                           _submitButton()
-                        ])),
+                        ]))),
                   ],
                 ),
               ],

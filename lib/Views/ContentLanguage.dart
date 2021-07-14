@@ -55,8 +55,8 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
               children: List.generate(choices.length, (index) {
 
                 Choice choice= choices[index];
-                var color1= choice.isSelected?Colors.orange:Color(AppColors.disaledcardcolor);
-                var color2= choice.isSelected?Colors.white:Colors.orange;
+                var color1= choice.isSelected?Color(AppColors.BaseColor):Color(AppColors.disaledcardcolor);
+                var color2= choice.isSelected?Colors.white:Color(AppColors.BaseColor);
 
                 return
                   GestureDetector(

@@ -240,7 +240,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
         Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/2,
+            height: (MediaQuery.of(context).size.height/2)-20,
 
 
         child: Container(
@@ -267,8 +267,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                 SizedBox(height: 20),
                 new Image(
                   image: new AssetImage("assets/splash.png"),
-                  width: 150,
-                  height:  150,
+                  width: 140,
+                  height:  140,
                   color: null,
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.center,
@@ -282,12 +282,14 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       fontSize: 25.0,
                       letterSpacing: 1.5,
                       color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
 
                     ),
                   ),
                 ),
-                Card(
+                SizedBox(
+                  height: (MediaQuery.of(context).size.height)*0.62,
+               child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -295,7 +297,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                     margin: EdgeInsets.fromLTRB(30,10,30,10),
                     color: Color(0xFFffffff),
 
-                    child:Column( crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+                    child:Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
                       SizedBox(height: 20),
 
 
@@ -303,12 +307,12 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       Padding(
                         padding: EdgeInsets.fromLTRB(10,10,10,10),
                         child:  Text("Verify your phone number", textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.black)),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(10,10,10,10),
-                        child:  Text("We will send an sms to verify your \n phone number. Please enter your country code \n and phone number.", textAlign: TextAlign.center,
-                            style: TextStyle( fontSize: 11,color: Colors.black)),
+                        padding: EdgeInsets.fromLTRB(10,10,10,30),
+                        child:  Text("We will send an sms to verify your \n phone number. Please enter your country code and phone number.", textAlign: TextAlign.center,
+                            style: TextStyle( fontSize: 13,color: Colors.black)),
                       ),
                       CountryListPick(
 
@@ -321,6 +325,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           return Container(
                             margin: EdgeInsets.fromLTRB(20,0,20,0),
                               decoration: BoxDecoration(
+
                                 border: Border(
                                   bottom: BorderSide(width: 1.0, color: Colors.orange),
                                 ),
@@ -337,6 +342,12 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                               ),
                               SizedBox(width: 30),
                               Text(countryCode.name),
+                             Expanded(child:
+                              Align(
+                                alignment: Alignment.topRight,
+                                child:   Icon(Icons.arrow_drop_down,color: Colors.orange,size: 30,)
+                              )),
+
 
                             ],
                           ));
@@ -361,10 +372,23 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                       _emailPasswordWidget(),
                       CheckboxListTile(
-                        activeColor:Colors.black,
-                        checkColor: Colors.orange,
-                        title: Text("By signing in you are agreeing to our \n Terms and Privacy Policy.",
-                            style: TextStyle(fontSize: 11, color: Colors.black)),
+                        contentPadding:EdgeInsets.symmetric(horizontal: -1.0,vertical: 20),
+                        activeColor:Colors.orange,
+                        checkColor: Colors.white,
+                        title:
+                        RichText(
+                          text: TextSpan(
+
+
+                            children: const <TextSpan>[
+                              TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: 13, color: Colors.black)),
+                              TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 13, color: Colors.indigo)),
+                              TextSpan(text: ' and', style: TextStyle(fontSize: 13, color: Colors.black)),
+                              TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 13, color: Colors.indigo)),
+                            ],
+                          ),
+                        ),
+
                         value: checkedValue,
                         onChanged: (newValue) {
                           setState(() {
@@ -374,7 +398,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       ),
                       _submitButton()
-                 ])),
+                 ]))),
               ],
             ),
           ],
@@ -398,7 +422,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
       child: Container(
         width: 150,
-        margin: EdgeInsets.fromLTRB(0,10,0,30),
+        height: 40,
+        margin: EdgeInsets.fromLTRB(0,0,0,30),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

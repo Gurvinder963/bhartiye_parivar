@@ -267,12 +267,12 @@ class navigationDrawer extends StatelessWidget {
               icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
               text: 'Content Language',
               onTap: () =>{
-              /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+               Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
                           return ContentLanguagePage();
                         }
-                    ) )*/
+                    ) )
 
 
               }
