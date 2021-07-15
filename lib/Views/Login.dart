@@ -16,7 +16,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/services.dart';
 
-
+import '../Utils/AppStrings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 
@@ -75,11 +75,16 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   }
   Widget _emailPasswordWidget() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        _entryFieldCountryCode("Password", isPassword: true),
-        SizedBox(width: 10),
-        _entryField("Phone"),
+        SizedBox(width: 20),
+    Flexible(
+    flex: 2,child:
+        _entryFieldCountryCode("Password", isPassword: true)),
+        SizedBox(width: 5),
+        Flexible(
+        flex: 5,child:
+        _entryField("Phone")),
 
       ],
     );
@@ -89,7 +94,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 
     return Container(
-      width: 200,
+
       margin: EdgeInsets.symmetric(vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,9 +232,18 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(AppColors.StatusBarColor), //or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
-    return SafeArea(
+    return  MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppStrings.AppName,
+        theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+        Theme.of(context).textTheme,
+    )
+    ),
+
+      home:SafeArea(
       child: Scaffold(
 
         body: SingleChildScrollView (
@@ -278,8 +292,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                   child: Text(
                     'Login',
-                    style: TextStyle(
-                      fontSize: 25.0,
+                    style: GoogleFonts.poppins(
+                      fontSize: 27.0,
                       letterSpacing: 1.5,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -293,7 +307,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    elevation: 2,
+                   elevation: 6,  // Change this
+
                     margin: EdgeInsets.fromLTRB(30,10,30,10),
                     color: Color(0xFFffffff),
 
@@ -305,14 +320,14 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(10,10,10,10),
+                        padding: EdgeInsets.fromLTRB(10,9,10,9),
                         child:  Text("Verify your phone number", textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.black)),
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(10,10,10,30),
+                        padding: EdgeInsets.fromLTRB(10,9,10,28),
                         child:  Text("We will send an sms to verify your \n phone number. Please enter your country code and phone number.", textAlign: TextAlign.center,
-                            style: TextStyle( fontSize: 13,color: Colors.black)),
+                            style: GoogleFonts.roboto(fontSize: 14,color: Colors.black)),
                       ),
                       CountryListPick(
 
@@ -371,32 +386,34 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       ),
 
                       _emailPasswordWidget(),
-                      CheckboxListTile(
-                        contentPadding:EdgeInsets.symmetric(horizontal: -1.0,vertical: 20),
-                        activeColor:Colors.orange,
-                        checkColor: Colors.white,
-                        title:
-                        RichText(
-                          text: TextSpan(
+                    CheckboxListTile(
+                          contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 18),
+                          activeColor:Colors.orange,
+                          checkColor: Colors.white,
+                          title:
+                          RichText(
+                            text: TextSpan(
 
 
-                            children: const <TextSpan>[
-                              TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: 13, color: Colors.black)),
-                              TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 13, color: Colors.indigo)),
-                              TextSpan(text: ' and', style: TextStyle(fontSize: 13, color: Colors.black)),
-                              TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 13, color: Colors.indigo)),
-                            ],
+                              children: const <TextSpan>[
+                                TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: 14, color: Colors.black)),
+                                TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 14, color: Color(0xFF000080))),
+                                TextSpan(text: ' and', style: TextStyle(fontSize: 14, color: Colors.black)),
+                                TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 14, color:Color(0xFF000080))),
+                              ],
+                            ),
                           ),
+
+                          value: checkedValue,
+                          onChanged: (newValue) {
+                            setState(() {
+                              checkedValue = newValue;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                         ),
 
-                        value: checkedValue,
-                        onChanged: (newValue) {
-                          setState(() {
-                            checkedValue = newValue;
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-                      ),
+
                       _submitButton()
                  ]))),
               ],
@@ -404,7 +421,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           ],
         )),
       ),
-    );
+    ));
   }
 
   Widget _submitButton() {
@@ -423,7 +440,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       child: Container(
         width: 150,
         height: 40,
-        margin: EdgeInsets.fromLTRB(0,0,0,30),
+        margin: EdgeInsets.fromLTRB(0,10,0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

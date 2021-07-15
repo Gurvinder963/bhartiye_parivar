@@ -181,8 +181,12 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
    Choice(id:2,title: 'English', letter:'A',isSelected:false),
    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false),
    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false),
-   Choice(id:5,title: 'ગુજરતી', letter:'ખ',isSelected:false),
+   Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false),
    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false),
+   Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false),
+   Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false),
+   Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false),
+   Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false),
 
 
 ];

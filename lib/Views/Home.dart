@@ -47,6 +47,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   int MyContentId;
   int selectedIndex = 0;
+
   String mContentType;
   String mInvitedBy="";
   List<Widget> _children;
@@ -85,10 +86,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
     _children = [
       new HomeChildPage(),
-      new BooksPage(),
       new NewsPage(),
-      new QuickPage(),
-      new ChatPage(),
+      new BooksPage(),
+
+    //  new QuickPage(),
+     // new ChatPage(),
       //  new SettingsScreen(),
     ];
 
@@ -145,20 +147,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             ),
             BottomNavigationBarItem(
-              icon: selectedIndex==1? Container(
-
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: Colors.white ,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/book_selected.png'), width: 25,height: 25,),
-              ): Image(image: AssetImage('assets/book_unselected.png'), width: 30,height: 30,),
-              title:  selectedIndex==1? Text('Books',
-                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Books',
-                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
-            ),
-            BottomNavigationBarItem(
               icon: selectedIndex==2? Container(
 
                 padding: EdgeInsets.all(2),
@@ -172,7 +160,24 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('News',
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             ),
+
+
             BottomNavigationBarItem(
+              icon: selectedIndex==1? Container(
+
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    color: Colors.white ,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(width: 1, color: Colors.black)),
+                child: Image(image: AssetImage('assets/book_selected.png'), width: 25,height: 25,),
+              ): Image(image: AssetImage('assets/book_unselected.png'), width: 30,height: 30,),
+              title:  selectedIndex==1? Text('Books',
+                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Books',
+                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
+            ),
+
+           /* BottomNavigationBarItem(
               icon: selectedIndex==3? Container(
 
                 padding: EdgeInsets.all(2),
@@ -186,8 +191,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Quick',
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             )
-            ,
-            BottomNavigationBarItem(
+            ,*/
+        /*    BottomNavigationBarItem(
             icon: selectedIndex==4? Container(
 
     padding: EdgeInsets.all(2),
@@ -200,7 +205,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     title:  selectedIndex==4? Text('Chat',
     style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Chat',
     style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
-    )
+    )*/
 
           ],
           currentIndex: selectedIndex,
@@ -219,12 +224,11 @@ class navigationDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           createDrawerHeader(),
-
           createDrawerBodyItem(
-            icon: Image(image: AssetImage('assets/profile.png'), width: 20,height: 20,),
-            text: 'Profile',
-            onTap: () =>{}
-               // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
+              text: 'About us',
+              onTap: () =>{}
+            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/joinus.png'), width: 20,height: 20,),
@@ -241,7 +245,7 @@ class navigationDrawer extends StatelessWidget {
               icon: Image(image: AssetImage('assets/donate.png'), width: 20,height: 20,),
               text: 'Donate us',
               onTap: () =>{
-              /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
                           return DonateUsPage();
@@ -252,11 +256,28 @@ class navigationDrawer extends StatelessWidget {
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
-              text: 'About us',
+              icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
+              text: 'Contact us',
               onTap: () =>{}
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+            // Navigator.pushReplacementNamed(context, pageRoutes.contact),
           ),
+      Padding(
+        padding: EdgeInsets.fromLTRB(15,0,15,0),
+        child:
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: Colors.orange,
+          )),
+          createDrawerBodyItem(
+            icon: Image(image: AssetImage('assets/profile.png'), width: 20,height: 20,),
+            text: 'Profile',
+            onTap: () =>{}
+               // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          ),
+
+
+
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/app_language.png'), width: 20,height: 20,),
               text: 'App Language',
@@ -303,21 +324,25 @@ class navigationDrawer extends StatelessWidget {
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
 
-          Divider(
-            height: 2,
-            color: Colors.orange,
-          ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(15,0,15,0),
+              child:
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
-            text: 'Advertise with us',
+              icon: Image(image: AssetImage('assets/ic_terms.png'), width: 20,height: 20,),
+            text: 'Terms & Privacy Policy',
             onTap: () =>{}
                 //Navigator.pushReplacementNamed(context, pageRoutes.notification),
           ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
-            text: 'Contact us',
-            onTap: () =>{}
-               // Navigator.pushReplacementNamed(context, pageRoutes.contact),
+              icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
+              text: 'Change App Name',
+              onTap: () =>{}
+            //Navigator.pushReplacementNamed(context, pageRoutes.notification),
           ),
 
         ],
@@ -325,8 +350,13 @@ class navigationDrawer extends StatelessWidget {
     );
   }
 }
-Widget createDrawerBodyItem(
-    {Image icon, String text, GestureTapCallback onTap}) {
+Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap}) {
+  bool isSwitchShow=false;
+  if(text=='Dark Mode'){
+    isSwitchShow=true;
+  }
+
+
   return ListTile(
     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
     title: Row(
@@ -336,6 +366,19 @@ Widget createDrawerBodyItem(
           padding: EdgeInsets.only(left: 15.0),
           child: Text(text),
         )
+        ,isSwitchShow?Expanded(child:Align(
+          alignment: Alignment.centerRight,
+          child: Switch(
+            value: true,
+            onChanged: (value) {
+
+            },
+            activeTrackColor: Colors.grey,
+            activeColor: Colors.orange,
+          ),
+        )):Container()
+
+
       ],
     ),
     onTap: onTap,

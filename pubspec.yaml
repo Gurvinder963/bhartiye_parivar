@@ -81,6 +81,7 @@ flutter:
     - assets/green_tick_pay.png
     - assets/collage.png
     - assets/languages.png
+    - assets/ic_terms.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

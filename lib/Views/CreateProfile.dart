@@ -22,7 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Views/Home.dart';
 import '../Utils/AppColors.dart';
 import 'AppLanguage.dart';
-
+import '../Utils/AppStrings.dart';
 
 
 
@@ -122,7 +122,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
     return Container(
 
-      margin: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 3,horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -163,7 +163,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
     return Container(
 
-      margin: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 3,horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -265,9 +265,18 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(AppColors.StatusBarColor),//or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1),//or set color with: Color(0xFF0000FF)
     ));
-    return SafeArea(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppStrings.AppName,
+        theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+        Theme.of(context).textTheme,
+    )
+    ),
+
+    home:SafeArea(
       child: Scaffold(
 
         body: SingleChildScrollView (
@@ -316,8 +325,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
                       child: Text(
                         'PROFILE',
-                        style: TextStyle(
-                          fontSize: 25.0,
+                        style: GoogleFonts.poppins(
+                          fontSize: 27.0,
                           letterSpacing: 1.5,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -331,8 +340,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        elevation: 2,
-                        margin: EdgeInsets.fromLTRB(30,10,30,10),
+                        elevation: 6,
+                        margin: EdgeInsets.fromLTRB(30,6,30,8),
                         color: Color(0xFFffffff),
 
                         child:Column(
@@ -343,14 +352,14 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,8,10,9),
+                            padding: EdgeInsets.fromLTRB(10,7,10,8),
                             child:  Text("Create Profile", textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,8,10,0),
+                            padding: EdgeInsets.fromLTRB(10,7,10,0),
                             child:  Text("Please fill the details, all fields are \n required", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 13,color: Colors.black)),
+                                style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: 14,color: Colors.black)),
                           ),
 
                           _entryFieldName("Name"),
@@ -358,7 +367,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                           Align(
                             alignment: Alignment.topLeft,
                             child:   Padding(
-                                padding: EdgeInsets.fromLTRB(10,9,10,0),
+                                padding: EdgeInsets.fromLTRB(10,8,10,0),
                                 child:Text("Profession", style: TextStyle(fontSize: 11,color: Colors.grey))),
 
                           ),
@@ -432,7 +441,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
               ],
             )),
       ),
-    );
+    ));
   }
 
   Widget _submitButton() {
@@ -455,7 +464,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
       child: Container(
         width: 150,
-        margin: EdgeInsets.fromLTRB(0,15,0,30),
+        margin: EdgeInsets.fromLTRB(0,20,0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

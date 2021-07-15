@@ -20,7 +20,7 @@ import 'package:otp_text_field/style.dart';
 import '../Repository/MainRepository.dart';
 import '../Views/CreateProfile.dart';
 import '../Utils/AppColors.dart';
-
+import '../Utils/AppStrings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 
@@ -231,9 +231,18 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Color(AppColors.StatusBarColor),  //or set color with: Color(0xFF0000FF)
+        statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1),  //or set color with: Color(0xFF0000FF)
     ));
-    return SafeArea(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppStrings.AppName,
+        theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+        Theme.of(context).textTheme,
+    )
+    ),
+
+    home:SafeArea(
       child: Scaffold(
 
         body: SingleChildScrollView (
@@ -282,8 +291,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
                       child: Text(
                         'Verify',
-                        style: TextStyle(
-                          fontSize: 25.0,
+                        style: GoogleFonts.poppins(
+                          fontSize: 27.0,
                           letterSpacing: 1.5,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -293,11 +302,13 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                     ),
                     SizedBox(
                       height: (MediaQuery.of(context).size.height)*0.62,
+                        width: (MediaQuery.of(context).size.width)-10,
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        elevation: 2,
+                        elevation: 6,
+
                         margin: EdgeInsets.fromLTRB(30,10,30,10),
                         color: Color(0xFFffffff),
 
@@ -311,22 +322,22 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Verify +91-9799125180", textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.black)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
                           ),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Not correct ?", textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13,color: Colors.red)),
+                                style:  GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: 14,color: Colors.red)),
                           ),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Waiting for automatically detect an SMS sent", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 12,color: Colors.black)),
+                                style:  GoogleFonts.roboto( fontSize: 14,color: Colors.black)),
                           ),
 
-                          SizedBox(height: 40),
+                          SizedBox(height: 30),
 
                           Theme(
                             data: ThemeData(
@@ -384,7 +395,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
               ],
             )),
       ),
-    );
+    ));
   }
 
   Widget _submitButton() {
@@ -397,7 +408,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
       child: Container(
         width: 250,
-        margin: EdgeInsets.fromLTRB(0,10,0,30),
+        margin: EdgeInsets.fromLTRB(0,10,0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

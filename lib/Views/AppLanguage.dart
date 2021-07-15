@@ -6,8 +6,8 @@ import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../Utils/AppColors.dart';
 import 'Home.dart';
-
-
+import '../Utils/AppStrings.dart';
+import 'package:google_fonts/google_fonts.dart';
 class AppLanguagePage extends StatefulWidget {
   @override
   AppLanguagePageState createState() {
@@ -21,8 +21,12 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     Choice(id:2,title: 'English', letter:'A',isSelected:false),
     Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false),
     Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false),
-    Choice(id:5,title: 'ગુજરતી', letter:'ખ',isSelected:false),
+    Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false),
     Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false),
+    Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false),
+    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false),
+    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false),
+    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false),
 
 
   ];
@@ -32,9 +36,18 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(AppColors.StatusBarColor), //or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
-    return SafeArea(
+    return  MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppStrings.AppName,
+        theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+        Theme.of(context).textTheme,
+    )
+    ),
+
+    home:SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView (
@@ -107,7 +120,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                       ),
                     ),
                     SizedBox(
-                        height: (MediaQuery.of(context).size.height)*0.67,
+                        height: (MediaQuery.of(context).size.height)*0.68,
                     child:Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -220,7 +233,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
               ],
             )),
       ),
-    );
+    ));
   }
   Widget _submitButton() {
     return InkWell(
@@ -253,7 +266,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                 end: Alignment.centerRight,
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
-          'Submit',
+          'Next',
           style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
