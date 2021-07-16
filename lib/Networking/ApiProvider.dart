@@ -7,7 +7,8 @@ import '../Networking/CustomException.dart';
 
 
 class ApiProvider {
-  final String _baseUrl = "https://staging2.studyshot.in/";
+  final String _baseUrl = "http://bankjaal.in/";
+  final String _baseUrlWithoutHTTP = "bankjaal.in";
 
 
   Future<dynamic> get(String url,var queryParameters) async {
@@ -27,12 +28,18 @@ class ApiProvider {
     return responseJson;
   }
   Future<dynamic> getWithToken(String url,var queryParameters,token) async {
+    print("my url"+url);
+    print("queryParameters"+queryParameters.toString());
+    print("token"+token);
+
+
+
     Map<String, String> headerParams = {
       "Content-Type": 'application/json',
       "Authorization":'Bearer '+token
     };
     var uri =
-    Uri.https(_baseUrl, url, queryParameters);
+    Uri.http(_baseUrlWithoutHTTP, url, queryParameters);
 
     var responseJson;
     try {

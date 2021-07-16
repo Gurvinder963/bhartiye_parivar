@@ -147,7 +147,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             ),
             BottomNavigationBarItem(
-              icon: selectedIndex==2? Container(
+              icon: selectedIndex==1? Container(
 
                 padding: EdgeInsets.all(2),
                 decoration: BoxDecoration(
@@ -156,14 +156,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     border: Border.all(width: 1, color: Colors.black)),
                 child: Image(image: AssetImage('assets/news_selected.png'), width: 25,height: 25,),
               ): Image(image: AssetImage('assets/news_unselected.png'), width: 30,height: 30,),
-              title:  selectedIndex==2? Text('News',
+              title:  selectedIndex==1? Text('News',
                 style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('News',
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             ),
 
 
             BottomNavigationBarItem(
-              icon: selectedIndex==1? Container(
+              icon: selectedIndex==2? Container(
 
                 padding: EdgeInsets.all(2),
                 decoration: BoxDecoration(
@@ -172,7 +172,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     border: Border.all(width: 1, color: Colors.black)),
                 child: Image(image: AssetImage('assets/book_selected.png'), width: 25,height: 25,),
               ): Image(image: AssetImage('assets/book_unselected.png'), width: 30,height: 30,),
-              title:  selectedIndex==1? Text('Books',
+              title:  selectedIndex==2? Text('Books',
                 style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Books',
                 style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
             ),

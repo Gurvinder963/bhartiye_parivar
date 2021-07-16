@@ -66,6 +66,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
   String model;
   String ipAddress;
+ // String dialCode="+91";
 
   String SCREEN_NAME="Login_Screen";
   void _togglePasswordView() {
@@ -133,7 +134,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
   Widget _entryFieldCountryCode(String title, {bool isPassword = false}) {
 
-    myControllerContryCode.text="+91";
+
     return Container(
       width: 60,
       margin: EdgeInsets.symmetric(vertical: 5),
@@ -200,7 +201,6 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
   showAlertDialogValidation(BuildContext context,String message) {
 
-    // set up the button
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
@@ -246,7 +246,15 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       home:SafeArea(
       child: Scaffold(
 
-        body: SingleChildScrollView (
+        body:
+         ModalProgressHUD(
+        inAsyncCall: _isInAsyncCall,
+        // demo of some additional parameters
+        opacity: 0.01,
+        progressIndicator: CircularProgressIndicator(),
+        child:
+
+        SingleChildScrollView (
         child:
         Stack(
           alignment: Alignment.topCenter,
@@ -382,6 +390,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           print(code.code);
                           print(code.dialCode);
                           print(code.flagUri);
+                          myControllerContryCode.text=code.dialCode;
+                          setState(() {
+
+                          });
+
                         },
                       ),
 
@@ -419,7 +432,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               ],
             ),
           ],
-        )),
+        ))),
       ),
     ));
   }
@@ -428,12 +441,22 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     return InkWell(
       onTap: () {
 
+      if(myControllerPhone.text.isEmpty){
+          showAlertDialogValidation(context, "Please enter mobile no!");
+        }
+        else {
+
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage();
+                  return VerifyOTPPage(c_code:myControllerContryCode.text,mobile:myControllerPhone.text);
                 }
             ) );
+
+
+
+        }
+
 
       },
 

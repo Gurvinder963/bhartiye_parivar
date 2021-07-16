@@ -23,35 +23,38 @@ import '../Views/Home.dart';
 import '../Utils/AppColors.dart';
 import 'AppLanguage.dart';
 import '../Utils/AppStrings.dart';
+import '../Utils/Prefer.dart';
+import '../ApiResponses/LoginResponse.dart';
+import '../Repository/MainRepository.dart';
 
 
 
 
 class CreateProfilePage extends StatefulWidget {
-  final int myContentId;
-  final String contentType;
-  final String invitedBy;
-  CreateProfilePage({Key key,@required this.myContentId,@required this.contentType,@required this.invitedBy}) : super(key: key);
+  final String mobile;
+  final String c_code;
+  CreateProfilePage({Key key,@required this.c_code,@required this.mobile}) : super(key: key);
 
 
 
 
   @override
-  CreateProfilePageState createState() => CreateProfilePageState(myContentId,contentType,invitedBy);
+  CreateProfilePageState createState() => CreateProfilePageState(mobile,c_code);
 }
 
 class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindingObserver{
   int MyContentId;
   String mContentType;
   String mInvitedBy="";
+  String mMobile;
+  String mC_code;
   String _chosenValue="Select";
   bool checkedValue=false;
   bool _isInAsyncCall = false;
   bool _isHidden = true;
-  CreateProfilePageState(int contentId,String contentType,String invitedBy){
-    MyContentId=contentId;
-    mContentType=contentType;
-    mInvitedBy=invitedBy;
+  CreateProfilePageState(String mobile,String c_code){
+    mMobile=mobile;
+    mC_code=c_code;
 
   }
 
@@ -279,7 +282,12 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     home:SafeArea(
       child: Scaffold(
 
-        body: SingleChildScrollView (
+        body:  ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child: SingleChildScrollView (
             child:
             Stack(
               alignment: Alignment.topCenter,
@@ -439,26 +447,82 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                   ],
                 ),
               ],
-            )),
+            ))),
       ),
     ));
   }
+  Future<LoginResponse> getProfileResponse(String name,String age,String profession,String pincode,String mobile,String cCode) async {
+    var body =json.encode({"name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":mobile});
+    MainRepository repository=new MainRepository();
+    return repository.fetchProfileData(body);
 
+  }
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-      /*  Navigator.pushAndRemoveUntil(context,
+
+        if(myControllerName.text.isEmpty){
+          showAlertDialogValidation(context, "Please enter name!");
+        }
+        else if(myControllerAge.text.isEmpty){
+          showAlertDialogValidation(context, "Please enter age!");
+        }
+        else if(_chosenValue=='Select'){
+          showAlertDialogValidation(context, "Please select profession!");
+        }
+        else if(myControllerPinCode.text.isEmpty){
+          showAlertDialogValidation(context, "Please enter pincode!");
+        }
+        else {
+          getProfileResponse(myControllerName.text, myControllerAge.text,
+              _chosenValue, myControllerPinCode.text,mMobile,mC_code)
+              .then((res) async {
+            setState(() {
+              _isInAsyncCall = false;
+            });
+
+
+            if (res.status == 1) {
+              SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+
+              Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
+              Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
+              Prefs.setUserLoginName(
+                  _prefs, (res.data.user.fullName).toString());
+
+
+              Navigator.of(context, rootNavigator: true)
+                  .push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return HomePage();
+                      }
+                  ));
+            }
+            else {
+              Navigator.of(context, rootNavigator: true)
+                  .push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return CreateProfilePage();
+                      }
+                  ));
+            }
+          });
+        }
+        /*  Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder:
                 (context) =>
                 HomePage()
             ), ModalRoute.withName("/HomePage")
         );*/
-        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+      /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
                   return AppLanguagePage();
                 }
-            ) );
+            ) );*/
 
       },
 

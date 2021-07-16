@@ -45,56 +45,51 @@ class Data {
 
 class User {
   int id;
-  int board_id;
-  int class_id;
-  int points_earned;
-  int points_available;
-  int points_for_use;
   String uuid;
   String firstName;
   String lastName;
   String email;
-  String contact_number;
+  String mobileNo;
+  int age;
+  String profession;
   String avatarType;
-  String avatarLocation;
-  String passwordChangedAt;
+  Null avatarLocation;
+  String address;
+  Null passwordChangedAt;
   bool active;
   String confirmationCode;
   bool confirmed;
+  int countryCode;
   String timezone;
   String lastLoginAt;
   String lastLoginIp;
   bool toBeLoggedOut;
   bool status;
-  String createdBy;
-  String updatedBy;
+  int createdBy;
+  Null updatedBy;
   int isTermAccept;
   String createdAt;
   String updatedAt;
-  String deletedAt;
+  Null deletedAt;
   String fullName;
-  String board;
-  String class_name;
-  String referral_code;
 
   User(
       {this.id,
-      this.board_id,
-      this.class_id,
-        this.points_earned,
-        this.points_available,
-        this.points_for_use,
         this.uuid,
         this.firstName,
         this.lastName,
         this.email,
-        this.contact_number,
+        this.mobileNo,
+        this.age,
+        this.profession,
         this.avatarType,
         this.avatarLocation,
+        this.address,
         this.passwordChangedAt,
         this.active,
         this.confirmationCode,
         this.confirmed,
+        this.countryCode,
         this.timezone,
         this.lastLoginAt,
         this.lastLoginIp,
@@ -106,30 +101,25 @@ class User {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
-        this.fullName,
-      this.class_name,
-        this.board,
-        this.referral_code
-      });
+        this.fullName});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    board_id = json['board_id'];
-    class_id = json['class_id'];
-    points_earned = json['points_earned'];
-    points_available = json['points_available'];
-    points_for_use = json['points_for_use'];
     uuid = json['uuid'];
     firstName = json['first_name'];
     lastName = json['last_name'];
     email = json['email'];
-    contact_number = json['contact_number'];
+    mobileNo = json['mobile_no'];
+    age = json['age'];
+    profession = json['profession'];
     avatarType = json['avatar_type'];
     avatarLocation = json['avatar_location'];
+    address = json['address'];
     passwordChangedAt = json['password_changed_at'];
     active = json['active'];
     confirmationCode = json['confirmation_code'];
     confirmed = json['confirmed'];
+    countryCode = json['country_code'];
     timezone = json['timezone'];
     lastLoginAt = json['last_login_at'];
     lastLoginIp = json['last_login_ip'];
@@ -142,30 +132,26 @@ class User {
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
     fullName = json['full_name'];
-    class_name = json['class'];
-    board = json['board'];
-    referral_code = json['referral_code'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['board_id'] = this.board_id;
-    data['class_id'] = this.class_id;
-    data['points_earned'] = this.points_earned;
-    data['points_available'] = this.points_available;
-    data['points_for_use'] = this.points_for_use;
     data['uuid'] = this.uuid;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
     data['email'] = this.email;
-    data['contact_number'] = this.contact_number;
+    data['mobile_no'] = this.mobileNo;
+    data['age'] = this.age;
+    data['profession'] = this.profession;
     data['avatar_type'] = this.avatarType;
     data['avatar_location'] = this.avatarLocation;
+    data['address'] = this.address;
     data['password_changed_at'] = this.passwordChangedAt;
     data['active'] = this.active;
     data['confirmation_code'] = this.confirmationCode;
     data['confirmed'] = this.confirmed;
+    data['country_code'] = this.countryCode;
     data['timezone'] = this.timezone;
     data['last_login_at'] = this.lastLoginAt;
     data['last_login_ip'] = this.lastLoginIp;
@@ -178,9 +164,6 @@ class User {
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;
     data['full_name'] = this.fullName;
-    data['class_name'] = this.class_name;
-    data['board'] = this.board;
-    data['referral_code'] = this.referral_code;
     return data;
   }
 }

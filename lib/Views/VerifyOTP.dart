@@ -21,7 +21,10 @@ import '../Repository/MainRepository.dart';
 import '../Views/CreateProfile.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
+import '../ApiResponses/LoginResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
+import '../Views/Home.dart';
 //import 'package:device_info/device_info.dart';
 
 
@@ -31,29 +34,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class VerifyOTPPage extends StatefulWidget {
-  final int myContentId;
-  final String contentType;
-  final String invitedBy;
-  VerifyOTPPage({Key key,@required this.myContentId,@required this.contentType,@required this.invitedBy}) : super(key: key);
+
+  final String mobile;
+  final String c_code;
+
+  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile}) : super(key: key);
 
 
 
 
   @override
-  VerifyOTPPageState createState() => VerifyOTPPageState(myContentId,contentType,invitedBy);
+  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code);
 }
 
 class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserver{
   int MyContentId;
-  String mContentType;
+  String mMobile;
+  String mC_code;
   String mInvitedBy="";
   bool checkedValue=false;
   bool _isInAsyncCall = false;
   bool _isHidden = true;
-  VerifyOTPPageState(int contentId,String contentType,String invitedBy){
-    MyContentId=contentId;
-    mContentType=contentType;
-    mInvitedBy=invitedBy;
+  VerifyOTPPageState(String mobile,String c_code){
+    mMobile=mobile;
+    mC_code=c_code;
+
 
   }
 
@@ -176,6 +181,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     // TODO: implement initState
     super.initState();
 
+
     myControllerContryCode.text="+91";
 
 
@@ -245,7 +251,12 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     home:SafeArea(
       child: Scaffold(
 
-        body: SingleChildScrollView (
+        body:   ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:SingleChildScrollView (
             child:
             Stack(
               alignment: Alignment.topCenter,
@@ -321,7 +332,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
-                            child:  Text("Verify +91-9799125180", textAlign: TextAlign.center,
+                            child:  Text("Verify "+mC_code+"-"+mMobile, textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
                           ),
 
@@ -365,12 +376,55 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                               fieldStyle: FieldStyle.underline,
                               onCompleted: (pin) {
 
-                                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+
+
+
+                                setState(() {
+                                   _isInAsyncCall = true;
+                                  });
+
+                           getLoginResponse(mC_code,mMobile)
+                              .then((res) async {
+                                  setState(() {
+                                    _isInAsyncCall = false;
+                                  });
+
+
+                                  if (res.status == 1) {
+
+                                    SharedPreferences _prefs =await SharedPreferences.getInstance();
+
+
+                                     Prefs.setUserLoginId(_prefs,(res.data.user.id).toString());
+                                     Prefs.setUserLoginToken(_prefs,(res.data.token).toString());
+                                     Prefs.setUserLoginName(_prefs,(res.data.user.fullName).toString());
+
+
+
+                                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return HomePage();
+                                            }
+                                        ) );
+
+                                  }
+                                  else{
+                                     Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                                     MaterialPageRoute(
                                         builder: (BuildContext context) {
-                                          return CreateProfilePage();
+                                          return CreateProfilePage(c_code:mC_code,mobile:mMobile);
                                         }
                                     ) );
+                                  }
+
+
+                                });
+
+
+
+
+
                               },
                             ),
                           ),
@@ -393,11 +447,16 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                   ],
                 ),
               ],
-            )),
+            ))),
       ),
     ));
   }
+  Future<LoginResponse> getLoginResponse(String contry_code,String mobile) async {
+    var body =json.encode({"mobile_no":mobile});
+    MainRepository repository=new MainRepository();
+    return repository.fetchLoginData(body);
 
+  }
   Widget _submitButton() {
     return InkWell(
       onTap: () {

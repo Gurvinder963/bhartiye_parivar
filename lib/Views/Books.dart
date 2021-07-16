@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MyBooksTab.dart';
 import 'BooksByLanguage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 
 
 
@@ -15,10 +17,31 @@ class BooksPage extends StatefulWidget {
 }
 
 class BooksPageState extends State<BooksPage> {
+  String userName="";
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      userName=prefs.getString(Prefs.USER_NAME);
+
+
+
+
+      return (prefs.getString('token'));
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
         body: Container(
@@ -69,7 +92,8 @@ class BooksPageState extends State<BooksPage> {
 
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
-              child:Text("MY BOOKS",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Color(0xFFffffff)),),
+              child:Text("MY BOOKS"
+                ,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Color(0xFFffffff)),),
           ),
 
         ])),
