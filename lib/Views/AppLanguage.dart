@@ -198,7 +198,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                                                              Padding(
                                                                padding: EdgeInsets.fromLTRB(5,10,0,0),
                                                                child:
-                                                               Text(choice.letter, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 38,color: color2)),
+                                                               Text(choice.letter, style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 40,color: color2)),
                                                              )
 
                                                          ),
@@ -267,7 +267,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
-          style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

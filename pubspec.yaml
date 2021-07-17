@@ -29,6 +29,9 @@ dependencies:
   razorpay_flutter: ^1.2.5
   fluttertoast: ^7.1.6
   flutter_local_notifications: ^3.0.2
+  youtube_player_flutter: ^7.0.0+7
+  video_player: ^1.0.1
+  flutter_widget_from_html: ^0.5.2+1
 
   flutter:
     sdk: flutter
@@ -84,6 +87,8 @@ flutter:
     - assets/languages.png
     - assets/ic_terms.png
     - assets/avatar.png
+    - assets/thumbnail.png
+    - assets/whatsapp.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

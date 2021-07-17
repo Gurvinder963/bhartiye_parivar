@@ -481,7 +481,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
-          style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

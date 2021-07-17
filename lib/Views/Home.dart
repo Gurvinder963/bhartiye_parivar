@@ -29,6 +29,7 @@ import 'News.dart';
 import 'Quick.dart';
 import 'Chat.dart';
 import 'ContentLanguage.dart';
+import 'VideoApp.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -120,8 +121,28 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
       return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text('भारतीय परिवार', style: TextStyle(fontSize: 22,color: Color(0xFFFFFFFF))),
+          title: Text('भारतीय परिवार', style: GoogleFonts.roboto(fontSize: 28,color: Color(0xFFFFFFFF))),
+          actions: <Widget>[
+
+
+            Icon(Icons.search,color: Colors.white,size: 25,),
+            SizedBox(
+              width: 7,
+            ),
+            Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
+            SizedBox(
+              width: 7,
+            ),
+            Icon(Icons.notifications_rounded,color: Colors.white,size: 25,),
+
+            SizedBox(
+              width: 10,
+            ),
+
+          ],
+
         ),
         drawer: navigationDrawer(),
         body: _children[selectedIndex],
@@ -140,11 +161,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           color: Colors.white ,
             borderRadius: BorderRadius.circular(100),
             border: Border.all(width: 1, color: Colors.black)),
-        child: Image(image: AssetImage('assets/home_selected.png'), width: 25,height: 25,),
-      ): Image(image: AssetImage('assets/home_unselected.png'), width: 30,height: 30,),
+        child: Image(image: AssetImage('assets/home_selected.png'), width: 23,height: 23,),
+      ): Image(image: AssetImage('assets/home_unselected.png'), width: 28,height: 28,),
               title:  selectedIndex==0? Text('Home',
-                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Home',
-                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('Home',
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
             BottomNavigationBarItem(
               icon: selectedIndex==1? Container(
@@ -154,11 +175,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     color: Colors.white ,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/news_selected.png'), width: 25,height: 25,),
-              ): Image(image: AssetImage('assets/news_unselected.png'), width: 30,height: 30,),
+                child: Image(image: AssetImage('assets/news_selected.png'), width: 23,height: 23,),
+              ): Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,),
               title:  selectedIndex==1? Text('News',
-                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('News',
-                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('News',
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
 
 
@@ -170,11 +191,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     color: Colors.white ,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/book_selected.png'), width: 25,height: 25,),
-              ): Image(image: AssetImage('assets/book_unselected.png'), width: 30,height: 30,),
+                child: Image(image: AssetImage('assets/book_selected.png'), width: 23,height: 23,),
+              ): Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,),
               title:  selectedIndex==2? Text('Books',
-                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Books',
-                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('Books',
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
 
            /* BottomNavigationBarItem(
@@ -258,7 +279,16 @@ class navigationDrawer extends StatelessWidget {
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
               text: 'Contact us',
-              onTap: () =>{}
+              onTap: () =>{
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return VideoApp();
+                        }
+                    ) )
+
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.contact),
           ),
       Padding(

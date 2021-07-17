@@ -7,6 +7,7 @@ import '../Utils/Prefer.dart';
 import '../ApiResponses/VideoListResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'VideoDetailNew.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -72,17 +73,38 @@ class MainPageState extends State<MainPage> {
 
   Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail){
     return    Container(
+      margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
       child:Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
         Stack(
 
       children: <Widget>[
+
+        Container(
+          margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+
+          alignment: Alignment.center,
+          height: 175,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.fill,
+              image: new AssetImage("assets/thumbnail.png"),
+
+                alignment: Alignment.center,
+              ),
+
+          ),
+
+        ),
+
+
         Container(
             margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
             alignment: Alignment.center,
-            height: 170,
+            height: 175,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -97,14 +119,14 @@ class MainPageState extends State<MainPage> {
     child:Align(
           alignment: Alignment.bottomLeft,
           child: Container(
-              padding: EdgeInsets.fromLTRB(5,3,5,3),
+              padding: EdgeInsets.fromLTRB(10,3,10,3),
               margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-              color: Colors.white,
+              color: Color(0xFF5a5a5a),
               child: Text("English",  style: GoogleFonts.roboto(
-            fontSize:14.0,
-            letterSpacing: 1.5,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontSize:16.0,
+
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
 
           ),))
 
@@ -114,14 +136,14 @@ class MainPageState extends State<MainPage> {
             child:Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                    padding: EdgeInsets.fromLTRB(5,3,5,3),
+                    padding: EdgeInsets.fromLTRB(10,3,10,5),
                     margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                    color: Colors.white,
+                    color:  Color(0xFF5a5a5a),
                     child: Text("10:13",  style: GoogleFonts.roboto(
                       fontSize:14.0,
-                      letterSpacing: 1.5,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
 
                     ),))
 
@@ -131,14 +153,16 @@ class MainPageState extends State<MainPage> {
     ),
 
       Container(
+        margin:  EdgeInsets.fromLTRB(10,0,10,0),
       child:Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
+
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
-      SizedBox(height: 5,width: 5,),
+
       new Image(
         image: new AssetImage("assets/avatar.png"),
-        width: 40,
-        height:  40,
+        width: 42,
+        height:  42,
         color: null,
         fit: BoxFit.scaleDown,
         alignment: Alignment.center,
@@ -158,27 +182,53 @@ class MainPageState extends State<MainPage> {
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
         style: GoogleFonts.roboto(
-        fontSize:14.0,
-        letterSpacing: 1.5,
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
+        fontSize:15.0,
+
+        color: Color(0xFF5a5a5a),
+        fontWeight: FontWeight.w500,
 
       ),),
-      Text("Banko ka mayajaal",  style: GoogleFonts.roboto(
-        fontSize:11.0,
-        letterSpacing: 1.5,
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
+    Container(
+        margin:  EdgeInsets.fromLTRB(0,5,10,0),
+    child:Row(
 
-      ),)
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget>[
+      Text("Banko ka mayajaal",   overflow: TextOverflow.ellipsis,
+        maxLines: 1, style: GoogleFonts.roboto(
+        fontSize:12.0,
+        color: Color(0xFF5a5a5a),
+
+      ),),
+      SizedBox(width: 10),
+
+      Container(
+        width: 8,
+        height: 8,
+
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFF5a5a5a)),
+      ),
+      SizedBox(width: 10),
+      Text("23-03-2021",   overflow: TextOverflow.ellipsis,
+        maxLines: 1, style: GoogleFonts.roboto(
+          fontSize:12.0,
+          color: Color(0xFF5a5a5a),
+
+        ),),
+      SizedBox(width: 10),
+    ])),
+
+
 
     ]))),
-          new Expanded(
+       /*  new Expanded(
               flex: 1,
 
               child:Icon(Icons.more_vert)
           )
-
+*/
 
     ]))
 
@@ -192,8 +242,12 @@ class MainPageState extends State<MainPage> {
         return GestureDetector(
           onTap: () => {
 
-
-
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return VideoDetailNewPage(content:mainData[index]);
+                        }
+                    ) )
 
           },
           child:

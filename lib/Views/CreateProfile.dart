@@ -546,7 +546,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                 colors: [ Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
-          style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

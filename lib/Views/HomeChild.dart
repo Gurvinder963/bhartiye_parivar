@@ -16,6 +16,7 @@ import 'Twitter.dart';
 import 'History.dart';
 import 'Instagram.dart';
 import '../Utils/AppColors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class HomeChildPage extends StatefulWidget {
@@ -34,6 +35,7 @@ class HomeChildPageState extends State<HomeChildPage> {
 
 
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,29 +48,30 @@ class HomeChildPageState extends State<HomeChildPage> {
           length: 13,
           child: Scaffold(
             appBar: AppBar(
+              shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
               leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
-              toolbarHeight: kMinInteractiveDimension,
+              toolbarHeight: 30,
               flexibleSpace: TabBar(
                 isScrollable: true,
-                unselectedLabelColor: Color(0xFF666666),
+                unselectedLabelColor: Color(0xFF5a5a5a),
                 labelColor: Colors.white,
-                indicatorWeight: 2,
+                indicatorWeight: 6,
                 indicatorColor: Colors.white,
                 tabs: [
-                  Tab(child: Text('Main')),
-                  Tab(child: Text('Trending')),
-                  Tab(child: Text('Health')),
-                  Tab(child: Text('Series')),
-                  Tab(child: Text('Spiritual')),
-                  Tab(child: Text('History')),
-                  Tab(child: Text('Culture')),
-                  Tab(child: Text('Conspiracy')),
-                  Tab(child: Text('Twitter')),
-                  Tab(child: Text('Facebook')),
-                  Tab(child: Text('Instagram')),
-                  Tab(child: Text('Telegram')),
-                  Tab(child: Text('Whatsapp')),
+                  Tab(child: Text('Main' ,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Trending',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Health',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Series',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Spiritual',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('History',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Culture',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Conspiracy',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Twitter',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Facebook',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Instagram',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Telegram',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text('Whatsapp',style:GoogleFonts.roboto(fontSize: 17),)),
                 ],
               ),
             ),

@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Utils/constants.dart';
 import 'Views/Login.dart';
+import 'Utils/Prefer.dart';
+import 'Views/Home.dart';
 
 Future<void> main() async {
 
@@ -92,10 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
       print(prefs.getString('token'));
-      String tok=prefs.getString('token');
+      String tok=prefs.getString(Prefs.KEY_TOKEN);
       int classId=prefs.getInt('ClassId') ?? 0;
       if(tok==null){
-        Timer(Duration(seconds: 5),
+        Timer(Duration(seconds: 2),
                 ()=>Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder:
                     (context) =>
@@ -107,15 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       else {
-      /*  Timer(Duration(seconds: 5),
-                ()=>Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder:
-                    (context) =>
-                    MyBottomNavigationApp()
-                ),
-                ModalRoute.withName("/Home")
+       Timer(Duration(seconds: 5),
+                ()=> Navigator.of(context, rootNavigator: true)
+                    .push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return HomePage();
+                        }
+                    )
             )
-        );*/
+        );
       }
 
       return (prefs.getString('token'));
