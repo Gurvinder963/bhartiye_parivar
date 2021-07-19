@@ -6,7 +6,7 @@ import 'package:country_list_pick/country_list_pick.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'VerifyOTP.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -110,8 +110,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             decoration: InputDecoration(
               hintText:"Phone number",
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -151,8 +151,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             decoration: InputDecoration(
 
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -234,6 +234,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
+
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: Size(360, 690),
+        orientation: Orientation.portrait);
     return  MaterialApp(
         debugShowCheckedModeBanner: false,
         title: AppStrings.AppName,
@@ -301,7 +308,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                   child: Text(
                     'Login',
                     style: GoogleFonts.poppins(
-                      fontSize: 27.0,
+                      fontSize: ScreenUtil().setSp(27),
                       letterSpacing: 1.5,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -323,19 +330,19 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                     child:Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
-                      SizedBox(height: 20),
+                      SizedBox(height: ScreenUtil().setWidth(20)),
 
 
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(10,9,10,9),
+                        padding: EdgeInsets.fromLTRB(10,ScreenUtil().setHeight(9),10,9),
                         child:  Text("Verify your phone number", textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(10,9,10,28),
+                        padding: EdgeInsets.fromLTRB(10,ScreenUtil().setWidth(9),10,28),
                         child:  Text("We will send an sms to verify your \n phone number. Please enter your country code and phone number.", textAlign: TextAlign.center,
-                            style: GoogleFonts.roboto(fontSize: 14,color: Colors.black)),
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                       ),
                       CountryListPick(
 
@@ -364,7 +371,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                                 height: 40,
                               ),
                               SizedBox(width: 30),
-                              Text(countryCode.name),
+                              Text(countryCode.name, style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                              Expanded(child:
                               Align(
                                 alignment: Alignment.topRight,
@@ -400,7 +407,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                       _emailPasswordWidget(),
                     CheckboxListTile(
-                          contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 18),
+                          contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: ScreenUtil().setWidth(18)),
                           activeColor:Colors.orange,
                           checkColor: Colors.white,
                           title:
@@ -408,11 +415,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                             text: TextSpan(
 
 
-                              children: const <TextSpan>[
-                                TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: 14, color: Colors.black)),
-                                TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 14, color: Color(0xFF000080))),
-                                TextSpan(text: ' and', style: TextStyle(fontSize: 14, color: Colors.black)),
-                                TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: 14, color:Color(0xFF000080))),
+                              children:  <TextSpan>[
+                                TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
+                                TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
+                                TextSpan(text: ' and', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
+                                TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
                               ],
                             ),
                           ),
@@ -462,8 +469,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
       child: Container(
         width: 150,
-        height: 40,
-        margin: EdgeInsets.fromLTRB(0,10,0,10),
+        height: ScreenUtil().setWidth(40),
+        margin: EdgeInsets.fromLTRB(0,ScreenUtil().setWidth(10),0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -481,7 +488,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
-          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

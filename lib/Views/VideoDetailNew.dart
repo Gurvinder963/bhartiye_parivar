@@ -67,12 +67,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.report,size: 30,),
+                              Icon(Icons.report,size: 28,),
                               SizedBox(width: 20,),
                               Image(
                                 image: new AssetImage("assets/share.png"),
-                                width: 25,
-                                height:  25,
+                                width: 23,
+                                height:  23,
                                 color: null,
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
@@ -80,14 +80,14 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                               SizedBox(width: 20,),
                               Image(
                                 image: new AssetImage("assets/whatsapp.png"),
-                                width: 25,
-                                height:  25,
+                                width: 23,
+                                height:  23,
                                 color: null,
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
                               SizedBox(width: 20,),
-                              Icon(Icons.bookmark_outline_outlined,size: 30,),
+                              Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
 
                             ]))
                     ,  Padding(
@@ -101,7 +101,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     margin:  EdgeInsets.fromLTRB(20,0,10,0),
     child:Row(
 
-    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
 
  _joinButton(),
@@ -110,7 +110,20 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
     ]))
+,
 
+       Container(
+
+           decoration: BoxDecoration(
+               border: Border.all(color: Colors.blueAccent)
+           ),
+         width: MediaQuery.of(context).size.width,
+           height: 180,
+           margin:  EdgeInsets.fromLTRB(30,10,30,10),
+           padding: EdgeInsets.fromLTRB(20,20,20,20),
+         child:Center( child:Text("Your ad here"))
+
+       )
 
                   ])
 
@@ -145,7 +158,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Join Us',
-          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -175,16 +188,16 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Colors.green, Colors.green])),
+                colors: [Color(0xFF20d256), Color(0xFF20d256)])),
         child: Text(
           'Donate Us',
-          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.w500),
         ),
       ),
     );
   }
   Widget _buildBoxVideo(BuildContext context,Data content){
-
+    final width = MediaQuery.of(context).size.width;
     var videoIdd;
     try {
 
@@ -204,9 +217,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     }
        String html = '''
-          <iframe id="ytplayer" type="text/html" width="500" height="480"
+          <iframe id="ytplayer" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&origin=http://example.com"
-  frameborder="0"></iframe>
+  frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen></iframe>
      ''';
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
@@ -218,7 +231,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                 children: <Widget>[
 
-                  Container(
+                /*  Container(
                     margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                     alignment: Alignment.center,
@@ -251,8 +264,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                     ),
 
                   ),
-
+*/
                   HtmlWidget(
+
                     html,
                     webView: true,
                   )
@@ -262,7 +276,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
               ),
 
               Container(
-                  margin:  EdgeInsets.fromLTRB(10,0,10,0),
+                  margin:  EdgeInsets.fromLTRB(10,5,10,0),
                   child:Row(
 
                       crossAxisAlignment: CrossAxisAlignment.center,

@@ -8,6 +8,11 @@ import '../ApiResponses/VideoListResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'VideoDetailNew.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'BooksDetail.dart';
+
+
+String videoCategory="spiritual";
 
 class MainPage extends StatefulWidget {
   @override
@@ -28,7 +33,7 @@ class MainPageState extends State<MainPage> {
       var user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
 
-      getVideosList(user_Token).then((value) => {
+      getVideosList(user_Token,videoCategory).then((value) => {
 
       setState(() {
       mainData.addAll(value.data);
@@ -43,15 +48,24 @@ class MainPageState extends State<MainPage> {
 
   }
 
-  Future<VideoListResponse> getVideosList(String user_Token) async {
+  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory) async {
 
-    var body ={'name':'spiritual'};
+    var body ={'video_category':videoCategory};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 
   }
   @override
   Widget build(BuildContext context) {
+    var height=MediaQuery.of(context).size.height;
+    print("device_height"+height.toString());
+
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: Size(360, 690),
+        orientation: Orientation.portrait);
     return Scaffold(
 
       body:   Container(
@@ -85,7 +99,7 @@ class MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
           alignment: Alignment.center,
-          height: 175,
+          height: ScreenUtil().setHeight(175),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -104,7 +118,7 @@ class MainPageState extends State<MainPage> {
             margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
             alignment: Alignment.center,
-            height: 175,
+            height: ScreenUtil().setHeight(175),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -153,7 +167,7 @@ class MainPageState extends State<MainPage> {
     ),
 
       Container(
-        margin:  EdgeInsets.fromLTRB(10,0,10,0),
+        margin:  EdgeInsets.fromLTRB(10,5,10,0),
       child:Row(
 
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -245,7 +259,7 @@ class MainPageState extends State<MainPage> {
               Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return VideoDetailNewPage(content:mainData[index]);
+                          return BooksDetailPage(content:mainData[index]);
                         }
                     ) )
 

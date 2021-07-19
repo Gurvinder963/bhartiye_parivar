@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
 
@@ -235,7 +235,12 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
   @override
   Widget build(BuildContext context) {
-
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: Size(360, 690),
+        orientation: Orientation.portrait);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1),  //or set color with: Color(0xFF0000FF)
     ));
@@ -303,7 +308,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                       child: Text(
                         'Verify',
                         style: GoogleFonts.poppins(
-                          fontSize: 27.0,
+                          fontSize: ScreenUtil().setSp(27),
                           letterSpacing: 1.5,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -333,19 +338,19 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Verify "+mC_code+"-"+mMobile, textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                           ),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Not correct ?", textAlign: TextAlign.center,
-                                style:  GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: 14,color: Colors.red)),
+                                style:  GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(14),color: Colors.red)),
                           ),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Waiting for automatically detect an SMS sent", textAlign: TextAlign.center,
-                                style:  GoogleFonts.roboto( fontSize: 14,color: Colors.black)),
+                                style:  GoogleFonts.roboto( fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                           ),
 
                           SizedBox(height: 30),
@@ -370,7 +375,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                               width: 300,
                               fieldWidth: 40,
                               style: TextStyle(
-                                  fontSize: 14
+                                  fontSize: ScreenUtil().setSp(14)
                               ),
                               textFieldAlignment: MainAxisAlignment.spaceAround,
                               fieldStyle: FieldStyle.underline,
@@ -435,12 +440,12 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Enter 4 DIGIT CODE", textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13,color: Colors.black)),
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: ScreenUtil().setSp(13),color: Colors.black)),
                           ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,50,10,10),
                             child:  Text("Didn't recieve the code ?", textAlign: TextAlign.center,
-                                style: TextStyle( fontSize: 13,color: Colors.black)),
+                                style: TextStyle( fontSize: ScreenUtil().setSp(13),color: Colors.black)),
                           ),
                           _submitButton()
                         ]))),
