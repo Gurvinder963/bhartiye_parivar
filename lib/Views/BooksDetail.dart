@@ -9,6 +9,7 @@ import '../ApiResponses/VideoListResponse.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BooksDetailPage extends StatefulWidget {
   final Data content;
 
@@ -30,6 +31,9 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
+  bool isDescription=true;
+  bool isPhotos=false;
+  bool isOffers=false;
   Data mContent;
   BooksDetailPageState(Data content){
     mContent=content;
@@ -46,19 +50,40 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    List<String> images = [
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+          "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png"
+    ];
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text(AppStrings.Details),
+        title: Text(AppStrings.Details, style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
+        actions: <Widget>[
+
+
+
+          Icon(Icons.shopping_cart,color: Colors.white,size: 30,),
+
+          SizedBox(
+            width: 20,
+          ),
+
+        ],
       ),
 
-      body: Container(
+      body:  Stack(  children: [ SingleChildScrollView (
+    child:Container(
 
           child:Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.max,
 
               children: <Widget>[
@@ -85,7 +110,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                     child:
                     Text(
                       'Bhartiya Bhashaye',
-                      style: GoogleFonts.roboto(fontSize: 17, color: Colors.black,fontWeight: FontWeight.w500),
+                      style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(18), color: Colors.black,fontWeight: FontWeight.w500),
                     ),),
 
 
@@ -98,36 +123,37 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               children: <Widget>[
                 Text(
                   'Online Book',
-                  style: GoogleFonts.roboto(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),
+                  style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                 ),
                 Spacer(),
                 Text(
                   'Printed Book Price',
-                  style: GoogleFonts.roboto(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),
+                  style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                 ),
               ]))
 
                 ,
                 Container(
-                    margin:  EdgeInsets.fromLTRB(20,0,20,0),
+                    margin:  EdgeInsets.fromLTRB(20,10,20,0),
                     child:Row(
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
                             '',
-                            style: GoogleFonts.roboto(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Colors.black,fontWeight: FontWeight.w500),
                           ),
                           Spacer(),
                           Text(
-                            '100/-',
-                            style: GoogleFonts.roboto(fontSize: 14, color: Colors.black,fontWeight: FontWeight.w500),
+                            '₹ 100/-',
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
                           ),
+                          SizedBox(width: 30),
                         ]))
 
                 ,
                 Container(
-                    margin:  EdgeInsets.fromLTRB(20,20,10,0),
+                    margin:  EdgeInsets.fromLTRB(20,10,10,0),
                     child:Row(
 
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -141,66 +167,151 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                         ]))
                 ,
                 Container(
-
-                  padding:  EdgeInsets.fromLTRB(0,5,0,5),
+                    alignment: FractionalOffset.center,
+                  padding:  EdgeInsets.fromLTRB(0,8,0,8),
                     margin:  EdgeInsets.fromLTRB(0,20,0,0),
-                    color: Color(0xFF20d256),
+                    color: Color(0xFF494949),
                     child:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                        Spacer(),
+
                           Container(
+                             child: Expanded(
+                        flex: 1,
 
-                              child:Column(
+                                  child:
+    GestureDetector(
+    onTap: () {
+      setState(() {
+        isDescription = true;
+        isPhotos=false;
+        isOffers=false;
+
+      });
+
+    },child: Column(
 
                                   children: <Widget>[
-                                    Text("Description"),
-                                    Divider(
-                                      color: Colors.red,
-                                    ),
+                                    Text("Description",
+                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                                    isDescription?  Padding(
+                                     padding: EdgeInsets.fromLTRB(40,0,40,0),
+                                     child: Divider(
 
-                                  ])),Spacer()
+                                height: 1,
+
+                                thickness: 1,
+                                color: Colors.orange,
+                              )):Container(),
+
+                                  ]))))
                          , Container(
-                              child:Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text("Photos"),
-                                    Divider()
+                              child:Expanded(
+                                  flex: 1,
 
-                                  ])),Spacer()
+                         child: GestureDetector(
+                             onTap: () {
+                               setState(() {
+                                 isDescription = false;
+                                 isPhotos=true;
+                                 isOffers=false;
+
+                               });
+
+                             },child:Column(
+
+                                  children: <Widget>[
+                                    Text("Photos",
+                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color: isPhotos?Color(0xFFffa500).withOpacity(1):Colors.white,fontWeight: FontWeight.w500)),
+
+                                 isPhotos? Padding(
+                                      padding: EdgeInsets.fromLTRB(40,0,40,0),
+                                      child:  Divider(
+
+                                      height: 1,
+
+                                      thickness: 1,
+                                      color: Colors.orange,
+                                    )):Container(),
+                                  ]))))
                           ,Container(
-                              child:Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text("Offers"),
-                                    Divider()
+                              child:Expanded(
+                                  flex: 1,
+                                  child:GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isDescription = false;
+                                          isPhotos=false;
+                                          isOffers=true;
 
-                                  ])),
-                          Spacer()
+                                        });
+
+                                      },
+                          child:Column(
+
+                                  children: <Widget>[
+                                    Text("Offers",
+                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color: isOffers?Color(0xFFffa500).withOpacity(1):Colors.white,fontWeight: FontWeight.w500)),
+                                isOffers? Padding(
+                                      padding: EdgeInsets.fromLTRB(40,0,40,0),
+                                      child:   Divider(
+
+                                      height: 1,
+
+                                      thickness: 1,
+                                      color: Colors.orange,
+                                    )):Container(),
+
+                                  ])))),
+
                         ]))
                 ,
 
                 Padding(
-                  padding: EdgeInsets.fromLTRB(15,20,0,0),
+                  padding: EdgeInsets.fromLTRB(20,20,20,0),
                   child:
-                  Text(
-                    'Bhartiya Bhashaye',
-                    style: GoogleFonts.roboto(fontSize: 17, color: Colors.black,fontWeight: FontWeight.w500),
-                  ),),
-                Expanded(
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Text("ADD TO CART"),
-                    ),
-                  ),
-                ),
+                  isDescription?Text(
+                    'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.raphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without raphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without',
+                    style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
+                  ):isPhotos?    SizedBox(
+                      height: 200, child: Expanded(
+
+                      child: GridView.builder(
+    itemCount: images.length,
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    crossAxisSpacing: 4.0,
+    mainAxisSpacing: 4.0
+    ),
+    itemBuilder: (BuildContext context, int index){
+    return Image.network(images[index]);
+    },
+    ))):Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
+                      style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500)),),
+
 
               ])
 
-      ),
+      )),
+        Expanded(
+          child: Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              color: Color(AppColors.BaseColor),
+              padding: EdgeInsets.fromLTRB(0,8,0,8),
+              child: Align(
+                alignment: Alignment.center, // Align however you like (i.e .centerRight, centerLeft)
+                child:  Text("ADD TO CART",
+
+                  style: GoogleFonts.poppins( letterSpacing: 1.2,fontSize: ScreenUtil().setSp(16), color:  Color(0xFFffffff).withOpacity(0.8),fontWeight: FontWeight.w500),),
+              ),
+
+
+            ),
+          ),
+        ),]),
 
     );
   }
@@ -270,7 +381,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 colors: [Colors.red, Colors.red])),
         child: Text(
           'BUY NOW',
-          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.w500),
+          style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(16), color: Colors.white,fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -303,7 +414,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 colors: [Color(0xFF20d256), Color(0xFF20d256)])),
         child: Text(
           'READ NOW',
-          style: GoogleFonts.roboto(fontSize: 17, color: Colors.white,fontWeight: FontWeight.w500),
+          style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(16), color: Colors.white,fontWeight: FontWeight.w500),
         ),
       ),
     );

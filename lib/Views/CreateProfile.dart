@@ -26,7 +26,7 @@ import '../Utils/AppStrings.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/LoginResponse.dart';
 import '../Repository/MainRepository.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 
@@ -99,8 +99,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             decoration: InputDecoration(
               labelText:"Your Postal PIN code",
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.grey),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -139,8 +139,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             decoration: InputDecoration(
               labelText:"Age",
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.grey),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -180,8 +180,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             decoration: InputDecoration(
               labelText:"Full Name",
 
-              labelStyle: TextStyle(fontSize: 13,color: Colors.grey),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -334,7 +334,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                       child: Text(
                         'PROFILE',
                         style: GoogleFonts.poppins(
-                          fontSize: 27.0,
+                          fontSize: ScreenUtil().setSp(27),
                           letterSpacing: 1.5,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -360,14 +360,14 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,7,10,8),
+                            padding: EdgeInsets.fromLTRB(10,6,10,8),
                             child:  Text("Create Profile", textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Colors.black)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,7,10,0),
+                            padding: EdgeInsets.fromLTRB(10,6,10,0),
                             child:  Text("Please fill the details, all fields are \n required", textAlign: TextAlign.center,
-                                style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: 14,color: Colors.black)),
+                                style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                           ),
 
                           _entryFieldName("Name"),
@@ -376,7 +376,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                             alignment: Alignment.topLeft,
                             child:   Padding(
                                 padding: EdgeInsets.fromLTRB(10,8,10,0),
-                                child:Text("Profession", style: TextStyle(fontSize: 11,color: Colors.grey))),
+                                child:Text("Profession", style: TextStyle(fontSize: ScreenUtil().setSp(11),color: Colors.grey))),
 
                           ),
 
@@ -419,7 +419,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                                       "Please choose a langauage",
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 14,
+                                          fontSize: ScreenUtil().setSp(14),
                                           fontWeight: FontWeight.w500),
                                     ),
                                     onChanged: (String value) {
@@ -474,6 +474,10 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
           showAlertDialogValidation(context, "Please enter pincode!");
         }
         else {
+          setState(() {
+            _isInAsyncCall = true;
+          });
+
           getProfileResponse(myControllerName.text, myControllerAge.text,
               _chosenValue, myControllerPinCode.text,mMobile,mC_code)
               .then((res) async {
@@ -492,22 +496,18 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                   _prefs, (res.data.user.fullName).toString());
 
 
-              Navigator.of(context, rootNavigator: true)
-                  .push( // ensures fullscreen
-                  MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return HomePage();
-                      }
-                  ));
+              Timer(Duration(seconds: 1),
+                      ()=>Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder:
+                          (context) =>
+                          HomePage()
+                      ), ModalRoute.withName("/Home")
+                  )
+              );
+
             }
             else {
-              Navigator.of(context, rootNavigator: true)
-                  .push( // ensures fullscreen
-                  MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return CreateProfilePage();
-                      }
-                  ));
+
             }
           });
         }
@@ -546,7 +546,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                 colors: [ Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
           'Next',
-          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

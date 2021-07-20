@@ -405,22 +405,32 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                      Prefs.setUserLoginName(_prefs,(res.data.user.fullName).toString());
 
 
+                                    Timer(Duration(seconds: 1),
+                                            ()=>Navigator.pushAndRemoveUntil(context,
+                                            MaterialPageRoute(builder:
+                                                (context) =>
+                                                    HomePage()
+                                            ), ModalRoute.withName("/Home")
+                                        )
+                                    );
 
-                                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return HomePage();
-                                            }
-                                        ) );
+
+
 
                                   }
                                   else{
-                                     Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return CreateProfilePage(c_code:mC_code,mobile:mMobile);
-                                        }
-                                    ) );
+
+                                    Timer(Duration(seconds: 1),
+                                            ()=>Navigator.pushAndRemoveUntil(context,
+                                            MaterialPageRoute(builder:
+                                                (context) =>
+                                                    CreateProfilePage(c_code:mC_code,mobile:mMobile)
+                                            ), ModalRoute.withName("/Profile")
+                                        )
+                                    );
+
+
+
                                   }
 
 

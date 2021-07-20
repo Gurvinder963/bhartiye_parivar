@@ -219,7 +219,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
        String html = '''
           <iframe id="ytplayer" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&origin=http://example.com"
-  frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+  frameborder="0"></iframe>
      ''';
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,

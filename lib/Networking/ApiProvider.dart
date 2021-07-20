@@ -98,6 +98,12 @@ class ApiProvider {
         var responseJson = json.decode(response.body.toString());
         print(responseJson);
         return responseJson;
+
+      case 422:
+        var responseJson = json.decode(response.body.toString());
+        print(responseJson);
+        return responseJson;
+
       case 400:
         throw BadRequestException(response.body.toString());
       case 401:

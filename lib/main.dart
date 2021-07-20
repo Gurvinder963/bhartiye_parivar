@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       else {
-       Timer(Duration(seconds: 5),
+       Timer(Duration(seconds: 2),
                 ()=> Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(

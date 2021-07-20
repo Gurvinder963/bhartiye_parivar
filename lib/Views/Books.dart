@@ -6,8 +6,8 @@ import 'MyBooksTab.dart';
 import 'BooksByLanguage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
-
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BooksPage extends StatefulWidget {
   @override
@@ -41,7 +41,24 @@ class BooksPageState extends State<BooksPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    List<String> images = [
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+          "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
+      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png"
+    ];
     return Scaffold(
 
         body: Container(
@@ -93,7 +110,7 @@ class BooksPageState extends State<BooksPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
               child:Text("MY BOOKS"
-                ,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Color(0xFFffffff)),),
+                ,style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white),),
           ),
 
         ])),
@@ -130,7 +147,7 @@ class BooksPageState extends State<BooksPage> {
 
                               borderRadius: BorderRadius.all(Radius.circular(10))
                           ),
-                          child:Text("BY LANGUAGE",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Color(0xFFffffff)),),
+                          child:Text("BY LANGUAGE",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white),),
                         ),
 
                       ])),
@@ -141,11 +158,23 @@ class BooksPageState extends State<BooksPage> {
 
           ),
     Padding(
-    padding: EdgeInsets.fromLTRB(10,10,10,10),
+    padding: EdgeInsets.fromLTRB(15,10,10,10),
           child:
-          Text("All Books",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Color(0xFF000000)),)
+          Text("All Books",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.black,fontWeight: FontWeight.bold),)
     )
+,Expanded(
 
+              child: GridView.builder(
+                itemCount: images.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 4.0
+                ),
+                itemBuilder: (BuildContext context, int index){
+                  return Image.network(images[index]);
+                },
+              ))
         ])
 
 

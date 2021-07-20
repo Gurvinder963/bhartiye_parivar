@@ -38,7 +38,7 @@ class Data {
   String videoCategory;
   String videoSourceType;
   String videoImage;
-  String langCode;
+  String lang;
   bool status;
   String displayStatus;
   String createdAt;
@@ -53,7 +53,7 @@ class Data {
         this.videoCategory,
         this.videoSourceType,
         this.videoImage,
-        this.langCode,
+        this.lang,
         this.status,
         this.displayStatus,
         this.createdAt,
@@ -68,7 +68,7 @@ class Data {
     videoCategory = json['video_category'];
     videoSourceType = json['video_source_type'];
     videoImage = json['video_Image'];
-    langCode = json['lang_code'];
+    lang = json['lang'];
     status = json['status'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
@@ -85,7 +85,7 @@ class Data {
     data['video_category'] = this.videoCategory;
     data['video_source_type'] = this.videoSourceType;
     data['video_Image'] = this.videoImage;
-    data['lang_code'] = this.langCode;
+    data['lang'] = this.lang;
     data['status'] = this.status;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;

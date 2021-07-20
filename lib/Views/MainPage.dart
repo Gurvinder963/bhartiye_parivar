@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'VideoDetailNew.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'BooksDetail.dart';
-
+import 'package:intl/intl.dart';
 
 String videoCategory="spiritual";
 
@@ -85,7 +85,11 @@ class MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail){
+  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt){
+
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(DateTime.parse(createdAt));
+
     return    Container(
       margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
       child:Column(
@@ -136,7 +140,7 @@ class MainPageState extends State<MainPage> {
               padding: EdgeInsets.fromLTRB(10,3,10,3),
               margin: EdgeInsets.fromLTRB(0,0,0,0.7),
               color: Color(0xFF5a5a5a),
-              child: Text("English",  style: GoogleFonts.roboto(
+              child: Text(lang,  style: GoogleFonts.roboto(
             fontSize:16.0,
 
             color: Colors.white,
@@ -225,7 +229,7 @@ class MainPageState extends State<MainPage> {
             color: Color(0xFF5a5a5a)),
       ),
       SizedBox(width: 10),
-      Text("23-03-2021",   overflow: TextOverflow.ellipsis,
+      Text(formatted,   overflow: TextOverflow.ellipsis,
         maxLines: 1, style: GoogleFonts.roboto(
           fontSize:12.0,
           color: Color(0xFF5a5a5a),
@@ -265,7 +269,7 @@ class MainPageState extends State<MainPage> {
 
           },
           child:
-          _buildBoxVideo(context,mainData[index].id,mainData[index].title,mainData[index].videoImage)
+          _buildBoxVideo(context,mainData[index].id,mainData[index].title,mainData[index].videoImage,mainData[index].lang,mainData[index].createdAt)
 
           ,
 
