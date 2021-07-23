@@ -47,6 +47,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   @override
   Widget build(BuildContext context) {
 
+
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
           appBar: AppBar(
@@ -197,30 +198,54 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     );
   }
   Widget _buildBoxVideo(BuildContext context,Data content){
+    var publisher =content.publisher==null?"Bank Jall":content.publisher;
     final width = MediaQuery.of(context).size.width;
-    var videoIdd;
-    try {
 
-      videoIdd = YoutubePlayer.convertUrlToId(content.videoUrl);
-      print('this is '+videoIdd);
+    String html;
+    if(content.videoSourceType=='facebook'){
+      html = '''
+           <iframe width="100%" height="100%"
+            src="https://www.facebook.com/v2.3/plugins/video.php? 
+            allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe>
+     ''';
 
-    } on Exception catch (exception) {
 
-      // only executed if error is of type Exception
-      print('exception');
-
-    } catch (error) {
-
-      // executed for errors of all types other than Exception
-      print('catch error');
-      //  videoIdd="error";
 
     }
-       String html = '''
-          <iframe id="ytplayer" type="text/html" width="100%" height="100%"
-  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&origin=http://example.com"
-  frameborder="0"></iframe>
+
+    else if(content.videoSourceType=='dailymotion'){
+
+
+       html = '''
+           <iframe src='${content.videoUrl}?quality=240&info=0&logo=0' allowFullScreen></iframe>
+
      ''';
+
+
+    }
+
+   else {
+      var videoIdd;
+      try {
+        videoIdd = YoutubePlayer.convertUrlToId(content.videoUrl);
+        print('this is ' + videoIdd);
+      } on Exception catch (exception) {
+        // only executed if error is of type Exception
+        print('exception');
+      } catch (error) {
+        // executed for errors of all types other than Exception
+        print('catch error');
+        //  videoIdd="error";
+
+      }
+       html = '''
+          <iframe id="ytplayer" type="text/html" width="100%" height="100%"
+  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1"
+  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+     ''';
+
+    }
+
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
 
@@ -317,7 +342,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text("Banko ka mayajaal",   overflow: TextOverflow.ellipsis,
+                                                Text(publisher,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),

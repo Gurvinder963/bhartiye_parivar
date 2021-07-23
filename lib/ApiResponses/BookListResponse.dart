@@ -1,11 +1,11 @@
-class VideoListResponse {
+class BookListResponse {
   List<Data> data;
   Links links;
   Meta meta;
 
-  VideoListResponse({this.data, this.links, this.meta});
+  BookListResponse({this.data, this.links, this.meta});
 
-  VideoListResponse.fromJson(Map<String, dynamic> json) {
+  BookListResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       data = new List<Data>();
       json['data'].forEach((v) {
@@ -34,13 +34,14 @@ class VideoListResponse {
 class Data {
   int id;
   String title;
-  String videoUrl;
-  String videoCategory;
-  String videoSourceType;
-  String videoImage;
+  String description;
+  String thumbImage;
+  int cost;
+  int pageCount;
+  String url;
+  String images;
   String publisher;
-  String video_duration;
-  String lang;
+  String langCode;
   bool status;
   String displayStatus;
   String createdAt;
@@ -51,13 +52,14 @@ class Data {
   Data(
       {this.id,
         this.title,
-        this.videoUrl,
-        this.videoCategory,
-        this.videoSourceType,
-        this.videoImage,
+        this.description,
+        this.thumbImage,
+        this.cost,
+        this.pageCount,
+        this.url,
+        this.images,
         this.publisher,
-        this.video_duration,
-        this.lang,
+        this.langCode,
         this.status,
         this.displayStatus,
         this.createdAt,
@@ -68,13 +70,14 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    videoUrl = json['video_url'];
-    videoCategory = json['video_category'];
-    videoSourceType = json['video_source_type'];
-    videoImage = json['video_Image'];
+    description = json['description'];
+    thumbImage = json['thumb_image'];
+    cost = json['cost'];
+    pageCount = json['page_count'];
+    url = json['url'];
+    images = json['images'];
     publisher = json['publisher'];
-    video_duration = json['video_duration'];
-    lang = json['lang'];
+    langCode = json['lang_code'];
     status = json['status'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
@@ -87,13 +90,14 @@ class Data {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
-    data['video_url'] = this.videoUrl;
-    data['video_category'] = this.videoCategory;
-    data['video_source_type'] = this.videoSourceType;
-    data['video_Image'] = this.videoImage;
-    data['video_duration'] = this.video_duration;
+    data['description'] = this.description;
+    data['thumb_image'] = this.thumbImage;
+    data['cost'] = this.cost;
+    data['page_count'] = this.pageCount;
+    data['url'] = this.url;
+    data['images'] = this.images;
     data['publisher'] = this.publisher;
-    data['lang'] = this.lang;
+    data['lang_code'] = this.langCode;
     data['status'] = this.status;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;

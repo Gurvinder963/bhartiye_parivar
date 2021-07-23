@@ -452,11 +452,12 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           showAlertDialogValidation(context, "Please enter mobile no!");
         }
         else {
-
+        var s2 = myControllerContryCode.text.substring(1);
+        print(s2);
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:myControllerContryCode.text,mobile:myControllerPhone.text);
+                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text);
                 }
             ) );
 

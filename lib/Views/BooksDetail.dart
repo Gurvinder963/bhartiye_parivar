@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
-import '../ApiResponses/VideoListResponse.dart';
+import '../ApiResponses/BookListResponse.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -89,6 +89,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               children: <Widget>[
 
                 Container(
+
                   margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                   alignment: Alignment.center,
@@ -97,7 +98,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: new AssetImage("assets/thumbnail.png"),
+                      image: NetworkImage(mContent.thumbImage),
 
                       alignment: Alignment.center,
                     ),
@@ -109,7 +110,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                     padding: EdgeInsets.fromLTRB(15,20,0,0),
                     child:
                     Text(
-                      'Bhartiya Bhashaye',
+                      mContent.title,
                       style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(18), color: Colors.black,fontWeight: FontWeight.w500),
                     ),),
 
@@ -145,7 +146,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                           ),
                           Spacer(),
                           Text(
-                            '₹ 100/-',
+                            '₹' +mContent.cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
                           ),
                           SizedBox(width: 30),
@@ -268,10 +269,10 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 ,
 
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20,20,20,0),
+                  padding: EdgeInsets.fromLTRB(20,20,20,100),
                   child:
                   isDescription?Text(
-                    'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.raphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without raphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without',
+                    mContent.description,
                     style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                   ):isPhotos?    SizedBox(
                       height: 200, child: Expanded(
