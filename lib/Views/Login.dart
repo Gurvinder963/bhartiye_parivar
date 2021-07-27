@@ -105,13 +105,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerPhone,
             obscureText: false,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText:"Phone number",
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -146,13 +146,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerContryCode,
             obscureText: false,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
 
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -388,6 +388,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           isShowCode: false,
                           isDownIcon: true,
                           showEnglishName: true,
+
                         ),
                         initialSelection: '+91',
                         // or
@@ -417,9 +418,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                               children:  <TextSpan>[
                                 TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Terms', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
+                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
                                 TextSpan(text: ' and', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Privacy Policy', style: TextStyle( decoration: TextDecoration.underline,fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
+                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
                               ],
                             ),
                           ),
@@ -451,6 +452,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       if(myControllerPhone.text.isEmpty){
           showAlertDialogValidation(context, "Please enter mobile no!");
         }
+      else if(!checkedValue){
+        showAlertDialogValidation(context, "Please accept Terms and Privacy Policy!");
+      }
+
         else {
         var s2 = myControllerContryCode.text.substring(1);
         print(s2);
@@ -488,8 +493,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                 end: Alignment.centerRight,
                 colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
         child: Text(
-          'Next',
-          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.bold),
+          'NEXT',
+          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(18), color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );

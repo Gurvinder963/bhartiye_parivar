@@ -8,7 +8,12 @@ import 'Utils/constants.dart';
 import 'Views/Login.dart';
 import 'Utils/Prefer.dart';
 import 'Views/Home.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
+
+import 'localization/locale_constant.dart';
+import 'localization/localizations_delegate.dart';
+import 'package:flutter/services.dart';
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,17 +33,47 @@ Future<void> main() async {
   // FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
 
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(new MyApp());
+  });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget  {
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    var state = context.findAncestorStateOfType<_MyAppState>();
+    state.setLocale(newLocale);
+  }
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+
+}
+
+class _MyAppState extends State<MyApp> {
 
 
+  Locale _locale;
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  @override
+  void didChangeDependencies() async {
+    getLocale().then((locale) {
+      setState(() {
+        _locale = locale;
+      });
+    });
+    super.didChangeDependencies();
+  }
 
   DateTime currentBackPressTime;
+
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.white, //or set color with: Color(0xFF0000FF)
     ));
@@ -46,10 +81,33 @@ class MyApp extends StatelessWidget {
       title: Constants.AppName,
       theme: ThemeData(
           textTheme: GoogleFonts.montserratTextTheme(
-            Theme.of(context).textTheme,
+            Theme
+                .of(context)
+                .textTheme,
           )
       ),
+      locale: _locale,
       home: MyHomePage(),
+      supportedLocales: [
+        Locale('en', ''),
+        Locale('ar', ''),
+        Locale('hi', '')
+      ],
+      localizationsDelegates: [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale?.languageCode == locale?.languageCode &&
+              supportedLocale?.countryCode == locale?.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales?.first;
+      },
       debugShowCheckedModeBanner: false,
     );
   }

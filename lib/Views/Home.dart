@@ -30,6 +30,8 @@ import 'Quick.dart';
 import 'Chat.dart';
 import 'ContentLanguage.dart';
 import 'VideoApp.dart';
+import 'AppLanguage.dart';
+import '../localization/language/languages.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -118,6 +120,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
+    var mfontSize=20.0;
+    if(Languages.of(context).langCode=='en'){
+      mfontSize=24.0;
+    }
+    else if(Languages.of(context).langCode=='hi'){
+      mfontSize=28.0;
+    }
+
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
@@ -125,7 +136,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text('भारतीय परिवार', style: GoogleFonts.roboto(fontSize: 28,color: Color(0xFFFFFFFF))),
+          title: Text(Languages
+              .of(context)
+              .appName, style: GoogleFonts.roboto(fontSize: mfontSize,color: Color(0xFFFFFFFF))),
           actions: <Widget>[
 
 
@@ -313,7 +326,15 @@ class navigationDrawer extends StatelessWidget {
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/app_language.png'), width: 20,height: 20,),
               text: 'App Language',
-              onTap: () =>{}
+              onTap: () =>{
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return AppLanguagePage();
+                        }
+                    ) )
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(

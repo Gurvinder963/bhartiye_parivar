@@ -8,6 +8,7 @@ import '../Utils/AppColors.dart';
 import 'Home.dart';
 import '../Utils/AppStrings.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../localization/locale_constant.dart';
 class AppLanguagePage extends StatefulWidget {
   @override
   AppLanguagePageState createState() {
@@ -17,16 +18,16 @@ class AppLanguagePage extends StatefulWidget {
 
 class AppLanguagePageState extends State<AppLanguagePage> {
   List<Choice> choices =  <Choice>[
-    Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false ),
-    Choice(id:2,title: 'English', letter:'A',isSelected:false),
-    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false),
-    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false),
-    Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false),
-    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false),
-    Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false),
-    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false),
-    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false),
-    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false),
+    Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hi'),
+    Choice(id:2,title: 'English', letter:'A',isSelected:false,lnCode:'en'),
+    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'hi'),
+    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false,lnCode:'hi'),
+    Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'hi'),
+    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'hi'),
+    Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'hi'),
+    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'hi'),
+    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'hi'),
+    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'hi'),
 
 
   ];
@@ -238,12 +239,22 @@ class AppLanguagePageState extends State<AppLanguagePage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+        for(int i = 0; i < choices.length; i++){
+
+          if (choices[i].isSelected) {
+
+            changeLanguage(context, choices[i].lnCode);
+            break;
+          }
+
+        }
+
+      /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
                   return HomePage();
                 }
-            ) );
+            ) );*/
 
       },
 
@@ -274,11 +285,12 @@ class AppLanguagePageState extends State<AppLanguagePage> {
   }
 
 }class Choice {
-  Choice({this.id,this.title, this.letter,this.isSelected});
+  Choice({this.id,this.title, this.letter,this.isSelected,this.lnCode});
   int id;
   String title;
   String letter;
   bool isSelected;
+  String lnCode;
 
 }
 

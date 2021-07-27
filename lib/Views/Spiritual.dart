@@ -114,7 +114,7 @@ class SpiritualPageState extends State<SpiritualPage> {
 
      }
 
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
+      url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
    }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
@@ -165,7 +165,7 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                   ),
 
-                  Positioned.fill(
+          /*        Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomLeft,
                           child: Container(
@@ -181,7 +181,7 @@ class SpiritualPageState extends State<SpiritualPage> {
                               ),))
 
 
-                      )),
+                      )),*/
                   Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomRight,
@@ -234,7 +234,7 @@ class SpiritualPageState extends State<SpiritualPage> {
                                         style: GoogleFonts.roboto(
                                           fontSize:15.0,
 
-                                          color: Color(0xFF5a5a5a),
+                                          color: Color(0xFF000000),
                                           fontWeight: FontWeight.w500,
 
                                         ),),
@@ -273,12 +273,12 @@ class SpiritualPageState extends State<SpiritualPage> {
 
 
                                     ]))),
-                        /*  new Expanded(
+                         new Expanded(
               flex: 1,
 
               child:Icon(Icons.more_vert)
           )
-*/
+
 
                       ]))
 

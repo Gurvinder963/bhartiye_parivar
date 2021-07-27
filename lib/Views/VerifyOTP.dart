@@ -337,15 +337,20 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
-                            child:  Text("Verify "+mC_code+"-"+mMobile, textAlign: TextAlign.center,
+                            child:  Text("Verify +"+mC_code+"-"+mMobile, textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                           ),
 
-                          Padding(
+                          GestureDetector(
+                              onTap: () =>
+                              {
+                                Navigator.of(context, rootNavigator: true).pop(context)
+
+                              },child:Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
                             child:  Text("Not correct ?", textAlign: TextAlign.center,
                                 style:  GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(14),color: Colors.red)),
-                          ),
+                          )),
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,5,10,10),
@@ -491,7 +496,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
         ),
 
         child: Text(
-          'Give miss call to verify',
+          'Give Miss Call to Verify',
           style: TextStyle(fontSize: 18, color:Color(AppColors.BaseColor),fontWeight: FontWeight.bold),
         ),
       ),

@@ -47,13 +47,18 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   @override
   Widget build(BuildContext context) {
 
-
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
-          appBar: AppBar(
+          appBar: isPortrait?AppBar(
             backgroundColor: Color(AppColors.BaseColor),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () =>
+                  Navigator.of(context, rootNavigator: true).pop(context),
+            ),
             title: Text(AppStrings.PlayingVideo),
-          ),
+          ):null,
 
           body: Container(
               child:Column(
@@ -209,8 +214,6 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
             allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe>
      ''';
 
-
-
     }
 
     else if(content.videoSourceType=='dailymotion'){
@@ -332,7 +335,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                         style: GoogleFonts.roboto(
                                           fontSize:15.0,
 
-                                          color: Color(0xFF5a5a5a),
+                                          color: Color(0xFF000000),
                                           fontWeight: FontWeight.w500,
 
                                         ),),
