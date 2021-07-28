@@ -161,7 +161,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         ),
         drawer: navigationDrawer(),
         body: _children[selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: SizedBox(child:BottomNavigationBar(
 
 
 
@@ -169,6 +169,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
+
               icon: selectedIndex==0? Container(
 
         padding: EdgeInsets.all(2),
@@ -178,8 +179,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
             border: Border.all(width: 1, color: Colors.black)),
         child: Image(image: AssetImage('assets/home_selected.png'), width: 23,height: 23,),
       ): Image(image: AssetImage('assets/home_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==0? Text('Home',
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('Home',
+              title:  selectedIndex==0? Text(Languages
+                  .of(context)
+                  .Home,
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
+                  .of(context)
+                  .Home,
                 style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
             BottomNavigationBarItem(
@@ -192,8 +197,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     border: Border.all(width: 1, color: Colors.black)),
                 child: Image(image: AssetImage('assets/news_selected.png'), width: 23,height: 23,),
               ): Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==1? Text('News',
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('News',
+              title:  selectedIndex==1? Text(Languages
+                  .of(context)
+                  .News,
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
+                  .of(context)
+                  .News,
                 style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
 
@@ -208,8 +217,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     border: Border.all(width: 1, color: Colors.black)),
                 child: Image(image: AssetImage('assets/book_selected.png'), width: 23,height: 23,),
               ): Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==2? Text('Books',
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text('Books',
+              title:  selectedIndex==2? Text(Languages
+                  .of(context)
+                  .Books,
+                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
+                  .of(context)
+                  .Books,
                 style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
             ),
 
@@ -247,7 +260,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           currentIndex: selectedIndex,
 
           onTap: onItemTapped,
-        ),
+        )),
       );
     }
   }
@@ -259,16 +272,20 @@ class navigationDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          createDrawerHeader(),
+          createDrawerHeader(context),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
-              text: 'About us',
+              text: Languages
+                  .of(context)
+                  .aboutUs,
               onTap: () =>{}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/joinus.png'), width: 20,height: 20,),
-              text: 'Join us',
+              text: Languages
+                  .of(context)
+                  .joinUs,
               onTap: () =>{ /*Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
@@ -279,7 +296,9 @@ class navigationDrawer extends StatelessWidget {
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/donate.png'), width: 20,height: 20,),
-              text: 'Donate us',
+              text: Languages
+                  .of(context)
+                  .donateUs,
               onTap: () =>{
                 /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
@@ -293,7 +312,9 @@ class navigationDrawer extends StatelessWidget {
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
-              text: 'Contact us',
+              text: Languages
+                  .of(context)
+                  .contactUs,
               onTap: () =>{
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
@@ -316,7 +337,9 @@ class navigationDrawer extends StatelessWidget {
           )),
           createDrawerBodyItem(
             icon: Image(image: AssetImage('assets/profile.png'), width: 20,height: 20,),
-            text: 'Profile',
+            text: Languages
+                .of(context)
+                .profile,
             onTap: () =>{}
                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
@@ -325,8 +348,11 @@ class navigationDrawer extends StatelessWidget {
 
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/app_language.png'), width: 20,height: 20,),
-              text: 'App Language',
+              text: Languages
+                  .of(context)
+                  .appLanguage,
               onTap: () =>{
+              Navigator.of(context).pop(),
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -339,7 +365,9 @@ class navigationDrawer extends StatelessWidget {
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
-              text: 'Content Language',
+              text: Languages
+                  .of(context)
+                  .contentLanguage,
               onTap: () =>{
                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
@@ -354,25 +382,33 @@ class navigationDrawer extends StatelessWidget {
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/notifications.png'), width: 20,height: 20,),
-              text: 'Notifications',
+              text: Languages
+                  .of(context)
+                  .notifications,
               onTap: () =>{}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
-              text: 'Dark Mode',
+              text: Languages
+                  .of(context)
+                  .darkMode,
               onTap: () =>{}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/faq.png'), width: 20,height: 20,),
-              text: 'FAQ',
+              text: Languages
+                  .of(context)
+                  .faq,
               onTap: () =>{}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/share.png'), width: 20,height: 20,),
-              text: 'Share App',
+              text: Languages
+                  .of(context)
+                  .shareApp,
               onTap: () =>{}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
@@ -386,18 +422,14 @@ class navigationDrawer extends StatelessWidget {
                 color: Colors.orange,
               )),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/ic_terms.png'), width: 20,height: 20,),
-            text: 'Terms & Privacy Policy',
+              icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
+            text: Languages
+                .of(context)
+                .termsndPrivacy,
             onTap: () =>{}
                 //Navigator.pushReplacementNamed(context, pageRoutes.notification),
           ),
-          createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
-              text: 'Change App Name',
-              onTap: () =>{}
-            //Navigator.pushReplacementNamed(context, pageRoutes.notification),
-          ),
-
+        
         ],
       ),
     );
@@ -437,7 +469,7 @@ Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap})
     onTap: onTap,
   );
 }
-Widget createDrawerHeader() {
+Widget createDrawerHeader(BuildContext context) {
   return DrawerHeader(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
@@ -457,7 +489,9 @@ Widget createDrawerHeader() {
             ),
             SizedBox(height: 5),
            Text(
-                'भारतीय परिवार',
+             Languages
+                 .of(context)
+                 .appName,
                 style: TextStyle(
                   fontSize: 20.0,
 

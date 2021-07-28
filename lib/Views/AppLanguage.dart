@@ -17,21 +17,44 @@ class AppLanguagePage extends StatefulWidget {
 }
 
 class AppLanguagePageState extends State<AppLanguagePage> {
+  Locale _locale;
   List<Choice> choices =  <Choice>[
     Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hi'),
     Choice(id:2,title: 'English', letter:'A',isSelected:false,lnCode:'en'),
-    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'hi'),
-    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false,lnCode:'hi'),
-    Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'hi'),
-    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'hi'),
-    Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'hi'),
-    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'hi'),
-    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'hi'),
-    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'hi'),
+    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'pn'),
+    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false,lnCode:'gu'),
+    Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'ba'),
+    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'mr'),
+    Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'te'),
+    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
+    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
+    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
 
 
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    getLocale().then((locale) {
+      setState(() {
+        _locale = locale;
+
+        for(int i = 0; i < choices.length; i++){
+
+          if (choices[i].lnCode == locale.languageCode) {
+            // selectedClassId=mainData[i].id;
+            choices[i].isSelected=true;
+          } else {                               //the condition to change the highlighted item
+            choices[i].isSelected=false;
+          }
+
+        }
+      });
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -248,6 +271,11 @@ class AppLanguagePageState extends State<AppLanguagePage> {
           }
 
         }
+
+        Navigator.of(context, rootNavigator: true).pop(context);
+
+
+
 
       /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(

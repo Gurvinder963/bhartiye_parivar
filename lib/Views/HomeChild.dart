@@ -17,7 +17,7 @@ import 'History.dart';
 import 'Instagram.dart';
 import '../Utils/AppColors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../localization/language/languages.dart';
 
 class HomeChildPage extends StatefulWidget {
   @override
@@ -48,7 +48,7 @@ class HomeChildPageState extends State<HomeChildPage> {
           length: 13,
           child: Scaffold(
             appBar: AppBar(
-              shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
+             // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
               leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
               toolbarHeight: 30,
@@ -56,22 +56,48 @@ class HomeChildPageState extends State<HomeChildPage> {
                 isScrollable: true,
                 unselectedLabelColor: Color(0xFF5a5a5a),
                 labelColor: Colors.white,
-                indicatorWeight: 6,
+                indicatorWeight: 3,
                 indicatorColor: Colors.white,
                 tabs: [
-                  Tab(child: Text('Main' ,style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Trending',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Health',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Series',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Spiritual',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('History',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Culture',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Conspiracy',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Twitter',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Facebook',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Instagram',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Telegram',style:GoogleFonts.roboto(fontSize: 17),)),
-                  Tab(child: Text('Whatsapp',style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .main,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Trending,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Health,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Series,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Spiritual,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .History,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Culture,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Conspiracy,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Twitter,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Facebook,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Instagram,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Telegram,style:GoogleFonts.roboto(fontSize: 17),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Whatsapp,style:GoogleFonts.roboto(fontSize: 17),)),
                 ],
               ),
             ),
