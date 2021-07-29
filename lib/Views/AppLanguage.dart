@@ -107,14 +107,16 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 20),
-                    new Image(
-                      image: new AssetImage("assets/splash.png"),
-                      width: 140,
-                      height:  140,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
+                    SizedBox(
+                        height: (MediaQuery.of(context).size.height)*0.18,
+                        child:new Image(
+                          image: new AssetImage("assets/splash.png"),
+                          width: 140,
+                          height:  140,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        )),
                     Padding(
                       padding: EdgeInsets.fromLTRB(30,15,30,0),
 

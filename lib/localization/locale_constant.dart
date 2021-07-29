@@ -7,6 +7,7 @@ import '../main.dart';
 
 
 const String prefSelectedLanguageCode = "SelectedLanguageCode";
+const String prefSelectedContentLanguageCode = "SelectedContentLanguageCode";
 
 Future<Locale> setLocale(String languageCode) async {
   SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -30,3 +31,16 @@ void changeLanguage(BuildContext context, String selectedLanguageCode) async {
   var _locale = await setLocale(selectedLanguageCode);
   MyApp.setLocale(context, _locale);
 }
+
+Future<String> setLocaleContentLang(String languageCode) async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  await _prefs.setString(prefSelectedContentLanguageCode, languageCode);
+  return languageCode;
+}
+
+Future<String> getLocaleContentLang() async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  String languageCode = _prefs.getString(prefSelectedContentLanguageCode);
+  return languageCode;
+}
+

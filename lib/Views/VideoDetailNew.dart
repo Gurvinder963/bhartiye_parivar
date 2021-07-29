@@ -58,7 +58,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         setState(() {
           isLoading = true;
         });}
-      getVideosList(user_Token,videoCategory).then((value) => {
+      getVideosList(user_Token,videoCategory,mContent.id.toString()).then((value) => {
 
         setState(() {
           isLoading = false;
@@ -74,9 +74,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   }
 
-  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory) async {
+  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory,String videoId) async {
 
-    var body ={'video_category':videoCategory};
+    var body ={'video_category':videoCategory,"video_id":videoId};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 

@@ -166,8 +166,8 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
 
                         ]))
-                ,
-                Container(
+              //  ,
+           /*     Container(
                     alignment: FractionalOffset.center,
                   padding:  EdgeInsets.fromLTRB(0,8,0,8),
                     margin:  EdgeInsets.fromLTRB(0,20,0,0),
@@ -265,7 +265,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                                   ])))),
 
-                        ]))
+                        ]))*/
                 ,
 
                 Padding(

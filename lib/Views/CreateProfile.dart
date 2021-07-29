@@ -94,13 +94,13 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
             controller: myControllerPinCode,
             obscureText: false,
-            style: TextStyle(color: Colors.black),
-            keyboardType: TextInputType.number,
+            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
+
             decoration: InputDecoration(
               labelText:"Your Postal PIN code",
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey,fontWeight: FontWeight.w700),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black,fontWeight: FontWeight.w700),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -134,13 +134,13 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
             controller: myControllerAge,
             obscureText: false,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText:"Age",
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey,fontWeight: FontWeight.w700),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black,fontWeight: FontWeight.w700),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -175,13 +175,13 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
             controller: myControllerName,
             obscureText: false,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
 
             decoration: InputDecoration(
               labelText:"Full Name",
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.grey,fontWeight: FontWeight.w700),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(13),color: Colors.black,fontWeight: FontWeight.w700),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -320,14 +320,16 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 20),
-                    new Image(
+                    SizedBox(
+                      height: (MediaQuery.of(context).size.height)*0.18,
+                    child:new Image(
                       image: new AssetImage("assets/splash.png"),
                       width: 140,
                       height:  140,
                       color: null,
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.center,
-                    ),
+                    )),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
 
@@ -375,8 +377,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                           Align(
                             alignment: Alignment.topLeft,
                             child:   Padding(
-                                padding: EdgeInsets.fromLTRB(10,8,10,0),
-                                child:Text("Profession", style: TextStyle(fontSize: ScreenUtil().setSp(11),color: Colors.grey))),
+                                padding: EdgeInsets.fromLTRB(10,12,10,0),
+                                child:Text("Profession", style: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700))),
 
                           ),
 
@@ -384,6 +386,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                             padding: EdgeInsets.fromLTRB(10,0,10,0),
                             child:
                             Container(
+                              height: 35,
                               decoration: BoxDecoration(
                                 border: Border(
                                   bottom: BorderSide(width: 1.0, color: Colors.orange),
@@ -391,6 +394,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                               ),
 
                             child:DropdownButtonHideUnderline(
+
                                 child: Theme(
                                   data: new ThemeData(
                                     primaryColor: Colors.orange,

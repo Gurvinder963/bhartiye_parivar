@@ -8,6 +8,7 @@ import '../Networking/CustomException.dart';
 
 class ApiProvider {
   final String _baseUrl = "http://bankjaal.in/";
+  final String _SMSbaseUrl = "smppsmshub.in";
   final String _baseUrlWithoutHTTP = "bankjaal.in";
 
 
@@ -27,6 +28,26 @@ class ApiProvider {
     }
     return responseJson;
   }
+
+  Future<dynamic> getSMS(String url,var queryParameters) async {
+    Map<String, String> headerParams = {
+      "Content-Type": 'application/json'
+    };
+    var uri =
+    Uri.https(_SMSbaseUrl, url, queryParameters);
+
+    var responseJson;
+    try {
+      final response = await http.get(uri,headers: headerParams);
+      responseJson = _response(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
+
+
   Future<dynamic> getWithToken(String url,var queryParameters,token) async {
     print("my url"+url);
     print("queryParameters"+queryParameters.toString());
@@ -40,7 +61,7 @@ class ApiProvider {
     };
     var uri =
     Uri.http(_baseUrlWithoutHTTP, url, queryParameters);
-
+    print("my_uri"+uri.toString());
     var responseJson;
     try {
       final response = await http.get(uri,headers: headerParams);

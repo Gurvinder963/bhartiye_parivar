@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'BooksDetail.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../localization/locale_constant.dart';
 String videoCategory="health";
 
 class HealthPage extends StatefulWidget {
@@ -37,15 +38,26 @@ class HealthPageState extends State<HealthPage> {
         setState(() {
           isLoading = true;
         });}
-      getVideosList(user_Token,videoCategory).then((value) => {
 
-        setState(() {
-          isLoading = false;
-          mainData.addAll(value.data);
+      getLocaleContentLang().then((locale) {
 
-        })
+       var array=locale.split(",");
+
+        getVideosList(user_Token,videoCategory,array).then((value) => {
+
+          setState(() {
+            isLoading = false;
+            mainData.addAll(value.data);
+
+          })
+
+        });
+
 
       });
+
+
+
 
 
       return (prefs.getString('token'));
@@ -53,9 +65,9 @@ class HealthPageState extends State<HealthPage> {
 
   }
 
-  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory) async {
-
-    var body ={'video_category':videoCategory};
+  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, List<String> array) async {
+  print(array.toString());
+    var body ={'video_category':videoCategory,'lang_code':array.toString()};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 

@@ -37,14 +37,15 @@ class VerifyOTPPage extends StatefulWidget {
 
   final String mobile;
   final String c_code;
+  final String otpCode;
 
-  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile}) : super(key: key);
+  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode}) : super(key: key);
 
 
 
 
   @override
-  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code);
+  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode);
 }
 
 class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserver{
@@ -55,10 +56,11 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool checkedValue=false;
   bool _isInAsyncCall = false;
   bool _isHidden = true;
-  VerifyOTPPageState(String mobile,String c_code){
+  String mOTPCode;
+  VerifyOTPPageState(String mobile,String c_code,String otpCode){
     mMobile=mobile;
     mC_code=c_code;
-
+    mOTPCode=otpCode;
 
   }
 
@@ -294,14 +296,16 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 20),
-                    new Image(
-                      image: new AssetImage("assets/splash.png"),
-                      width: 140,
-                      height:  140,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
+                    SizedBox(
+                        height: (MediaQuery.of(context).size.height)*0.18,
+                        child:new Image(
+                          image: new AssetImage("assets/splash.png"),
+                          width: 140,
+                          height:  140,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        )),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
 
@@ -388,6 +392,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
 
+                                if(pin==mOTPCode){
 
                                 setState(() {
                                    _isInAsyncCall = true;
@@ -445,7 +450,13 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
 
-                              },
+                              }
+                              else{
+                                  showAlertDialogValidation(context,"OTP is not valid!");
+
+                                }
+
+                                },
                             ),
                           ),
 

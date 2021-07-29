@@ -5,8 +5,9 @@ import 'package:flutter/services.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../Utils/AppColors.dart';
-
-
+import 'package:google_fonts/google_fonts.dart';
+import '../localization/locale_constant.dart';
+import '../localization/localizations_delegate.dart';
 class ContentLanguagePage extends StatefulWidget {
   @override
   ContentLanguagePageState createState() {
@@ -15,7 +16,36 @@ class ContentLanguagePage extends StatefulWidget {
 }
 
 class ContentLanguagePageState extends State<ContentLanguagePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    getLocaleContentLang().then((locale) {
+      setState(() {
+
+        var mainArray = locale.split(',');
+
+        for(int z=0;z<mainArray.length;z++){
+
+          var item=mainArray[z];
+          print("my_item"+item);
+
+        for(int i = 0; i < choices.length; i++){
+
+          if(item==choices[i].lnCode){
+            choices[i].isSelected=true;
+            break;
+
+          }
+
+
+        }
+        }
+      });
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +71,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
 
             AppStrings.chossethelangmsg,
             textAlign: TextAlign.center,
-          style: TextStyle(
+          style: GoogleFonts.roboto(
               color: Colors.black,
               fontSize: 15,
               fontWeight: FontWeight.w500),
@@ -101,7 +131,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
                                           Padding(
                                             padding: EdgeInsets.fromLTRB(5,5,0,0),
                                             child:
-                                            Text(choice.letter, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 38,color: color2)),
+                                            Text(choice.letter, style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 40,color: color2)),
                                           )
 
                                       ),
@@ -128,9 +158,29 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
 
     );
   }
+  void changeLanguage(BuildContext context, String selectedLanguageCode) async {
+    var _locale = await setLocaleContentLang(selectedLanguageCode);
+
+  }
   Widget _submitButton() {
     return InkWell(
       onTap: () {
+        StringBuffer sb = new StringBuffer();
+
+        for(int i = 0; i < choices.length; i++){
+
+          if (choices[i].isSelected) {
+            if(i!=0){
+              sb.write(",");
+            }
+            sb.write(choices[i].lnCode);
+
+          }
+
+        }
+        print(sb.toString());
+        changeLanguage(context,sb.toString());
+        Navigator.of(context, rootNavigator: true).pop(context);
       /*  Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder:
                 (context) =>
@@ -168,25 +218,25 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
   }
 
 }class Choice {
-   Choice({this.id,this.title, this.letter,this.isSelected});
+   Choice({this.id,this.title, this.letter,this.isSelected,this.lnCode});
    int id;
    String title;
    String letter;
    bool isSelected;
-
+   String lnCode;
 }
 
  List<Choice> choices =  <Choice>[
-   Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false ),
-   Choice(id:2,title: 'English', letter:'A',isSelected:false),
-   Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false),
-   Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false),
-   Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false),
-   Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false),
-   Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false),
-   Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false),
-   Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false),
-   Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false),
+   Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hi'),
+   Choice(id:2,title: 'English', letter:'A',isSelected:false,lnCode:'en'),
+   Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'pn'),
+   Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false,lnCode:'gu'),
+   Choice(id:5,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'ba'),
+   Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'mr'),
+   Choice(id:7,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'te'),
+   Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
+   Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
+   Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
 
 
 ];

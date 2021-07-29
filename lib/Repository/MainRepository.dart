@@ -3,9 +3,16 @@ import 'dart:async';
 import '../ApiResponses/LoginResponse.dart';
 import '../ApiResponses/VideoListResponse.dart';
 import '../ApiResponses/BookListResponse.dart';
+import '../ApiResponses/OTPResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
+
+  Future<OTPResponse> fetchOTPData(var body) async {
+    final response = await _provider.getSMS("api/mt/SendSMS",body);
+    return OTPResponse.fromJson(response);
+  }
+
 
   Future<LoginResponse> fetchLoginData(String body) async {
     final response = await _provider.post("public/api/v1/auth/login",body);

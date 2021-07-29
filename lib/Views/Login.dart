@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:country_list_pick/country_list_pick.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
+import '../Repository/MainRepository.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
 
@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 
 import '../Utils/AppColors.dart';
-
+import '../ApiResponses/OTPResponse.dart';
 
 
 
@@ -294,14 +294,16 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                new Image(
-                  image: new AssetImage("assets/splash.png"),
-                  width: 140,
-                  height:  140,
-                  color: null,
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.center,
-                ),
+                SizedBox(
+                    height: (MediaQuery.of(context).size.height)*0.18,
+                    child:new Image(
+                      image: new AssetImage("assets/splash.png"),
+                      width: 140,
+                      height:  140,
+                      color: null,
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.center,
+                    )),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
 
@@ -444,6 +446,22 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       ),
     ));
   }
+  Future<OTPResponse> getOTPData(String mobileNo,String msg) async {
+
+    var body ={'user':'ravi10','password':'59034636','senderid':'NOTIFI','channel':'Trans','DCS':'0','flashsms':'0','number':mobileNo,'text':msg,'route':'15'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchOTPData(body);
+
+  }
+
+  int nextIntOfDigits(int digitCount) {
+    Random rnd = new Random();
+    assert(1 <= digitCount && digitCount <= 9);
+    int min = digitCount == 1 ? 0 : pow(10, digitCount - 1);
+    int max = pow(10, digitCount);
+    return min + rnd.nextInt(max - min);
+  }
+
 
   Widget _submitButton() {
     return InkWell(
@@ -459,12 +477,33 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         else {
         var s2 = myControllerContryCode.text.substring(1);
         print(s2);
-        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+
+
+        String mobile=s2+myControllerPhone.text;
+        var pin=nextIntOfDigits(4);
+
+        print(pin);
+
+        String msg=pin.toString()+" is your one-time password (OTP) for login into App.";
+        setState(() {
+          _isInAsyncCall = true;
+        });
+
+        getOTPData(mobile,msg).then((value) => {
+        setState(() {
+        _isInAsyncCall = false;
+        }),
+
+          Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text);
+                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString());
                 }
-            ) );
+            ) )
+
+
+        });
+
 
 
 
