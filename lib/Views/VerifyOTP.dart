@@ -38,17 +38,19 @@ class VerifyOTPPage extends StatefulWidget {
   final String mobile;
   final String c_code;
   final String otpCode;
+  final DateTime otpSendDate;
 
-  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode}) : super(key: key);
+  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode,@required this.otpSendDate}) : super(key: key);
 
 
 
 
   @override
-  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode);
+  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode,otpSendDate);
 }
 
 class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserver{
+  DateTime mOTPSendDate;
   int MyContentId;
   String mMobile;
   String mC_code;
@@ -57,11 +59,11 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool _isInAsyncCall = false;
   bool _isHidden = true;
   String mOTPCode;
-  VerifyOTPPageState(String mobile,String c_code,String otpCode){
+  VerifyOTPPageState(String mobile,String c_code,String otpCode,DateTime otpSendDate){
     mMobile=mobile;
     mC_code=c_code;
     mOTPCode=otpCode;
-
+    mOTPSendDate=otpSendDate;
   }
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
@@ -391,8 +393,18 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                               onCompleted: (pin) {
 
 
+                                var date1 = DateTime.now();
 
-                                if(pin==mOTPCode){
+                                final difference = date1.difference(mOTPSendDate);
+
+                                if(difference.inMinutes>5){
+                                  showAlertDialogValidation(context,"OTP has been expired!");
+                                }
+                                else if(pin!=mOTPCode){
+                                  showAlertDialogValidation(context,"OTP not valid!");
+                                }
+
+                                else {
 
                                 setState(() {
                                    _isInAsyncCall = true;
@@ -451,10 +463,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
                               }
-                              else{
-                                  showAlertDialogValidation(context,"OTP is not valid!");
 
-                                }
 
                                 },
                             ),

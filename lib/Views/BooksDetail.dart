@@ -5,13 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
-import '../ApiResponses/BookListResponse.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../ApiResponses/BookData.dart';
 class BooksDetailPage extends StatefulWidget {
-  final Data content;
+  final BookData content;
 
 
   BooksDetailPage({Key key,@required this.content}) : super(key: key);
@@ -34,8 +35,8 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   bool isDescription=true;
   bool isPhotos=false;
   bool isOffers=false;
-  Data mContent;
-  BooksDetailPageState(Data content){
+  BookData mContent;
+  BooksDetailPageState(BookData content){
     mContent=content;
   }
 
@@ -64,6 +65,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     return  Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(AppStrings.Details, style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
         actions: <Widget>[
@@ -166,8 +168,8 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
 
                         ]))
-              //  ,
-           /*     Container(
+             ,
+              Container(
                     alignment: FractionalOffset.center,
                   padding:  EdgeInsets.fromLTRB(0,8,0,8),
                     margin:  EdgeInsets.fromLTRB(0,20,0,0),
@@ -265,7 +267,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                                   ])))),
 
-                        ]))*/
+                        ]))
                 ,
 
                 Padding(
@@ -294,8 +296,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               ])
 
       )),
-        Expanded(
-          child: Align(
+       Align(
             alignment: FractionalOffset.bottomCenter,
             child: Container(
               height: 50,
@@ -312,7 +313,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
             ),
           ),
-        ),]),
+        ]),
 
     );
   }

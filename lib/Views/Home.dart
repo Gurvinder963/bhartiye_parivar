@@ -135,6 +135,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
+          toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
           title: Text(Languages
               .of(context)

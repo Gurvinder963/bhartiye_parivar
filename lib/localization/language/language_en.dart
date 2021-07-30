@@ -27,7 +27,7 @@ class LanguageEn extends Languages {
 
   @override
   // TODO: implement contactUs
-  String get contactUs => 'Donate us';
+  String get contactUs => 'Contact us';
 
   @override
   // TODO: implement contentLanguage

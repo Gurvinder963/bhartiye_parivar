@@ -4,6 +4,7 @@ import '../ApiResponses/LoginResponse.dart';
 import '../ApiResponses/VideoListResponse.dart';
 import '../ApiResponses/BookListResponse.dart';
 import '../ApiResponses/OTPResponse.dart';
+import '../ApiResponses/BookGroupListResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -31,6 +32,9 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/books",body,token);
     return BookListResponse.fromJson(response);
   }
-
+  Future<BookGroupListResponse> fetchBooksGroupData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/books",body,token);
+    return BookGroupListResponse.fromJson(response);
+  }
 
 }

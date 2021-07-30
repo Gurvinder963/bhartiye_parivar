@@ -1,17 +1,16 @@
 import '../ApiResponses/BookData.dart';
-
-class BookListResponse {
-  List<BookData> data;
+class BookGroupListResponse {
+  List<Data> data;
   Links links;
   Meta meta;
 
-  BookListResponse({this.data, this.links, this.meta});
+  BookGroupListResponse({this.data, this.links, this.meta});
 
-  BookListResponse.fromJson(Map<String, dynamic> json) {
+  BookGroupListResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<BookData>();
+      data = new List<Data>();
       json['data'].forEach((v) {
-        data.add(new BookData.fromJson(v));
+        data.add(new Data.fromJson(v));
       });
     }
     links = json['links'] != null ? new Links.fromJson(json['links']) : null;
@@ -33,6 +32,31 @@ class BookListResponse {
   }
 }
 
+class Data {
+  String langName;
+  List<BookData> books;
+
+  Data({this.langName, this.books});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    langName = json['lang_name'];
+    if (json['books'] != null) {
+      books = new List<BookData>();
+      json['books'].forEach((v) {
+        books.add(new BookData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['lang_name'] = this.langName;
+    if (this.books != null) {
+      data['books'] = this.books.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
 
 class Links {

@@ -41,9 +41,11 @@ class HealthPageState extends State<HealthPage> {
 
       getLocaleContentLang().then((locale) {
 
-       var array=locale.split(",");
+        if(locale==null){
+          locale="";
+        }
 
-        getVideosList(user_Token,videoCategory,array).then((value) => {
+        getVideosList(user_Token,videoCategory,locale).then((value) => {
 
           setState(() {
             isLoading = false;
@@ -65,9 +67,9 @@ class HealthPageState extends State<HealthPage> {
 
   }
 
-  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, List<String> array) async {
-  print(array.toString());
-    var body ={'video_category':videoCategory,'lang_code':array.toString()};
+  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
+  print(locale.toString());
+    var body ={'video_category':videoCategory,'lang_code':locale};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 
@@ -288,7 +290,23 @@ class HealthPageState extends State<HealthPage> {
                           new Expanded(
               flex: 1,
 
-              child:Icon(Icons.more_vert)
+              child:PopupMenuButton(
+                  icon: Icon(Icons.more_vert),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text("Save to watch Later"),
+                      value: 1,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Save to playlist"),
+                      value: 2,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Share"),
+                      value: 2,
+                    )
+                  ]
+              )
           )
 
 

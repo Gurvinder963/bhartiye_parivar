@@ -43,10 +43,23 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   VideoDetailNewPageState(Data content){
     mContent=content;
   }
+  @override
+  dispose(){
+    SystemChrome.setPreferredOrientations([
 
+      DeviceOrientation.portraitUp,
+
+    ]);
+    super.dispose();
+  }
   @override
   void initState() {
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.initState();
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
@@ -252,10 +265,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     ]))
 ,
 
-                    Expanded(
-                      child: _buildList(),
 
-                    )
+                    _buildList(),
+
+
 
                   ]))])
 
@@ -264,6 +277,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         );
   }
   Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
+
+
+
 
     String url="";
     if(videoSourceType=='facebook'){
@@ -582,6 +598,11 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final width = MediaQuery.of(context).size.width;
 
     String html;
+
+
+    //<iframe src="http://instagram.com/p/a1wDZKopa2/embed" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+
+
     if(content.videoSourceType=='facebook'){
       html = '''
            <iframe width="100%" height="100%"

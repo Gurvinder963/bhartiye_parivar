@@ -294,8 +294,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                SizedBox(
-                    height: (MediaQuery.of(context).size.height)*0.18,
+              SizedBox(
+                    height: (MediaQuery.of(context).size.height)*0.17,
                     child:new Image(
                       image: new AssetImage("assets/splash.png"),
                       width: 140,
@@ -305,7 +305,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       alignment: Alignment.center,
                     )),
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(5.0),
 
                   child: Text(
                     'Login',
@@ -319,7 +319,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                   ),
                 ),
                 SizedBox(
-                  height: (MediaQuery.of(context).size.height)*0.62,
+                  height: (MediaQuery.of(context).size.height)*0.67,
                child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -372,7 +372,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                                 width: 40,
                                 height: 40,
                               ),
-                              SizedBox(width: 30),
+                              SizedBox(width: 36),
                               Text(countryCode.name, style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                              Expanded(child:
                               Align(
@@ -484,12 +484,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
         print(pin);
 
-        String msg=pin.toString()+" is your one-time password (OTP) for login into App.";
+        String msg=pin.toString()+" is your one-time password (OTP) for login into App. Valid for 5 mintues.";
         setState(() {
           _isInAsyncCall = true;
         });
-
+         var date1 = DateTime.now();
         getOTPData(mobile,msg).then((value) => {
+
         setState(() {
         _isInAsyncCall = false;
         }),
@@ -497,7 +498,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString());
+                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString(),otpSendDate:date1);
                 }
             ) )
 

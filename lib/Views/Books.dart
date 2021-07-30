@@ -11,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Repository/MainRepository.dart';
 import 'BooksDetail.dart';
 import'../ApiResponses/BookListResponse.dart';
+import '../Views/BookGroupList.dart';
+
 class BooksPage extends StatefulWidget {
   @override
   BooksPageState createState() {
@@ -128,24 +130,7 @@ class BooksPageState extends State<BooksPage> {
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
-    List<String> images = [
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-          "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png"
-    ];
+
     return Scaffold(
 
         body: Container(
@@ -210,7 +195,7 @@ class BooksPageState extends State<BooksPage> {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                       MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return BooksByLanguagePage();
+                            return BookGroupListPage();
                           }
                       ) );
                 },

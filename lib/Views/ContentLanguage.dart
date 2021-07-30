@@ -53,6 +53,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
           title: Text('Content Language'),
         ),
