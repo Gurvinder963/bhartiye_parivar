@@ -299,7 +299,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                   children: [
                     SizedBox(height: 20),
                     SizedBox(
-                        height: (MediaQuery.of(context).size.height)*0.18,
+                        height: (MediaQuery.of(context).size.height)*0.17,
                         child:new Image(
                           image: new AssetImage("assets/splash.png"),
                           width: 140,
@@ -309,7 +309,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           alignment: Alignment.center,
                         )),
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(5.0),
 
                       child: Text(
                         'Verify',
@@ -323,7 +323,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                       ),
                     ),
                     SizedBox(
-                      height: (MediaQuery.of(context).size.height)*0.62,
+                      height: (MediaQuery.of(context).size.height)*0.67,
                         width: (MediaQuery.of(context).size.width)-10,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -478,7 +478,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: ScreenUtil().setSp(13),color: Colors.black)),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,50,10,10),
+                            padding: EdgeInsets.fromLTRB(10,40,10,10),
                             child:  Text("Didn't recieve the code ?", textAlign: TextAlign.center,
                                 style: TextStyle( fontSize: ScreenUtil().setSp(13),color: Colors.black)),
                           ),

@@ -97,7 +97,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    var publisher=mContent.publisher==null?"My Channel":mContent.publisher;
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
@@ -174,7 +174,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: <Widget>[
-                                                      Text(mContent.publisher,   overflow: TextOverflow.ellipsis,
+                                                      Text(publisher,   overflow: TextOverflow.ellipsis,
                                                         maxLines: 1, style: GoogleFonts.roboto(
                                                           fontSize:12.0,
                                                           color: Color(0xFF5a5a5a),
@@ -215,13 +215,31 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                             ])),
 
                     Container(
-                        margin:  EdgeInsets.fromLTRB(20,10,10,0),
+                        margin:  EdgeInsets.fromLTRB(20,15,10,0),
                         child:Row(
 
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                              Image(
+                                image: new AssetImage("assets/ic_like.png"),
+                                width: 23,
+                                height:  23,
+                                color: null,
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                              ),
+                              SizedBox(width: 10,),
+                              Image(
+                                image: new AssetImage("assets/ic_dislike.png"),
+                                width: 28,
+                                height:  28,
+                                color: null,
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                              ),
+                              SizedBox(width: 10,),
                               Icon(Icons.report,size: 28,),
-                              SizedBox(width: 20,),
+                              SizedBox(width: 10,),
                               Image(
                                 image: new AssetImage("assets/share.png"),
                                 width: 23,
@@ -230,7 +248,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
-                              SizedBox(width: 20,),
+                              SizedBox(width: 10,),
                               Image(
                                 image: new AssetImage("assets/whatsapp.png"),
                                 width: 23,
@@ -239,12 +257,24 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
-                              SizedBox(width: 20,),
+                              SizedBox(width: 10,),
                               Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
+                              Expanded( child:Align(
+                                alignment: Alignment.centerRight,
+                                child:Text("SUBSCRIBE \nNOTIFICATIONS",
+                                textAlign: TextAlign.center,
 
+
+                                style: GoogleFonts.roboto(
+                                  fontSize:13.0,
+
+                                  color: Color(AppColors.BaseColor),
+                                  fontWeight: FontWeight.w500,
+
+                                ),))),
                             ]))
                     ,  Padding(
-                        padding: EdgeInsets.fromLTRB(20,7,20,7),
+                        padding: EdgeInsets.fromLTRB(10,7,10,3),
                         child:
                         Divider(
                           color: Colors.grey,
@@ -264,7 +294,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     ]))
 ,
-
+               Padding(
+          padding: EdgeInsets.fromLTRB(10,3,10,7),
+        child:
+        Divider(
+          color: Colors.grey,
+        )),
 
                     _buildList(),
 
@@ -537,7 +572,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       child: Container(
         width: 140,
         height: 45,
-        margin: EdgeInsets.fromLTRB(0,0,0,10),
+        margin: EdgeInsets.fromLTRB(0,0,0,0),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -570,7 +605,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       child: Container(
         width: 140,
         height: 45,
-        margin: EdgeInsets.fromLTRB(0,0,0,10),
+        margin: EdgeInsets.fromLTRB(0,0,0,0),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -639,7 +674,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       }
        html = '''
           <iframe id="ytplayer" type="text/html" width="100%" height="100%"
-  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1"
+  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
   frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
      ''';
 

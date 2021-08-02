@@ -29,6 +29,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
     Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
     Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
+    Choice(id:11,title: 'ଓଡ଼ିଆ', letter:'ଅ',isSelected:false,lnCode:'od'),
 
 
   ];

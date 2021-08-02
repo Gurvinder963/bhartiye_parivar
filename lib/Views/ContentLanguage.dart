@@ -228,7 +228,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
 }
 
  List<Choice> choices =  <Choice>[
-   Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hi'),
+   Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hn'),
    Choice(id:2,title: 'English', letter:'A',isSelected:false,lnCode:'en'),
    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'pn'),
    Choice(id:4,title: 'ગુજરતી', letter:'ખ',isSelected:false,lnCode:'gu'),
@@ -238,6 +238,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
    Choice(id:8,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
    Choice(id:9,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
    Choice(id:10,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
+   Choice(id:11,title: 'ଓଡ଼ିଆ', letter:'ଅ',isSelected:false,lnCode:'od'),
 
 
 ];

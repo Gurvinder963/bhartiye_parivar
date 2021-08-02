@@ -3,10 +3,13 @@ class BookData {
   String title;
   String description;
   String thumbImage;
+  String thumbnail_image;
   int cost;
+  String qty='1';
+  int totalCost;
   int pageCount;
   String url;
-  String images;
+ // String images;
   String publisher;
   String langCode;
   bool status;
@@ -21,10 +24,13 @@ class BookData {
         this.title,
         this.description,
         this.thumbImage,
+        this.thumbnail_image,
         this.cost,
+        this.qty,
+        this.totalCost,
         this.pageCount,
         this.url,
-        this.images,
+      //  this.images,
         this.publisher,
         this.langCode,
         this.status,
@@ -39,10 +45,14 @@ class BookData {
     title = json['title'];
     description = json['description'];
     thumbImage = json['thumb_image'];
+    thumbnail_image = json['thumbnail_image'];
     cost = json['cost'];
+    totalCost = json['cost'];
+
+
     pageCount = json['page_count'];
     url = json['url'];
-    images = json['images'];
+   // images = json['images'];
     publisher = json['publisher'];
     langCode = json['lang_code'];
     status = json['status'];
@@ -59,10 +69,14 @@ class BookData {
     data['title'] = this.title;
     data['description'] = this.description;
     data['thumb_image'] = this.thumbImage;
+    data['thumbnail_image'] = this.thumbnail_image;
     data['cost'] = this.cost;
+    data['totalCost'] = this.cost;
+    data['qty'] = this.qty;
+    data['totalCost'] = this.totalCost;
     data['page_count'] = this.pageCount;
     data['url'] = this.url;
-    data['images'] = this.images;
+   // data['images'] = this.images;
     data['publisher'] = this.publisher;
     data['lang_code'] = this.langCode;
     data['status'] = this.status;

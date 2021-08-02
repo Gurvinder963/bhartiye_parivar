@@ -54,7 +54,7 @@ class BooksPageState extends State<BooksPage> {
 
   Future<BookListResponse> getBooksList(String user_Token) async {
 
-    var body ={'lang_code':'en'};
+    var body ={'lang_code':''};
     MainRepository repository=new MainRepository();
     return repository.fetchBooksData(body,user_Token);
 
@@ -135,7 +135,7 @@ class BooksPageState extends State<BooksPage> {
 
         body: Container(
           margin: EdgeInsets.fromLTRB(4,0,0,0),
-          padding:  EdgeInsets.symmetric(horizontal: 5),
+          padding:  EdgeInsets.symmetric(horizontal: 2),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

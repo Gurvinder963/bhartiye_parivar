@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'BooksDetail.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../localization/locale_constant.dart';
 String videoCategory="spiritual";
 
 class SpiritualPage extends StatefulWidget {
@@ -37,13 +38,22 @@ class SpiritualPageState extends State<SpiritualPage> {
         setState(() {
           isLoading = true;
         });}
-      getVideosList(user_Token,videoCategory).then((value) => {
+      getLocaleContentLang().then((locale) {
 
-        setState(() {
-          isLoading = false;
-          mainData.addAll(value.data);
+        if(locale==null){
+          locale="";
+        }
 
-        })
+        getVideosList(user_Token,videoCategory,locale).then((value) => {
+
+          setState(() {
+            isLoading = false;
+            mainData.addAll(value.data);
+
+          })
+
+        });
+
 
       });
 
@@ -53,9 +63,9 @@ class SpiritualPageState extends State<SpiritualPage> {
 
   }
 
-  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory) async {
-
-    var body ={'video_category':videoCategory};
+  Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
+    print(locale.toString());
+    var body ={'video_category':videoCategory,'lang_code':locale};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 

@@ -15,6 +15,7 @@ import '../Utils/AppStrings.dart';
 import'../ApiResponses/BookGroupListResponse.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ApiResponses/BookData.dart';
+import '../localization/locale_constant.dart';
 class BookGroupListPage extends StatefulWidget {
   @override
   BookGroupListPageState createState() {
@@ -38,8 +39,12 @@ class BookGroupListPageState extends State<BookGroupListPage> {
         setState(() {
           isLoading = true;
         });}
+      getLocaleContentLang().then((locale) {
 
-      getBooksList(user_Token).then((value) => {
+        if(locale==null){
+          locale="";
+        }
+      getBooksList(user_Token,locale).then((value) => {
 
         setState(() {
           isLoading = false;
@@ -48,7 +53,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
         })
 
       });
-
+      });
 
       return (prefs.getString('token'));
     });
@@ -65,9 +70,9 @@ class BookGroupListPageState extends State<BookGroupListPage> {
     _sc.dispose();
     super.dispose();
   }
-  Future<BookGroupListResponse> getBooksList(String user_Token) async {
+  Future<BookGroupListResponse> getBooksList(String user_Token, String locale) async {
 
-    var body ={'lang_code':'en'};
+    var body ={'lang_code':locale};
     MainRepository repository=new MainRepository();
     return repository.fetchBooksGroupData(body,user_Token);
 
@@ -261,7 +266,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
   Widget _horizontalListView(String title,List<BookData> bookList) {
     return SizedBox(
-        height: 175,
+        height: 190,
         child: ListView.builder(
           itemCount: bookList.length,
           scrollDirection: Axis.horizontal,
@@ -278,6 +283,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
             },
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                margin:EdgeInsets.fromLTRB(0, 10, 0, 0) ,
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -285,7 +291,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
                     _buildBoxItem(bookList[index].title,bookList[index].thumbImage),
 
-
+                    SizedBox(height: 5),
                     _buildText(bookList[index].title),
 
                     _buildTextPublisher(bookList[index].publisher),
@@ -316,13 +322,20 @@ class BookGroupListPageState extends State<BookGroupListPage> {
       alignment: Alignment.center,
       children: <Widget>[
         Container(
-            margin: EdgeInsets.fromLTRB(8.0,8.0,8.0,0.0),
+          margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+          height: 140,
+          width: 120,
+          alignment: Alignment.center,
 
-            alignment: Alignment.center,
-            height: 130,
-            width: 130,
-            child: Image.network(thumbnail, fit: BoxFit.fill)
-        ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            image: DecorationImage(
+              fit: BoxFit.fill,
+              image: NetworkImage(thumbnail),
+            ),
+          ),
+
+        )
 
 
       ],

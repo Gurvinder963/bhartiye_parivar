@@ -321,7 +321,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                   children: [
                     SizedBox(height: 20),
                     SizedBox(
-                      height: (MediaQuery.of(context).size.height)*0.18,
+                      height: (MediaQuery.of(context).size.height)*0.17,
                     child:new Image(
                       image: new AssetImage("assets/splash.png"),
                       width: 140,
@@ -331,7 +331,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                       alignment: Alignment.center,
                     )),
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(5.0),
 
                       child: Text(
                         'PROFILE',
@@ -345,7 +345,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                       ),
                     ),
                     SizedBox(
-                      height: (MediaQuery.of(context).size.height)*0.62,
+                      height: (MediaQuery.of(context).size.height)*0.67,
                       child:Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -532,7 +532,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
       child: Container(
         width: 150,
-        margin: EdgeInsets.fromLTRB(0,20,0,10),
+        margin: EdgeInsets.fromLTRB(0,15,0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

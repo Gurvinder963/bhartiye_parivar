@@ -5,6 +5,7 @@ import '../ApiResponses/VideoListResponse.dart';
 import '../ApiResponses/BookListResponse.dart';
 import '../ApiResponses/OTPResponse.dart';
 import '../ApiResponses/BookGroupListResponse.dart';
+import '../ApiResponses/AddToCartResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -33,8 +34,20 @@ class MainRepository {
     return BookListResponse.fromJson(response);
   }
   Future<BookGroupListResponse> fetchBooksGroupData(var body,String token) async {
-    final response = await _provider.getWithToken("public/api/v1/books",body,token);
+    final response = await _provider.getWithToken("public/api/v1/books-collection",body,token);
     return BookGroupListResponse.fromJson(response);
   }
+  Future<BookListResponse> fetchCartListBooksData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/mycart",body,token);
+    return BookListResponse.fromJson(response);
+  }
 
+  Future<AddToCartResponse> fetchAddCartData(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/mycart",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+  Future<AddToCartResponse> fetchDeleteCartData(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/mycart",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }

@@ -105,13 +105,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerPhone,
             obscureText: false,
-            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
+            style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText:"Phone number",
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              labelStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              hintStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -146,13 +146,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerContryCode,
             obscureText: false,
-            style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
+            style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
 
 
-              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              labelStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              hintStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -373,7 +373,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                                 height: 40,
                               ),
                               SizedBox(width: 36),
-                              Text(countryCode.name, style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black)),
+                              Text(countryCode.name, style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                              Expanded(child:
                               Align(
                                 alignment: Alignment.topRight,
@@ -410,7 +410,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                       _emailPasswordWidget(),
                     CheckboxListTile(
-                          contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: ScreenUtil().setWidth(18)),
+                          contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: ScreenUtil().setWidth(15)),
                           activeColor:Colors.orange,
                           checkColor: Colors.white,
                           title:
@@ -516,7 +516,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       child: Container(
         width: 150,
         height: ScreenUtil().setWidth(40),
-        margin: EdgeInsets.fromLTRB(0,ScreenUtil().setWidth(10),0,10),
+        margin: EdgeInsets.fromLTRB(0,0,0,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

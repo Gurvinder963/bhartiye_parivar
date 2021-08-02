@@ -5,12 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
-
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../ApiResponses/BookData.dart';
+import '../Repository/MainRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
+import '../Views/MyCart.dart';
+
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
 
@@ -36,6 +43,9 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   bool isPhotos=false;
   bool isOffers=false;
   BookData mContent;
+  bool _isInAsyncCall = false;
+
+  String user_Token;
   BooksDetailPageState(BookData content){
     mContent=content;
   }
@@ -43,6 +53,14 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   @override
   void initState() {
     super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+      return (prefs.getString('token'));
+    });
 
   }
 
@@ -71,9 +89,19 @@ class BooksDetailPageState extends State<BooksDetailPage> {
         actions: <Widget>[
 
 
+          GestureDetector(
+          onTap: () {
 
+            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return MyCartPage();
+                    }
+                ) );
+
+    },child:
           Icon(Icons.shopping_cart,color: Colors.white,size: 30,),
-
+          ),
           SizedBox(
             width: 20,
           ),
@@ -81,7 +109,12 @@ class BooksDetailPageState extends State<BooksDetailPage> {
         ],
       ),
 
-      body:  Stack(  children: [ SingleChildScrollView (
+      body:   ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:Stack(  children: [ SingleChildScrollView (
     child:Container(
 
           child:Column(
@@ -298,7 +331,36 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       )),
        Align(
             alignment: FractionalOffset.bottomCenter,
-            child: Container(
+            child:    GestureDetector(
+    onTap: () {
+      setState(() {
+        _isInAsyncCall = true;
+      });
+      postAddToCart(mContent.id.toString(),user_Token)
+          .then((res) async {
+        setState(() {
+          _isInAsyncCall = false;
+        });
+
+
+        if (res.status == 1) {
+
+
+          Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return MyCartPage();
+                  }
+              ) );
+
+
+        }
+        else {
+          showAlertDialogValidation(context,"Some error occured!");
+        }
+      });
+
+    },child:Container(
               height: 50,
               width: MediaQuery.of(context).size.width,
               color: Color(AppColors.BaseColor),
@@ -311,10 +373,46 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               ),
 
 
-            ),
+            )),
           ),
-        ]),
+        ])),
 
+    );
+  }
+  Future<AddToCartResponse> postAddToCart(String book_id,String token) async {
+
+    print('my_token'+token);
+    var body =json.encode({"book_id":book_id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddCartData(body,token);
+
+  }
+
+  showAlertDialogValidation(BuildContext context,String message) {
+
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 
