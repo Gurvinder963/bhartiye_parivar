@@ -1,5 +1,6 @@
 class BookData {
   int id;
+  int books_id;
   String title;
   String description;
   String thumbImage;
@@ -22,6 +23,7 @@ class BookData {
   BookData(
       {this.id,
         this.title,
+        this.books_id,
         this.description,
         this.thumbImage,
         this.thumbnail_image,
@@ -42,6 +44,7 @@ class BookData {
 
   BookData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    books_id = json['books_id'];
     title = json['title'];
     description = json['description'];
     thumbImage = json['thumb_image'];
@@ -66,6 +69,7 @@ class BookData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['books_id'] = this.books_id;
     data['title'] = this.title;
     data['description'] = this.description;
     data['thumb_image'] = this.thumbImage;

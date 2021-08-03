@@ -145,11 +145,14 @@ class HealthPageState extends State<HealthPage> {
 
                 children: <Widget>[
 
+          AspectRatio(
+          aspectRatio: 16 / 9,
+          child:
                   Container(
                     margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
                     alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
+                   // height: ScreenUtil().setHeight(175),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -161,14 +164,16 @@ class HealthPageState extends State<HealthPage> {
 
                     ),
 
-                  ),
+                  )),
 
 
-                  Container(
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child:   Container(
                     margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
                     alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
+                   // height: ScreenUtil().setHeight(175),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -177,7 +182,7 @@ class HealthPageState extends State<HealthPage> {
                       ),
                     ),
 
-                  ),
+                  )),
 
                 /*  Positioned.fill(
                       child:Align(

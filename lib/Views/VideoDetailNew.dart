@@ -105,6 +105,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    if(!isPortrait){
+      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    }
+    else{
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    }
+
+
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
@@ -355,40 +364,44 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                 children: <Widget>[
 
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new AssetImage("assets/thumbnail.png"),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
                         alignment: Alignment.center,
-                      ),
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new AssetImage("assets/thumbnail.png"),
 
-                    ),
+                            alignment: Alignment.center,
+                          ),
 
-                  ),
+                        ),
+
+                      )),
 
 
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:   Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
-                    alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(url),
-                      ),
-                    ),
+                        alignment: Alignment.center,
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(url),
+                          ),
+                        ),
 
-                  ),
-
+                      )),
                   /*  Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomLeft,
@@ -673,7 +686,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       }
        html = '''
-          <iframe id="ytplayer" type="text/html" width="100%" height="100%"
+          <iframe id="ytplayer" type="text/html" width="90%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
   frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
      ''';

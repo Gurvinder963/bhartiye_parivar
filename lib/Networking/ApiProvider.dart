@@ -106,7 +106,23 @@ class ApiProvider {
     }
     return responseJson;
   }
+  Future<dynamic> deleteWithToken(String url,String token) async {
 
+    Map<String, String> headerParams = {
+      "Content-Type": 'application/json',
+      "Authorization":'Bearer '+token
+    };
+    var responseJson;
+    try {
+      final response = await http.delete(_baseUrl + url,
+          headers: headerParams,
+          );
+      responseJson = _response(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
 
 
   dynamic _response(http.Response response) {
@@ -119,7 +135,10 @@ class ApiProvider {
         var responseJson = json.decode(response.body.toString());
         print(responseJson);
         return responseJson;
-
+      case 204:
+        var responseJson = json.decode(response.body.toString());
+        print(responseJson);
+        return responseJson;
       case 422:
         var responseJson = json.decode(response.body.toString());
         print(responseJson);

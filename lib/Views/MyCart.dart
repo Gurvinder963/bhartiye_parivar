@@ -24,6 +24,7 @@ class MyCartPage extends StatefulWidget {
 }
 
 class MyCartPageState extends State<MyCartPage> {
+
   List mainData = new List();
   List<String> qtyData = new List();
   bool isLoading = false;
@@ -373,10 +374,10 @@ class MyCartPageState extends State<MyCartPage> {
   }
   Future<AddToCartResponse> postDeleteFromCart(String book_id,String token) async {
 
-    print('my_token'+token);
-    var body =json.encode({"book_id":book_id});
+  //  print('my_token'+token);
+  //  var body =json.encode({"book_id":book_id});
     MainRepository repository=new MainRepository();
-    return repository.fetchDeleteCartData(body,token);
+    return repository.fetchDeleteCartData(book_id,token);
 
   }
   showAlertDialogValidation(BuildContext context,String message) {

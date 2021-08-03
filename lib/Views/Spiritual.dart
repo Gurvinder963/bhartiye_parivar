@@ -141,41 +141,46 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                 children: <Widget>[
 
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new AssetImage("assets/thumbnail.png"),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
                         alignment: Alignment.center,
-                      ),
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new AssetImage("assets/thumbnail.png"),
 
-                    ),
+                            alignment: Alignment.center,
+                          ),
 
-                  ),
+                        ),
+
+                      )),
 
 
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:   Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
-                    alignment: Alignment.center,
-                    height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(url),
-                      ),
-                    ),
+                        alignment: Alignment.center,
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(url),
+                          ),
+                        ),
 
-                  ),
+                      )),
 
-          /*        Positioned.fill(
+                  /*        Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomLeft,
                           child: Container(

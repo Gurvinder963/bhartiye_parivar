@@ -38,16 +38,16 @@ class MainRepository {
     return BookGroupListResponse.fromJson(response);
   }
   Future<BookListResponse> fetchCartListBooksData(var body,String token) async {
-    final response = await _provider.getWithToken("public/api/v1/mycart",body,token);
+    final response = await _provider.getWithToken("public/api/v1/user-carts",body,token);
     return BookListResponse.fromJson(response);
   }
 
   Future<AddToCartResponse> fetchAddCartData(var body,String token) async {
-    final response = await _provider.postWithToken("public/api/v1/mycart",body,token);
+    final response = await _provider.postWithToken("public/api/v1/user-carts",body,token);
     return AddToCartResponse.fromJson(response);
   }
-  Future<AddToCartResponse> fetchDeleteCartData(var body,String token) async {
-    final response = await _provider.postWithToken("public/api/v1/mycart",body,token);
+  Future<AddToCartResponse> fetchDeleteCartData(String id,String token) async {
+    final response = await _provider.deleteWithToken("public/api/v1/user-carts/"+id,token);
     return AddToCartResponse.fromJson(response);
   }
 }
