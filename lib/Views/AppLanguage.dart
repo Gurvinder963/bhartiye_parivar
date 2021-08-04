@@ -10,13 +10,25 @@ import '../Utils/AppStrings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../localization/locale_constant.dart';
 class AppLanguagePage extends StatefulWidget {
+
+  final String from;
+
+  AppLanguagePage({Key key,@required this.from}) : super(key: key);
+
+
   @override
   AppLanguagePageState createState() {
-    return AppLanguagePageState();
+    return AppLanguagePageState(from);
   }
 }
 
 class AppLanguagePageState extends State<AppLanguagePage> {
+   String mFrom;
+
+  AppLanguagePageState(String from){
+    mFrom=from;
+  }
+
   Locale _locale;
   List<Choice> choices =  <Choice>[
     Choice(id:1,title: 'हिन्दी',letter:'अ',isSelected:false,lnCode:'hi'),
@@ -275,7 +287,21 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
         }
 
-        Navigator.of(context, rootNavigator: true).pop(context);
+
+        if(mFrom=='sign-up'){
+        Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder:
+                      (context) =>
+                      HomePage()
+                  ), ModalRoute.withName("/Home")
+              );
+
+        }
+        else{
+          Navigator.of(context, rootNavigator: true).pop(context);
+        }
+
+
 
 
 

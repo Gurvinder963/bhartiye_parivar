@@ -6,8 +6,9 @@ class BookData {
   String thumbImage;
   String thumbnail_image;
   int cost;
-  String qty='1';
-  int totalCost;
+  int actual_cost;
+  int quantity;
+
   int pageCount;
   String url;
  // String images;
@@ -28,8 +29,9 @@ class BookData {
         this.thumbImage,
         this.thumbnail_image,
         this.cost,
-        this.qty,
-        this.totalCost,
+        this.actual_cost,
+        this.quantity,
+
         this.pageCount,
         this.url,
       //  this.images,
@@ -50,7 +52,9 @@ class BookData {
     thumbImage = json['thumb_image'];
     thumbnail_image = json['thumbnail_image'];
     cost = json['cost'];
-    totalCost = json['cost'];
+    actual_cost = json['actual_cost'];
+
+    quantity = json['quantity'];
 
 
     pageCount = json['page_count'];
@@ -75,9 +79,10 @@ class BookData {
     data['thumb_image'] = this.thumbImage;
     data['thumbnail_image'] = this.thumbnail_image;
     data['cost'] = this.cost;
-    data['totalCost'] = this.cost;
-    data['qty'] = this.qty;
-    data['totalCost'] = this.totalCost;
+    data['actual_cost'] = this.actual_cost;
+
+    data['quantity'] = this.quantity;
+
     data['page_count'] = this.pageCount;
     data['url'] = this.url;
    // data['images'] = this.images;

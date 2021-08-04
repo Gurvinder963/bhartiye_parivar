@@ -30,6 +30,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 
+
 class CreateProfilePage extends StatefulWidget {
   final String mobile;
   final String c_code;
@@ -504,8 +505,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                       ()=>Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder:
                           (context) =>
-                          HomePage()
-                      ), ModalRoute.withName("/Home")
+                              AppLanguagePage(from:"sign-up")
+                      ), ModalRoute.withName("/AppLanguage")
                   )
               );
 

@@ -513,7 +513,27 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                         new Expanded(
                             flex: 1,
 
-                            child:Icon(Icons.more_vert)
+                            child:PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text("Share"),
+                                    value: 1,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Report"),
+                                    value: 2,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Bookmark"),
+                                    value: 3,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Subscribe Notifications"),
+                                    value: 4,
+                                  )
+                                ]
+                            )
                         )
 
 

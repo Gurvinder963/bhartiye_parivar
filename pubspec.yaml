@@ -94,6 +94,7 @@ flutter:
     - assets/whatsapp.png
     - assets/ic_like.png
     - assets/ic_dislike.png
+    - assets/ic_empty_box.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

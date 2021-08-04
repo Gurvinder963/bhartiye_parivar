@@ -292,22 +292,26 @@ class SpiritualPageState extends State<SpiritualPage> {
               flex: 1,
 
               child:PopupMenuButton(
-    icon: Icon(Icons.more_vert),
-    itemBuilder: (context) => [
-    PopupMenuItem(
-    child: Text("Save to watch Later"),
-    value: 1,
-    ),
-    PopupMenuItem(
-    child: Text("Save to playlist"),
-    value: 2,
-    ),
-    PopupMenuItem(
-    child: Text("Share"),
-    value: 2,
-    )
-    ]
-    )
+                  icon: Icon(Icons.more_vert),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text("Share"),
+                      value: 1,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Report"),
+                      value: 2,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Bookmark"),
+                      value: 3,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Subscribe Notifications"),
+                      value: 4,
+                    )
+                  ]
+              )
           )
 
 

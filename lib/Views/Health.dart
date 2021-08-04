@@ -299,16 +299,20 @@ class HealthPageState extends State<HealthPage> {
                   icon: Icon(Icons.more_vert),
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      child: Text("Save to watch Later"),
+                      child: Text("Share"),
                       value: 1,
                     ),
                     PopupMenuItem(
-                      child: Text("Save to playlist"),
+                      child: Text("Report"),
                       value: 2,
                     ),
                     PopupMenuItem(
-                      child: Text("Share"),
-                      value: 2,
+                      child: Text("Bookmark"),
+                      value: 3,
+                    ),
+                    PopupMenuItem(
+                      child: Text("Subscribe Notifications"),
+                      value: 4,
                     )
                   ]
               )

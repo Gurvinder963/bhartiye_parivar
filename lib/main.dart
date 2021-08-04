@@ -167,14 +167,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       else {
-       Timer(Duration(seconds: 2),
-                ()=> Navigator.of(context, rootNavigator: true)
-                    .push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return HomePage();
-                        }
-                    )
+        Timer(Duration(seconds: 2),
+                ()=>Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder:
+                    (context) =>
+                    HomePage()
+                ), ModalRoute.withName("/Home")
             )
         );
       }

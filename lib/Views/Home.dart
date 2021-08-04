@@ -357,7 +357,7 @@ class navigationDrawer extends StatelessWidget {
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return AppLanguagePage();
+                          return AppLanguagePage(from:"Home");
                         }
                     ) )
 

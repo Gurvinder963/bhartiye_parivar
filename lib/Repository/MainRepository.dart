@@ -6,6 +6,7 @@ import '../ApiResponses/BookListResponse.dart';
 import '../ApiResponses/OTPResponse.dart';
 import '../ApiResponses/BookGroupListResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/OrderResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -38,16 +39,26 @@ class MainRepository {
     return BookGroupListResponse.fromJson(response);
   }
   Future<BookListResponse> fetchCartListBooksData(var body,String token) async {
-    final response = await _provider.getWithToken("public/api/v1/user-carts",body,token);
+    final response = await _provider.getWithToken("public/api/v1/userCarts",body,token);
     return BookListResponse.fromJson(response);
   }
 
   Future<AddToCartResponse> fetchAddCartData(var body,String token) async {
-    final response = await _provider.postWithToken("public/api/v1/user-carts",body,token);
+    final response = await _provider.postWithToken("public/api/v1/userCarts",body,token);
     return AddToCartResponse.fromJson(response);
   }
   Future<AddToCartResponse> fetchDeleteCartData(String id,String token) async {
-    final response = await _provider.deleteWithToken("public/api/v1/user-carts/"+id,token);
+    final response = await _provider.deleteWithToken("public/api/v1/userCarts/"+id,token);
     return AddToCartResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchUpdateQTYCartData(String id,var body,String token) async {
+    final response = await _provider.putWithToken("public/api/v1/userCarts/"+id,body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<OrderResponse> fetchAddOrderData(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/orders",body,token);
+    return OrderResponse.fromJson(response);
+  }
+
 }

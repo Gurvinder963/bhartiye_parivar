@@ -517,7 +517,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         width: 150,
         height: ScreenUtil().setWidth(40),
         margin: EdgeInsets.fromLTRB(0,0,0,10),
-        padding: EdgeInsets.symmetric(vertical: 10),
+
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5)),

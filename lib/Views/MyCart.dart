@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MyBooksTab.dart';
 import 'BooksByLanguage.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +17,31 @@ import '../Views/BookGroupList.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class ItemData {
+
+  String book_id;
+  String user_id;
+  String quantity;
+  ItemData({this.book_id, this.user_id,this.quantity});
+
+  ItemData.fromJson(Map<String, dynamic> json)
+      : book_id = json['book_id'],
+        user_id = json['user_id'],
+        quantity = json['quantity']
+  ;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'book_id': book_id,
+      'user_id': user_id,
+      'quantity': quantity,
+    };
+  }
+}
 class MyCartPage extends StatefulWidget {
   @override
   MyCartPageState createState() {
@@ -29,8 +55,13 @@ class MyCartPageState extends State<MyCartPage> {
   List<String> qtyData = new List();
   bool isLoading = false;
   String _chosenValue="1";
-
+  bool _isInAsyncCall = false;
   String user_Token;
+  double price;
+  double deliveryCharges=20;
+  double amountPayable;
+
+  String USER_ID;
   @override
   void initState() {
     super.initState();
@@ -45,14 +76,26 @@ class MyCartPageState extends State<MyCartPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
        user_Token=prefs.getString(Prefs.KEY_TOKEN);
+       USER_ID=prefs.getString(Prefs.USER_ID);
       if (!isLoading) {
         setState(() {
           isLoading = true;
         });}
-
+       setState(() {
+         _isInAsyncCall = true;
+       });
+       double tPrice=0;
       getBooksList(user_Token).then((value) => {
 
+
+         for(int i=0;i<value.data.length;i++){
+           tPrice=tPrice+value.data[i].cost
+         },
+
         setState(() {
+          amountPayable=tPrice+deliveryCharges;
+          price=tPrice;
+          _isInAsyncCall = false;
           isLoading = false;
           mainData.addAll(value.data);
 
@@ -104,21 +147,27 @@ class MyCartPageState extends State<MyCartPage> {
           title: Text('Cart', style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
 
         ),
-        body:   Container(
+        body:ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:   Container(
 
            child: Stack(  children: [
 
-        ListView(
+             mainData.length>0?ListView(
 
 
+                 padding: EdgeInsets.all(0.0),
               children: <Widget>[
 
-                   _buildList(),
+                mainData.length>0?_buildList():Container(),
 
 
 
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,0,0,0),
+                mainData.length>0?Padding(
+                    padding: EdgeInsets.fromLTRB(15,15,0,0),
                     child:
                     Text("PRICE DETAILS",
                       maxLines: 1, style: GoogleFonts.poppins(
@@ -126,9 +175,9 @@ class MyCartPageState extends State<MyCartPage> {
                           color: Color(0xFF393939).withOpacity(0.8),
 
 
-                      ),)),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),
+                      ),)):Container(),
+                mainData.length>0?Padding(
+                    padding: EdgeInsets.fromLTRB(15,15,15,0),
                     child:
                     Divider(
 
@@ -136,13 +185,13 @@ class MyCartPageState extends State<MyCartPage> {
 
                       thickness: 1,
                       color: Color(0xFFc3c3c3),
-                    ),),
+                    ),):Container(),
 
 
-                Container(
+                mainData.length>0? Container(
                     padding: EdgeInsets.fromLTRB(10.0,5.0,10.0,5.0),
 
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,5.0),
                     child:
                     Row(
 
@@ -160,7 +209,7 @@ class MyCartPageState extends State<MyCartPage> {
                                 ),),
                         Spacer(),
 
-                              Text('₹'+"230",
+                              Text('₹'+price.toString(),
                                 style: GoogleFonts.roboto(
                                   fontSize:16.0,
                                   color: Color(0xFF1f1f1f).withOpacity(0.8),
@@ -171,9 +220,9 @@ class MyCartPageState extends State<MyCartPage> {
                             width: 10,
                           ),
 
-                        ]))
+                        ])):Container()
 ,
-                Container(
+                mainData.length>0?Container(
                     padding: EdgeInsets.fromLTRB(10.0,5.0,10.0,5.0),
 
                     margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -194,7 +243,7 @@ class MyCartPageState extends State<MyCartPage> {
                             ),),
                           Spacer(),
 
-                          Text('₹'+"20",
+                          Text('₹'+deliveryCharges.toString(),
                             style: GoogleFonts.roboto(
                               fontSize:16.0,
                               color: Color(0xFF1f1f1f).withOpacity(0.8),
@@ -205,20 +254,23 @@ class MyCartPageState extends State<MyCartPage> {
                             width: 10,
                           ),
 
-                        ]))
+                        ])):Container()
 ,
-          Divider(
+                mainData.length>0?Padding(
+                  padding: EdgeInsets.fromLTRB(15,10,15,0),
+                  child:
+                  Divider(
 
-            height: 1,
+                    height: 1,
 
-            thickness: 1,
-            color: Color(0xFFc3c3c3),
-          ),
+                    thickness: 1,
+                    color: Color(0xFFc3c3c3),
+                  ),):Container(),
 
-        Container(
+                mainData.length>0? Container(
                     padding: EdgeInsets.fromLTRB(10.0,5.0,10.0,5.0),
 
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,100.0),
+                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,100.0),
                     child:
                     Row(
 
@@ -229,16 +281,16 @@ class MyCartPageState extends State<MyCartPage> {
                           ),
                           Text("Amount Payable",
                             style: GoogleFonts.roboto(
-                              fontSize:16.0,
+                              fontSize:18.0,
                               color: Color(0xFF1f1f1f).withOpacity(0.8),
                                 fontWeight: FontWeight.w700
 
                             ),),
                           Spacer(),
 
-                          Text('₹'+"250",
+                          Text('₹'+amountPayable.toString(),
                             style: GoogleFonts.roboto(
-                              fontSize:16.0,
+                              fontSize:18.0,
                               color: Color(0xFF1f1f1f).withOpacity(0.8),
                                 fontWeight: FontWeight.w700
 
@@ -247,21 +299,74 @@ class MyCartPageState extends State<MyCartPage> {
                             width: 10,
                           ),
 
-                        ]))
+                        ])):Container()
 
 
-              ])
+              ]):Container(
+               height: MediaQuery.of(context).size.height,
+    width: MediaQuery.of(context).size.width,
+    child:_isInAsyncCall?Container():Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      new Image(
+        image: new AssetImage("assets/ic_empty_box.png"),
+        width: 200,
+        height:  200,
+        color: null,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.center,
+      ),
+      Text(
+        'Your Cart is Empty.',
+        style: GoogleFonts.poppins(
+          fontSize: ScreenUtil().setSp(24),
+          letterSpacing: 1.2,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
 
-             ,Align(
+        ),
+      ),
+      Text(
+        'Please add items to it.',
+        style: GoogleFonts.poppins(
+          fontSize: ScreenUtil().setSp(14),
+          letterSpacing: 1.2,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+
+        ),
+      ),
+      SizedBox(height: 20),
+      _addBooksButton()
+    ])
+
+
+             )
+
+             , mainData.length>0? Align(
                alignment: FractionalOffset.bottomCenter,
                child:    GestureDetector(
                    onTap: () {
 
 
                    },child:Container(
+
+                 decoration: BoxDecoration(
+                   color: Colors.white,
+
+                   boxShadow: [
+                     BoxShadow(
+                       color: Colors.grey.withOpacity(0.5),
+                       spreadRadius: 6,
+                       blurRadius: 8,
+                       offset: Offset(0, 3), // changes position of shadow
+                     ),
+                   ],
+                 ),
                  height: 60,
                  width: MediaQuery.of(context).size.width,
-                 color: Colors.white,
+
                  padding: EdgeInsets.fromLTRB(0,8,0,8),
                  child:   Row(
 
@@ -270,13 +375,16 @@ class MyCartPageState extends State<MyCartPage> {
                        SizedBox(
                          width: 10,
                        ),
-                       Text('₹'+"250",
-                         style: GoogleFonts.roboto(
-                             fontSize:16.0,
-                             color: Color(0xFF1f1f1f).withOpacity(0.8),
-                             fontWeight: FontWeight.w700
+                       Padding(
+                           padding: EdgeInsets.fromLTRB(10,0,0,0),
+                           child:
+                           Text('₹'+amountPayable.toString(),
+                             style: GoogleFonts.roboto(
+                                 fontSize:25.0,
+                                 color: Color(0xFF1f1f1f).withOpacity(0.8),
+                                 fontWeight: FontWeight.w700
 
-                         ),),
+                             ),)) ,
                        Spacer(),
 
                        _submitButton(),
@@ -288,15 +396,15 @@ class MyCartPageState extends State<MyCartPage> {
 
 
                )),
-             ),
-           ]) ,)
+             ):Container(),
+           ]) ,))
 
     );
   }
-  Widget _submitButton() {
+
+  Widget _addBooksButton() {
     return InkWell(
       onTap: () {
-
 
 
 
@@ -305,8 +413,83 @@ class MyCartPageState extends State<MyCartPage> {
       child: Container(
         width: 150,
         height: ScreenUtil().setWidth(40),
+        margin: EdgeInsets.fromLTRB(0,0,0,10),
 
-        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
+        child: Text(
+          'Add Books',
+          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(18), color: Colors.white,fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _submitButton() {
+    return InkWell(
+      onTap: () {
+        List<ItemData> order_items= new List();
+        for(int i=0;i<mainData.length;i++){
+          ItemData itemData=new ItemData();
+          itemData.user_id=USER_ID;
+          itemData.book_id=mainData[i].books_id.toString();
+          itemData.quantity=mainData[i].quantity.toString();
+          order_items.add(itemData);
+        }
+
+
+        setState(() {
+          _isInAsyncCall = true;
+        });
+
+        String json = jsonEncode(order_items);
+
+        addOrderAPI(order_items,user_Token,amountPayable.toString())
+            .then((res) async {
+          setState(() {
+            _isInAsyncCall = false;
+          });
+
+
+          if (res.status == 1) {
+
+            Fluttertoast.showToast(
+                msg: "Order generated successfully!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0);
+
+
+          }
+          else {
+            showAlertDialogValidation(context,"Some error occured!");
+          }
+        });
+
+
+      },
+
+      child: Container(
+        width: 150,
+        height: ScreenUtil().setWidth(40),
+
+     //   padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -330,13 +513,14 @@ class MyCartPageState extends State<MyCartPage> {
   }
   Widget _buildList() {
     return ListView.builder(
-      itemCount: mainData.length+ 1 , // Add one more item for progress indicator
+      padding: EdgeInsets.all(0.0),
+      itemCount: mainData.length , // Add one more item for progress indicator
       shrinkWrap: true,
       physics: ScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        if (index == mainData.length) {
+       /* if (index == mainData.length) {
           return _buildProgressIndicator();
-        } else {
+        } else {*/
           return GestureDetector(
               onTap: () =>
               {
@@ -351,35 +535,88 @@ class MyCartPageState extends State<MyCartPage> {
               },
               child:
               _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
-                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].qty,mainData[index].totalCost));
+                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString()));
 
 
 
         }
-      },
+     // }
+      ,
 
     );
   }
 
-   void setValue(int index,String value,String cost){
+   void setValue(int index,String value,String cost,String id){
     int a=int.parse(value);
     int b=int.parse(cost);
     int valueTotal=a*b;
 
-     setState(() {
-       mainData[index].qty=value;
-       mainData[index].totalCost= valueTotal;
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    updateQTYFromCart(id,user_Token,value)
+        .then((res) async {
+      setState(() {
+        _isInAsyncCall = false;
+      });
+
+
+      if (res.status == 1) {
+         setState(() {
+       mainData[index].quantity=int.parse(value);
+       mainData[index].cost= valueTotal;
 
      });
+
+          double tPrice=0;
+         for(int i=0;i<mainData.length;i++){
+           tPrice=tPrice+mainData[i].cost;
+         }
+
+      setState(() {
+      amountPayable=tPrice+deliveryCharges;
+      price=tPrice;
+
+
+      });
+
+      }
+      else {
+        showAlertDialogValidation(context,"Some error occured!");
+      }
+    });
+
+
   }
-  Future<AddToCartResponse> postDeleteFromCart(String book_id,String token) async {
+  Future<AddToCartResponse> postDeleteFromCart(String id,String token) async {
 
   //  print('my_token'+token);
   //  var body =json.encode({"book_id":book_id});
     MainRepository repository=new MainRepository();
-    return repository.fetchDeleteCartData(book_id,token);
+    return repository.fetchDeleteCartData(id,token);
 
   }
+
+  Future<AddToCartResponse> updateQTYFromCart(String id,String token,String qty) async {
+
+    //  print('my_token'+token);
+    var body =json.encode({"quantity":qty,"id":id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchUpdateQTYCartData(id,body,token);
+
+  }
+
+  Future<OrderResponse> addOrderAPI(List<ItemData> order_items,String token,String total) async {
+  //  final String requestBody = json.encoder.convert(order_items);
+
+    print('my_token'+token);
+    var body =json.encode({"total":total,"order_items":order_items});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddOrderData(body,token);
+
+  }
+
+
   showAlertDialogValidation(BuildContext context,String message) {
 
     Widget okButton = FlatButton(
@@ -407,12 +644,12 @@ class MyCartPageState extends State<MyCartPage> {
       },
     );
   }
-  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,int totalCost){
+  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost){
 
- print("my_qty--"+qty);
+// print("my_qty--"+qty);
 
     return    Container(
-        margin:EdgeInsets.fromLTRB(10.0,10.0,10.0,0.0) ,
+        margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
         height: 180,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -429,7 +666,7 @@ class MyCartPageState extends State<MyCartPage> {
                  crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                margin: EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
                 height: 120,
                 width: 100,
                 alignment: Alignment.center,
@@ -450,7 +687,7 @@ class MyCartPageState extends State<MyCartPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
               Padding(
-                  padding: EdgeInsets.fromLTRB(10,4,0,0),
+                  padding: EdgeInsets.fromLTRB(15,4,0,0),
                   child:
                   Text(title,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
@@ -461,7 +698,7 @@ class MyCartPageState extends State<MyCartPage> {
                     ),)),
 
               Padding(
-                  padding: EdgeInsets.fromLTRB(10,5,0,0),
+                  padding: EdgeInsets.fromLTRB(15,5,0,0),
                   child: Text(publisher,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:12.0,
@@ -469,14 +706,17 @@ class MyCartPageState extends State<MyCartPage> {
 
                     ),)),
 
-      Container(
-          margin: EdgeInsets.fromLTRB(0.0,20.0,0.0,0.0),
+    SizedBox(
+    width: 218,
+    height: 55, child: Container(
+          margin: EdgeInsets.fromLTRB(5.0,20.0,0.0,0.0),
+
           child:
           Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
               children: <Widget>[
     Padding(
-    padding: EdgeInsets.fromLTRB(10,0,10,0),
+    padding: EdgeInsets.fromLTRB(10,0,0,0),
     child:
     Container(
     height: 35,
@@ -499,7 +739,7 @@ class MyCartPageState extends State<MyCartPage> {
                   value: qty,
 
                  onChanged: (value) => {
-                   setValue(index,value,cost)
+                   setValue(index,value,actualCost,id.toString())
 
 
 
@@ -536,11 +776,11 @@ class MyCartPageState extends State<MyCartPage> {
     ),
     ),
 
+                Spacer(),
 
-
-                Padding(
-                    padding: EdgeInsets.fromLTRB(10,5,0,0),
-                    child: Text('₹' +totalCost.toString()+'/-',
+               Padding(
+                    padding: EdgeInsets.fromLTRB(10,0,0,0),
+                    child: Text('₹' +cost.toString()+'/-',
                       maxLines: 1, style: GoogleFonts.roboto(
                         fontSize:23.0,
                         color: Color(0xFF000000),
@@ -549,7 +789,7 @@ class MyCartPageState extends State<MyCartPage> {
                       ),)),
 
 
-              ]))
+              ])))
 
 
             ]))
@@ -568,23 +808,56 @@ class MyCartPageState extends State<MyCartPage> {
     InkWell(
     onTap: () {
 
-     /* setState(() {
+     setState(() {
         _isInAsyncCall = true;
-      });*/
+      });
       postDeleteFromCart(id.toString(),user_Token)
           .then((res) async {
-       /* setState(() {
+       setState(() {
           _isInAsyncCall = false;
-        });*/
+        });
 
 
         if (res.status == 1) {
 
+          Fluttertoast.showToast(
+              msg: "Cart item has been deleted !",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          setState(() {
+            mainData.removeAt(index);
+            
+          });
+          double tPrice=0;
+          for(int i=0;i<mainData.length;i++){
+            tPrice=tPrice+mainData[i].cost;
+          }
 
-    setState(() {
-  mainData.removeAt(index);
+          setState(() {
+            amountPayable=tPrice+deliveryCharges;
+            price=tPrice;
+
+
+          });
+ /*   setState(() {
+  mainData.clear();
+  _isInAsyncCall = true;
     });
 
+    getBooksList(user_Token).then((value) => {
+
+      setState(() {
+        _isInAsyncCall = false;
+        isLoading = false;
+        mainData.addAll(value.data);
+
+      })
+
+    });*/
 
         }
         else {
@@ -594,7 +867,7 @@ class MyCartPageState extends State<MyCartPage> {
 
 
     },child:Container(
-        padding: EdgeInsets.fromLTRB(10.0,5.0,10.0,5.0),
+        padding: EdgeInsets.fromLTRB(10.0,6.0,10.0,6.0),
           decoration: BoxDecoration(
 
             border: Border.all(color: Colors.black),
@@ -612,7 +885,7 @@ class MyCartPageState extends State<MyCartPage> {
                 ),
                Text("Remove",
                 style: GoogleFonts.roboto(
-               fontSize:15.0,
+               fontSize:16.0,
                color: Color(0xFF010101),
                fontWeight: FontWeight.w500
 
@@ -631,7 +904,7 @@ class MyCartPageState extends State<MyCartPage> {
 
     },child:
       Container(
-          padding: EdgeInsets.fromLTRB(10.0,5.0,10.0,5.0),
+          padding: EdgeInsets.fromLTRB(10.0,6.0,10.0,6.0),
           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
           decoration: BoxDecoration(
 
@@ -648,7 +921,7 @@ class MyCartPageState extends State<MyCartPage> {
                 ),
                 Text("Add more books",
                   style: GoogleFonts.roboto(
-                      fontSize:15.0,
+                      fontSize:16.0,
                       color: Color(0xFF010101),
                       fontWeight: FontWeight.w500
 

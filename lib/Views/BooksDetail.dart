@@ -17,6 +17,7 @@ import '../Utils/Prefer.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Views/MyCart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
@@ -344,7 +345,14 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
 
         if (res.status == 1) {
-
+          Fluttertoast.showToast(
+              msg: "Item added to cart !",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 16.0);
 
           Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(

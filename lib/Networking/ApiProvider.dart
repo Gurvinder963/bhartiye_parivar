@@ -90,9 +90,12 @@ class ApiProvider {
     return responseJson;
   }
   Future<dynamic> postWithToken(String url, String body,String token) async {
-
+    print("my_uri---"+url.toString());
+    print("body---"+body.toString());
+    print("token---"+token);
     Map<String, String> headerParams = {
       "Content-Type": 'application/json',
+      'Accept': 'application/json',
       "Authorization":'Bearer '+token
     };
     var responseJson;
@@ -118,12 +121,35 @@ class ApiProvider {
           headers: headerParams,
           );
       responseJson = _response(response);
+      print(responseJson.toString());
     } on SocketException {
       throw FetchDataException('No Internet connection');
     }
     return responseJson;
   }
+  Future<dynamic> putWithToken(String url, String body,String token) async {
 
+    print("my_uri---"+url.toString());
+    print("body---"+body.toString());
+    print("token---"+token);
+
+
+    Map<String, String> headerParams = {
+      "Content-Type": 'application/json',
+      "Authorization":'Bearer '+token
+    };
+    var responseJson;
+    try {
+      final response = await http.put(_baseUrl + url,
+        headers: headerParams,
+          body:body
+      );
+      responseJson = _response(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
 
   dynamic _response(http.Response response) {
     switch (response.statusCode) {
