@@ -11,7 +11,7 @@ class BookData {
 
   int pageCount;
   String url;
- // String images;
+  List images;
   String publisher;
   String langCode;
   bool status;
@@ -34,7 +34,7 @@ class BookData {
 
         this.pageCount,
         this.url,
-      //  this.images,
+       this.images,
         this.publisher,
         this.langCode,
         this.status,
@@ -59,7 +59,7 @@ class BookData {
 
     pageCount = json['page_count'];
     url = json['url'];
-   // images = json['images'];
+    images = json['images'];
     publisher = json['publisher'];
     langCode = json['lang_code'];
     status = json['status'];
@@ -85,7 +85,7 @@ class BookData {
 
     data['page_count'] = this.pageCount;
     data['url'] = this.url;
-   // data['images'] = this.images;
+  data['images'] = this.images;
     data['publisher'] = this.publisher;
     data['lang_code'] = this.langCode;
     data['status'] = this.status;

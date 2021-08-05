@@ -173,7 +173,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
         children: <Widget>[
 
           TextField(
-
+            textCapitalization: TextCapitalization.sentences,
             controller: myControllerName,
             obscureText: false,
             style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),

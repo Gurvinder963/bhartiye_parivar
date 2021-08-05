@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
 
 import 'DonateUs.dart';
+import '../Utils/fab_bottom_app_bar.dart';
 
 import 'HomeChild.dart';
 import 'Books.dart';
@@ -32,8 +33,8 @@ import 'ContentLanguage.dart';
 import 'VideoApp.dart';
 import 'AppLanguage.dart';
 import '../localization/language/languages.dart';
-
-
+import '../Views/MyCart.dart';
+import 'package:badges/badges.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -112,6 +113,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
   void onItemTapped(int index) {
+
     setState(() {
       selectedIndex = index;
     });
@@ -142,17 +144,41 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
               .appName, style: GoogleFonts.roboto(fontSize: mfontSize,color: Color(0xFFFFFFFF))),
           actions: <Widget>[
 
-
-            Icon(Icons.search,color: Colors.white,size: 25,),
+            selectedIndex==0?
+            Icon(Icons.search,color: Colors.white,size: 25,):Container(),
             SizedBox(
               width: 7,
             ),
-            Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
+            selectedIndex==0?Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,):Container(),
             SizedBox(
               width: 7,
             ),
-            Icon(Icons.notifications_rounded,color: Colors.white,size: 25,),
+            selectedIndex==0? Icon(Icons.notifications_rounded,color: Colors.white,size: 25,):Container(),
 
+            selectedIndex==2?
+            GestureDetector(
+              onTap: () {
+
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return MyCartPage();
+                        }
+                    ) );
+
+              },child:
+    Badge(
+      position: BadgePosition.topEnd(top: 0, end: -4),
+      animationDuration: Duration(milliseconds: 300),
+      animationType: BadgeAnimationType.slide,
+    badgeContent: Text('3',
+        style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
+    child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
+    ),
+            ):Container(),
+            selectedIndex==2? SizedBox(
+              width: 10,
+            ):Container(),
             SizedBox(
               width: 10,
             ),
@@ -162,106 +188,21 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         ),
         drawer: navigationDrawer(),
         body: _children[selectedIndex],
-        bottomNavigationBar: SizedBox(child:BottomNavigationBar(
-
-
-
+        bottomNavigationBar: FABBottomAppBar(
           backgroundColor: Color(AppColors.BaseColor),
-          type: BottomNavigationBarType.fixed,
+          selectedColor:Colors.white,
+          onTabSelected: onItemTapped,
+
           items: [
-            BottomNavigationBarItem(
-
-              icon: selectedIndex==0? Container(
-
-        padding: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: Colors.white ,
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(width: 1, color: Colors.black)),
-        child: Image(image: AssetImage('assets/home_selected.png'), width: 23,height: 23,),
-      ): Image(image: AssetImage('assets/home_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==0? Text(Languages
-                  .of(context)
-                  .Home,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
-                  .of(context)
-                  .Home,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
-            ),
-            BottomNavigationBarItem(
-              icon: selectedIndex==1? Container(
-
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: Colors.white ,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/news_selected.png'), width: 23,height: 23,),
-              ): Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==1? Text(Languages
-                  .of(context)
-                  .News,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
-                  .of(context)
-                  .News,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
-            ),
-
-
-            BottomNavigationBarItem(
-              icon: selectedIndex==2? Container(
-
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: Colors.white ,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/book_selected.png'), width: 23,height: 23,),
-              ): Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,),
-              title:  selectedIndex==2? Text(Languages
-                  .of(context)
-                  .Books,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFFffffff)),):Text(Languages
-                  .of(context)
-                  .Books,
-                style: GoogleFonts.roboto(fontSize: 13,color: Color(0xFF000000)),),
-            ),
-
-           /* BottomNavigationBarItem(
-              icon: selectedIndex==3? Container(
-
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: Image(image: AssetImage('assets/quick_selected.png'), width: 25,height: 25,),
-              ): Image(image: AssetImage('assets/quick_unselected.png'), width: 30,height: 30,),
-              title:  selectedIndex==3? Text('Quick',
-                style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Quick',
-                style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
-            )
-            ,*/
-        /*    BottomNavigationBarItem(
-            icon: selectedIndex==4? Container(
-
-    padding: EdgeInsets.all(2),
-    decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(100),
-    border: Border.all(width: 1, color: Colors.black)),
-    child: Image(image: AssetImage('assets/chat_selected.png'), width: 25,height: 25,),
-    ): Image(image: AssetImage('assets/chat_unselected.png'), width: 30,height: 30,),
-    title:  selectedIndex==4? Text('Chat',
-    style: TextStyle(fontSize: 11,color: Color(0xFFffffff)),):Text('Chat',
-    style: TextStyle(fontSize: 11,color: Color(0xFF000000)),),
-    )*/
+            FABBottomAppBarItem(iconData: selectedIndex==0?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 24,height: 24,)
+                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 24,height: 24,), text: 'Home'),
+            FABBottomAppBarItem(iconData: selectedIndex==1?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 24,height: 24,)
+                : Image(image: AssetImage('assets/news_unselected.png'), width: 24,height: 24,), text: 'News'),
+            FABBottomAppBarItem(iconData: selectedIndex==2?  Image(image: AssetImage('assets/ic_book_sel.png'), width: 24,height: 24,)
+                : Image(image: AssetImage('assets/book_unselected.png'), width: 24,height: 24,), text: 'Books'),
 
           ],
-          currentIndex: selectedIndex,
-
-          onTap: onItemTapped,
-        )),
+        ),
       );
     }
   }

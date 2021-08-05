@@ -16,6 +16,7 @@ import'../ApiResponses/BookGroupListResponse.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ApiResponses/BookData.dart';
 import '../localization/locale_constant.dart';
+import '../Views/SeeALLBooks.dart';
 class BookGroupListPage extends StatefulWidget {
   @override
   BookGroupListPageState createState() {
@@ -226,12 +227,12 @@ class BookGroupListPageState extends State<BookGroupListPage> {
                 new GestureDetector(
                     onTap: (){
 
-                   /*   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                           MaterialPageRoute(
                               builder: (BuildContext context) {
-                                return ViewAllVideosScreen(chapterId: (content.id).toString(),chapterName:content.title,classId:classId);
+                                return SeeALLBooksPage(bookArray:content.books,name:content.langName);
                               }
-                          ) );*/
+                          ) );
 
 
                     },

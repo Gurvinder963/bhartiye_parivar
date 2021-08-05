@@ -18,7 +18,7 @@ import '../ApiResponses/AddToCartResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Views/MyCart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:badges/badges.dart';
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
 
@@ -70,16 +70,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> images = [
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-          "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png",
-      "https://static.javatpoint.com/tutorial/flutter/images/flutter-logo.png"
-    ];
+
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -91,17 +82,24 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
 
           GestureDetector(
-          onTap: () {
+            onTap: () {
 
-            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return MyCartPage();
-                    }
-                ) );
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return MyCartPage();
+                      }
+                  ) );
 
-    },child:
-          Icon(Icons.shopping_cart,color: Colors.white,size: 30,),
+            },child:
+          Badge(
+            position: BadgePosition.topEnd(top: 0, end: -4),
+            animationDuration: Duration(milliseconds: 300),
+            animationType: BadgeAnimationType.slide,
+            badgeContent: Text('3',
+                style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
+            child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
+          ),
           ),
           SizedBox(
             width: 20,
@@ -311,19 +309,33 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                     mContent.description,
                     style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                   ):isPhotos?    SizedBox(
-                      height: 200, child: Expanded(
-
                       child: GridView.builder(
-    itemCount: images.length,
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+    itemCount: mContent.images.length,
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 3,
-    crossAxisSpacing: 4.0,
-    mainAxisSpacing: 4.0
+        crossAxisCount: 3,
+        crossAxisSpacing: 12.0,
+        childAspectRatio: (1 / 1.7),
+        mainAxisSpacing: 4.0
     ),
     itemBuilder: (BuildContext context, int index){
-    return Image.network(images[index]);
+    return  Container(
+      margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+
+      alignment: Alignment.center,
+
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        image: DecorationImage(
+          fit: BoxFit.fill,
+          image: NetworkImage(mContent.images[index]),
+        ),
+      ),
+
+    );
     },
-    ))):Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
+    )):Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
                       style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500)),),
 
 

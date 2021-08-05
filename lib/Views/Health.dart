@@ -23,8 +23,22 @@ class HealthPage extends StatefulWidget {
 }
 
 class HealthPageState extends State<HealthPage> {
+  ScrollController _sc = new ScrollController();
   List mainData = new List();
+  int page = 1;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   bool isLoading = false;
+
+  String user_Token;
+
+
+  @override
+  void dispose() {
+
+    _sc.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -32,44 +46,62 @@ class HealthPageState extends State<HealthPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
-
-      if (!isLoading) {
-        setState(() {
-          isLoading = true;
-        });}
-
-      getLocaleContentLang().then((locale) {
-
-        if(locale==null){
-          locale="";
-        }
-
-        getVideosList(user_Token,videoCategory,locale).then((value) => {
-
-          setState(() {
-            isLoading = false;
-            mainData.addAll(value.data);
-
-          })
-
-        });
+       user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
 
-      });
 
+
+
+       apiCall();
 
 
 
 
       return (prefs.getString('token'));
     });
+    _sc.addListener(() {
+      if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        apiCall();
+      }
+    });
+
+  }
+
+  void apiCall(){
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });}
+    getLocaleContentLang().then((locale) {
+
+      if(locale==null){
+        locale="";
+      }
+
+      getVideosList(user_Token,videoCategory,locale).then((value) => {
+
+        setState(() {
+          isLoading = false;
+          mainData.addAll(value.data);
+          if (!mainData.isEmpty) {
+            page++;
+          }
+        })
+
+      });
+
+
+    });
 
   }
 
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
-  print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale};
+
+    String pageIndex = page.toString();
+    String perPage = "10";
+    print(locale.toString());
+    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
+      'per_page': perPage,};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 
@@ -333,8 +365,27 @@ class HealthPageState extends State<HealthPage> {
       ),
     );
   }
+
+  Future<void> _getData() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+      mainData.clear();
+      page = 1;
+
+    });
+
+    apiCall();
+
+  }
+
   Widget _buildList() {
-    return ListView.builder(
+    return
+      RefreshIndicator(
+        key: refreshKey,
+        child:
+      ListView.builder(
         itemCount: mainData.length+ 1 , // Add one more item for progress indicator
 
         itemBuilder: (BuildContext context, int index) {
@@ -372,8 +423,10 @@ class HealthPageState extends State<HealthPage> {
         );
       }
       },
-
-    );
+        controller: _sc,
+    ),
+        onRefresh: _getData,
+      );
   }
 
 }

@@ -22,7 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Utils/AppColors.dart';
 import '../ApiResponses/OTPResponse.dart';
-
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 
 
@@ -54,8 +54,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   }
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
-
-  final myControllerPhone = TextEditingController();
+  //final controller =MaskedTextController(mask: "00000-00000");
+  final myControllerPhone = MaskedTextController(mask: "00000-00000");
   final myControllerContryCode = TextEditingController();
 
   String fcm_token;
@@ -478,8 +478,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         var s2 = myControllerContryCode.text.substring(1);
         print(s2);
 
+        var arr=myControllerPhone.text.split("-");
+        String newStringMob=arr[0]+arr[1];
 
-        String mobile=s2+myControllerPhone.text;
+        String mobile=s2+newStringMob;
+        print(mobile);
         var pin=nextIntOfDigits(4);
 
         print(pin);
@@ -498,7 +501,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString(),otpSendDate:date1);
+                  return VerifyOTPPage(c_code:s2,mobile:newStringMob,otpCode:pin.toString(),otpSendDate:date1);
                 }
             ) )
 

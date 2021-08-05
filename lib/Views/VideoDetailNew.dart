@@ -258,15 +258,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 alignment: Alignment.center,
                               ),
                               SizedBox(width: 10,),
-                              Image(
-                                image: new AssetImage("assets/whatsapp.png"),
-                                width: 23,
-                                height:  23,
-                                color: null,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),
-                              SizedBox(width: 10,),
+
                               Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                               Expanded( child:Align(
                                 alignment: Alignment.centerRight,

@@ -33,6 +33,9 @@ dependencies:
   video_player: ^1.0.1
   flutter_widget_from_html: ^0.5.2+1
   flutter_screenutil: ^4.0.4+1
+  flutter_masked_text: ^0.8.0
+  flutter_phone_direct_caller: ^1.0.1
+  badges: ^1.2.0
 
   flutter:
     sdk: flutter
@@ -95,6 +98,11 @@ flutter:
     - assets/ic_like.png
     - assets/ic_dislike.png
     - assets/ic_empty_box.png
+    - assets/ic_new_my_books.png
+    - assets/ic_by_lang.png
+    - assets/ic_home_sel.png
+    - assets/ic_home_unsel.png
+    - assets/ic_book_sel.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -26,6 +26,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../Views/Home.dart';
 //import 'package:device_info/device_info.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 
 
@@ -86,99 +87,15 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       _isHidden = !_isHidden;
     });
   }
-  Widget _emailPasswordWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        _entryFieldCountryCode("Password", isPassword: true),
-        SizedBox(width: 10),
-        _entryField("Phone"),
 
-      ],
-    );
+
+
+  _callNumber() async{
+    var number = mC_code+mMobile;
+    //set the number here
+    bool res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
-
-
-    return Container(
-      width: 200,
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-
-          TextField(
-
-            controller: myControllerPhone,
-            obscureText: false,
-            style: TextStyle(color: Colors.black),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText:"Phone number",
-
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
-
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              contentPadding: EdgeInsets.all(12),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _entryFieldCountryCode(String title, {bool isPassword = false}) {
-
-    myControllerContryCode.text="+91";
-    return Container(
-      width: 60,
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-
-          TextField(
-
-            controller: myControllerContryCode,
-            obscureText: false,
-            style: TextStyle(color: Colors.black),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-
-
-              labelStyle: TextStyle(fontSize: 13,color: Colors.black),
-              hintStyle: TextStyle(fontSize: 13,color: Colors.black),
-
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange, width: 1.0),
-              ),
-
-              contentPadding: EdgeInsets.all(12),
-            ),
-          )
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -186,7 +103,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     super.initState();
 
 
-    myControllerContryCode.text="+91";
+
 
 
 
@@ -501,7 +418,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     return InkWell(
       onTap: () {
 
-
+        _callNumber();
 
       },
 
