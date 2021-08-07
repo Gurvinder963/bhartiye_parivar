@@ -20,6 +20,7 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../Views/BookPayment.dart';
 
 class ItemData {
 
@@ -474,6 +475,13 @@ class MyCartPageState extends State<MyCartPage> {
                 backgroundColor: Colors.black,
                 textColor: Colors.white,
                 fontSize: 16.0);
+
+            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return BookPaymentPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
+                    }
+                ) );
 
 
           }

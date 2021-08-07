@@ -42,45 +42,21 @@ class Data {
 
 class Order {
   int id;
-  int userId;
-  int total;
-  String paymentResponse;
-  String paymentStatus;
-  String createdAt;
-  String createdBy;
-  String updatedAt;
+
 
   Order(
       {this.id,
-        this.userId,
-        this.total,
-        this.paymentResponse,
-        this.paymentStatus,
-        this.createdAt,
-        this.createdBy,
-        this.updatedAt});
+       });
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    userId = json['user_id'];
-    total = json['total'];
-    paymentResponse = json['payment_response'];
-    paymentStatus = json['payment_status'];
-    createdAt = json['created_at'];
-    createdBy = json['created_by'];
-    updatedAt = json['updated_at'];
+
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['total'] = this.total;
-    data['payment_response'] = this.paymentResponse;
-    data['payment_status'] = this.paymentStatus;
-    data['created_at'] = this.createdAt;
-    data['created_by'] = this.createdBy;
-    data['updated_at'] = this.updatedAt;
+
     return data;
   }
 }

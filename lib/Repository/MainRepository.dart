@@ -7,6 +7,7 @@ import '../ApiResponses/OTPResponse.dart';
 import '../ApiResponses/BookGroupListResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/OrderResponse.dart';
+import '../ApiResponses/TxnResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -69,5 +70,11 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/mybooks",body,token);
     return BookListResponse.fromJson(response);
   }
+
+  Future<TxnResponse> fetchPostTxnToken(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/create-checksumhash",body,token);
+    return TxnResponse.fromJson(response);
+  }
+
 
 }

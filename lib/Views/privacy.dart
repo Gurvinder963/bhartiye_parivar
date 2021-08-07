@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+//import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import '../Utils/AppColors.dart';
+import '../Utils/AppStrings.dart';
+import 'package:google_fonts/google_fonts.dart';
 class PrivacyScreen extends StatefulWidget {
 
 
@@ -17,7 +20,7 @@ class PrivacyScreen extends StatefulWidget {
 class PrivacyScreenState extends State<PrivacyScreen> {
   WebViewController _controller;
   String fileUrl="";
-  InAppWebViewController webView;
+ // InAppWebViewController webView;
   String url = "";
   double progress = 0;
   @override
@@ -26,7 +29,7 @@ class PrivacyScreenState extends State<PrivacyScreen> {
     super.initState();
 
 
-    _loadHtmlFromAssets();
+  //  _loadHtmlFromAssets();
 
 
   }
@@ -34,10 +37,17 @@ class PrivacyScreenState extends State<PrivacyScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: Text('Privacy Policy')),
+      appBar: AppBar(
+        toolbarHeight: 50,
+        backgroundColor: Color(AppColors.BaseColor),
+        title: Text(AppStrings.Details, style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
+
+
+
+      ),
       body:
-      InAppWebView(
-        initialUrl: fileUrl,
+     InAppWebView(
+        initialUrl: 'http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html',
         initialHeaders: {},
         initialOptions: InAppWebViewGroupOptions(
             crossPlatform: InAppWebViewOptions(
@@ -45,7 +55,7 @@ class PrivacyScreenState extends State<PrivacyScreen> {
             )
         ),
         onWebViewCreated: (InAppWebViewController controller) {
-          webView = controller;
+        //  webView = controller;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
@@ -63,7 +73,12 @@ class PrivacyScreenState extends State<PrivacyScreen> {
           });
         },
       ),
-      /*WebView(
+     /* HtmlWidget(
+
+        "http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html",
+        webView: true,
+      )*/
+  /*  WebView(
 
         initialUrl: 'about:blank',
         onWebViewCreated: (WebViewController webViewController) {
@@ -76,14 +91,10 @@ class PrivacyScreenState extends State<PrivacyScreen> {
 
 
   _loadHtmlFromAssets() async {
-    String fileText = await rootBundle.loadString('assets/BankonKaMayajaal/Bankjaal.html');
-    setState(() {
+  //  String fileText = await rootBundle.loadString('assets/BankonKaMayajaal/mobile/index.html');
+   /* setState(() {
       fileUrl = fileText;
-    });
-  /*  _controller.loadUrl( Uri.dataFromString(
-        fileText,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8')
-    ).toString());*/
+    });*/
+   _controller.loadUrl('http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html');
   }
 }
