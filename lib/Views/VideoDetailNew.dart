@@ -229,26 +229,27 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                              SizedBox(width: 5,),
                               Image(
-                                image: new AssetImage("assets/ic_like.png"),
-                                width: 23,
-                                height:  23,
+                                image: new AssetImage("assets/like_unsel.png"),
+                                width: 24,
+                                height:  24,
                                 color: null,
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
-                              SizedBox(width: 10,),
+                              SizedBox(width: 17,),
                               Image(
-                                image: new AssetImage("assets/ic_dislike.png"),
-                                width: 28,
-                                height:  28,
+                                image: new AssetImage("assets/dislike_unsel.png"),
+                                width: 24,
+                                height:  24,
                                 color: null,
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
-                              SizedBox(width: 10,),
+                              SizedBox(width: 17,),
                               Icon(Icons.report,size: 28,),
-                              SizedBox(width: 10,),
+                              SizedBox(width: 17,),
                               Image(
                                 image: new AssetImage("assets/share.png"),
                                 width: 23,
@@ -257,9 +258,16 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),
-                              SizedBox(width: 10,),
-
-                              Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
+                              SizedBox(width: 17,),
+                              Image(
+                                image: new AssetImage("assets/bookmark_unsel.png"),
+                                width: 24,
+                                height:  24,
+                                color: null,
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                              ),
+                            //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                               Expanded( child:Align(
                                 alignment: Alignment.centerRight,
                                 child:Text("SUBSCRIBE \nNOTIFICATIONS",
@@ -267,12 +275,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                                 style: GoogleFonts.roboto(
-                                  fontSize:13.0,
+                                  fontSize:14.0,
 
                                   color: Color(AppColors.BaseColor),
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
 
-                                ),))),
+                                ),))),  SizedBox(width: 5,),
                             ]))
                     ,  Padding(
                         padding: EdgeInsets.fromLTRB(10,7,10,3),
@@ -289,7 +297,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     children: <Widget>[
 
  _joinButton(),
-      SizedBox(width: 20,),
+      SizedBox(width: 30,),
       _DonateButton()
 
 

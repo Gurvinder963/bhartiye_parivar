@@ -55,8 +55,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
   //final controller =MaskedTextController(mask: "00000-00000");
-  final myControllerPhone = MaskedTextController(mask: "00000-00000");
-  final myControllerContryCode = TextEditingController();
+   var myControllerPhone = MaskedTextController(mask: "00000-00000");
+   var myControllerContryCode = TextEditingController();
 
   String fcm_token;
 
@@ -143,7 +143,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         children: <Widget>[
 
           TextField(
-
+            enabled: false,
             controller: myControllerContryCode,
             obscureText: false,
             style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500),
@@ -164,7 +164,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
               ),
-
+              disabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.orange, width: 1.0),
+              ),
               contentPadding: EdgeInsets.all(12),
             ),
           )
@@ -402,7 +404,14 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           print(code.flagUri);
                           myControllerContryCode.text=code.dialCode;
                           setState(() {
+                           if(code.dialCode=='+91'){
+                            myControllerPhone = MaskedTextController(mask: "00000-00000");
 
+                           }
+                           else{
+                              myControllerPhone=MaskedTextController(mask: "000000000000000");
+
+                           }
                           });
 
                         },
@@ -420,9 +429,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                               children:  <TextSpan>[
                                 TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
+                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF0000ff))),
                                 TextSpan(text: ' and', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
+                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF0000ff))),
                               ],
                             ),
                           ),
@@ -477,17 +486,22 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         else {
         var s2 = myControllerContryCode.text.substring(1);
         print(s2);
+        String mobile;
+        if(s2=='91') {
+          var arr = myControllerPhone.text.split("-");
+          String newStringMob = arr[0] + arr[1];
 
-        var arr=myControllerPhone.text.split("-");
-        String newStringMob=arr[0]+arr[1];
-
-        String mobile=s2+newStringMob;
+           mobile = s2 + newStringMob;
+        }
+        else{
+           mobile=s2+myControllerPhone.text;
+        }
         print(mobile);
         var pin=nextIntOfDigits(4);
 
         print(pin);
 
-        String msg=pin.toString()+" is your one-time password (OTP) for login into App. Valid for 5 mintues.";
+        String msg=pin.toString()+" is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
         setState(() {
           _isInAsyncCall = true;
         });
@@ -501,7 +515,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:s2,mobile:newStringMob,otpCode:pin.toString(),otpSendDate:date1);
+                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString(),otpSendDate:date1);
                 }
             ) )
 

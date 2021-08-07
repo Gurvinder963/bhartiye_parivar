@@ -71,7 +71,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
             child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Color(AppColors.BaseColor),
-                toolbarHeight: kMinInteractiveDimension,
+                toolbarHeight: 50,
                 bottom: PreferredSize(
                   preferredSize: _tabBar.preferredSize,
                   child: ColoredBox(

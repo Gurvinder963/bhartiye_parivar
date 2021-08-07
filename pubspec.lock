@@ -161,7 +161,7 @@ packages:
     source: hosted
     version: "2.1.2"
   flutter_inappwebview:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_inappwebview
       url: "https://pub.dartlang.org"
@@ -399,6 +399,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4+3"
+  paytm_allinonesdk:
+    dependency: "direct main"
+    description:
+      name: paytm_allinonesdk
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   pedantic:
     dependency: transitive
     description:

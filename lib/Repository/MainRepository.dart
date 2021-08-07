@@ -61,4 +61,13 @@ class MainRepository {
     return OrderResponse.fromJson(response);
   }
 
+  Future<AddToCartResponse> fetchPaymentBookData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/payments",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+  Future<BookListResponse> fetchMyBooksData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/mybooks",body,token);
+    return BookListResponse.fromJson(response);
+  }
+
 }

@@ -51,7 +51,7 @@ class HomeChildPageState extends State<HomeChildPage> {
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
               leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
-              toolbarHeight: 30,
+              toolbarHeight: 40,
               flexibleSpace: TabBar(
                 isScrollable: true,
                 unselectedLabelColor: Color(0xFF5a5a5a),

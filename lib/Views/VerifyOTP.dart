@@ -91,9 +91,10 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
   _callNumber() async{
-    var number = mC_code+mMobile;
+    var number = "+918929897587";
     //set the number here
     bool res = await FlutterPhoneDirectCaller.callNumber(number);
+    res ? print("true") : print("false");
   }
 
 
@@ -326,6 +327,14 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                 setState(() {
                                    _isInAsyncCall = true;
                                   });
+                                print("mcode"+mC_code);
+                                if(mC_code=='91') {
+                                  var arr = mMobile.split("-");
+                                  String newStringMob = arr[0] + arr[1];
+
+                                  mMobile = newStringMob;
+                                }
+
 
                            getLoginResponse(mC_code,mMobile)
                               .then((res) async {
