@@ -17,7 +17,7 @@ class ApiProvider {
       "Content-Type": 'application/json'
     };
     var uri =
-    Uri.https(_baseUrl, url, queryParameters);
+    Uri.http(_baseUrlWithoutHTTP, url, queryParameters);
 
     var responseJson;
     try {

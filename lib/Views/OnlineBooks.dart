@@ -261,7 +261,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     return    Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-        height: 180,
+        height: 200,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -278,13 +278,13 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                          height: 120,
+                          height: 140,
                           width: 100,
                           alignment: Alignment.center,
 
                           decoration: BoxDecoration(
 
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
                             image: DecorationImage(
                               fit: BoxFit.fill,
                               image: NetworkImage(thumbnail),

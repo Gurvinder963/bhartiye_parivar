@@ -112,7 +112,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     else{
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
-
+    var channel=mContent.channel==null?"My Channel":mContent.channel;
 
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -183,7 +183,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: <Widget>[
-                                                      Text(publisher,   overflow: TextOverflow.ellipsis,
+                                                      Text(channel,   overflow: TextOverflow.ellipsis,
                                                         maxLines: 1, style: GoogleFonts.roboto(
                                                           fontSize:12.0,
                                                           color: Color(0xFF5a5a5a),
@@ -580,7 +580,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                   mainData[index].videoImage,
                   mainData[index].lang,
                   mainData[index].createdAt,
-                  mainData[index].publisher,
+                  mainData[index].channel,
                   mainData[index].video_duration,
                   mainData[index].videoUrl,
                   mainData[index].videoSourceType
@@ -662,7 +662,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     );
   }
   Widget _buildBoxVideo(BuildContext context,Data content){
-    var publisher =content.publisher==null?"Bank Jall":content.publisher;
+   var channel=content.channel==null?"My Channel":content.channel;
     final width = MediaQuery.of(context).size.width;
 
     String html;
@@ -706,9 +706,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       }
        html = '''
-          <iframe id="ytplayer" type="text/html" width="90%" height="100%"
+          <iframe id="ytplayer" style="border: 0px solid black;" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
-  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
      ''';
 
     }

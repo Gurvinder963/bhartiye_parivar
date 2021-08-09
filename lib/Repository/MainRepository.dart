@@ -8,6 +8,7 @@ import '../ApiResponses/BookGroupListResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/OrderResponse.dart';
 import '../ApiResponses/TxnResponse.dart';
+import '../ApiResponses/PinCodeResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -76,5 +77,14 @@ class MainRepository {
     return TxnResponse.fromJson(response);
   }
 
+  Future<AddToCartResponse> fetchVerifyMissCall(var body) async {
+    final response = await _provider.get("public/api/v1/auth/verify-miscall",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<PinCodeResponse> fetchPinAddress(var body) async {
+    final response = await _provider.get("public/api/v1/get-address",body);
+    return PinCodeResponse.fromJson(response);
+  }
 
 }

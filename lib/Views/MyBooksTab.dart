@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'OnlineBooks.dart';
 import 'TrackOrder.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 
 
@@ -32,7 +32,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
     indicatorWeight: 2,
     indicatorColor: Colors.orange,
     tabs: [
-      Tab(child: Text('Online Books')),
+      Tab(child: Text('Online Books', style: GoogleFonts.poppins(fontSize: 17,fontWeight: FontWeight.w600))),
 
       Tab(child: Container(
 
@@ -47,7 +47,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
               child:
                 Align(
                   alignment: Alignment.center,
-                  child:  Text('Track Order'),
+                  child: Text('Track Order', style: GoogleFonts.poppins(fontSize: 17,fontWeight: FontWeight.w600)),
                 ))
 
 ])
@@ -60,7 +60,8 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text("My Books"),
+          title: Text('My Books', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+
         ),
         body:SafeArea(
           top: true,
@@ -71,7 +72,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
             child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Color(AppColors.BaseColor),
-                toolbarHeight: 50,
+                toolbarHeight: kMinInteractiveDimension,
                 bottom: PreferredSize(
                   preferredSize: _tabBar.preferredSize,
                   child: ColoredBox(

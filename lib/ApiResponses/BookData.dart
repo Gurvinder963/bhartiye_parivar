@@ -1,11 +1,13 @@
 class BookData {
   int id;
+  int book_type_id;
   int books_id;
   String title;
   String description;
   String thumbImage;
-  String thumbnail_image;
+  String back_image;
   int cost;
+  int ebook_cost;
   int actual_cost;
   int quantity;
 
@@ -23,12 +25,14 @@ class BookData {
 
   BookData(
       {this.id,
+        this.book_type_id,
         this.title,
         this.books_id,
         this.description,
         this.thumbImage,
-        this.thumbnail_image,
+        this.back_image,
         this.cost,
+        this.ebook_cost,
         this.actual_cost,
         this.quantity,
 
@@ -46,12 +50,14 @@ class BookData {
 
   BookData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    book_type_id = json['book_type_id'];
     books_id = json['books_id'];
     title = json['title'];
     description = json['description'];
     thumbImage = json['thumb_image'];
-    thumbnail_image = json['thumbnail_image'];
+    back_image = json['back_image'];
     cost = json['cost'];
+    ebook_cost = json['ebook_cost'];
     actual_cost = json['actual_cost'];
 
     quantity = json['quantity'];
@@ -73,12 +79,14 @@ class BookData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['book_type_id'] = this.book_type_id;
     data['books_id'] = this.books_id;
     data['title'] = this.title;
     data['description'] = this.description;
     data['thumb_image'] = this.thumbImage;
-    data['thumbnail_image'] = this.thumbnail_image;
+    data['back_image'] = this.back_image;
     data['cost'] = this.cost;
+    data['ebook_cost'] = this.ebook_cost;
     data['actual_cost'] = this.actual_cost;
 
     data['quantity'] = this.quantity;

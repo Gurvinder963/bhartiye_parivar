@@ -22,6 +22,7 @@ import '../Views/CreateProfile.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/LoginResponse.dart';
+import '../ApiResponses/AddToCartResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../Views/Home.dart';
@@ -54,6 +55,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   DateTime mOTPSendDate;
   int MyContentId;
   String mMobile;
+  bool isVerifyMissCallBtnTapped=false;
+  bool isCallAvailable=false;
   String mC_code;
   String mInvitedBy="";
   bool checkedValue=false;
@@ -95,11 +98,15 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     //set the number here
     bool res = await FlutterPhoneDirectCaller.callNumber(number);
     res ? print("true") : print("false");
+    setState(() {
+      isCallAvailable = true;
+    });
   }
 
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     // TODO: implement initState
     super.initState();
 
@@ -111,23 +118,115 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   }
 
 
-
-
-
   @override
-  void dispose() {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
 
-    // Clean up the controller when the widget is disposed.
-    myControllerPhone.dispose();
-    myControllerContryCode.dispose();
-    super.dispose();
+      if(isCallAvailable && isVerifyMissCallBtnTapped){
+        setState(() {
+          _isInAsyncCall = true;
+
+        });
+
+        Timer(Duration(seconds: 10),
+                ()=>{
+
+                  getVerifyMissCallAPI("+"+mMobile).then((value) => {
+
+                setState(() {
+                  isVerifyMissCallBtnTapped=false;
+                _isInAsyncCall = false;
+                isCallAvailable=false;
+
+                }),
+
+                if(value.status==1){
+                  loginAPICall()
+                }
+                else{
+                  showAlertDialogValidation(context,"Enter Mobile no. not valid")
+                }
+
+
+
+                })
+
+
+        }
+        );
+      }
+
+
+    }
   }
 
 
+  void loginAPICall(){
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    print("mcode"+mC_code);
+    if(mC_code=='91') {
+      var arr = mMobile.split("-");
+      String newStringMob = arr[0] + arr[1];
 
+      mMobile = newStringMob;
+    }
+
+
+    getLoginResponse(mC_code,mMobile)
+        .then((res) async {
+      setState(() {
+        _isInAsyncCall = false;
+      });
+
+
+      if (res.status == 1) {
+
+        SharedPreferences _prefs =await SharedPreferences.getInstance();
+
+
+        Prefs.setUserLoginId(_prefs,(res.data.user.id).toString());
+        Prefs.setUserLoginToken(_prefs,(res.data.token).toString());
+        Prefs.setUserLoginName(_prefs,(res.data.user.fullName).toString());
+
+
+        Timer(Duration(seconds: 1),
+                ()=>Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder:
+                    (context) =>
+                    HomePage()
+                ), ModalRoute.withName("/Home")
+            )
+        );
+
+
+
+
+      }
+      else{
+
+        Timer(Duration(seconds: 1),
+                ()=>Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder:
+                    (context) =>
+                    CreateProfilePage(c_code:mC_code,mobile:mMobile)
+                ), ModalRoute.withName("/Profile")
+            )
+        );
+
+
+
+      }
+
+
+    });
+
+
+
+  }
   showAlertDialogValidation(BuildContext context,String message) {
 
-    // set up the button
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
@@ -153,6 +252,19 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       },
     );
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    // Clean up the controller when the widget is disposed.
+    myControllerPhone.dispose();
+    myControllerContryCode.dispose();
+    super.dispose();
+  }
+
+
+
+
 
 
   @override
@@ -423,9 +535,20 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     return repository.fetchLoginData(body);
 
   }
+
+  Future<AddToCartResponse> getVerifyMissCallAPI(String mobileNo) async {
+
+    var body ={'who':mobileNo,'password':'qwerty'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchVerifyMissCall(body);
+
+  }
   Widget _submitButton() {
     return InkWell(
       onTap: () {
+        setState(() {
+          isVerifyMissCallBtnTapped = true;
+        });
 
         _callNumber();
 

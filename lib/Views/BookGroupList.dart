@@ -157,7 +157,8 @@ class BookGroupListPageState extends State<BookGroupListPage> {
       appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text('Books By Language'),
+        title: Text('Books By Language', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+
       ),
       body: Container(
           margin: EdgeInsets.fromLTRB(4,0,0,0),
@@ -267,7 +268,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
   Widget _horizontalListView(String title,List<BookData> bookList) {
     return SizedBox(
-        height: 190,
+        height: 200,
         child: ListView.builder(
           itemCount: bookList.length,
           scrollDirection: Axis.horizontal,
@@ -324,12 +325,12 @@ class BookGroupListPageState extends State<BookGroupListPage> {
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-          height: 140,
-          width: 120,
+          height: 150,
+          width: 110,
           alignment: Alignment.center,
 
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
             image: DecorationImage(
               fit: BoxFit.fill,
               image: NetworkImage(thumbnail),

@@ -25,6 +25,7 @@ import 'AppLanguage.dart';
 import '../Utils/AppStrings.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/LoginResponse.dart';
+import '../ApiResponses/PinCodeResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -49,6 +50,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   String mInvitedBy="";
   String mMobile;
   String mC_code;
+  String mAddress='';
   String _chosenValue="Select";
   bool checkedValue=false;
   bool _isInAsyncCall = false;
@@ -81,6 +83,13 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     });
   }
 
+  Future<PinCodeResponse> getPinAddressAPI(String pin) async {
+
+    var body ={'pin_code':pin};
+    MainRepository repository=new MainRepository();
+    return repository.fetchPinAddress(body);
+
+  }
   Widget _entryFieldPincode(String title, {bool isPassword = false}) {
 
 
@@ -92,7 +101,39 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
         children: <Widget>[
 
           TextField(
+            onChanged: (text) {
+             if(text.length>5){
+               FocusScope.of(context).requestFocus(FocusNode());
+               getPinAddressAPI(text).then((value) => {
 
+
+
+                 if(value.status==1){
+                   setState(() {
+                    mAddress=value.data.address.postOffice+", "+value.data.address.district+", "+value.data.address.region;
+                   }),
+                 }
+                 else{
+                   showAlertDialogValidation(context,"pin not valid")
+                 }
+
+
+
+               });
+
+             }
+             else{
+               setState(() {
+                 mAddress="";
+               });
+             }
+
+
+            },
+            inputFormatters: [
+              new LengthLimitingTextInputFormatter(6),
+            ],
+            keyboardType: TextInputType.number,
             controller: myControllerPinCode,
             obscureText: false,
             style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
@@ -126,7 +167,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
     return Container(
 
-      margin: EdgeInsets.symmetric(vertical: 3,horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 2,horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -167,7 +208,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
     return Container(
 
-      margin: EdgeInsets.symmetric(vertical: 3,horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 2,horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -363,28 +404,30 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,6,10,8),
+                            padding: EdgeInsets.fromLTRB(10,5,10,8),
                             child:  Text("Create Profile", textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,6,10,0),
+                            padding: EdgeInsets.fromLTRB(10,5,10,0),
                             child:  Text("Please fill the details, all fields are \n required", textAlign: TextAlign.center,
                                 style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(14),color: Colors.black)),
                           ),
-
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                           _entryFieldName("Name"),
                           _entryFieldAge("Age"),
                           Align(
                             alignment: Alignment.topLeft,
                             child:   Padding(
-                                padding: EdgeInsets.fromLTRB(10,12,10,0),
+                                padding: EdgeInsets.fromLTRB(15,12,10,0),
                                 child:Text("Profession", style: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700))),
 
                           ),
 
                           Padding(
-                            padding: EdgeInsets.fromLTRB(10,0,10,0),
+                            padding: EdgeInsets.fromLTRB(15,0,10,0),
                             child:
                             Container(
                               height: 35,
@@ -428,6 +471,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                                           fontWeight: FontWeight.w500),
                                     ),
                                     onChanged: (String value) {
+                                      FocusScope.of(context).requestFocus(FocusNode());
                                       setState(() {
                                         _chosenValue = value;
                                       });
@@ -446,8 +490,15 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                               child: new Divider(color: Colors.orange,)
                           ),*/
 
-                        _entryFieldPincode("Pincode"),
-                          _submitButton()
+                          mC_code=='91'?_entryFieldPincode("Pincode"):Container(),
+                          mC_code=='91'&& !mAddress.isEmpty?
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(15,0,0,0),
+                              child: Text(mAddress, style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(12), color: Colors.red,fontWeight: FontWeight.bold)
+                          )
+                          ):Container(),
+
+                        ]),  _submitButton()
                         ]))),
                   ],
                 ),
@@ -475,7 +526,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
         else if(_chosenValue=='Select'){
           showAlertDialogValidation(context, "Please select profession!");
         }
-        else if(myControllerPinCode.text.isEmpty){
+        else if(mC_code=='91' && myControllerPinCode.text.isEmpty){
           showAlertDialogValidation(context, "Please enter pincode!");
         }
         else {
@@ -483,8 +534,15 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             _isInAsyncCall = true;
           });
 
+          String postal="";
+          if(mC_code=='91'){
+            postal=myControllerPinCode.text;
+          }
+
+
+
           getProfileResponse(myControllerName.text, myControllerAge.text,
-              _chosenValue, myControllerPinCode.text,mMobile,mC_code)
+              _chosenValue, postal,mMobile,mC_code)
               .then((res) async {
             setState(() {
               _isInAsyncCall = false;
@@ -533,8 +591,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
       child: Container(
         width: 150,
+        height: ScreenUtil().setWidth(40),
         margin: EdgeInsets.fromLTRB(0,15,0,10),
-        padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5)),

@@ -39,6 +39,8 @@ class Data {
   String videoSourceType;
   String videoImage;
   String publisher;
+  String channel;
+  int channel_id;
   String video_duration;
   String lang;
   bool status;
@@ -56,6 +58,8 @@ class Data {
         this.videoSourceType,
         this.videoImage,
         this.publisher,
+        this.channel,
+        this.channel_id,
         this.video_duration,
         this.lang,
         this.status,
@@ -73,6 +77,8 @@ class Data {
     videoSourceType = json['video_source_type'];
     videoImage = json['video_Image'];
     publisher = json['publisher'];
+    channel = json['channel'];
+    channel_id = json['channel_id'];
     video_duration = json['video_duration'];
     lang = json['lang'];
     status = json['status'];
@@ -93,6 +99,8 @@ class Data {
     data['video_Image'] = this.videoImage;
     data['video_duration'] = this.video_duration;
     data['publisher'] = this.publisher;
+    data['channel'] = this.channel;
+    data['channel_id'] = this.channel_id;
     data['lang'] = this.lang;
     data['status'] = this.status;
     data['display_status'] = this.displayStatus;

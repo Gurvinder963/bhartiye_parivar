@@ -64,11 +64,11 @@ class BooksPageState extends State<BooksPage> {
 
 
     return    Container(
-        margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
-    height: 160,
+        margin:EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0) ,
+    height: 182,
         decoration: BoxDecoration(
 
-            borderRadius: BorderRadius.all(Radius.circular(10))
+            borderRadius: BorderRadius.all(Radius.circular(5))
         ),
     child:Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +77,11 @@ class BooksPageState extends State<BooksPage> {
 
       Container(
         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-      height: 140,
+      height: 150,
         alignment: Alignment.center,
 
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
           image: DecorationImage(
             fit: BoxFit.fill,
             image: NetworkImage(thumbnail),
@@ -147,7 +147,7 @@ class BooksPageState extends State<BooksPage> {
 
              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
+                SizedBox(width: 8),
                 Expanded(
                   child:   GestureDetector(
                   onTap: () {
@@ -167,8 +167,8 @@ class BooksPageState extends State<BooksPage> {
 
                   new Image(
                     image: new AssetImage("assets/collage.png"),
-                    width: 150,
-                    height:  150,
+
+                    height:  160,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
@@ -188,7 +188,7 @@ class BooksPageState extends State<BooksPage> {
 
         ])),
                 ),
-            
+                SizedBox(width: 8),
                 Expanded(
                   child:  GestureDetector(
                 onTap: () {
@@ -206,8 +206,8 @@ class BooksPageState extends State<BooksPage> {
 
                         new Image(
                           image: new AssetImage("assets/languages.png"),
-                          width: 150,
-                          height:  150,
+
+                          height:  160,
 
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.center,
@@ -225,21 +225,21 @@ class BooksPageState extends State<BooksPage> {
 
                       ])),
                 ),
-
+                SizedBox(width: 8),
 
               ]
 
           ),
     Padding(
-    padding: EdgeInsets.fromLTRB(15,10,10,10),
+    padding: EdgeInsets.fromLTRB(10,10,10,10),
           child:
-          Text("All Books",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.black,fontWeight: FontWeight.bold),)
+          Text("All Books",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(20), color: Colors.black,fontWeight: FontWeight.w500),)
     )
 ,
 
               Expanded(
                   child:Padding(
-                    padding: EdgeInsets.fromLTRB(4,0,4,0),
+                    padding: EdgeInsets.fromLTRB(8,0,8,0),
 
                   child: GridView.builder(
 
@@ -247,7 +247,7 @@ class BooksPageState extends State<BooksPage> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 12.0,
-                        childAspectRatio: (1 / 1.7),
+                        childAspectRatio: (1 / 1.82),
                         mainAxisSpacing: 4.0
                     ),
                     itemBuilder: (BuildContext context, int index){

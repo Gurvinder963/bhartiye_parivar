@@ -77,7 +77,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text(AppStrings.Details, style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
+        title: Text('Details', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
         actions: <Widget>[
 
 
@@ -127,12 +127,12 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                   margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                   alignment: Alignment.center,
-                  height: ScreenUtil().setHeight(175),
+                  height: ScreenUtil().setHeight(170),
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage(mContent.thumbImage),
+                      image: NetworkImage(mContent.back_image),
 
                       alignment: Alignment.center,
                     ),
@@ -156,15 +156,17 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                mContent.book_type_id==2 || mContent.book_type_id==3?
                 Text(
                   'Online Book',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                ),
+                ):Container(),
                 Spacer(),
+                mContent.book_type_id==1 || mContent.book_type_id==3?
                 Text(
                   'Printed Book Price',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                ),
+                ):Container(),
               ]))
 
                 ,
@@ -174,15 +176,17 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          mContent.book_type_id==2 || mContent.book_type_id==3?
                           Text(
-                            '',
-                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Colors.black,fontWeight: FontWeight.w500),
-                          ),
-                          Spacer(),
-                          Text(
-                            '₹' +mContent.cost.toString()+'/-',
+                            '₹ ' +mContent.ebook_cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
-                          ),
+                          ):Container(),
+                          Spacer(),
+                          mContent.book_type_id==1 || mContent.book_type_id==3?
+                          Text(
+                            '₹ ' +mContent.cost.toString()+'/-',
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
+                          ):Container(),
                           SizedBox(width: 30),
                         ]))
 
@@ -193,7 +197,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          _DonateButton(),
+                          //_DonateButton(),
 
                         Spacer(),
                           _joinButton(),
@@ -346,39 +350,103 @@ class BooksDetailPageState extends State<BooksDetailPage> {
             alignment: FractionalOffset.bottomCenter,
             child:    GestureDetector(
     onTap: () {
-      setState(() {
+    /*  setState(() {
         _isInAsyncCall = true;
-      });
-      postAddToCart(mContent.id.toString(),user_Token)
-          .then((res) async {
-        setState(() {
-          _isInAsyncCall = false;
-        });
+      });*/
+      if(mContent.book_type_id==3) {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      addToCartAPI("2");
+                    },
+
+                    child: Container(
+                      width: 150,
+                      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                                color: Colors.grey.shade200,
+                                offset: Offset(1, 1),
+                                blurRadius: 0,
+                                spreadRadius: 0)
+                          ],
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Color(AppColors.BaseColor),
+                                Color(AppColors.BaseColor)
+                              ])),
+                      child: Text(
+                        'E-Book',
+                        style: GoogleFonts.poppins(
+                            fontSize: ScreenUtil().setSp(18),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Text("----or----"),
+
+                  InkWell(
+                    onTap: () {
+                      addToCartAPI("1");
+                    },
+
+                    child: Container(
+                      width: 150,
+                      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                                color: Colors.grey.shade200,
+                                offset: Offset(1, 1),
+                                blurRadius: 0,
+                                spreadRadius: 0)
+                          ],
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Color(AppColors.BaseColor),
+                                Color(AppColors.BaseColor)
+                              ])),
+                      child: Text(
+                        'Printed',
+                        style: GoogleFonts.poppins(
+                            fontSize: ScreenUtil().setSp(18),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              );
+            });
+      }
+      else{
+        addToCartAPI(mContent.book_type_id.toString());
+      }
 
 
-        if (res.status == 1) {
-          Fluttertoast.showToast(
-              msg: "Item added to cart !",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.black,
-              textColor: Colors.white,
-              fontSize: 16.0);
-
-          Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-              MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return MyCartPage();
-                  }
-              ) );
-
-
-        }
-        else {
-          showAlertDialogValidation(context,"Some error occured!");
-        }
-      });
 
     },child:Container(
               height: 50,
@@ -399,10 +467,43 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
     );
   }
-  Future<AddToCartResponse> postAddToCart(String book_id,String token) async {
+void addToCartAPI(String book_type_id){
+  postAddToCart(mContent.id.toString(),user_Token,book_type_id)
+      .then((res) async {
+    setState(() {
+      _isInAsyncCall = false;
+    });
+
+
+    if (res.status == 1) {
+      Fluttertoast.showToast(
+          msg: "Item added to cart !",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+          MaterialPageRoute(
+              builder: (BuildContext context) {
+                return MyCartPage();
+              }
+          ) );
+
+
+    }
+    else {
+      showAlertDialogValidation(context,"Some error occured!");
+    }
+  });
+}
+
+  Future<AddToCartResponse> postAddToCart(String book_id,String token,String book_type_id) async {
 
     print('my_token'+token);
-    var body =json.encode({"book_id":book_id});
+    var body =json.encode({"book_id":book_id,"book_type_id":book_type_id});
     MainRepository repository=new MainRepository();
     return repository.fetchAddCartData(body,token);
 

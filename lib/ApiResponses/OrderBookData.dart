@@ -5,6 +5,7 @@ class OrderBookData {
 class ItemData {
 
   String book_id;
+  String book_type_id;
   String user_id;
   String quantity;
 

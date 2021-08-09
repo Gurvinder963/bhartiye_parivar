@@ -141,7 +141,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           backgroundColor: Color(AppColors.BaseColor),
           title: Text(Languages
               .of(context)
-              .appName, style: GoogleFonts.roboto(fontSize: mfontSize,color: Color(0xFFFFFFFF))),
+              .appName, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+
           actions: <Widget>[
 
             selectedIndex==0?
@@ -216,7 +217,7 @@ class navigationDrawer extends StatelessWidget {
         children: <Widget>[
           createDrawerHeader(context),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
+              icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,color: Colors.black,),
               text: Languages
                   .of(context)
                   .aboutUs,

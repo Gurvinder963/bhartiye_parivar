@@ -61,43 +61,43 @@ class HomeChildPageState extends State<HomeChildPage> {
                 tabs: [
                   Tab(child: Text(Languages
                       .of(context)
-                      .main,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .main,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Trending,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Trending,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Health,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Health,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Series,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Series,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Spiritual,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Spiritual,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .History,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .History,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Culture,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Culture,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Conspiracy,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Conspiracy,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Twitter,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Twitter,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Facebook,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Facebook,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Instagram,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Instagram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Telegram,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Telegram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Whatsapp,style:GoogleFonts.roboto(fontSize: 17),)),
+                      .Whatsapp,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                 ],
               ),
             ),

@@ -25,12 +25,14 @@ import '../Views/BookPayment.dart';
 class ItemData {
 
   String book_id;
+  String book_type_id;
   String user_id;
   String quantity;
-  ItemData({this.book_id, this.user_id,this.quantity});
+  ItemData({this.book_id,this.book_type_id,this.user_id,this.quantity});
 
   ItemData.fromJson(Map<String, dynamic> json)
       : book_id = json['book_id'],
+        book_type_id = json['book_type_id'],
         user_id = json['user_id'],
         quantity = json['quantity']
   ;
@@ -38,6 +40,7 @@ class ItemData {
   Map<String, dynamic> toJson() {
     return {
       'book_id': book_id,
+      'book_type_id': book_type_id,
       'user_id': user_id,
       'quantity': quantity,
     };
@@ -70,6 +73,8 @@ class MyCartPageState extends State<MyCartPage> {
     qtyData.add('1');
     qtyData.add('2');
     qtyData.add('3');
+    qtyData.add('4');
+    qtyData.add('5');
     qtyData.add('more');
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -145,7 +150,7 @@ class MyCartPageState extends State<MyCartPage> {
         appBar: AppBar(
           toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text('Cart', style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
+          title: Text('Cart', style: GoogleFonts.roboto(fontSize: 24,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
 
         ),
         body:ModalProgressHUD(
@@ -448,6 +453,7 @@ class MyCartPageState extends State<MyCartPage> {
           itemData.user_id=USER_ID;
           itemData.book_id=mainData[i].books_id.toString();
           itemData.quantity=mainData[i].quantity.toString();
+          itemData.book_type_id=mainData[i].book_type_id.toString();
           order_items.add(itemData);
         }
 
@@ -543,7 +549,7 @@ class MyCartPageState extends State<MyCartPage> {
               },
               child:
               _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
-                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString()));
+                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].book_type_id));
 
 
 
@@ -652,13 +658,22 @@ class MyCartPageState extends State<MyCartPage> {
       },
     );
   }
-  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost){
+  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,int book_type_id){
 
+    String bookType="";
+    if(book_type_id==1){
+      bookType="(Printed)";
+    }
+    else  if(book_type_id==2){
+      bookType="(Online)";
+    }
+
+    title= title.length>25?title=title.substring(0,25)+"...":title;
 // print("my_qty--"+qty);
 
     return    Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-        height: 180,
+        height: 185,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -697,7 +712,7 @@ class MyCartPageState extends State<MyCartPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(15,4,0,0),
                   child:
-                  Text(title,   overflow: TextOverflow.ellipsis,
+                  Text(title,overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:14.0,
                       color: Color(0xFF000000).withOpacity(1),
@@ -707,12 +722,22 @@ class MyCartPageState extends State<MyCartPage> {
 
               Padding(
                   padding: EdgeInsets.fromLTRB(15,5,0,0),
-                  child: Text(publisher,   overflow: TextOverflow.ellipsis,
+                  child: Text(bookType,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:12.0,
                       color: Color(0xFF000000),
-
+                        fontWeight: FontWeight.w500
                     ),)),
+      Padding(
+          padding: EdgeInsets.fromLTRB(15,0,0,0),
+          child: Text(publisher,   overflow: TextOverflow.ellipsis,
+            maxLines: 1, style: GoogleFonts.poppins(
+              fontSize:12.0,
+              color: Color(0xFF000000),
+
+            ),)),
+
+
 
     SizedBox(
     width: 218,
@@ -723,7 +748,8 @@ class MyCartPageState extends State<MyCartPage> {
           Row(
 
               children: <Widget>[
-    Padding(
+
+                book_type_id==1?  Padding(
     padding: EdgeInsets.fromLTRB(10,0,0,0),
     child:
     Container(
@@ -782,7 +808,7 @@ class MyCartPageState extends State<MyCartPage> {
     )),
 
     ),
-    ),
+    ):Container(),
 
                 Spacer(),
 

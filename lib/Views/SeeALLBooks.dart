@@ -60,7 +60,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
 
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
-        height: 160,
+        height: 175,
         decoration: BoxDecoration(
 
             borderRadius: BorderRadius.all(Radius.circular(10))
@@ -72,11 +72,11 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
 
               Container(
                 margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-                height: 140,
+                height: 150,
                 alignment: Alignment.center,
 
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                   image: DecorationImage(
                     fit: BoxFit.fill,
                     image: NetworkImage(thumbnail),
@@ -121,7 +121,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
       appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text(mName+ " books", style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
+        title: Text(mName+ " Books", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
 
       ),
       body: Container(
@@ -143,7 +143,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               crossAxisSpacing: 12.0,
-                              childAspectRatio: (1 / 1.7),
+                              childAspectRatio: (1 / 1.8),
                               mainAxisSpacing: 4.0
                           ),
                           itemBuilder: (BuildContext context, int index){
