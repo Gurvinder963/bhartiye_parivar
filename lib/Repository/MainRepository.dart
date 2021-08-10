@@ -87,4 +87,9 @@ class MainRepository {
     return PinCodeResponse.fromJson(response);
   }
 
+  Future<AddToCartResponse> fetchUpdateOrder(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/payments",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
 }

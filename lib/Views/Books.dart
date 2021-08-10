@@ -135,7 +135,7 @@ class BooksPageState extends State<BooksPage> {
 
         body: Container(
           margin: EdgeInsets.fromLTRB(4,0,0,0),
-          padding:  EdgeInsets.symmetric(horizontal: 2),
+          padding:  EdgeInsets.fromLTRB(2,8,2,0),
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -165,25 +165,27 @@ class BooksPageState extends State<BooksPage> {
                       alignment: Alignment.center,
         children: <Widget>[
 
-                  new Image(
+        Opacity(
+        opacity: 1,
+        child: Image(
                     image: new AssetImage("assets/collage.png"),
 
                     height:  160,
-                    color: null,
-                    fit: BoxFit.scaleDown,
+
+                    fit: BoxFit.fill,
                     alignment: Alignment.center,
-                  ),
+                  )),
 
           Container(
 
             padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
               decoration: BoxDecoration(
-                color:Colors.black ,
+                  color:Colors.black.withOpacity(0.6) ,
 
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
               child:Text("MY BOOKS"
-                ,style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white),),
+                ,style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
           ),
 
         ])),
@@ -204,23 +206,27 @@ class BooksPageState extends State<BooksPage> {
                       alignment: Alignment.center,
                       children: <Widget>[
 
-                        new Image(
-                          image: new AssetImage("assets/languages.png"),
+                        Opacity(
+                            opacity: 1,
+                            child:  Image(
+                              image: new AssetImage("assets/languages.png"),
 
-                          height:  160,
+                              height:  160,
 
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                            ),
+                        )
 
-                        Container(
+,
+                       Container(
                           padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
                           decoration: BoxDecoration(
-                              color:Colors.black ,
+                              color:Colors.black.withOpacity(0.6) ,
 
                               borderRadius: BorderRadius.all(Radius.circular(10))
                           ),
-                          child:Text("BY LANGUAGE",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white),),
+                          child:Text("BY LANGUAGE",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
                         ),
 
                       ])),

@@ -112,6 +112,7 @@ flutter:
     - assets/dislike_unsel.png
     - assets/bookmark_sel.png
     - assets/bookmark_unsel.png
+    - assets/ic_fail.jpg
     - assets/BankonKaMayajaal/Bankjaal.html
   #   - images/a_dot_ham.jpeg
 

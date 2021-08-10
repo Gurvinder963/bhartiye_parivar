@@ -412,7 +412,7 @@ class MyCartPageState extends State<MyCartPage> {
     return InkWell(
       onTap: () {
 
-
+        Navigator.of(context, rootNavigator: true).pop(context);
 
       },
 

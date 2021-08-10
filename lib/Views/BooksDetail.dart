@@ -71,6 +71,29 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   @override
   Widget build(BuildContext context) {
 
+    bool isAddtoCartVisible=true;
+    bool isBuyNowVisible=true;
+    bool goToCart=false;
+    String btnText="ADD TO CART";
+
+    if(mContent.book_type_id!=3 && (mContent.is_ebook_purchased || mContent.is_printed_purchased)){
+      isAddtoCartVisible=false;
+      isBuyNowVisible=false;
+    }
+    else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_purchased)){
+      isAddtoCartVisible=false;
+      isBuyNowVisible=false;
+    }
+
+    if(mContent.book_type_id!=3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
+      btnText="GO TO CART";
+      goToCart=true;
+    }
+    else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart && mContent.is_printed_added_cart)){
+      btnText="GO TO CART";
+      goToCart=true;
+    }
+
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -200,7 +223,8 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                           //_DonateButton(),
 
                         Spacer(),
-                          _joinButton(),
+                          isBuyNowVisible?
+                          _joinButton(goToCart):Container(),
 
 
                         ]))
@@ -346,106 +370,44 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               ])
 
       )),
-       Align(
+      isAddtoCartVisible?Align(
             alignment: FractionalOffset.bottomCenter,
             child:    GestureDetector(
     onTap: () {
-    /*  setState(() {
-        _isInAsyncCall = true;
-      });*/
-      if(mContent.book_type_id==3) {
-        showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      addToCartAPI("2");
-                    },
 
-                    child: Container(
-                      width: 150,
-                      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.grey.shade200,
-                                offset: Offset(1, 1),
-                                blurRadius: 0,
-                                spreadRadius: 0)
-                          ],
-                          gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                Color(AppColors.BaseColor),
-                                Color(AppColors.BaseColor)
-                              ])),
-                      child: Text(
-                        'E-Book',
-                        style: GoogleFonts.poppins(
-                            fontSize: ScreenUtil().setSp(18),
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Text("----or----"),
-
-                  InkWell(
-                    onTap: () {
-                      addToCartAPI("1");
-                    },
-
-                    child: Container(
-                      width: 150,
-                      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.grey.shade200,
-                                offset: Offset(1, 1),
-                                blurRadius: 0,
-                                spreadRadius: 0)
-                          ],
-                          gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                Color(AppColors.BaseColor),
-                                Color(AppColors.BaseColor)
-                              ])),
-                      child: Text(
-                        'Printed',
-                        style: GoogleFonts.poppins(
-                            fontSize: ScreenUtil().setSp(18),
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              );
-            });
+      if(goToCart){
+        Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return MyCartPage();
+                }
+            ));
       }
-      else{
-        addToCartAPI(mContent.book_type_id.toString());
-      }
+      else {
+        if (mContent.book_type_id == 3) {
 
+          if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
+
+
+            if(mContent.is_ebook_added_cart){
+              addToCartAPI("1", false);
+            }
+            else if(mContent.is_printed_added_cart){
+              addToCartAPI("2", false);
+            }
+
+
+
+          }
+          else{
+
+          showDialogCart(false);
+          }
+        }
+        else {
+          addToCartAPI(mContent.book_type_id.toString(), false);
+        }
+      }
 
 
     },child:Container(
@@ -455,19 +417,116 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               padding: EdgeInsets.fromLTRB(0,8,0,8),
               child: Align(
                 alignment: Alignment.center, // Align however you like (i.e .centerRight, centerLeft)
-                child:  Text("ADD TO CART",
+                child:  Text(btnText,
 
                   style: GoogleFonts.poppins( letterSpacing: 1.2,fontSize: ScreenUtil().setSp(16), color:  Color(0xFFffffff).withOpacity(0.8),fontWeight: FontWeight.w500),),
               ),
 
 
             )),
-          ),
+          ):Container(),
         ])),
 
     );
   }
-void addToCartAPI(String book_type_id){
+
+  void showDialogCart(bool isBuyNow){
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: () {
+                  addToCartAPI("2",isBuyNow);
+                },
+
+                child: Container(
+                  width: 150,
+                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey.shade200,
+                            offset: Offset(1, 1),
+                            blurRadius: 0,
+                            spreadRadius: 0)
+                      ],
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(AppColors.BaseColor),
+                            Color(AppColors.BaseColor)
+                          ])),
+                  child: Text(
+                    'E-Book',
+                    style: GoogleFonts.poppins(
+                        fontSize: ScreenUtil().setSp(18),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Text("----or----"),
+
+              InkWell(
+                onTap: () {
+                  addToCartAPI("1",isBuyNow);
+                },
+
+                child: Container(
+                  width: 150,
+                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey.shade200,
+                            offset: Offset(1, 1),
+                            blurRadius: 0,
+                            spreadRadius: 0)
+                      ],
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(AppColors.BaseColor),
+                            Color(AppColors.BaseColor)
+                          ])),
+                  child: Text(
+                    'Printed',
+                    style: GoogleFonts.poppins(
+                        fontSize: ScreenUtil().setSp(18),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          );
+        });
+  }
+
+
+void addToCartAPI(String book_type_id,bool isBuyNow){
+
+  setState(() {
+    _isInAsyncCall = true;
+  });
+
   postAddToCart(mContent.id.toString(),user_Token,book_type_id)
       .then((res) async {
     setState(() {
@@ -485,14 +544,14 @@ void addToCartAPI(String book_type_id){
           textColor: Colors.white,
           fontSize: 16.0);
 
-      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-          MaterialPageRoute(
-              builder: (BuildContext context) {
-                return MyCartPage();
-              }
-          ) );
-
-
+      if(isBuyNow) {
+        Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return MyCartPage();
+                }
+            ));
+      }
     }
     else {
       showAlertDialogValidation(context,"Some error occured!");
@@ -575,10 +634,42 @@ void addToCartAPI(String book_type_id){
       ),
     );
   }
-  Widget _joinButton() {
+  Widget _joinButton(bool goToCart) {
     return InkWell(
       onTap: () {
+        if(goToCart){
+          Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return MyCartPage();
+                  }
+              ));
+        }
+        else {
+          if (mContent.book_type_id == 3) {
 
+            if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
+
+
+              if(mContent.is_ebook_added_cart){
+                addToCartAPI("1", true);
+              }
+              else if(mContent.is_printed_added_cart){
+                addToCartAPI("2", true);
+              }
+
+
+
+            }
+            else {
+              showDialogCart(true);
+            }
+          }
+          else {
+            addToCartAPI(mContent.book_type_id.toString(), true);
+          }
+
+        }
       },
 
       child: Container(
