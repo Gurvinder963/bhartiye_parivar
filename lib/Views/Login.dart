@@ -429,9 +429,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                               children:  <TextSpan>[
                                 TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF0000ff))),
+                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
                                 TextSpan(text: ' and', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF0000ff))),
+                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
                               ],
                             ),
                           ),

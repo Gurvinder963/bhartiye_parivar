@@ -5,6 +5,7 @@ class Prefs {
   static const String KEY_TOKEN = 'TOKEN';
   static const String USER_NAME = 'USER_NAME';
   static const String USER_ID = 'USER_ID';
+  static const String CART_COUNT = 'CART_COUNT';
 
 
   /*1 = Applicant
@@ -23,5 +24,9 @@ class Prefs {
   static setUserLoginName(SharedPreferences prefs, String Name) async {
 
     return prefs.setString(USER_NAME, Name);
+  }
+  static setCartCount(SharedPreferences prefs, String count) async {
+
+    return prefs.setString(CART_COUNT, count);
   }
 }

@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'DonatedSuccessfuly.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 //import 'package:device_info/device_info.dart';
 
 import 'DonateUs.dart';
@@ -35,6 +36,8 @@ import 'AppLanguage.dart';
 import '../localization/language/languages.dart';
 import '../Views/MyCart.dart';
 import 'package:badges/badges.dart';
+import '../Repository/MainRepository.dart';
+import '../ApiResponses/HomeAPIResponse.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -51,7 +54,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   int MyContentId;
   int selectedIndex = 0;
-
+  String cartCount='0';
   String mContentType;
   String mInvitedBy="";
   List<Widget> _children;
@@ -97,11 +100,41 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
      // new ChatPage(),
       //  new SettingsScreen(),
     ];
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
 
+     var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+
+
+      getHOMEAPI(user_Token).then((res) async {
+
+       if(res.status==1) {
+         SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+
+         Prefs.setCartCount(_prefs, (res.data.cartCount).toString());
+         setState(() {
+          cartCount=res.data.cartCount.toString();
+         });
+
+       }
+      });
+
+
+      return (prefs.getString('token'));
+    });
   }
 
 
+  Future<HomeAPIResponse> getHOMEAPI(String user_Token) async {
 
+    var body ={'none':'none'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchHomeData(body,user_Token);
+
+  }
 
 
   @override
@@ -122,6 +155,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
+    var shouldShowBadge=int.parse(cartCount)>0?true:false;
     var mfontSize=20.0;
     if(Languages.of(context).langCode=='en'){
       mfontSize=24.0;
@@ -169,10 +203,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
               },child:
     Badge(
+      showBadge: shouldShowBadge,
       position: BadgePosition.topEnd(top: 0, end: -4),
       animationDuration: Duration(milliseconds: 300),
       animationType: BadgeAnimationType.slide,
-    badgeContent: Text('3',
+    badgeContent: Text(cartCount,
         style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
     child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
     ),

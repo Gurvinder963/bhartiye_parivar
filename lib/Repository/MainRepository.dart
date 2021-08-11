@@ -9,6 +9,7 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/OrderResponse.dart';
 import '../ApiResponses/TxnResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
+import '../ApiResponses/HomeAPIResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -91,5 +92,8 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/payments",body,token);
     return AddToCartResponse.fromJson(response);
   }
-
+  Future<HomeAPIResponse> fetchHomeData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/auth/home",body,token);
+    return HomeAPIResponse.fromJson(response);
+  }
 }

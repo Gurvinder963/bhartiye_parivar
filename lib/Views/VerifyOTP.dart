@@ -440,15 +440,20 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                    _isInAsyncCall = true;
                                   });
                                 print("mcode"+mC_code);
+
+                                String varMobile="";
                                 if(mC_code=='91') {
                                   var arr = mMobile.split("-");
                                   String newStringMob = arr[0] + arr[1];
 
-                                  mMobile = newStringMob;
+                                  varMobile = newStringMob;
+                                }
+                                else{
+                                  varMobile=mMobile;
                                 }
 
 
-                           getLoginResponse(mC_code,mMobile)
+                           getLoginResponse(mC_code,varMobile)
                               .then((res) async {
                                   setState(() {
                                     _isInAsyncCall = false;

@@ -199,7 +199,8 @@ class BookPaymentPageState extends State<BookPaymentPage> {
   Widget _addBooksButton() {
     return InkWell(
       onTap: () {
-
+        int count = 0;
+        Navigator.of(context).popUntil((_) => count++ >= 2);
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {

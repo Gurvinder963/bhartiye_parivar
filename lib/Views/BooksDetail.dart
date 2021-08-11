@@ -19,6 +19,7 @@ import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Views/MyCart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:badges/badges.dart';
+import 'privacy.dart';
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
 
@@ -76,7 +77,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     bool goToCart=false;
     String btnText="ADD TO CART";
 
-    if(mContent.book_type_id!=3 && (mContent.is_ebook_purchased || mContent.is_printed_purchased)){
+    if(mContent.book_type_id!=3 && mContent.is_ebook_purchased){
       isAddtoCartVisible=false;
       isBuyNowVisible=false;
     }
@@ -116,6 +117,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
             },child:
           Badge(
+            showBadge: false,
             position: BadgePosition.topEnd(top: 0, end: -4),
             animationDuration: Duration(milliseconds: 300),
             animationType: BadgeAnimationType.slide,
@@ -179,6 +181,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                SizedBox(width: 15),
                 mContent.book_type_id==2 || mContent.book_type_id==3?
                 Text(
                   'Online Book',
@@ -199,6 +202,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          SizedBox(width: 35),
                           mContent.book_type_id==2 || mContent.book_type_id==3?
                           Text(
                             '₹ ' +mContent.ebook_cost.toString()+'/-',
@@ -210,7 +214,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                             '₹ ' +mContent.cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
                           ):Container(),
-                          SizedBox(width: 30),
+                          SizedBox(width: 35),
                         ]))
 
                 ,
@@ -220,7 +224,8 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          //_DonateButton(),
+                         mContent.is_ebook_purchased?
+                          _DonateButton():Container(),
 
                         Spacer(),
                           isBuyNowVisible?
@@ -535,6 +540,16 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
 
 
     if (res.status == 1) {
+
+      if(book_type_id=='1'){
+        mContent.is_printed_added_cart=true;
+      }
+      else if(book_type_id=='2'){
+        mContent.is_ebook_added_cart=true;
+      }
+      setState(() {
+
+      });
       Fluttertoast.showToast(
           msg: "Item added to cart !",
           toastLength: Toast.LENGTH_SHORT,
@@ -675,7 +690,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
       child: Container(
         width: 140,
         height: 45,
-        margin: EdgeInsets.fromLTRB(0,0,0,10),
+        margin: EdgeInsets.fromLTRB(0,0,10,10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -702,6 +717,14 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
   Widget _DonateButton() {
     return InkWell(
       onTap: () {
+        Navigator.of(context, rootNavigator: true)
+            .push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return PrivacyScreen();
+                }
+            ));
+
 
       },
 

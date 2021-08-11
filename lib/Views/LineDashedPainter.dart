@@ -2,19 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class LineDashedPainter extends CustomPainter {
+class DashedLineVerticalPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint()..color = Colors.grey..strokeWidth = 2;
-    var max = 35;
-    var dashWidth = 5;
-    var dashSpace = 5;
-    double startY = 0;
-    while (max >= 0) {
-      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashWidth), paint);
-      final space = (dashSpace + dashWidth);
-      startY += space;
-      max -= space;
+    double dashHeight = 5, dashSpace = 3, startY = 0;
+    final paint = Paint()
+      ..color = Colors.grey[300]
+      ..strokeWidth = 1;
+    while (startY < size.height) {
+      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
+      startY += dashHeight + dashSpace;
     }
   }
 

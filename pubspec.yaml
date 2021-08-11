@@ -37,6 +37,7 @@ dependencies:
   flutter_phone_direct_caller: ^1.0.1
   paytm_allinonesdk: ^1.0.3
   flutter_inappwebview: ^4.0.0+4
+  flutter_dash: ^0.0.1
   badges: ^1.2.0
 
 

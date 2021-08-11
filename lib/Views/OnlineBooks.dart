@@ -258,10 +258,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
   Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,String pageCount,String lang){
 
 // print("my_qty--"+qty);
-
+    title= title.length>25?title=title.substring(0,25)+"...":title;
     return    Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-        height: 200,
+        height: 170,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -358,7 +358,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
 
               SizedBox(
-                height: 15,
+                height: 20,
               ),
               Divider(
 

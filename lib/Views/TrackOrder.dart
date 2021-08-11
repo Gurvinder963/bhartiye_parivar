@@ -7,6 +7,8 @@ import '../Views/DashedLinePainter.dart';
 import '../Views/LineDashedPainter.dart';
 import '../Utils/AppColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_dash/flutter_dash.dart';
+import '../Views/AddShippingAddress.dart';
 
 class TrackOrderPage extends StatefulWidget {
   @override
@@ -40,8 +42,13 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     return InkWell(
       onTap: () {
 
-
-
+      /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return AddShippingAddressPage();
+                }
+            ) );
+*/
       },
 
       child: Container(
@@ -74,7 +81,13 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
 
-    return   SizedBox (child: Card (child:Container(
+    return   Container (
+        margin:EdgeInsets.fromLTRB(10.0,10.0,10.0,0.0) ,
+        child: Card (
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 8,
+            child:Container(
         margin:EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0) ,
 
         decoration: BoxDecoration(
@@ -82,6 +95,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             borderRadius: BorderRadius.all(Radius.circular(5))
         ),
         child:Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
 
@@ -92,12 +106,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(10,4,0,0),
                   child:
-                  Text("Order Id: RAXag98070098",   overflow: TextOverflow.ellipsis,
-                    maxLines: 1, style: GoogleFonts.poppins(
-                      fontSize:13.0,
-                      color: Color(0xFF1f2833).withOpacity(1),
+                  RichText(
+                    text: TextSpan(
 
-                    ),)),
+
+                      children:  <TextSpan>[
+                        TextSpan(text: 'Order Id:', style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14), color: Colors.black,  fontWeight: FontWeight.w600)),
+
+                        TextSpan(text: ' RAXag98070098', style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
+
+                      ],
+                    ),
+                  ),),
 
               Spacer(),
               Padding(
@@ -113,9 +133,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             padding: EdgeInsets.fromLTRB(10,8,10,0),
              child: MySeparator(color: Colors.grey)),
               Row(
-
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Column(
+                    Expanded(child:  Column(
 
                         children: <Widget>[
                     Padding(
@@ -137,12 +157,16 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
                                 ),)),
 
-                        ]),
+                        ])),
 
-                    Spacer(),
-                    CustomPaint(painter: LineDashedPainter()),
-                    Spacer(),
-                    Column(
+                    SizedBox(width: 6),
+                    Dash(
+                        direction: Axis.vertical,
+                        length: 58,
+                        dashLength: 7,
+                        dashColor: Colors.grey),
+
+                    Expanded(child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -165,7 +189,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
                                 ),)),
 
-                        ]),
+                        ])),
                   ]),
               Padding(
                   padding: EdgeInsets.fromLTRB(10,8,10,0),
@@ -176,12 +200,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   children: <Widget>[
 
                     Padding(
-                        padding: EdgeInsets.fromLTRB(10,4,0,0),
+                        padding: EdgeInsets.fromLTRB(15,4,0,0),
                         child:
                         Text("Book List",   overflow: TextOverflow.ellipsis,
                           maxLines: 1, style: GoogleFonts.poppins(
                             fontSize:13.0,
-
+                                fontWeight: FontWeight.w600,
                             color: Color(0xFF000000)
 
                           ),)),
@@ -199,7 +223,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child:Text("Download Invoice",overflow: TextOverflow.ellipsis,
                           maxLines: 1, style: GoogleFonts.poppins(
                             fontSize:12.0,
-
+                                  fontWeight: FontWeight.w600,
                             color: Color(0xFF000000),
 
                           ),))),
@@ -207,7 +231,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(10,20,10,0),
                   child:
-                  Text("Track your Consignment number from this link below \nafter the order status change to posted.",   textAlign: TextAlign.center,  style: GoogleFonts.poppins(
+                  Text("Track your Consignment number from this link below after the order status change to posted.",   textAlign: TextAlign.center,  style: GoogleFonts.poppins(
                         fontSize:12.0,
 
                         color: Color(0xFF000000)
@@ -233,6 +257,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       color: Color(0xFF000080),
                       fontWeight: FontWeight.w600
                   ),)),
+              SizedBox(height: 10),
             ]))));
   }
 

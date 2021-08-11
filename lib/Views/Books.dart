@@ -23,6 +23,8 @@ class BooksPage extends StatefulWidget {
 class BooksPageState extends State<BooksPage> {
   List mainData = new List();
   bool isLoading = false;
+
+  String user_Token;
   @override
   void initState() {
     super.initState();
@@ -30,7 +32,7 @@ class BooksPageState extends State<BooksPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+       user_Token=prefs.getString(Prefs.KEY_TOKEN);
       if (!isLoading) {
         setState(() {
           isLoading = true;
@@ -268,7 +270,21 @@ class BooksPageState extends State<BooksPage> {
                 builder: (BuildContext context) {
                   return BooksDetailPage(content: mainData[index]);
                 }
-            ))
+            )).then((_) {
+          // This block runs when you have returned back to the 1st Page from 2nd.
+          setState(() {
+        mainData.clear();
+          });
+        getBooksList(user_Token).then((value) => {
+
+          setState(() {
+            isLoading = false;
+            mainData.addAll(value.data);
+
+          })
+
+        });
+          })
       },
                       child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
           mainData[index].thumbImage, mainData[index].publisher));
