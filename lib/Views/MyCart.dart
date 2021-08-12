@@ -21,7 +21,7 @@ import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../Views/BookPayment.dart';
-
+import '../Interfaces/OnCartCount.dart';
 class ItemData {
 
   String book_id;
@@ -853,7 +853,7 @@ class MyCartPageState extends State<MyCartPage> {
 
 
         if (res.status == 1) {
-
+          eventBus.fire(OnCartCount("FIND"));
           Fluttertoast.showToast(
               msg: "Cart item has been deleted !",
               toastLength: Toast.LENGTH_SHORT,

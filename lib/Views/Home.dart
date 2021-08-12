@@ -11,7 +11,7 @@ import '../Utils/AppColors.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
+import 'package:event_bus/event_bus.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
 
@@ -38,6 +38,7 @@ import '../Views/MyCart.dart';
 import 'package:badges/badges.dart';
 import '../Repository/MainRepository.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
+import '../Interfaces/OnCartCount.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -61,6 +62,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   bool checkedValue=false;
   bool _isInAsyncCall = false;
   bool _isHidden = true;
+
+  String user_Token;
   HomePageState(int contentId,String contentType,String invitedBy){
     MyContentId=contentId;
     mContentType=contentType;
@@ -100,33 +103,42 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
      // new ChatPage(),
       //  new SettingsScreen(),
     ];
+   // EventBus eventBus = EventBus();
+    eventBus.on<OnCartCount>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+     // print("my_cart_count"+event.count);
+      homeAPICall();
+    });
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-     var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
 
 
-      getHOMEAPI(user_Token).then((res) async {
 
-       if(res.status==1) {
-         SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-
-         Prefs.setCartCount(_prefs, (res.data.cartCount).toString());
-         setState(() {
-          cartCount=res.data.cartCount.toString();
-         });
-
-       }
-      });
-
+      homeAPICall();
 
       return (prefs.getString('token'));
     });
   }
 
+  void homeAPICall(){
+    getHOMEAPI(user_Token).then((res) async {
+
+      if(res.status==1) {
+        SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+
+        Prefs.setCartCount(_prefs, (res.data.cartCount).toString());
+        setState(() {
+          cartCount=res.data.cartCount.toString();
+        });
+
+      }
+    });
+  }
 
   Future<HomeAPIResponse> getHOMEAPI(String user_Token) async {
 

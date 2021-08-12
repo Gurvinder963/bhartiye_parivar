@@ -17,6 +17,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../ApiResponses/BookData.dart';
 import '../localization/locale_constant.dart';
 import '../Views/SeeALLBooks.dart';
+import 'package:badges/badges.dart';
+import '../Views/MyCart.dart';
+import '../Interfaces/OnCartCount.dart';
 class BookGroupListPage extends StatefulWidget {
   @override
   BookGroupListPageState createState() {
@@ -27,15 +30,19 @@ class BookGroupListPage extends StatefulWidget {
 class BookGroupListPageState extends State<BookGroupListPage> {
   List mainData = new List();
   bool isLoading = false;
+  String cartCount='0';
   ScrollController _sc = new ScrollController();
   @override
   void initState() {
     super.initState();
+
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
       var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      cartCount=prefs.getString(Prefs.CART_COUNT);
+      setState(() {});
       if (!isLoading) {
         setState(() {
           isLoading = true;
@@ -63,6 +70,22 @@ class BookGroupListPageState extends State<BookGroupListPage> {
           _sc.position.maxScrollExtent) {
        // _getMoreData(page,tok,-1);
       }
+    });
+    eventBus.on<OnCartCount>().listen((event) {
+
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+        Future<String> token;
+        token = _prefs.then((SharedPreferences prefs) {
+
+          var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+          cartCount=prefs.getString(Prefs.CART_COUNT);
+          setState(() {});
+          return (prefs.getString('token'));
+        });      });
+
+
+
     });
   }
   @override
@@ -143,7 +166,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    var shouldShowBadge=int.parse(cartCount)>0?true:false;
     print("my_=width"+MediaQuery.of(context).size.width.toString());
     ScreenUtil.init(
         BoxConstraints(
@@ -158,7 +181,35 @@ class BookGroupListPageState extends State<BookGroupListPage> {
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text('Books By Language', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+        actions: <Widget>[
 
+
+          GestureDetector(
+            onTap: () {
+
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return MyCartPage();
+                      }
+                  ) );
+
+            },child:
+          Badge(
+            showBadge: shouldShowBadge,
+            position: BadgePosition.topEnd(top: 0, end: -4),
+            animationDuration: Duration(milliseconds: 300),
+            animationType: BadgeAnimationType.slide,
+            badgeContent: Text(cartCount,
+                style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
+            child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
+          ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+
+        ],
       ),
       body: Container(
           margin: EdgeInsets.fromLTRB(4,0,0,0),

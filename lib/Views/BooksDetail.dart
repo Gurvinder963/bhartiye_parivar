@@ -19,7 +19,10 @@ import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Views/MyCart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:badges/badges.dart';
-import 'privacy.dart';
+import 'package:event_bus/event_bus.dart';
+import 'privacyScreen.dart';
+import '../Interfaces/OnCartCount.dart';
+import '../Views/ViewOnlineBook.dart';
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
 
@@ -46,7 +49,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   bool isOffers=false;
   BookData mContent;
   bool _isInAsyncCall = false;
-
+  String cartCount='0';
   String user_Token;
   BooksDetailPageState(BookData content){
     mContent=content;
@@ -60,8 +63,26 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
        user_Token=prefs.getString(Prefs.KEY_TOKEN);
-
+       cartCount=prefs.getString(Prefs.CART_COUNT);
+       setState(() {});
       return (prefs.getString('token'));
+    });
+
+    eventBus.on<OnCartCount>().listen((event) {
+
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+        Future<String> token;
+        token = _prefs.then((SharedPreferences prefs) {
+
+          var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+          cartCount=prefs.getString(Prefs.CART_COUNT);
+          setState(() {});
+          return (prefs.getString('token'));
+        });      });
+
+
+
     });
 
   }
@@ -71,7 +92,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    var shouldShowBadge=int.parse(cartCount)>0?true:false;
     bool isAddtoCartVisible=true;
     bool isBuyNowVisible=true;
     bool goToCart=false;
@@ -81,10 +102,10 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       isAddtoCartVisible=false;
       isBuyNowVisible=false;
     }
-    else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_purchased)){
+   /* else if(mContent.book_type_id==3 && mContent.is_ebook_purchased ){
       isAddtoCartVisible=false;
       isBuyNowVisible=false;
-    }
+    }*/
 
     if(mContent.book_type_id!=3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
@@ -94,7 +115,10 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       btnText="GO TO CART";
       goToCart=true;
     }
-
+    else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_added_cart)){
+      btnText="GO TO CART";
+      goToCart=true;
+    }
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -117,11 +141,11 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
             },child:
           Badge(
-            showBadge: false,
+            showBadge: shouldShowBadge,
             position: BadgePosition.topEnd(top: 0, end: -4),
             animationDuration: Duration(milliseconds: 300),
             animationType: BadgeAnimationType.slide,
-            badgeContent: Text('3',
+            badgeContent: Text(cartCount,
                 style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
             child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
           ),
@@ -406,7 +430,14 @@ class BooksDetailPageState extends State<BooksDetailPage> {
           }
           else{
 
-          showDialogCart(false);
+            if(mContent.is_ebook_purchased){
+              addToCartAPI("1", false);
+            }
+            else{
+              showDialogCart(false);
+            }
+
+
           }
         }
         else {
@@ -447,6 +478,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
               ),
               InkWell(
                 onTap: () {
+                  Navigator.pop(context);
                   addToCartAPI("2",isBuyNow);
                 },
 
@@ -484,6 +516,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
               InkWell(
                 onTap: () {
+                  Navigator.pop(context);
                   addToCartAPI("1",isBuyNow);
                 },
 
@@ -540,6 +573,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
 
 
     if (res.status == 1) {
+      eventBus.fire(OnCartCount("FIND"));
 
       if(book_type_id=='1'){
         mContent.is_printed_added_cart=true;
@@ -548,7 +582,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
         mContent.is_ebook_added_cart=true;
       }
       setState(() {
-
+       cartCount=(int.parse(cartCount)+1).toString();
       });
       Fluttertoast.showToast(
           msg: "Item added to cart !",
@@ -677,7 +711,13 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
 
             }
             else {
-              showDialogCart(true);
+              if(mContent.is_ebook_purchased){
+                addToCartAPI("1", true);
+              }
+              else{
+                showDialogCart(true);
+              }
+
             }
           }
           else {
@@ -721,7 +761,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
             .push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return PrivacyScreen();
+                  return ViewOnlineBookPage();
                 }
             ));
 

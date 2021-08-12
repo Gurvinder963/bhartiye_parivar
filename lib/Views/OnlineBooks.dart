@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-
+import '../Views/ViewOnlineBook.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MyBooksTab.dart';
@@ -20,7 +20,7 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'privacy.dart';
+import 'privacyScreen.dart';
 
 class ItemData {
 
@@ -137,18 +137,9 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
               child: Stack(  children: [
 
-                mainData.length>0?ListView(
+                mainData.length>0?
 
-
-                    padding: EdgeInsets.all(0.0),
-                    children: <Widget>[
-
-                      mainData.length>0?_buildList():Container(),
-
-
-
-
-                    ]):Container(
+                    _buildList() :Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child:_isInAsyncCall?Container():Column(
@@ -166,7 +157,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                           Text(
                             'You have not purchased any \nbook yet for online reading' ,
                             style: GoogleFonts.poppins(
-                              fontSize: ScreenUtil().setSp(24),
+                              fontSize: ScreenUtil().setSp(16),
                               letterSpacing: 1.2,
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -209,7 +200,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return PrivacyScreen();
+                          return ViewOnlineBookPage();
                         }
                     ))
             },
@@ -258,7 +249,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
   Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,String pageCount,String lang){
 
 // print("my_qty--"+qty);
-    title= title.length>25?title=title.substring(0,25)+"...":title;
+    title= title.length>22?title=title.substring(0,22)+"...":title;
     return    Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
         height: 170,
@@ -332,7 +323,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                         ,
 
-
+                     Spacer(),
 
 
                         new Expanded(
@@ -352,7 +343,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                                 ]
                             )
-                        )
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
                       ])),
 
 

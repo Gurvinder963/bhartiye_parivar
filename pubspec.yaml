@@ -39,7 +39,7 @@ dependencies:
   flutter_inappwebview: ^4.0.0+4
   flutter_dash: ^0.0.1
   badges: ^1.2.0
-
+  event_bus: ^1.1.1
 
   flutter:
     sdk: flutter
@@ -114,7 +114,10 @@ flutter:
     - assets/bookmark_sel.png
     - assets/bookmark_unsel.png
     - assets/ic_fail.jpg
+    - assets/empty_mybook.png
     - assets/BankonKaMayajaal/Bankjaal.html
+    - assets/privacy.html
+    - assets/terms.html
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -28,6 +28,7 @@ class VideoDetailNewPage extends StatefulWidget {
 }
 
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
+  var marginPixel=0;
   List mainData = new List();
   bool isLoading = false;
   YoutubePlayerController _controller;
@@ -107,9 +108,11 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     if(!isPortrait){
+      marginPixel=40;
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     }
     else{
+      marginPixel=0;
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
     var channel=mContent.channel==null?"My Channel":mContent.channel;
@@ -167,7 +170,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                           children: <Widget>[
                                             SizedBox(height: 5),
                                             Text(mContent.title,
-                                              textAlign: TextAlign.justify,
+
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
                                               style: GoogleFonts.roboto(
@@ -465,7 +468,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                     children: <Widget>[
                                       SizedBox(height: 5),
                                       Text(title,
-                                        textAlign: TextAlign.justify,
+
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: GoogleFonts.roboto(
@@ -706,7 +709,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       }
        html = '''
-          <iframe id="ytplayer" style="border: 0px solid black;" type="text/html" width="100%" height="100%"
+          <iframe id="ytplayer" style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
   frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
      ''';

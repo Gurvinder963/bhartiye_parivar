@@ -534,7 +534,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
             _isInAsyncCall = true;
           });
 
-          String postal="";
+          String postal="000000";
           if(mC_code=='91'){
             postal=myControllerPinCode.text;
           }

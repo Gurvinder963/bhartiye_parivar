@@ -46,13 +46,13 @@ class HealthPageState extends State<HealthPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
 
 
 
 
-       apiCall();
+      apiCall();
 
 
 
@@ -136,7 +136,7 @@ class HealthPageState extends State<HealthPage> {
     );
   }
 
-  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
+  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String duration,String videoUrl,String videoSourceType){
 
     String url="";
     if(videoSourceType=='facebook'){
@@ -160,14 +160,14 @@ class HealthPageState extends State<HealthPage> {
         //  videoIdd="error";
 
       }
-     // mqdefault
+      // mqdefault
       url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
     }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
 
-    publisher=publisher==null?"My Channel":publisher;
-    duration=duration==null?"4:50":duration;
+    channel=channel==null?"My Channel":channel;
+    // duration=channel==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
@@ -177,46 +177,46 @@ class HealthPageState extends State<HealthPage> {
 
                 children: <Widget>[
 
-          AspectRatio(
-          aspectRatio: 16 / 9,
-          child:
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                   // height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new AssetImage("assets/thumbnail.png"),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
                         alignment: Alignment.center,
-                      ),
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new AssetImage("assets/thumbnail.png"),
 
-                    ),
+                            alignment: Alignment.center,
+                          ),
 
-                  )),
+                        ),
+
+                      )),
 
 
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child:   Container(
-                    margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+                  AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child:   Container(
+                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
 
-                    alignment: Alignment.center,
-                   // height: ScreenUtil().setHeight(175),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(url),
-                      ),
-                    ),
+                        alignment: Alignment.center,
+                        // height: ScreenUtil().setHeight(175),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(url),
+                          ),
+                        ),
 
-                  )),
+                      )),
 
-                /*  Positioned.fill(
+                  /*  Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomLeft,
                           child: Container(
@@ -279,7 +279,7 @@ class HealthPageState extends State<HealthPage> {
                                     children: <Widget>[
                                       SizedBox(height: 5),
                                       Text(title,
-                                        textAlign: TextAlign.justify,
+
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: GoogleFonts.roboto(
@@ -295,7 +295,7 @@ class HealthPageState extends State<HealthPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(publisher,   overflow: TextOverflow.ellipsis,
+                                                Text(channel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
@@ -324,31 +324,31 @@ class HealthPageState extends State<HealthPage> {
 
 
                                     ]))),
-                          new Expanded(
-              flex: 1,
+                        new Expanded(
+                            flex: 1,
 
-              child:PopupMenuButton(
-                  icon: Icon(Icons.more_vert),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text("Share"),
-                      value: 1,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Report"),
-                      value: 2,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Bookmark"),
-                      value: 3,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Subscribe Notifications"),
-                      value: 4,
-                    )
-                  ]
-              )
-          )
+                            child:PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text("Share"),
+                                    value: 1,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Report"),
+                                    value: 2,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Bookmark"),
+                                    value: 3,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Subscribe Notifications"),
+                                    value: 4,
+                                  )
+                                ]
+                            )
+                        )
 
 
                       ]))
@@ -385,46 +385,46 @@ class HealthPageState extends State<HealthPage> {
       RefreshIndicator(
         key: refreshKey,
         child:
-      ListView.builder(
-        itemCount: mainData.length+ 1 , // Add one more item for progress indicator
+        ListView.builder(
+          itemCount: mainData.length+ 1 , // Add one more item for progress indicator
 
-        itemBuilder: (BuildContext context, int index) {
-      if (index == mainData.length) {
-        return _buildProgressIndicator();
-      } else {
-        return GestureDetector(
-          onTap: () =>
-          {
+          itemBuilder: (BuildContext context, int index) {
+            if (index == mainData.length) {
+              return _buildProgressIndicator();
+            } else {
+              return GestureDetector(
+                  onTap: () =>
+                  {
 
-            Navigator.of(context, rootNavigator: true)
-                .push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return VideoDetailNewPage(content: mainData[index]);
-                    }
-                ))
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return VideoDetailNewPage(content: mainData[index]);
+                            }
+                        ))
+                  },
+                  child:
+                  _buildBoxVideo(
+                      context,
+                      mainData[index].id,
+                      mainData[index].title,
+                      mainData[index].videoImage,
+                      mainData[index].lang,
+                      mainData[index].createdAt,
+                      mainData[index].channel,
+                      mainData[index].video_duration,
+                      mainData[index].videoUrl,
+                      mainData[index].videoSourceType
+
+                  )
+
+
+              );
+            }
           },
-          child:
-          _buildBoxVideo(
-              context,
-              mainData[index].id,
-              mainData[index].title,
-              mainData[index].videoImage,
-              mainData[index].lang,
-              mainData[index].createdAt,
-              mainData[index].publisher,
-              mainData[index].video_duration,
-              mainData[index].videoUrl,
-              mainData[index].videoSourceType
-
-          )
-
-
-        );
-      }
-      },
-        controller: _sc,
-    ),
+          controller: _sc,
+        ),
         onRefresh: _getData,
       );
   }

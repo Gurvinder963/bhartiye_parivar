@@ -9,7 +9,11 @@ import '../Utils/AppColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import '../Views/AddShippingAddress.dart';
-
+import '../ApiResponses/TrackOrderResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class TrackOrderPage extends StatefulWidget {
   @override
   TrackOrderPageState createState() {
@@ -18,13 +22,120 @@ class TrackOrderPage extends StatefulWidget {
 }
 
 class TrackOrderPageState extends State<TrackOrderPage> {
-
+  List mainData = new List();
   int id;
   String orderId;
   String orderDate;
   String consignmentNo;
   String orderStatus;
+  bool _isInAsyncCall = false;
 
+  String user_Token;
+
+  String USER_ID;
+  @override
+  void initState() {
+    super.initState();
+
+
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
+
+
+      setState(() {
+        _isInAsyncCall = true;
+      });
+
+      getTrackOrderList(user_Token).then((value) => {
+
+
+
+
+        setState(() {
+
+          _isInAsyncCall = false;
+
+          mainData.addAll(value.data);
+
+        })
+
+      });
+
+
+      return (prefs.getString('token'));
+    });
+
+  }
+
+
+  Widget _buildList() {
+    return ListView.builder(
+      padding: EdgeInsets.all(0.0),
+      itemCount: mainData.length , // Add one more item for progress indicator
+
+      itemBuilder: (BuildContext context, int index) {
+        /* if (index == mainData.length) {
+          return _buildProgressIndicator();
+        } else {*/
+        return GestureDetector(
+            onTap: () =>
+            {
+
+
+            },
+            child:_buildBoxBook(context,index, mainData[index].id, mainData[index].orderId,"", "", "", mainData[index].orderItems,mainData[index].updatedAt));
+
+
+
+      }
+      // }
+      ,
+
+    );
+  }
+
+  Widget buildListChild(List<OrderItems> orderItems) {
+
+    return ListView.builder(
+
+      padding: EdgeInsets.all(8.0),
+      itemCount: orderItems.length , // Add one more item for progress indicator
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        /* if (index == mainData.length) {
+          return _buildProgressIndicator();
+        } else {*/
+
+        String type="";
+        if(orderItems[index].bookTypeId==1){
+          type=" (Printed)";
+        }
+        else if(orderItems[index].bookTypeId==2){
+          type=" (Online)";
+        }
+
+        return GestureDetector(
+            onTap: () =>
+            {
+
+
+            },
+            child:Text((index+1).toString()+". "+orderItems[index].title+type,
+                style: GoogleFonts.poppins(fontSize: 13,color: Colors.black,)));
+
+
+
+      }
+      // }
+      ,
+
+    );
+  }
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(
@@ -35,7 +146,51 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         orientation: Orientation.portrait);
     return Scaffold(
 
-      body: Container(child:SizedBox(child:_buildBoxBook(context,id,orderId,orderDate,consignmentNo,orderStatus))),
+      body: ModalProgressHUD(
+        inAsyncCall: _isInAsyncCall,
+        // demo of some additional parameters
+        opacity: 0.01,
+        progressIndicator: CircularProgressIndicator(),
+    child:   Container(
+      child: Stack(  children: [
+
+        mainData.length>0? _buildList() :Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child:_isInAsyncCall?Container():Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  new Image(
+                    image: new AssetImage("assets/empty_mybook.png"),
+                    width: 200,
+                    height:  200,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  Text(
+                    'You have not any order yet' ,
+                    style: GoogleFonts.poppins(
+                      fontSize: ScreenUtil().setSp(16),
+                      letterSpacing: 1.2,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                ])
+
+
+        )
+
+        ,
+      ]) ,)
+
+    )
 
     );
   }  Widget _trackOrderButton() {
@@ -77,7 +232,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       ),
     );
   }
-  Widget _buildBoxBook(BuildContext context,int id,String orderId,String orderDate,String consignmentNo,String orderStatus){
+  Widget _buildBoxBook(BuildContext context,int index,int id,String orderId,String orderDate,String consignmentNo,String orderStatus,List<OrderItems> orderItems,String updateAt){
 
 
 
@@ -111,9 +266,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
                       children:  <TextSpan>[
-                        TextSpan(text: 'Order Id:', style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14), color: Colors.black,  fontWeight: FontWeight.w600)),
+                        TextSpan(text: 'Order Id: '
+                            '', style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color: Colors.black,  fontWeight: FontWeight.w600)),
 
-                        TextSpan(text: ' RAXag98070098', style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
+                        TextSpan(text: orderId, style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
 
                       ],
                     ),
@@ -122,7 +278,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               Spacer(),
               Padding(
                   padding: EdgeInsets.fromLTRB(10,2,10,0),
-                  child: Text("29-04-2021 08:29",   overflow: TextOverflow.ellipsis,
+                  child: Text(updateAt,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:11.0,
                       color: Color(0xFF5a5a5a),
@@ -228,12 +384,15 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
                           ),))),
                   ]),
+
+              buildListChild(orderItems),
+
               Padding(
                   padding: EdgeInsets.fromLTRB(10,20,10,0),
                   child:
                   Text("Track your Consignment number from this link below after the order status change to posted.",   textAlign: TextAlign.center,  style: GoogleFonts.poppins(
                         fontSize:12.0,
-
+                      fontWeight: FontWeight.w500,
                         color: Color(0xFF000000)
 
                     ),)),
@@ -260,5 +419,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               SizedBox(height: 10),
             ]))));
   }
+  Future<TrackOrderResponse> getTrackOrderList(String user_Token) async {
 
+    var body ={'none':'none'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchTrackOrderData(body,user_Token);
+
+  }
 }

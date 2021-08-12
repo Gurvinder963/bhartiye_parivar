@@ -279,7 +279,7 @@ class MainPageState extends State<MainPage> {
                                     children: <Widget>[
                                       SizedBox(height: 5),
                                       Text(title,
-                                        textAlign: TextAlign.justify,
+
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: GoogleFonts.roboto(

@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/TxnResponse.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../Interfaces/OnCartCount.dart';
 import 'MyBooksTab.dart';
 class BookPaymentPage extends StatefulWidget {
 
@@ -172,7 +173,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
                   onTap: () {
 
                     int count = 0;
-                    Navigator.of(context).popUntil((_) => count++ >= 2);
+                    Navigator.of(context).popUntil((_) => count++ >= 3);
 
                   },child:Container(
                 height: 50,
@@ -200,7 +201,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
     return InkWell(
       onTap: () {
         int count = 0;
-        Navigator.of(context).popUntil((_) => count++ >= 2);
+        Navigator.of(context).popUntil((_) => count++ >= 3);
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
@@ -255,6 +256,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
        bool isPaySuccess=false;
        if(payment_response=='TXN_SUCCESS'){
+         eventBus.fire(OnCartCount("FIND"));
          payment_response="success";
          isPaySuccess=true;
        }

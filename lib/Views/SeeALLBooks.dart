@@ -15,6 +15,9 @@ import '../Views/BookGroupList.dart';
 import '../ApiResponses/BookData.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
+import '../Interfaces/OnCartCount.dart';
+import 'package:badges/badges.dart';
+import '../Views/MyCart.dart';
 class SeeALLBooksPage extends StatefulWidget {
   final List<BookData> bookArray;
   final String name;
@@ -31,6 +34,7 @@ class SeeALLBooksPage extends StatefulWidget {
 class SeeALLBooksPageState extends State<SeeALLBooksPage> {
   List<BookData> mBookArray;
    String mName;
+  String cartCount='0';
   SeeALLBooksPageState(List<BookData> bookArray,String name){
     mBookArray=bookArray;
     mName=name;
@@ -44,13 +48,29 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
-
+      cartCount=prefs.getString(Prefs.CART_COUNT);
+      setState(() {});
 
 
 
       return (prefs.getString('token'));
     });
+    eventBus.on<OnCartCount>().listen((event) {
 
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+        Future<String> token;
+        token = _prefs.then((SharedPreferences prefs) {
+
+          var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+          cartCount=prefs.getString(Prefs.CART_COUNT);
+          setState(() {});
+          return (prefs.getString('token'));
+        });      });
+
+
+
+    });
   }
 
 
@@ -107,7 +127,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    var shouldShowBadge=int.parse(cartCount)>0?true:false;
     print("my_=width"+MediaQuery.of(context).size.width.toString());
     ScreenUtil.init(
         BoxConstraints(
@@ -122,7 +142,35 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(mName+ " Books", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
+        actions: <Widget>[
 
+
+          GestureDetector(
+            onTap: () {
+
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return MyCartPage();
+                      }
+                  ) );
+
+            },child:
+          Badge(
+            showBadge: shouldShowBadge,
+            position: BadgePosition.topEnd(top: 0, end: -4),
+            animationDuration: Duration(milliseconds: 300),
+            animationType: BadgeAnimationType.slide,
+            badgeContent: Text(cartCount,
+                style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
+            child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
+          ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+
+        ],
       ),
       body: Container(
           margin: EdgeInsets.fromLTRB(4,10,0,0),

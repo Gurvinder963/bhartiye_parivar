@@ -23,8 +23,22 @@ class SpiritualPage extends StatefulWidget {
 }
 
 class SpiritualPageState extends State<SpiritualPage> {
+  ScrollController _sc = new ScrollController();
   List mainData = new List();
+  int page = 1;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   bool isLoading = false;
+
+  String user_Token;
+
+
+  @override
+  void dispose() {
+
+    _sc.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -32,40 +46,62 @@ class SpiritualPageState extends State<SpiritualPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
-      if (!isLoading) {
+
+
+
+
+      apiCall();
+
+
+
+
+      return (prefs.getString('token'));
+    });
+    _sc.addListener(() {
+      if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        apiCall();
+      }
+    });
+
+  }
+
+  void apiCall(){
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });}
+    getLocaleContentLang().then((locale) {
+
+      if(locale==null){
+        locale="";
+      }
+
+      getVideosList(user_Token,videoCategory,locale).then((value) => {
+
         setState(() {
-          isLoading = true;
-        });}
-      getLocaleContentLang().then((locale) {
-
-        if(locale==null){
-          locale="";
-        }
-
-        getVideosList(user_Token,videoCategory,locale).then((value) => {
-
-          setState(() {
-            isLoading = false;
-            mainData.addAll(value.data);
-
-          })
-
-        });
-
+          isLoading = false;
+          mainData.addAll(value.data);
+          if (!mainData.isEmpty) {
+            page++;
+          }
+        })
 
       });
 
 
-      return (prefs.getString('token'));
     });
 
   }
 
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
+
+    String pageIndex = page.toString();
+    String perPage = "10";
     print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale};
+    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
+      'per_page': perPage,};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 
@@ -100,38 +136,38 @@ class SpiritualPageState extends State<SpiritualPage> {
     );
   }
 
-  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
-    String url="";
-   if(videoSourceType=='facebook'){
+  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String duration,String videoUrl,String videoSourceType){
 
-   }
-   else if(videoSourceType=='dailymotion'){
-     String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
-    url="https://www.dailymotion.com/thumbnail/video/"+videoId;
+    String url="";
+    if(videoSourceType=='facebook'){
+
+    }
+    else if(videoSourceType=='dailymotion'){
+      String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
+      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
     }
     else {
-     var videoIdd;
-     try {
-       videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-       print('this is ' + videoIdd);
-     } on Exception catch (exception) {
-       // only executed if error is of type Exception
-       print('exception');
-     } catch (error) {
-       // executed for errors of all types other than Exception
-       print('catch error');
-       //  videoIdd="error";
+      var videoIdd;
+      try {
+        videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
+        print('this is ' + videoIdd);
+      } on Exception catch (exception) {
+        // only executed if error is of type Exception
+        print('exception');
+      } catch (error) {
+        // executed for errors of all types other than Exception
+        print('catch error');
+        //  videoIdd="error";
 
-     }
-
+      }
+      // mqdefault
       url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
-   }
+    }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
 
-    publisher=publisher==null?"My Channel":publisher;
-    duration=duration==null?"4:50":duration;
-
+    channel=channel==null?"My Channel":channel;
+    // duration=channel==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
@@ -180,7 +216,7 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                       )),
 
-                  /*        Positioned.fill(
+                  /*  Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomLeft,
                           child: Container(
@@ -243,7 +279,7 @@ class SpiritualPageState extends State<SpiritualPage> {
                                     children: <Widget>[
                                       SizedBox(height: 5),
                                       Text(title,
-                                        textAlign: TextAlign.justify,
+
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: GoogleFonts.roboto(
@@ -259,7 +295,7 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(publisher,   overflow: TextOverflow.ellipsis,
+                                                Text(channel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
@@ -288,37 +324,36 @@ class SpiritualPageState extends State<SpiritualPage> {
 
 
                                     ]))),
-                         new Expanded(
-              flex: 1,
+                        new Expanded(
+                            flex: 1,
 
-              child:PopupMenuButton(
-                  icon: Icon(Icons.more_vert),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text("Share"),
-                      value: 1,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Report"),
-                      value: 2,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Bookmark"),
-                      value: 3,
-                    ),
-                    PopupMenuItem(
-                      child: Text("Subscribe Notifications"),
-                      value: 4,
-                    )
-                  ]
-              )
-          )
+                            child:PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text("Share"),
+                                    value: 1,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Report"),
+                                    value: 2,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Bookmark"),
+                                    value: 3,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Subscribe Notifications"),
+                                    value: 4,
+                                  )
+                                ]
+                            )
+                        )
 
 
                       ]))
 
             ]));}
-
   Widget _buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),
@@ -330,47 +365,68 @@ class SpiritualPageState extends State<SpiritualPage> {
       ),
     );
   }
+
+  Future<void> _getData() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+      mainData.clear();
+      page = 1;
+
+    });
+
+    apiCall();
+
+  }
+
   Widget _buildList() {
-    return ListView.builder(
-      itemCount: mainData.length+ 1 , // Add one more item for progress indicator
+    return
+      RefreshIndicator(
+        key: refreshKey,
+        child:
+        ListView.builder(
+          itemCount: mainData.length+ 1 , // Add one more item for progress indicator
 
-      itemBuilder: (BuildContext context, int index) {
-      if (index == mainData.length) {
-        return _buildProgressIndicator();
-      } else {
-        return GestureDetector(
-          onTap: () =>
-          {
+          itemBuilder: (BuildContext context, int index) {
+            if (index == mainData.length) {
+              return _buildProgressIndicator();
+            } else {
+              return GestureDetector(
+                  onTap: () =>
+                  {
 
-            Navigator.of(context, rootNavigator: true)
-                .push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return VideoDetailNewPage(content: mainData[index]);
-                    }
-                ))
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return VideoDetailNewPage(content: mainData[index]);
+                            }
+                        ))
+                  },
+                  child:
+                  _buildBoxVideo(
+                      context,
+                      mainData[index].id,
+                      mainData[index].title,
+                      mainData[index].videoImage,
+                      mainData[index].lang,
+                      mainData[index].createdAt,
+                      mainData[index].channel,
+                      mainData[index].video_duration,
+                      mainData[index].videoUrl,
+                      mainData[index].videoSourceType
+
+                  )
+
+
+              );
+            }
           },
-          child:
-          _buildBoxVideo(
-              context,
-              mainData[index].id,
-              mainData[index].title,
-              mainData[index].videoImage,
-              mainData[index].lang,
-              mainData[index].createdAt,
-              mainData[index].publisher,
-              mainData[index].video_duration,
-            mainData[index].videoUrl,
-            mainData[index].videoSourceType
-          )
-
-          ,
-
-        );
-      }
-      },
-
-    );
+          controller: _sc,
+        ),
+        onRefresh: _getData,
+      );
   }
 
 }

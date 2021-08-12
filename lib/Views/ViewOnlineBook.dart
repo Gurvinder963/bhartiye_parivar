@@ -8,19 +8,19 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import 'package:google_fonts/google_fonts.dart';
-class PrivacyScreen extends StatefulWidget {
+class ViewOnlineBookPage extends StatefulWidget {
 
 
   @override
-  PrivacyScreenState createState() {
-    return PrivacyScreenState();
+  ViewOnlineBookPageState createState() {
+    return ViewOnlineBookPageState();
   }
 }
 
-class PrivacyScreenState extends State<PrivacyScreen> {
+class ViewOnlineBookPageState extends State<ViewOnlineBookPage> {
   WebViewController _controller;
   String fileUrl="";
- // InAppWebViewController webView;
+  // InAppWebViewController webView;
   String url = "";
   double progress = 0;
   @override
@@ -29,7 +29,7 @@ class PrivacyScreenState extends State<PrivacyScreen> {
     super.initState();
 
 
-  //  _loadHtmlFromAssets();
+    //  _loadHtmlFromAssets();
 
 
   }
@@ -46,7 +46,7 @@ class PrivacyScreenState extends State<PrivacyScreen> {
 
       ),
       body:
-     InAppWebView(
+      InAppWebView(
         initialUrl: 'http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html',
         initialHeaders: {},
         initialOptions: InAppWebViewGroupOptions(
@@ -55,7 +55,7 @@ class PrivacyScreenState extends State<PrivacyScreen> {
             )
         ),
         onWebViewCreated: (InAppWebViewController controller) {
-        //  webView = controller;
+          //  webView = controller;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
@@ -73,12 +73,12 @@ class PrivacyScreenState extends State<PrivacyScreen> {
           });
         },
       ),
-     /* HtmlWidget(
+      /* HtmlWidget(
 
         "http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html",
         webView: true,
       )*/
-  /*  WebView(
+      /*  WebView(
 
         initialUrl: 'about:blank',
         onWebViewCreated: (WebViewController webViewController) {
@@ -91,10 +91,10 @@ class PrivacyScreenState extends State<PrivacyScreen> {
 
 
   _loadHtmlFromAssets() async {
-  //  String fileText = await rootBundle.loadString('assets/BankonKaMayajaal/mobile/index.html');
-   /* setState(() {
+    //  String fileText = await rootBundle.loadString('assets/BankonKaMayajaal/mobile/index.html');
+    /* setState(() {
       fileUrl = fileText;
     });*/
-   _controller.loadUrl('http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html');
+    _controller.loadUrl('http://bankjaal.in/bankon_ka_mayajaal/mobile/index.html');
   }
 }

@@ -13,9 +13,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../Repository/MainRepository.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-
+import '../Views/privacyScreen.dart';
 import '../Utils/AppStrings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
@@ -23,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/AppColors.dart';
 import '../ApiResponses/OTPResponse.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import '../Views/terms.dart';
 
 
 
@@ -429,9 +430,27 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
                               children:  <TextSpan>[
                                 TextSpan(text: 'By signing in you are agreeing to our \n', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Terms', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
+                                TextSpan(text: ' Terms',
+                                    recognizer: new TapGestureRecognizer()..onTap = () => {
+                                      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return TermScreen();
+                                              }
+                                          ) )
+
+                                    },style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color: Color(0xFF000080))),
                                 TextSpan(text: ' and', style: TextStyle(fontSize: ScreenUtil().setSp(14), color: Colors.black)),
-                                TextSpan(text: ' Privacy Policy.', style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
+                                TextSpan(text: ' Privacy Policy.',
+                                    recognizer: new TapGestureRecognizer()..onTap = () => {
+                                      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return PrivacyScreen();
+                                              }
+                                          ) )
+
+                                    }, style: TextStyle( fontWeight: FontWeight.w600,fontSize: ScreenUtil().setSp(14), color:Color(0xFF000080))),
                               ],
                             ),
                           ),
@@ -500,28 +519,45 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         var pin=nextIntOfDigits(4);
 
         print(pin);
+        var date1 = DateTime.now();
+        if(s2=='91') {
+          String msg = pin.toString() +
+              " is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
+          setState(() {
+            _isInAsyncCall = true;
+          });
 
-        String msg=pin.toString()+" is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
-        setState(() {
-          _isInAsyncCall = true;
-        });
-         var date1 = DateTime.now();
-        getOTPData(mobile,msg).then((value) => {
+          getOTPData(mobile, msg).then((value) =>
+          {
 
-        setState(() {
-        _isInAsyncCall = false;
-        }),
+            setState(() {
+              _isInAsyncCall = false;
+            }),
 
-          Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-            MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return VerifyOTPPage(c_code:s2,mobile:myControllerPhone.text,otpCode:pin.toString(),otpSendDate:date1);
-                }
-            ) )
-
-
-        });
-
+            Navigator.of(context, rootNavigator: true)
+                .push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return VerifyOTPPage(c_code: s2,
+                          mobile: myControllerPhone.text,
+                          otpCode: pin.toString(),
+                          otpSendDate: date1);
+                    }
+                ))
+          });
+        }
+        else{
+          Navigator.of(context, rootNavigator: true)
+              .push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return VerifyOTPPage(c_code: s2,
+                        mobile: myControllerPhone.text,
+                        otpCode: pin.toString(),
+                        otpSendDate: date1);
+                  }
+              ));
+        }
 
 
 

@@ -10,6 +10,7 @@ import '../ApiResponses/OrderResponse.dart';
 import '../ApiResponses/TxnResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
+import '../ApiResponses/TrackOrderResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -95,5 +96,10 @@ class MainRepository {
   Future<HomeAPIResponse> fetchHomeData(var body,String token) async {
     final response = await _provider.getWithToken("public/api/v1/auth/home",body,token);
     return HomeAPIResponse.fromJson(response);
+  }
+
+  Future<TrackOrderResponse> fetchTrackOrderData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/orders",body,token);
+    return TrackOrderResponse.fromJson(response);
   }
 }
