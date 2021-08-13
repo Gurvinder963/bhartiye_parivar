@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -58,6 +58,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool isVerifyMissCallBtnTapped=false;
   bool isCallAvailable=false;
   String mC_code;
+
+  bool isCallVerified=false;
   String mInvitedBy="";
   bool checkedValue=false;
   bool _isInAsyncCall = false;
@@ -94,13 +96,18 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
   _callNumber() async{
-    var number = "+918929897587";
+   // var number = "+918929897587";
+     var number = "+917941050748";
     //set the number here
-    bool res = await FlutterPhoneDirectCaller.callNumber(number);
-    res ? print("true") : print("false");
-    setState(() {
-      isCallAvailable = true;
-    });
+     await FlutterPhoneDirectCaller.callNumber(number).then((value) => {
+      print("suucessfully called"),
+     setState(() {
+     isCallAvailable = true;
+     })
+
+     });
+   // res ? print("true") : print("false");
+
   }
 
 
@@ -122,21 +129,49 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
 
-      if(isCallAvailable && isVerifyMissCallBtnTapped){
+
+       print("onresume-----");
+       isCallAvailable ? print("isCallAvailable") : print("isCallUNAvailable");
+       isVerifyMissCallBtnTapped ? print("isVerifyMissCallBtnTapped") : print("isVerifyMissCallBtnTappednot");
+
+      if(isVerifyMissCallBtnTapped){
         setState(() {
           _isInAsyncCall = true;
 
         });
+        String newStringMob="";
+        if(mC_code=='91') {
+          var arr = mMobile.split("-");
+          newStringMob = arr[0] + arr[1];
 
-        Timer(Duration(seconds: 10),
+
+        }
+        else{
+          newStringMob=mMobile;
+        }
+
+        String code="";
+        if(mC_code=='91'){
+          code=newStringMob;
+        }
+        else{
+          code=mC_code+newStringMob;
+        }
+
+
+        print("onresume--innner_call---");
+
+
+        Timer(Duration(seconds: 2),
                 ()=>{
 
-                  getVerifyMissCallAPI("+"+mMobile).then((value) => {
+
+                  getVerifyMissCallAPI(code).then((value) => {
 
                 setState(() {
-                  isVerifyMissCallBtnTapped=false;
+                 // isVerifyMissCallBtnTapped=false;
                 _isInAsyncCall = false;
-                isCallAvailable=false;
+              //  isCallAvailable=false;
 
                 }),
 
@@ -144,7 +179,18 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                   loginAPICall()
                 }
                 else{
-                  showAlertDialogValidation(context,"Enter Mobile no. not valid")
+
+                 // showAlertDialogValidation(context,"Enter Mobile no. not valid")
+
+                Fluttertoast.showToast(
+                msg: "Caller not verified !",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0)
+
                 }
 
 
@@ -166,15 +212,20 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       _isInAsyncCall = true;
     });
     print("mcode"+mC_code);
+    String varMobile="";
     if(mC_code=='91') {
       var arr = mMobile.split("-");
       String newStringMob = arr[0] + arr[1];
 
-      mMobile = newStringMob;
+      varMobile = newStringMob;
+    }
+    else{
+      varMobile=mMobile;
     }
 
 
-    getLoginResponse(mC_code,mMobile)
+
+    getLoginResponse(mC_code,varMobile)
         .then((res) async {
       setState(() {
         _isInAsyncCall = false;
@@ -441,19 +492,10 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                   });
                                 print("mcode"+mC_code);
 
-                                String varMobile="";
-                                if(mC_code=='91') {
-                                  var arr = mMobile.split("-");
-                                  String newStringMob = arr[0] + arr[1];
 
-                                  varMobile = newStringMob;
-                                }
-                                else{
-                                  varMobile=mMobile;
-                                }
+                                loginAPICall();
 
-
-                           getLoginResponse(mC_code,varMobile)
+                      /*     getLoginResponse(mC_code,varMobile)
                               .then((res) async {
                                   setState(() {
                                     _isInAsyncCall = false;
@@ -500,7 +542,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
                                 });
-
+*/
 
 
 

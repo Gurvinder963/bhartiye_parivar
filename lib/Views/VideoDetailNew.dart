@@ -673,8 +673,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     //<iframe src="http://instagram.com/p/a1wDZKopa2/embed" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
 
+   if(content.videoSourceType=='instagram'){
+     html = '''
+          <iframe src="http://instagram.com/p/CSgceH8nTFxjUMBDYnzT97db-ei_KY7fErctX40/embed" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+     ''';
 
-    if(content.videoSourceType=='facebook'){
+   }
+
+
+    else if(content.videoSourceType=='facebook'){
       html = '''
            <iframe width="100%" height="100%"
             src="https://www.facebook.com/v2.3/plugins/video.php? 

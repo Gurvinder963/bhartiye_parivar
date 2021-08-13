@@ -180,7 +180,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
-      return Scaffold(
+      return  WillPopScope(
+        child:Scaffold(
         appBar: AppBar(
           elevation: 0,
           toolbarHeight: 56,
@@ -251,7 +252,24 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
           ],
         ),
-      );
+      ),
+          onWillPop: () => showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text('Warning'),
+        content: Text('Do you really want to exit'),
+        actions: [
+          FlatButton(
+            child: Text('Yes'),
+            onPressed: () => Navigator.pop(c, true),
+          ),
+          FlatButton(
+            child: Text('No'),
+            onPressed: () => Navigator.pop(c, false),
+          ),
+        ],
+      ),
+    ),);
     }
   }
 

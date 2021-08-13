@@ -177,7 +177,9 @@ class ApiProvider {
       case 403:
         throw UnauthorisedException(response.body.toString());
       case 500:
-
+        var responseJson = json.decode(response.body.toString());
+        print(responseJson);
+        return responseJson;
       default:
         throw FetchDataException(
             'Error occured while Communication with Server with StatusCode : ${response.statusCode}');

@@ -206,7 +206,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
             },
             child:
             _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
-                mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].pageCount.toString(),mainData[index].langCode));
+                mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].pageCount.toString(),mainData[index].lang_name));
 
 
 
@@ -248,6 +248,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
   }
   Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,String pageCount,String lang){
 
+    lang=lang==null?"":lang;
 // print("my_qty--"+qty);
     title= title.length>22?title=title.substring(0,22)+"...":title;
     return    Container(
