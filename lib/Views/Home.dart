@@ -163,7 +163,102 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       selectedIndex = index;
     });
   }
+  void showDialogCart(){
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
 
+             Text("Are you sure you want to\n close application?"),
+             Row(
+             mainAxisSize: MainAxisSize.min,
+             children: <Widget>[
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+
+                },
+
+                child: Container(
+                  width: 100,
+                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey.shade200,
+                            offset: Offset(1, 1),
+                            blurRadius: 0,
+                            spreadRadius: 0)
+                      ],
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(AppColors.BaseColor),
+                            Color(AppColors.BaseColor)
+                          ])),
+                  child: Text(
+                    'Yes',
+                    style: GoogleFonts.poppins(
+
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+
+                },
+
+                child: Container(
+                  width: 100,
+                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey.shade200,
+                            offset: Offset(1, 1),
+                            blurRadius: 0,
+                            spreadRadius: 0)
+                      ],
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(AppColors.BaseColor),
+                            Color(AppColors.BaseColor)
+                          ])),
+                  child: Text(
+                    'No',
+                    style: GoogleFonts.poppins(
+
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )]),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,23 +348,104 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ],
         ),
       ),
-          onWillPop: () => showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text('Warning'),
-        content: Text('Do you really want to exit'),
-        actions: [
-          FlatButton(
-            child: Text('Yes'),
-            onPressed: () => Navigator.pop(c, true),
-          ),
-          FlatButton(
-            child: Text('No'),
-            onPressed: () => Navigator.pop(c, false),
-          ),
-        ],
-      ),
-    ),);
+          onWillPop: () => showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 30,
+                    ),
+
+                    Text("Are you sure you want to\n close application?",
+                      textAlign: TextAlign.center,),
+                    Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context, true);
+
+                            },
+
+                            child: Container(
+                              width: 100,
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                        color: Colors.grey.shade200,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 0,
+                                        spreadRadius: 0)
+                                  ],
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(0xFFD8D8D8),
+                                        Color(0xFFD8D8D8)
+                                      ])),
+                              child: Text(
+                                'Yes',
+                                style: GoogleFonts.poppins(
+
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            width: 20,
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context, false);
+
+                            },
+
+                            child: Container(
+                              width: 100,
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                        color: Colors.grey.shade200,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 0,
+                                        spreadRadius: 0)
+                                  ],
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(AppColors.BaseColor),
+                                        Color(AppColors.BaseColor)
+                                      ])),
+                              child: Text(
+                                'No',
+                                style: GoogleFonts.poppins(
+
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )]),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                );
+              }),);
     }
   }
 
