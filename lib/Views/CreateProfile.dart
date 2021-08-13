@@ -508,7 +508,19 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     ));
   }
   Future<LoginResponse> getProfileResponse(String name,String age,String profession,String pincode,String mobile,String cCode) async {
-    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":mobile,"email":""});
+
+
+    String varMobile="";
+    if(cCode=='91') {
+      var arr = mobile.split("-");
+      String newStringMob = arr[0] + arr[1];
+
+      varMobile = newStringMob;
+    }
+    else{
+      varMobile=mobile;
+    }
+    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":""});
     MainRepository repository=new MainRepository();
     return repository.fetchProfileData(body);
 
