@@ -97,7 +97,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     bool isBuyNowVisible=true;
     bool goToCart=false;
     String btnText="ADD TO CART";
-
+    var addtoCartBgColor=Color(AppColors.BaseColor);
     if(mContent.book_type_id!=3 && mContent.is_ebook_purchased){
       isAddtoCartVisible=false;
       isBuyNowVisible=false;
@@ -110,14 +110,17 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     if(mContent.book_type_id!=3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
+      addtoCartBgColor=Color(AppColors.ColorGreen);
     }
     else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart && mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
+      addtoCartBgColor=Color(AppColors.ColorGreen);
     }
     else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
+      addtoCartBgColor=Color(AppColors.ColorGreen);
     }
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
@@ -449,13 +452,13 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     },child:Container(
               height: 50,
               width: MediaQuery.of(context).size.width,
-              color: Color(AppColors.BaseColor),
+              color: addtoCartBgColor,
               padding: EdgeInsets.fromLTRB(0,8,0,8),
               child: Align(
                 alignment: Alignment.center, // Align however you like (i.e .centerRight, centerLeft)
                 child:  Text(btnText,
 
-                  style: GoogleFonts.poppins( letterSpacing: 1.2,fontSize: ScreenUtil().setSp(16), color:  Color(0xFFffffff).withOpacity(0.8),fontWeight: FontWeight.w500),),
+                  style: GoogleFonts.poppins( letterSpacing: 1.2,fontSize: ScreenUtil().setSp(16), color:  Color(0xFFffffff),fontWeight: FontWeight.w500),),
               ),
 
 
