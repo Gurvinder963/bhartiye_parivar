@@ -141,7 +141,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
         });
         String newStringMob="";
         if(mC_code=='91') {
-          var arr = mMobile.split("-");
+          var arr = mMobile.split(" ");
           newStringMob = arr[0] + arr[1];
 
 
@@ -214,7 +214,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     print("mcode"+mC_code);
     String varMobile="";
     if(mC_code=='91') {
-      var arr = mMobile.split("-");
+      var arr = mMobile.split(" ");
       String newStringMob = arr[0] + arr[1];
 
       varMobile = newStringMob;
@@ -424,7 +424,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
-                            child:  Text("Verify +"+mC_code+"-"+mMobile, textAlign: TextAlign.center,
+                            child:  Text("Verify +"+mC_code+" "+mMobile, textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
                           ),
 

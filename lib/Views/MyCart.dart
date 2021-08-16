@@ -22,6 +22,7 @@ import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../Views/BookPayment.dart';
 import '../Interfaces/OnCartCount.dart';
+import '../Views/AddShippingAddress.dart';
 class ItemData {
 
   String book_id;
@@ -485,11 +486,19 @@ class MyCartPageState extends State<MyCartPage> {
             Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                 MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return BookPaymentPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
+                      return AddShippingAddressPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
                     }
                 ) );
 
 
+            /*    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return BookPaymentPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
+                    }
+                ) );
+
+*/
           }
           else {
             showAlertDialogValidation(context,"Some error occured!");

@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Bhartiye Parivar"
+        android:label="Bhartiya Parivar"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

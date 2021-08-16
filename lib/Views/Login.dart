@@ -56,7 +56,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
   //final controller =MaskedTextController(mask: "00000-00000");
-   var myControllerPhone = MaskedTextController(mask: "00000-00000");
+   var myControllerPhone = MaskedTextController(mask: "00000 00000");
    var myControllerContryCode = TextEditingController();
 
   String fcm_token;
@@ -406,7 +406,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           myControllerContryCode.text=code.dialCode;
                           setState(() {
                            if(code.dialCode=='+91'){
-                            myControllerPhone = MaskedTextController(mask: "00000-00000");
+                            myControllerPhone = MaskedTextController(mask: "00000 00000");
 
                            }
                            else{
@@ -507,7 +507,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         print(s2);
         String mobile;
         if(s2=='91') {
-          var arr = myControllerPhone.text.split("-");
+          var arr = myControllerPhone.text.split(" ");
           String newStringMob = arr[0] + arr[1];
 
            mobile = s2 + newStringMob;

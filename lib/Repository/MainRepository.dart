@@ -11,6 +11,7 @@ import '../ApiResponses/TxnResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
 import '../ApiResponses/TrackOrderResponse.dart';
+import '../ApiResponses/ShippingAddressResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -101,5 +102,19 @@ class MainRepository {
   Future<TrackOrderResponse> fetchTrackOrderData(var body,String token) async {
     final response = await _provider.getWithToken("public/api/v1/orders",body,token);
     return TrackOrderResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchAddShippingAddress(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/shipping-addresses",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<ShippingAddressResponse> fetchShippingAddressList(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/shipping-addresses",body,token);
+    return ShippingAddressResponse.fromJson(response);
+  }
+  Future<AddToCartResponse> fetchUpdateShippingAddress(var body,String token) async {
+    final response = await _provider.putWithToken("public/api/v1/shipping-addresses",body,token);
+    return AddToCartResponse.fromJson(response);
   }
 }
