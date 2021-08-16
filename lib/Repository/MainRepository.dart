@@ -113,8 +113,8 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/shipping-addresses",body,token);
     return ShippingAddressResponse.fromJson(response);
   }
-  Future<AddToCartResponse> fetchUpdateShippingAddress(var body,String token) async {
-    final response = await _provider.putWithToken("public/api/v1/shipping-addresses",body,token);
+  Future<AddToCartResponse> fetchUpdateShippingAddress(String id,var body,String token) async {
+    final response = await _provider.putWithToken("public/api/v1/shipping-addresses/"+id,body,token);
     return AddToCartResponse.fromJson(response);
   }
 }

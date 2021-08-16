@@ -349,7 +349,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
     MainRepository repository=new MainRepository();
 
     if(mainData.isNotEmpty){
-      return repository.fetchUpdateShippingAddress(body,token);
+      return repository.fetchUpdateShippingAddress(mainData[0].id.toString(),body,token);
     }
     else{
 
