@@ -23,6 +23,7 @@ import 'package:event_bus/event_bus.dart';
 import 'privacyScreen.dart';
 import '../Interfaces/OnCartCount.dart';
 import '../Views/ViewOnlineBook.dart';
+import '../ApiResponses/BookDetailResponse.dart';
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
 
@@ -65,6 +66,17 @@ class BooksDetailPageState extends State<BooksDetailPage> {
        user_Token=prefs.getString(Prefs.KEY_TOKEN);
        cartCount=prefs.getString(Prefs.CART_COUNT);
        setState(() {});
+       getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+         setState(() {
+           mContent=value.data;
+        //   isLoading = false;
+          // mainData.addAll(value.data);
+
+         })
+
+       });
+
       return (prefs.getString('token'));
     });
 
@@ -87,7 +99,13 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
   }
 
+  Future<BookDetailResponse> getBooksListDetail(String user_Token,String id) async {
 
+    var body ={'lang_code':''};
+    MainRepository repository=new MainRepository();
+    return repository.fetchBooksDetailData(id,body,user_Token);
+
+  }
 
 
   @override
@@ -135,12 +153,25 @@ class BooksDetailPageState extends State<BooksDetailPage> {
           GestureDetector(
             onTap: () {
 
-              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
                   MaterialPageRoute(
                       builder: (BuildContext context) {
                         return MyCartPage();
                       }
-                  ) );
+                  )).then((_) {
+                // This block runs when you have returned back to the 1st Page from 2nd.
+
+                getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+                  setState(() {
+                    mContent=value.data;
+                    //   isLoading = false;
+                    // mainData.addAll(value.data);
+
+                  })
+
+                });
+              });
 
             },child:
           Badge(
@@ -413,7 +444,20 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 builder: (BuildContext context) {
                   return MyCartPage();
                 }
-            ));
+            )).then((_) {
+          // This block runs when you have returned back to the 1st Page from 2nd.
+
+          getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+            setState(() {
+              mContent=value.data;
+              //   isLoading = false;
+              // mainData.addAll(value.data);
+
+            })
+
+          });
+        });
       }
       else {
         if (mContent.book_type_id == 3) {
@@ -602,7 +646,20 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
                 builder: (BuildContext context) {
                   return MyCartPage();
                 }
-            ));
+            )).then((_) {
+          // This block runs when you have returned back to the 1st Page from 2nd.
+
+          getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+            setState(() {
+              mContent=value.data;
+              //   isLoading = false;
+              // mainData.addAll(value.data);
+
+            })
+
+          });
+        });
       }
     }
     else {
@@ -695,7 +752,20 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
                   builder: (BuildContext context) {
                     return MyCartPage();
                   }
-              ));
+              )).then((_) {
+            // This block runs when you have returned back to the 1st Page from 2nd.
+
+            getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+              setState(() {
+                mContent=value.data;
+                //   isLoading = false;
+                // mainData.addAll(value.data);
+
+              })
+
+            });
+          });
         }
         else {
           if (mContent.book_type_id == 3) {

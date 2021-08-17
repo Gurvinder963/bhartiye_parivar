@@ -1,5 +1,11 @@
 import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
+import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,14 +20,19 @@ import '../Repository/MainRepository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
-class TrackOrderPage extends StatefulWidget {
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
+class TrackOrderPage extends StatefulWidget with WidgetsBindingObserver{
+ // final TargetPlatform platform=null;
   @override
   TrackOrderPageState createState() {
+
     return TrackOrderPageState();
   }
 }
 
-class TrackOrderPageState extends State<TrackOrderPage> {
+class TrackOrderPageState extends State<TrackOrderPage>  {
+  String _localPath;
   List mainData = new List();
   int id;
   String orderId;
@@ -29,14 +40,36 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   String consignmentNo;
   String orderStatus;
   bool _isInAsyncCall = false;
-
+  bool _permissionReady;
   String user_Token;
 
   String USER_ID;
+  Future<bool> _checkPermission() async {
+   var platform = Platform;
+    if (platform == TargetPlatform.android) {
+      final status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
 
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+    );
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
@@ -68,7 +101,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
       return (prefs.getString('token'));
     });
-
+    _prepare();
   }
 
 
@@ -232,6 +265,33 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       ),
     );
   }
+  Future<Null> _prepare() async {
+    _permissionReady = await _checkPermission();
+
+  if (_permissionReady) {
+      await _prepareSaveDir();
+    }
+  }
+  Future<void> _prepareSaveDir() async {
+    _localPath =
+        (await _findLocalPath()) + Platform.pathSeparator + 'Download';
+
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+  }
+
+  Future<String> _findLocalPath() async {
+    var platform = Platform;
+    print("my_platform"+platform.toString());
+    final directory = platform == TargetPlatform.android
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return directory?.path;
+  }
+
   Widget _buildBoxBook(BuildContext context,int index,int id,String orderId,String orderDate,String consignmentNo,String orderStatus,List<OrderItems> orderItems,String updateAt){
 
 
@@ -369,7 +429,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     Spacer(),
                     Padding(
                         padding: EdgeInsets.fromLTRB(10,8,10,0),
-                        child: Container(
+                        child: GestureDetector(
+                            onTap: () {
+                              _requestDownload();
+
+                            },child: Container(
                             decoration: BoxDecoration(
                               color: Color(AppColors.BaseColor),
                                 border: Border.all(color: Colors.black)
@@ -382,7 +446,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                   fontWeight: FontWeight.w600,
                             color: Color(0xFF000000),
 
-                          ),))),
+                          ),)))),
                   ]),
 
               buildListChild(orderItems),
@@ -418,6 +482,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   ),)),
               SizedBox(height: 10),
             ]))));
+  }
+  void _requestDownload() async {
+     final taskId = await FlutterDownloader.enqueue(
+        url: "http://www.africau.edu/images/default/sample.pdf",
+        headers: {"auth": "test_for_sql_encoding"},
+        savedDir: _localPath,
+        showNotification: true,
+        openFileFromNotification: true);
   }
   Future<TrackOrderResponse> getTrackOrderList(String user_Token) async {
 

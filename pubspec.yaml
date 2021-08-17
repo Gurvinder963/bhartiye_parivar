@@ -39,6 +39,8 @@ dependencies:
   flutter_inappwebview: ^4.0.0+4
   flutter_dash: ^0.0.1
   badges: ^1.2.0
+  flutter_downloader: ^1.5.2
+  permission_handler: ^5.1.0+2
   event_bus: ^1.1.1
 
   flutter:

@@ -12,6 +12,7 @@ import '../ApiResponses/PinCodeResponse.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
 import '../ApiResponses/TrackOrderResponse.dart';
 import '../ApiResponses/ShippingAddressResponse.dart';
+import '../ApiResponses/BookDetailResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -39,6 +40,12 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/books",body,token);
     return BookListResponse.fromJson(response);
   }
+
+  Future<BookDetailResponse> fetchBooksDetailData(String id,var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/books/"+id,body,token);
+    return BookDetailResponse.fromJson(response);
+  }
+
   Future<BookGroupListResponse> fetchBooksGroupData(var body,String token) async {
     final response = await _provider.getWithToken("public/api/v1/books-collection",body,token);
     return BookGroupListResponse.fromJson(response);

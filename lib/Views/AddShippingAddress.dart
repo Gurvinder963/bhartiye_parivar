@@ -29,6 +29,7 @@ class AddShippingAddressPage extends StatefulWidget {
 
 class AddShippingAddressPageState extends State<AddShippingAddressPage> {
   String  orderId = "", amount = "";
+  String shpAddress='';
   bool _isInAsyncCall = false;
   List mainData = new List();
   final myControllerName = TextEditingController();
@@ -148,6 +149,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
       TextFormField(
         minLines: 5,
         maxLines: 5,
+        enabled: false,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           hintText: '',

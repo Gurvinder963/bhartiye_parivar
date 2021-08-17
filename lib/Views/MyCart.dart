@@ -677,12 +677,12 @@ class MyCartPageState extends State<MyCartPage> {
       bookType="(Online)";
     }
 
-    title= title.length>25?title=title.substring(0,25)+"...":title;
+  //  title= title.length>25?title=title.substring(0,25)+"...":title;
 // print("my_qty--"+qty);
 
-    return    Container(
+    return   SizedBox(child: Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-        height: 185,
+      //  height: 185,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -715,14 +715,14 @@ class MyCartPageState extends State<MyCartPage> {
               ),
     Container(
 
-    child:Column(
+    child:Expanded( child:Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
               Padding(
                   padding: EdgeInsets.fromLTRB(15,4,0,0),
                   child:
-                  Text(title,overflow: TextOverflow.ellipsis,
-                    maxLines: 1, style: GoogleFonts.poppins(
+                 Text(title,overflow: TextOverflow.ellipsis,
+                    maxLines: 3, style: GoogleFonts.poppins(
                       fontSize:14.0,
                       color: Color(0xFF000000).withOpacity(1),
                         fontWeight: FontWeight.w700
@@ -835,7 +835,7 @@ class MyCartPageState extends State<MyCartPage> {
               ])))
 
 
-            ]))
+            ])))
             ])),
 
 
@@ -988,6 +988,6 @@ class MyCartPageState extends State<MyCartPage> {
                   )
 
             ]
-        ));
+        )));
   }
 }
