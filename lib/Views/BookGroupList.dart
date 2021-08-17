@@ -180,7 +180,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
       appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text('Books By Language', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+        title: Text('By Language', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
         actions: <Widget>[
 
 
@@ -360,13 +360,13 @@ class BookGroupListPageState extends State<BookGroupListPage> {
   }
   Widget _buildText(String title){
     final text = title;
-    return Text(text.length > 20 ? '${text.substring(0, 20)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
+    return Text(text.length > 12 ? '${text.substring(0, 12)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
 
 
   }
   Widget _buildTextPublisher(String title){
     final text = title;
-    return Text(text.length > 20 ? '${text.substring(0, 20)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 10));
+    return Text(text.length > 12 ? '${text.substring(0, 12)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 10));
 
 
   }
@@ -374,10 +374,11 @@ class BookGroupListPageState extends State<BookGroupListPage> {
     return  Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        Container(
+
+    Container(
           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-          height: 150,
-          width: 110,
+        height: 150,
+        width: 100,
           alignment: Alignment.center,
 
           decoration: BoxDecoration(

@@ -338,12 +338,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           onTabSelected: onItemTapped,
 
           items: [
-            FABBottomAppBarItem(iconData: selectedIndex==0?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 24,height: 24,)
-                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 24,height: 24,), text: 'Home'),
-            FABBottomAppBarItem(iconData: selectedIndex==1?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 24,height: 24,)
-                : Image(image: AssetImage('assets/news_unselected.png'), width: 24,height: 24,), text: 'News'),
-            FABBottomAppBarItem(iconData: selectedIndex==2?  Image(image: AssetImage('assets/ic_book_sel.png'), width: 24,height: 24,)
-                : Image(image: AssetImage('assets/book_unselected.png'), width: 24,height: 24,), text: 'Books'),
+            FABBottomAppBarItem(iconData: selectedIndex==0?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
+                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 28,height: 28,), text: 'Home'),
+            FABBottomAppBarItem(iconData: selectedIndex==1?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
+                : Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,), text: 'News'),
+            FABBottomAppBarItem(iconData: selectedIndex==2?  Image(image: AssetImage('assets/ic_book_sel.png'), width: 28,height: 28,)
+                : Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,), text: 'Books'),
 
           ],
         ),

@@ -65,9 +65,9 @@ class BooksPageState extends State<BooksPage> {
 
 
 
-    return    Container(
+    return    SizedBox( child: Container(
         margin:EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0) ,
-    height: 182,
+
         decoration: BoxDecoration(
 
             borderRadius: BorderRadius.all(Radius.circular(5))
@@ -76,10 +76,12 @@ class BooksPageState extends State<BooksPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
 
-
+    AspectRatio(
+    aspectRatio: 2 / 3,
+        child:
       Container(
         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-      height: 150,
+
         alignment: Alignment.center,
 
         decoration: BoxDecoration(
@@ -90,7 +92,7 @@ class BooksPageState extends State<BooksPage> {
           ),
         ),
 
-      ),
+      )),
         Padding(
             padding: EdgeInsets.fromLTRB(10,4,0,0),
             child:
@@ -109,7 +111,7 @@ class BooksPageState extends State<BooksPage> {
         color: Color(0xFF5a5a5a),
 
     ),)),
-    ]));
+    ])));
   }
   Widget _buildProgressIndicator() {
     return new Padding(
@@ -138,8 +140,8 @@ class BooksPageState extends State<BooksPage> {
         body: Container(
           margin: EdgeInsets.fromLTRB(4,0,0,0),
           padding:  EdgeInsets.fromLTRB(2,8,2,0),
-        child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+       // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
 
@@ -168,17 +170,17 @@ class BooksPageState extends State<BooksPage> {
         children: <Widget>[
 
         Opacity(
-        opacity: 1,
+        opacity: 0.8,
         child: Image(
-                    image: new AssetImage("assets/collage.png"),
+                    image: new AssetImage("assets/ic_new_my_books.png"),
 
-                    height:  160,
+                    height:  150,
 
                     fit: BoxFit.fill,
                     alignment: Alignment.center,
                   )),
 
-          Container(
+        /*  Container(
 
             padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
               decoration: BoxDecoration(
@@ -188,7 +190,7 @@ class BooksPageState extends State<BooksPage> {
               ),
               child:Text("MY BOOKS"
                 ,style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
-          ),
+          ),*/
 
         ])),
                 ),
@@ -209,11 +211,11 @@ class BooksPageState extends State<BooksPage> {
                       children: <Widget>[
 
                         Opacity(
-                            opacity: 1,
+                            opacity: 0.8,
                             child:  Image(
-                              image: new AssetImage("assets/languages.png"),
+                              image: new AssetImage("assets/ic_by_lang.png"),
 
-                              height:  160,
+                              height:  150,
 
                               fit: BoxFit.fill,
                               alignment: Alignment.center,
@@ -221,7 +223,7 @@ class BooksPageState extends State<BooksPage> {
                         )
 
 ,
-                       Container(
+                    /*   Container(
                           padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
                           decoration: BoxDecoration(
                               color:Colors.black.withOpacity(0.6) ,
@@ -229,7 +231,7 @@ class BooksPageState extends State<BooksPage> {
                               borderRadius: BorderRadius.all(Radius.circular(10))
                           ),
                           child:Text("BY LANGUAGE",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
-                        ),
+                        ),*/
 
                       ])),
                 ),
@@ -245,17 +247,17 @@ class BooksPageState extends State<BooksPage> {
     )
 ,
 
-              Expanded(
-                  child:Padding(
+            Padding(
                     padding: EdgeInsets.fromLTRB(8,0,8,0),
 
                   child: GridView.builder(
-
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
                     itemCount: mainData.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 12.0,
-                        childAspectRatio: (1 / 1.82),
+                        childAspectRatio: (2 / 4),
                         mainAxisSpacing: 4.0
                     ),
                     itemBuilder: (BuildContext context, int index){
@@ -289,7 +291,7 @@ class BooksPageState extends State<BooksPage> {
                       child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
           mainData[index].thumbImage, mainData[index].publisher));
     },
-                  )))
+                  ))
 
 
         ])

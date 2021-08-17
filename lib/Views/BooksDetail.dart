@@ -486,12 +486,12 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 },
 
                 child: Container(
-                  width: 150,
+                  width: 250,
                   margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 5),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      borderRadius: BorderRadius.all(Radius.circular(1)),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
                             color: Colors.grey.shade200,
@@ -507,7 +507,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                             Color(AppColors.BaseColor)
                           ])),
                   child: Text(
-                    'E-Book',
+                    'Online Book',
                     style: GoogleFonts.poppins(
                         fontSize: ScreenUtil().setSp(18),
                         color: Colors.white,
@@ -515,7 +515,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                   ),
                 ),
               ),
-              Text("----or----"),
+              Text("OR"),
 
               InkWell(
                 onTap: () {
@@ -524,9 +524,9 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 },
 
                 child: Container(
-                  width: 150,
+                  width: 250,
                   margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 5),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -545,7 +545,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                             Color(AppColors.BaseColor)
                           ])),
                   child: Text(
-                    'Printed',
+                    'Printed Book',
                     style: GoogleFonts.poppins(
                         fontSize: ScreenUtil().setSp(18),
                         color: Colors.white,
