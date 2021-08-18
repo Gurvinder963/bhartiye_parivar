@@ -425,7 +425,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Verify +"+mC_code+" "+mMobile, textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black,letterSpacing: 2.0,)),
                           ),
 
                           GestureDetector(

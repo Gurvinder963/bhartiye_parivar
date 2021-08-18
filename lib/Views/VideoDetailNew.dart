@@ -371,7 +371,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                       aspectRatio: 16 / 9,
                       child:
                       Container(
-                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+                        margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                         alignment: Alignment.center,
                         // height: ScreenUtil().setHeight(175),
@@ -392,7 +392,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                   AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
-                        margin: EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+                        margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                         alignment: Alignment.center,
                         // height: ScreenUtil().setHeight(175),

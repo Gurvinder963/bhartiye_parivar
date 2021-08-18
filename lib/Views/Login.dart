@@ -106,7 +106,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerPhone,
             obscureText: false,
-            style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500),
+            style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500,letterSpacing: 2.0,),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText:"Phone number",
@@ -168,7 +168,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               disabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
               ),
-              contentPadding: EdgeInsets.all(12),
+              contentPadding: EdgeInsets.all(5),
             ),
           )
         ],
