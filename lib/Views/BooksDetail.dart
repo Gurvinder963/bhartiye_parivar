@@ -205,12 +205,16 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
               children: <Widget>[
 
+
+          AspectRatio(
+          aspectRatio: 2 / 1,
+              child:
                 Container(
 
                   margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                   alignment: Alignment.center,
-                  height: ScreenUtil().setHeight(170),
+                 // height: ScreenUtil().setHeight(170),
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -222,7 +226,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                   ),
 
-                ),
+                )),
                 Padding(
                     padding: EdgeInsets.fromLTRB(15,20,0,0),
                     child:

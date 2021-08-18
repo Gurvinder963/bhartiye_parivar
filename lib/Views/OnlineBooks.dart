@@ -284,9 +284,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                           ),
 
                         ),
-                        Container(
+        new Expanded(
+            flex: 7, child: Container(
 
-                            child:Expanded(child:Column(
+                            child:Column(
 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -312,7 +313,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                                   Padding(
                                       padding: EdgeInsets.fromLTRB(15,7,0,0),
-                                      child: Text(pageCount+" Pages, "+lang,   overflow: TextOverflow.ellipsis,
+                                      child: Text(pageCount+" Pages",   overflow: TextOverflow.ellipsis,
                                         maxLines: 1, style: GoogleFonts.poppins(
                                           fontSize:12.0,
                                           color: Color(0xFF000000),
@@ -324,11 +325,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                         ,
 
-                     Spacer(),
 
 
                         new Expanded(
-
+                            flex: 1,
 
                             child:PopupMenuButton(
                                 icon: Icon(Icons.more_vert),

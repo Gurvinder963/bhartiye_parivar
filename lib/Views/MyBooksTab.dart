@@ -61,7 +61,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
         appBar: AppBar(
           backgroundColor: Color(AppColors.BaseColor),
           title: Text('My Books', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
-          toolbarHeight: 56,
+          toolbarHeight: 50,
         ),
         body:SafeArea(
           top: true,
