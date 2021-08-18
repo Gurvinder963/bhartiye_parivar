@@ -274,7 +274,7 @@ class BooksPageState extends State<BooksPage> {
                 }
             )).then((_) {
           // This block runs when you have returned back to the 1st Page from 2nd.
-          setState(() {
+     /*     setState(() {
         mainData.clear();
           });
         getBooksList(user_Token).then((value) => {
@@ -285,7 +285,7 @@ class BooksPageState extends State<BooksPage> {
 
           })
 
-        });
+        });*/
           })
       },
                       child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
