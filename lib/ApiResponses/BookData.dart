@@ -22,6 +22,7 @@ class BookData {
   bool is_printed_added_cart;
   bool is_ebook_purchased;
   bool is_printed_purchased;
+  bool is_ebook_free;
   String displayStatus;
   String createdAt;
  // String createdBy;
@@ -52,6 +53,7 @@ class BookData {
         this.is_printed_added_cart,
         this.is_ebook_purchased,
         this.is_printed_purchased,
+        this.is_ebook_free,
         this.displayStatus,
         this.createdAt,
        // this.createdBy,
@@ -84,6 +86,7 @@ class BookData {
     is_printed_added_cart = json['is_printed_added_cart'];
     is_ebook_purchased = json['is_ebook_purchased'];
     is_printed_purchased = json['is_printed_purchased'];
+    is_ebook_free = json['is_ebook_free'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
    // createdBy = json['created_by'];
@@ -117,6 +120,7 @@ class BookData {
     data['is_printed_added_cart'] = this.is_printed_added_cart;
     data['is_ebook_purchased'] = this.is_ebook_purchased;
     data['is_printed_purchased'] = this.is_printed_purchased;
+    data['is_ebook_free'] = this.is_ebook_free;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;
    // data['created_by'] = this.createdBy;

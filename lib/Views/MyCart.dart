@@ -558,7 +558,7 @@ class MyCartPageState extends State<MyCartPage> {
               },
               child:
               _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
-                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].book_type_id));
+                  mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].book_type_id,mainData[index].is_ebook_free));
 
 
 
@@ -667,7 +667,7 @@ class MyCartPageState extends State<MyCartPage> {
       },
     );
   }
-  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,int book_type_id){
+  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,int book_type_id,bool is_ebook_free){
 
     String bookType="";
     if(book_type_id==1){
@@ -675,6 +675,12 @@ class MyCartPageState extends State<MyCartPage> {
     }
     else  if(book_type_id==2){
       bookType="(Online)";
+    }
+    String offerText="";
+
+    if(book_type_id==1 && is_ebook_free){
+
+      offerText=" (Online free in offer)";
     }
 
   //  title= title.length>25?title=title.substring(0,25)+"...":title;
@@ -731,7 +737,7 @@ class MyCartPageState extends State<MyCartPage> {
 
               Padding(
                   padding: EdgeInsets.fromLTRB(15,5,0,0),
-                  child: Text(bookType,   overflow: TextOverflow.ellipsis,
+                  child: Text(bookType+" "+offerText,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:12.0,
                       color: Color(0xFF000000),

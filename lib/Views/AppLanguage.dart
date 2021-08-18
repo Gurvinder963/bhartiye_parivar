@@ -275,6 +275,12 @@ class AppLanguagePageState extends State<AppLanguagePage> {
       ),
     ));
   }
+
+   void changeLanguageContent(BuildContext context, String selectedLanguageCode) async {
+     var _locale = await setLocaleContentLang(selectedLanguageCode);
+
+   }
+
   Widget _submitButton() {
     return InkWell(
       onTap: () {
@@ -290,6 +296,9 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
 
         if(mFrom=='sign-up'){
+        //  StringBuffer sb = new StringBuffer();
+        //  sb.write('en,hn');
+        //  changeLanguage(context,sb.toString());
         Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder:
                       (context) =>

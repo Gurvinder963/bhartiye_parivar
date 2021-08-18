@@ -61,10 +61,10 @@ class BooksPageState extends State<BooksPage> {
     return repository.fetchBooksData(body,user_Token);
 
   }
-  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased ){
+  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased, int book_type_id ){
 
     bool greenTick=false;
-    if(ebookCost==0 || isEbookPurchased || isPrinterPurchased){
+    if((ebookCost==0 && book_type_id==2)|| isEbookPurchased || isPrinterPurchased){
       greenTick=true;
     }
 
@@ -310,7 +310,7 @@ class BooksPageState extends State<BooksPage> {
           })
       },
                       child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
-          mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased));
+          mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased,mainData[index].book_type_id));
     },
                   ))
 

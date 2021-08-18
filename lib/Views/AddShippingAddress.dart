@@ -85,6 +85,10 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
             myControllerBuilding.text=value.data[0].buildingName;
             myControllerVillage.text=value.data[0].village;
             myControllerLandmark.text=value.data[0].landmark;
+            setState(() {
+              shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+"Village "+myControllerVillage.text+", "+myControllerTehsil.text+"\n"+ myControllerCity.text+", "+myControllerState.text+"\n"+"Pin - "+myControllerPincode.text+"  Phone - "+myControllerPhone.text;
+              myControllerShippingAddress.text=shpAddress;
+            });
 
           }
 
@@ -431,14 +435,14 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
 
               if(text.isNotEmpty){
 
-                if(title=="full name"){
+               // if(title=="full name"){
                     setState(() {
-                     shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+myControllerPincode.text+","+myControllerPhone.text;
+                     shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+"Village "+myControllerVillage.text+", "+myControllerTehsil.text+"\n"+ myControllerCity.text+", "+myControllerState.text+"\n"+"Pin - "+myControllerPincode.text+"  Phone - "+myControllerPhone.text;
                      myControllerShippingAddress.text=shpAddress;
                     });
 
 
-                }
+               // }
 
 
 

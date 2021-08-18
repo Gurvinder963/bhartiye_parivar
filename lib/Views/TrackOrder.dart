@@ -144,6 +144,11 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
         /* if (index == mainData.length) {
           return _buildProgressIndicator();
         } else {*/
+        String offerText="";
+        if(orderItems[index].bookTypeId==1 && orderItems[index].is_ebook_free){
+
+          offerText=" (Online free in offer)";
+        }
 
         String type="";
         if(orderItems[index].bookTypeId==1){
@@ -159,7 +164,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
 
 
             },
-            child:Text((index+1).toString()+". "+orderItems[index].title+type,
+            child:Text((index+1).toString()+". "+orderItems[index].title+type+" "+offerText,
                 style: GoogleFonts.poppins(fontSize: 13,color: Colors.black,)));
 
 

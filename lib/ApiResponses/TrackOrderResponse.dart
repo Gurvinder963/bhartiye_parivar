@@ -108,6 +108,7 @@ class OrderItems {
   String publisher;
   String langCode;
   bool status;
+  bool is_ebook_free;
   String displayStatus;
   String createdAt;
   String createdBy;
@@ -131,6 +132,7 @@ class OrderItems {
         this.publisher,
         this.langCode,
         this.status,
+        this.is_ebook_free,
         this.displayStatus,
         this.createdAt,
         this.createdBy,
@@ -154,6 +156,7 @@ class OrderItems {
     publisher = json['publisher'];
     langCode = json['lang_code'];
     status = json['status'];
+    is_ebook_free = json['is_ebook_free'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
     createdBy = json['created_by'];
@@ -179,6 +182,7 @@ class OrderItems {
     data['publisher'] = this.publisher;
     data['lang_code'] = this.langCode;
     data['status'] = this.status;
+    data['is_ebook_free'] = this.is_ebook_free;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;
     data['created_by'] = this.createdBy;
