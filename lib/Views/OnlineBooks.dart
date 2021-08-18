@@ -250,10 +250,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     lang=lang==null?"":lang;
 // print("my_qty--"+qty);
-    title= title.length>22?title=title.substring(0,22)+"...":title;
-    return    Container(
+  //  title= title.length>22?title=title.substring(0,22)+"...":title;
+    return    SizedBox(child:Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-        height: 170,
+      //  height: 170,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -286,7 +286,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                         ),
                         Container(
 
-                            child:Column(
+                            child:Expanded(child:Column(
 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -294,7 +294,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                                       padding: EdgeInsets.fromLTRB(15,12,0,0),
                                       child:
                                       Text(title,   overflow: TextOverflow.ellipsis,
-                                        maxLines: 1, style: GoogleFonts.poppins(
+                                        maxLines: 3, style: GoogleFonts.poppins(
                                             fontSize:14.0,
                                             color: Color(0xFF000000).withOpacity(1),
                                             fontWeight: FontWeight.w700
@@ -320,7 +320,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                                         ),)),
 
 
-                                ]))
+                                ])))
 
                         ,
 
@@ -364,6 +364,6 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
               )
 
             ]
-        ));
+        )));
   }
 }

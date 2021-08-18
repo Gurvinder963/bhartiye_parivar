@@ -757,6 +757,16 @@ class MyCartPageState extends State<MyCartPage> {
           Row(
 
               children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.fromLTRB(10,0,0,0),
+                    child: Text('₹' +actualCost.toString()+'/-',
+                      maxLines: 1, style: GoogleFonts.roboto(
+                          fontSize:23.0,
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.bold
+
+                      ),)),
+                Spacer(),
 
                 book_type_id==1?  Padding(
     padding: EdgeInsets.fromLTRB(10,0,0,0),
@@ -819,17 +829,9 @@ class MyCartPageState extends State<MyCartPage> {
     ),
     ):Container(),
 
-                Spacer(),
 
-               Padding(
-                    padding: EdgeInsets.fromLTRB(10,0,0,0),
-                    child: Text('₹' +cost.toString()+'/-',
-                      maxLines: 1, style: GoogleFonts.roboto(
-                        fontSize:23.0,
-                        color: Color(0xFF000000),
-                          fontWeight: FontWeight.bold
 
-                      ),)),
+
 
 
               ])))

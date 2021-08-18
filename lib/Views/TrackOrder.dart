@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class TrackOrderPage extends StatefulWidget with WidgetsBindingObserver{
  // final TargetPlatform platform=null;
   @override
@@ -295,6 +296,17 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
   Widget _buildBoxBook(BuildContext context,int index,int id,String orderId,String orderDate,String consignmentNo,String orderStatus,List<OrderItems> orderItems,String updateAt){
 
 
+    bool isOnlyOnline=true;
+
+    for (var i = 0; i < orderItems.length; i++) {
+
+      if(orderItems[i].bookTypeId==1){
+
+        isOnlyOnline=false;
+        break;
+      }
+    }
+
 
     return   Container (
         margin:EdgeInsets.fromLTRB(10.0,10.0,10.0,0.0) ,
@@ -451,7 +463,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
 
               buildListChild(orderItems),
 
-              Padding(
+              isOnlyOnline?Container():Padding(
                   padding: EdgeInsets.fromLTRB(10,20,10,0),
                   child:
                   Text("Track your Consignment number from this link below after the order status change to posted.",   textAlign: TextAlign.center,  style: GoogleFonts.poppins(
@@ -461,7 +473,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
 
                     ),)),
               SizedBox(height: 20),
-              _trackOrderButton(),
+              isOnlyOnline?Container(): _trackOrderButton(),
               Padding(
                   padding: EdgeInsets.fromLTRB(10,8,10,0),
                   child:
@@ -490,6 +502,22 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
         savedDir: _localPath,
         showNotification: true,
         openFileFromNotification: true);
+
+     Future.delayed(const Duration(milliseconds: 2000), () {
+
+       Fluttertoast.showToast(
+           msg: "Invoice will download at sdCard/Download folder!",
+           toastLength: Toast.LENGTH_SHORT,
+           gravity: ToastGravity.BOTTOM,
+           timeInSecForIosWeb: 1,
+           backgroundColor: Colors.black,
+           textColor: Colors.white,
+           fontSize: 16.0);
+
+
+     });
+
+
   }
   Future<TrackOrderResponse> getTrackOrderList(String user_Token) async {
 

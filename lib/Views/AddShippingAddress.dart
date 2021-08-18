@@ -41,6 +41,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
   final myControllerState= TextEditingController();
   final myControllerCity= TextEditingController();
   final myControllerTehsil= TextEditingController();
+  final myControllerShippingAddress= TextEditingController();
 
   String user_Token;
   AddShippingAddressPageState(String orderId,String amount){
@@ -147,6 +148,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
       _entryField("village"),
       SizedBox(height: 6),
       TextFormField(
+        controller: myControllerShippingAddress,
         minLines: 5,
         maxLines: 5,
         enabled: false,
@@ -165,10 +167,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom))
 
-
      ,
-
-
 
     ]))),   Align(
       alignment: FractionalOffset.bottomCenter,
@@ -428,6 +427,25 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
         children: <Widget>[
 
           TextField(
+            onChanged: (text) {
+
+              if(text.isNotEmpty){
+
+                if(title=="full name"){
+                    setState(() {
+                     shpAddress = title;
+                     myControllerShippingAddress.text=shpAddress;
+                    });
+
+
+                }
+
+
+
+              }
+
+
+            },
             keyboardType: mkeyboardType,
             controller: myController,
             obscureText: false,

@@ -23,9 +23,27 @@ class ViewOnlineBookPageState extends State<ViewOnlineBookPage> {
   // InAppWebViewController webView;
   String url = "";
   double progress = 0;
+
+  @override
+  dispose(){
+    SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.portraitUp,
+
+    ]);
+    super.dispose();
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.initState();
 
 
