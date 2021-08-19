@@ -79,6 +79,9 @@ class BooksPageState extends State<BooksPage> {
     AspectRatio(
     aspectRatio: 2 / 3,
         child:
+        Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
       Container(
         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
@@ -92,7 +95,22 @@ class BooksPageState extends State<BooksPage> {
           ),
         ),
 
-      )),
+      ),
+        Positioned(
+            top: 0.0,
+            right: 0.0,
+            child:
+              Image(
+                image: new AssetImage("assets/green_tick.png"),
+
+                height:  25,
+                width:  25,
+
+                fit: BoxFit.fill,
+                alignment: Alignment.center,
+              ))
+
+            ])),
         Padding(
             padding: EdgeInsets.fromLTRB(10,4,0,0),
             child:

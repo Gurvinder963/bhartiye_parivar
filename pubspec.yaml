@@ -117,6 +117,7 @@ flutter:
     - assets/bookmark_unsel.png
     - assets/ic_fail.jpg
     - assets/empty_mybook.png
+    - assets/green_tick.png
     - assets/BankonKaMayajaal/Bankjaal.html
     - assets/privacy.html
     - assets/terms.html
