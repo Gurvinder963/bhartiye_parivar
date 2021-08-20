@@ -145,12 +145,12 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
       btnText="GO TO CART";
       goToCart=true;
       goToCartFromBuyNow=true;
-      addtoCartBgColor=Color(AppColors.ColorGreen);
+      addtoCartBgColor=  Color(0xFF20d256);
     }
     else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
-      addtoCartBgColor=Color(AppColors.ColorGreen);
+      addtoCartBgColor=Color(0xFF20d256);
     }
     else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart && mContent.is_printed_added_cart)) {
       goToCartFromBuyNow=true;
