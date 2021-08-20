@@ -61,9 +61,12 @@ class BooksPageState extends State<BooksPage> {
     return repository.fetchBooksData(body,user_Token);
 
   }
-  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher){
+  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased ){
 
-
+    bool greenTick=false;
+    if(ebookCost==0 || isEbookPurchased || isPrinterPurchased){
+      greenTick=true;
+    }
 
     return    SizedBox( child: Container(
         margin:EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0) ,
@@ -96,7 +99,7 @@ class BooksPageState extends State<BooksPage> {
         ),
 
       ),
-        Positioned(
+              greenTick?Positioned(
             top: 0.0,
             right: 0.0,
             child:
@@ -108,7 +111,7 @@ class BooksPageState extends State<BooksPage> {
 
                 fit: BoxFit.fill,
                 alignment: Alignment.center,
-              ))
+              )):Container()
 
             ])),
         Padding(
@@ -307,7 +310,7 @@ class BooksPageState extends State<BooksPage> {
           })
       },
                       child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
-          mainData[index].thumbImage, mainData[index].publisher));
+          mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased));
     },
                   ))
 

@@ -110,14 +110,25 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    //1 for printed
+    //2 for e book
+
     var shouldShowBadge=int.parse(cartCount)>0?true:false;
     bool isAddtoCartVisible=true;
     bool isBuyNowVisible=true;
     bool goToCart=false;
     String btnText="ADD TO CART";
     var addtoCartBgColor=Color(AppColors.BaseColor);
-    if(mContent.book_type_id!=3 && mContent.is_ebook_purchased){
+    /*if(mContent.book_type_id==1 && mContent.is_printed_purchased){
       isAddtoCartVisible=false;
+      isBuyNowVisible=false;
+    }
+    else*/ if(mContent.book_type_id==2 && mContent.is_ebook_purchased){
+      isAddtoCartVisible=false;
+      isBuyNowVisible=false;
+    }
+    else if(mContent.book_type_id==3 && mContent.is_ebook_purchased){
+     // isAddtoCartVisible=false;
       isBuyNowVisible=false;
     }
    /* else if(mContent.book_type_id==3 && mContent.is_ebook_purchased ){
@@ -130,16 +141,16 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       goToCart=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
     }
-    else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart && mContent.is_printed_added_cart)){
+    else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
     }
-    else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_added_cart)){
+   /* else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
-    }
+    }*/
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -294,143 +305,80 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         ]))
              ,
-              Container(
-                    alignment: FractionalOffset.center,
-                  padding:  EdgeInsets.fromLTRB(0,8,0,8),
-                    margin:  EdgeInsets.fromLTRB(0,20,0,0),
-                    color: Color(0xFF494949),
-                    child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
+                PreferredSize(
 
-                          Container(
-                             child: Expanded(
-                        flex: 1,
+                  preferredSize: Size.fromHeight(50.0),
+                  child: Container(
+                      color: Color(0xFF494949),
+                      child:TabBar(
 
-                                  child:
-    GestureDetector(
-    onTap: () {
-      setState(() {
-        isDescription = true;
-        isPhotos=false;
-        isOffers=false;
+                    labelColor: Colors.black,
+                    tabs: [
+                      Tab(
+                        child: Text("Description",
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                      ),
+                      Tab(
+                        child: Text("Photos",
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                      ),
+                      Tab(
+                        child: Text("Offers",
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                      )
+                    ], // list of tabs
+                  )),
+                ),
+                //TabBarView(children: [ImageList(),])
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      Container(
 
-      });
+                        child: Text(
+                          mContent.description,
+                          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Container(
 
-    },child: Column(
+                        child: SizedBox(
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              itemCount: mContent.images.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 12.0,
+                                  childAspectRatio: (2 / 3),
+                                  mainAxisSpacing: 4.0
+                              ),
+                              itemBuilder: (BuildContext context, int index){
+                                return  Container(
+                                  margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
-                                  children: <Widget>[
-                                    Text("Description",
-                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
-                                    isDescription?  Padding(
-                                     padding: EdgeInsets.fromLTRB(40,0,40,0),
-                                     child: Divider(
+                                  alignment: Alignment.center,
 
-                                height: 1,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(mContent.images[index]),
+                                    ),
+                                  ),
 
-                                thickness: 1,
-                                color: Colors.orange,
-                              )):Container(),
+                                );
+                              },
+                            )),
+                      ),
+                      Container(
 
-                                  ]))))
-                         , Container(
-                              child:Expanded(
-                                  flex: 1,
-
-                         child: GestureDetector(
-                             onTap: () {
-                               setState(() {
-                                 isDescription = false;
-                                 isPhotos=true;
-                                 isOffers=false;
-
-                               });
-
-                             },child:Column(
-
-                                  children: <Widget>[
-                                    Text("Photos",
-                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color: isPhotos?Color(0xFFffa500).withOpacity(1):Colors.white,fontWeight: FontWeight.w500)),
-
-                                 isPhotos? Padding(
-                                      padding: EdgeInsets.fromLTRB(40,0,40,0),
-                                      child:  Divider(
-
-                                      height: 1,
-
-                                      thickness: 1,
-                                      color: Colors.orange,
-                                    )):Container(),
-                                  ]))))
-                          ,Container(
-                              child:Expanded(
-                                  flex: 1,
-                                  child:GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          isDescription = false;
-                                          isPhotos=false;
-                                          isOffers=true;
-
-                                        });
-
-                                      },
-                          child:Column(
-
-                                  children: <Widget>[
-                                    Text("Offers",
-                                        style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color: isOffers?Color(0xFFffa500).withOpacity(1):Colors.white,fontWeight: FontWeight.w500)),
-                                isOffers? Padding(
-                                      padding: EdgeInsets.fromLTRB(40,0,40,0),
-                                      child:   Divider(
-
-                                      height: 1,
-
-                                      thickness: 1,
-                                      color: Colors.orange,
-                                    )):Container(),
-
-                                  ])))),
-
-                        ]))
-                ,
-
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20,20,20,100),
-                  child:
-                  isDescription?Text(
-                    mContent.description,
-                    style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                  ):isPhotos?    SizedBox(
-                      child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: ScrollPhysics(),
-    itemCount: mContent.images.length,
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12.0,
-        childAspectRatio: (1 / 1.7),
-        mainAxisSpacing: 4.0
-    ),
-    itemBuilder: (BuildContext context, int index){
-    return  Container(
-      margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-      alignment: Alignment.center,
-
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: NetworkImage(mContent.images[index]),
-        ),
-      ),
-
-    );
-    },
-    )):Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
-                      style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500)),),
-
+                        child: Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
+                            style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500)),
+                      ) // class name
+                    ],
+                  ),
+                ),
 
               ])
 
@@ -464,7 +412,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
       else {
         if (mContent.book_type_id == 3) {
 
-          if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
+    /*      if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
 
 
             if(mContent.is_ebook_added_cart){
@@ -477,9 +425,12 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
 
           }
-          else{
+          else{*/
+            if(mContent.is_printed_purchased){
+              addToCartAPI("2", false);
+            }
 
-            if(mContent.is_ebook_purchased){
+            else if(mContent.is_ebook_purchased){
               addToCartAPI("1", false);
             }
             else{
@@ -487,7 +438,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
             }
 
 
-          }
+        //  }
         }
         else {
           addToCartAPI(mContent.book_type_id.toString(), false);
@@ -772,7 +723,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
         else {
           if (mContent.book_type_id == 3) {
 
-            if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
+     /*       if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
 
 
               if(mContent.is_ebook_added_cart){
@@ -785,15 +736,15 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
 
 
             }
-            else {
-              if(mContent.is_ebook_purchased){
+            else {*/
+             // if(mContent.is_ebook_purchased){
                 addToCartAPI("1", true);
-              }
-              else{
-                showDialogCart(true);
-              }
+            //  }
+            //  else{
+            //    showDialogCart(true);
+           //   }
 
-            }
+          //  }
           }
           else {
             addToCartAPI(mContent.book_type_id.toString(), true);
