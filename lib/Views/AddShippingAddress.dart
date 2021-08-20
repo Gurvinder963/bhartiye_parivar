@@ -433,7 +433,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
 
                 if(title=="full name"){
                     setState(() {
-                     shpAddress = title;
+                     shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+myControllerPincode.text+","+myControllerPhone.text;
                      myControllerShippingAddress.text=shpAddress;
                     });
 
