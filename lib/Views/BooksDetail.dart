@@ -35,7 +35,9 @@ class BooksDetailPage extends StatefulWidget {
   }
 }
 
-class BooksDetailPageState extends State<BooksDetailPage> {
+class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderStateMixin{
+  TabController _tabcontroller;
+
   YoutubePlayerController _controller;
   final List<String> _ids = [];
   TextEditingController _idController;
@@ -59,6 +61,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
   @override
   void initState() {
     super.initState();
+    _tabcontroller = new TabController(length: 3, vsync: this);
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
@@ -115,8 +118,10 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
     var shouldShowBadge=int.parse(cartCount)>0?true:false;
     bool isAddtoCartVisible=true;
-    bool isBuyNowVisible=true;
+   // bool isBuyNowVisible=true;
+    bool isBuyNowVisibleEbook=true;
     bool goToCart=false;
+    bool goToCartFromBuyNow=false;
     String btnText="ADD TO CART";
     var addtoCartBgColor=Color(AppColors.BaseColor);
     /*if(mContent.book_type_id==1 && mContent.is_printed_purchased){
@@ -125,11 +130,11 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     }
     else*/ if(mContent.book_type_id==2 && mContent.is_ebook_purchased){
       isAddtoCartVisible=false;
-      isBuyNowVisible=false;
+      isBuyNowVisibleEbook=false;
     }
     else if(mContent.book_type_id==3 && mContent.is_ebook_purchased){
      // isAddtoCartVisible=false;
-      isBuyNowVisible=false;
+      isBuyNowVisibleEbook=false;
     }
    /* else if(mContent.book_type_id==3 && mContent.is_ebook_purchased ){
       isAddtoCartVisible=false;
@@ -139,12 +144,16 @@ class BooksDetailPageState extends State<BooksDetailPage> {
     if(mContent.book_type_id!=3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
+      goToCartFromBuyNow=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
     }
     else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart || mContent.is_printed_added_cart)){
       btnText="GO TO CART";
       goToCart=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
+    }
+    else if(mContent.book_type_id==3 && (mContent.is_ebook_added_cart && mContent.is_printed_added_cart)) {
+      goToCartFromBuyNow=true;
     }
    /* else if(mContent.book_type_id==3 && (mContent.is_ebook_purchased && mContent.is_printed_added_cart)){
       btnText="GO TO CART";
@@ -255,7 +264,7 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                 SizedBox(width: 15),
                 mContent.book_type_id==2 || mContent.book_type_id==3?
                 Text(
-                  'Online Book',
+                  'Online Book Price',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                 ):Container(),
                 Spacer(),
@@ -295,12 +304,14 @@ class BooksDetailPageState extends State<BooksDetailPage> {
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                         mContent.is_ebook_purchased?
-                          _DonateButton():Container(),
+                          (mContent.is_ebook_purchased || mContent.ebook_cost==0)&& mContent.book_type_id!=1?
+                         _ReadNowButton(): Container(),
+                          (!mContent.is_ebook_purchased && mContent.ebook_cost!=0 && (mContent.book_type_id==2 ||mContent.book_type_id==3))?
+                          _buyNowButtonEbook(goToCartFromBuyNow):Container(),
 
                         Spacer(),
-                          isBuyNowVisible?
-                          _joinButton(goToCart):Container(),
+                          mContent.book_type_id!=2?
+                          _buyNowButtonPrinted(goToCartFromBuyNow):Container(),
 
 
                         ]))
@@ -311,39 +322,45 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                   child: Container(
                       color: Color(0xFF494949),
                       child:TabBar(
-
+                        controller: _tabcontroller,
                     labelColor: Colors.black,
+                        indicatorWeight: 2,
+                        indicatorColor: Colors.orange,
                     tabs: [
                       Tab(
                         child: Text("Description",
-                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
                       ),
                       Tab(
                         child: Text("Photos",
-                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
                       ),
                       Tab(
                         child: Text("Offers",
-                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
+                            style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
                       )
                     ], // list of tabs
                   )),
                 ),
                 //TabBarView(children: [ImageList(),])
-                Expanded(
+                Container(
+                  height: 1000.0,
                   child: TabBarView(
+                    controller: _tabcontroller,
                     children: [
                       Container(
 
-                        child: Text(
+                        child:   Padding(
+                  padding: EdgeInsets.fromLTRB(20,20,20,100),
+                  child:Text(
                           mContent.description,
                           style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                        ),
+                        )),
                       ),
                       Container(
 
                         child: SizedBox(
-                            child: GridView.builder(
+                           child: GridView.builder(
                               shrinkWrap: true,
                               physics: ScrollPhysics(),
                               itemCount: mContent.images.length,
@@ -373,8 +390,10 @@ class BooksDetailPageState extends State<BooksDetailPage> {
                       ),
                       Container(
 
-                        child: Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
-                            style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500)),
+                        child:   Padding(
+    padding: EdgeInsets.fromLTRB(20,20,20,100),
+    child:Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
+                            style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500))),
                       ) // class name
                     ],
                   ),
@@ -696,7 +715,8 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
       ),
     );
   }
-  Widget _joinButton(bool goToCart) {
+
+  Widget _buyNowButtonEbook(bool goToCart) {
     return InkWell(
       onTap: () {
         if(goToCart){
@@ -721,34 +741,92 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
           });
         }
         else {
-          if (mContent.book_type_id == 3) {
+          if(mContent.is_ebook_added_cart){
+            Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return MyCartPage();
+                    }
+                )).then((_) {
 
-     /*       if(mContent.is_ebook_added_cart || mContent.is_printed_added_cart){
-
-
-              if(mContent.is_ebook_added_cart){
-                addToCartAPI("1", true);
-              }
-              else if(mContent.is_printed_added_cart){
-                addToCartAPI("2", true);
-              }
-
-
-
-            }
-            else {*/
-             // if(mContent.is_ebook_purchased){
-                addToCartAPI("1", true);
-            //  }
-            //  else{
-            //    showDialogCart(true);
-           //   }
-
-          //  }
+              getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+                setState(() {
+                  mContent=value.data;})
+              });
+            });
           }
-          else {
-            addToCartAPI(mContent.book_type_id.toString(), true);
+          else{
+            addToCartAPI("2", true);
           }
+        }
+      },
+
+      child: Container(
+        width: 140,
+        height: 45,
+        margin: EdgeInsets.fromLTRB(0,0,10,10),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Colors.orange, Colors.orange])),
+        child: Text(
+          'BUY NOW',
+          style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(16), color: Colors.white,fontWeight: FontWeight.w500),
+        ),
+      ),
+    );
+  }
+  Widget _buyNowButtonPrinted(bool goToCart) {
+    return InkWell(
+      onTap: () {
+        if(goToCart){
+          Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return MyCartPage();
+                  }
+              )).then((_) {
+
+            getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+              setState(() {
+                mContent=value.data;})
+            });
+          });
+        }
+        else {
+
+         if(mContent.is_printed_added_cart){
+           Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+               MaterialPageRoute(
+                   builder: (BuildContext context) {
+                     return MyCartPage();
+                   }
+               )).then((_) {
+
+             getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+               setState(() {
+                 mContent=value.data;})
+             });
+           });
+         }
+         else{
+           addToCartAPI("1", true);
+         }
+
+
+
+
 
         }
       },
@@ -780,7 +858,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
     );
   }
 
-  Widget _DonateButton() {
+  Widget _ReadNowButton() {
     return InkWell(
       onTap: () {
         Navigator.of(context, rootNavigator: true)

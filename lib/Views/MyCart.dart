@@ -62,9 +62,9 @@ class MyCartPageState extends State<MyCartPage> {
   String _chosenValue="1";
   bool _isInAsyncCall = false;
   String user_Token;
-  double price;
-  double deliveryCharges=20;
-  double amountPayable;
+  int price;
+  int deliveryCharges=20;
+  int amountPayable;
 
   String USER_ID;
   @override
@@ -91,7 +91,7 @@ class MyCartPageState extends State<MyCartPage> {
        setState(() {
          _isInAsyncCall = true;
        });
-       double tPrice=0;
+       int tPrice=0;
       getBooksList(user_Token).then((value) => {
 
 
@@ -591,7 +591,7 @@ class MyCartPageState extends State<MyCartPage> {
 
      });
 
-          double tPrice=0;
+          int tPrice=0;
          for(int i=0;i<mainData.length;i++){
            tPrice=tPrice+mainData[i].cost;
          }
@@ -877,7 +877,7 @@ class MyCartPageState extends State<MyCartPage> {
             mainData.removeAt(index);
             
           });
-          double tPrice=0;
+          int tPrice=0;
           for(int i=0;i<mainData.length;i++){
             tPrice=tPrice+mainData[i].cost;
           }

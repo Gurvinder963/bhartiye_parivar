@@ -319,7 +319,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
   Widget _horizontalListView(String title,List<BookData> bookList) {
     return SizedBox(
-       // height: 200,
+       height: 200,
         child: ListView.builder(
           itemCount: bookList.length,
           scrollDirection: Axis.horizontal,
@@ -372,6 +372,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
   }
   Widget _buildBoxItem(String title,String thumbnail){
     var divwidth=MediaQuery.of(context).size.width/3+50;
+    print("my_divwidth"+divwidth.toString());
 
     return    AspectRatio(
         aspectRatio: 2 / 3,
@@ -381,7 +382,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
     Container(
           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
+        height: 100,
         width: divwidth,
           alignment: Alignment.center,
 
