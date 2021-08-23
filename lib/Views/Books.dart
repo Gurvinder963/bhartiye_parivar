@@ -167,7 +167,9 @@ class BooksPageState extends State<BooksPage> {
 
 
 
-
+        Container(
+          height: MediaQuery.of(context).size.height*0.22,
+        child:
           Row(
 
              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -189,17 +191,35 @@ class BooksPageState extends State<BooksPage> {
     child:Stack(
                       alignment: Alignment.center,
         children: <Widget>[
-
         Opacity(
+        opacity: 0.75,
+        child:  Container(
+            margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+
+            alignment: Alignment.center,
+            // height: ScreenUtil().setHeight(175),
+
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: new AssetImage("assets/ic_new_my_books.png"),
+
+                alignment: Alignment.center,
+              ),
+
+            ),
+
+          ))
+    /*    Opacity(
         opacity: 0.8,
         child: Image(
                     image: new AssetImage("assets/ic_new_my_books.png"),
 
-                    height:  150,
+
 
                     fit: BoxFit.fill,
-                    alignment: Alignment.center,
-                  )),
+
+                  )),*/
 
         /*  Container(
 
@@ -230,20 +250,39 @@ class BooksPageState extends State<BooksPage> {
                 child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
+                    Opacity(
+                    opacity: 0.75,
+                    child:
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
-                        Opacity(
+                          alignment: Alignment.center,
+                          // height: ScreenUtil().setHeight(175),
+
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new AssetImage("assets/ic_by_lang.png"),
+
+                              alignment: Alignment.center,
+                            ),
+
+                          ),
+
+                        ))
+               /*         Opacity(
                             opacity: 0.8,
                             child:  Image(
                               image: new AssetImage("assets/ic_by_lang.png"),
 
-                              height:  150,
+
 
                               fit: BoxFit.fill,
-                              alignment: Alignment.center,
+
                             ),
                         )
 
-,
+,*/
                     /*   Container(
                           padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
                           decoration: BoxDecoration(
@@ -260,7 +299,7 @@ class BooksPageState extends State<BooksPage> {
 
               ]
 
-          ),
+          )),
     Padding(
     padding: EdgeInsets.fromLTRB(10,10,10,10),
           child:
