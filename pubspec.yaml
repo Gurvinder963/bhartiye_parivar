@@ -41,7 +41,10 @@ dependencies:
   badges: ^1.2.0
   flutter_downloader: ^1.5.2
   permission_handler: ^5.1.0+2
+  polls: ^0.1.8
+  percent_indicator: ^2.1.9+1
   event_bus: ^1.1.1
+  ext_storage: ^1.0.3
 
   flutter:
     sdk: flutter
@@ -118,6 +121,10 @@ flutter:
     - assets/ic_fail.jpg
     - assets/empty_mybook.png
     - assets/green_tick.png
+    - assets/dummy1.jpg
+    - assets/dummy2.jpg
+    - assets/dummy3.jpeg
+    - assets/dummy5.jpg
     - assets/BankonKaMayajaal/Bankjaal.html
     - assets/privacy.html
     - assets/terms.html

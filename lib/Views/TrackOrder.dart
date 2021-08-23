@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'dart:async';
 import 'dart:io';
-
+import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +46,9 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
 
   String USER_ID;
   Future<bool> _checkPermission() async {
-   var platform = Platform;
-    if (platform == TargetPlatform.android) {
+  // var platform = Platform;
+    if (Platform.isAndroid) {
+      print("in android");
       final status = await Permission.storage.status;
       if (status != PermissionStatus.granted) {
         final result = await Permission.storage.request();
@@ -274,14 +275,21 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
   Future<Null> _prepare() async {
     _permissionReady = await _checkPermission();
 
+
   if (_permissionReady) {
+    print("muuu");
       await _prepareSaveDir();
     }
   }
   Future<void> _prepareSaveDir() async {
-    _localPath =
-        (await _findLocalPath()) + Platform.pathSeparator + 'Download';
 
+    if(Platform.isAndroid){
+      _localPath= await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+    }
+    else {
+      _localPath =
+          (await _findLocalPath()) + Platform.pathSeparator + 'Download';
+    }
     final savedDir = Directory(_localPath);
     bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
@@ -290,11 +298,9 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
   }
 
   Future<String> _findLocalPath() async {
-    var platform = Platform;
-    print("my_platform"+platform.toString());
-    final directory = platform == TargetPlatform.android
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
+
+    final directory =
+        await getApplicationDocumentsDirectory();
     return directory?.path;
   }
 
@@ -448,8 +454,8 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
                         padding: EdgeInsets.fromLTRB(10,8,10,0),
                         child: GestureDetector(
                             onTap: () {
-                              _requestDownload(id);
-
+                            _requestDownload(orderId);
+                             // _prepare();
                             },child: Container(
                             decoration: BoxDecoration(
                               color: Color(AppColors.BaseColor),
@@ -500,10 +506,11 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
               SizedBox(height: 10),
             ]))));
   }
-  void _requestDownload(int id) async {
+  void _requestDownload(String id) async {
      final taskId = await FlutterDownloader.enqueue(
-        url: "http://bankjaal.in/public/api/v1/invoice?order_id="+id.toString(),
+        url: "http://bankjaal.in/public/api/v1/invoice?order_id="+id,
         headers: {"auth": "test_for_sql_encoding"},
+        fileName: "Invoice_"+id+".pdf",
         savedDir: _localPath,
         showNotification: true,
         openFileFromNotification: true);
@@ -511,7 +518,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
      Future.delayed(const Duration(milliseconds: 2000), () {
 
        Fluttertoast.showToast(
-           msg: "Invoice will download at sdCard/Download folder!",
+           msg: "Invoice will download at "+_localPath,
            toastLength: Toast.LENGTH_SHORT,
            gravity: ToastGravity.BOTTOM,
            timeInSecForIosWeb: 1,
