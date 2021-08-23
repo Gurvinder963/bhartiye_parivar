@@ -454,7 +454,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
                         padding: EdgeInsets.fromLTRB(10,8,10,0),
                         child: GestureDetector(
                             onTap: () {
-                            _requestDownload(orderId);
+                            _requestDownload(orderId,id.toString());
                              // _prepare();
                             },child: Container(
                             decoration: BoxDecoration(
@@ -506,11 +506,11 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
               SizedBox(height: 10),
             ]))));
   }
-  void _requestDownload(String id) async {
+  void _requestDownload(String orderid,String id) async {
      final taskId = await FlutterDownloader.enqueue(
         url: "http://bankjaal.in/public/api/v1/invoice?order_id="+id,
         headers: {"auth": "test_for_sql_encoding"},
-        fileName: "Invoice_"+id+".pdf",
+        fileName: "Invoice_"+orderid+".pdf",
         savedDir: _localPath,
         showNotification: true,
         openFileFromNotification: true);
