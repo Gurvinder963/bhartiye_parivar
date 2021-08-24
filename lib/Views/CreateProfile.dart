@@ -110,8 +110,17 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
                  if(value.status==1){
                    setState(() {
-                    mAddress=value.data.address.postOffice+", "+value.data.address.district+", "+value.data.address.region;
-                   }),
+                     if(value.data.address!=null) {
+                       mAddress = value.data.address.postOffice + ", " +
+                           value.data.address.district + ", " +
+                           value.data.address.region;
+                     }
+                     else{
+                       mAddress="Address not found!";
+                     }
+
+
+                     }),
                  }
                  else{
                    showAlertDialogValidation(context,"pin not valid")
@@ -512,7 +521,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
     String varMobile="";
     if(cCode=='91') {
-      var arr = mobile.split("-");
+      var arr = mobile.split(" ");
       String newStringMob = arr[0] + arr[1];
 
       varMobile = newStringMob;

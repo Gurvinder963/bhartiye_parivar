@@ -284,11 +284,14 @@ class AppLanguagePageState extends State<AppLanguagePage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
+        var myLang="";
+
         for(int i = 0; i < choices.length; i++){
 
           if (choices[i].isSelected) {
 
             changeLanguage(context, choices[i].lnCode);
+            myLang=choices[i].lnCode;
             break;
           }
 
@@ -296,9 +299,28 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
 
         if(mFrom=='sign-up'){
-        //  StringBuffer sb = new StringBuffer();
-        //  sb.write('en,hn');
-        //  changeLanguage(context,sb.toString());
+
+          if(myLang =='hi'){
+            myLang='hn';
+          }
+
+       StringBuffer sb = new StringBuffer();
+
+         if(myLang!='en')
+           {
+             sb.write('en');
+             sb.write(',');
+           }
+       if(myLang!='hn')
+       {
+         sb.write('hn');
+         sb.write(',');
+       }
+
+         sb.write(myLang);
+       print("String builder value"+sb.toString());
+       print("myLang"+myLang);
+          changeLanguageContent(context,sb.toString());
         Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder:
                       (context) =>
