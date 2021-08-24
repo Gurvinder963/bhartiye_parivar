@@ -329,6 +329,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
+  localstorage:
+    dependency: transitive
+    description:
+      name: localstorage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.6+9"
   matcher:
     dependency: transitive
     description:
@@ -490,6 +497,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.8"
+  preload_page_view:
+    dependency: "direct main"
+    description:
+      name: preload_page_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   process:
     dependency: transitive
     description:
@@ -558,6 +572,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  social_embed_webview:
+    dependency: "direct main"
+    description:
+      name: social_embed_webview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   source_span:
     dependency: transitive
     description:

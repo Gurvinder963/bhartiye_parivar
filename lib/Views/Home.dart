@@ -39,6 +39,7 @@ import 'package:badges/badges.dart';
 import '../Repository/MainRepository.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
 import '../Interfaces/OnCartCount.dart';
+import '../Interfaces/OnNewsBack.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -103,6 +104,21 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
      // new ChatPage(),
       //  new SettingsScreen(),
     ];
+
+    eventBus1.on<OnNewsBack>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+      // print("my_cart_count"+event.count);
+
+      print("news back fired");
+      setState(() {
+        selectedIndex = 0;
+      });
+
+      //FABBottomAppBarState fABBottomAppBarState=new FABBottomAppBarState();
+     // fABBottomAppBarState.updateIndexByNews(0);
+
+    });
+
    // EventBus eventBus = EventBus();
     eventBus.on<OnCartCount>().listen((event) {
       // All events are of type UserLoggedInEvent (or subtypes of it).
@@ -339,11 +355,20 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
           items: [
             FABBottomAppBarItem(iconData: selectedIndex==0?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 28,height: 28,), text: 'Home'),
+                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 28,height: 28,), text: Text(
+              'Home',
+              style: GoogleFonts.roboto(color: selectedIndex==0? Colors.white:Colors.black,fontSize: 12,),
+            )),
             FABBottomAppBarItem(iconData: selectedIndex==1?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,), text: 'News'),
+                : Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,), text: Text(
+              'News',
+              style: GoogleFonts.roboto(color: selectedIndex==1? Colors.white:Colors.black,fontSize: 12,),
+            )),
             FABBottomAppBarItem(iconData: selectedIndex==2?  Image(image: AssetImage('assets/ic_book_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,), text: 'Books'),
+                : Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,), text: Text(
+              'Books',
+              style: GoogleFonts.roboto(color: selectedIndex==2? Colors.white:Colors.black,fontSize: 12,),
+            )),
 
           ],
         ),

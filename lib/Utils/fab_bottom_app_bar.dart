@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class FABBottomAppBarItem {
   FABBottomAppBarItem({this.iconData, this.text});
   Image iconData;
-  String text;
+  Text text;
 }
 
 class FABBottomAppBar extends StatefulWidget {
@@ -39,8 +39,14 @@ class FABBottomAppBar extends StatefulWidget {
 class FABBottomAppBarState extends State<FABBottomAppBar> {
   int _selectedIndex = 0;
 
-  _updateIndex(int index) {
+  updateIndex(int index) {
+    print("update index called");
     widget.onTabSelected(index);
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  updateIndexByNews(int index){
     setState(() {
       _selectedIndex = index;
     });
@@ -52,7 +58,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
       return _buildTabItem(
         item: widget.items[index],
         index: index,
-        onPressed: _updateIndex,
+        onPressed: updateIndex,
       );
     });
    // items.insert(items.length >> 1, _buildMiddleTabItem());
@@ -94,6 +100,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
   }) {
     Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
     Color color1 = _selectedIndex == index ? widget.selectedColor : widget.color;
+
+     print("index of selectedIndex"+_selectedIndex.toString());
+     print("index of index"+index.toString());
+
     return Expanded(
       child: SizedBox(
         height: widget.height,
@@ -106,10 +116,11 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 item.iconData,
-                Text(
+                item.text,
+               /* Text(
                   item.text,
                   style: GoogleFonts.roboto(color: color1,fontSize: 12,),
-                ),
+                ),*/
                 SizedBox(height: 3),
               ],
             ),
