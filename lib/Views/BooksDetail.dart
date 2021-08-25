@@ -160,6 +160,10 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
       goToCart=true;
       addtoCartBgColor=Color(AppColors.ColorGreen);
     }*/
+
+
+
+
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -285,7 +289,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                           SizedBox(width: 35),
                           mContent.book_type_id==2 || mContent.book_type_id==3?
                           Text(
-                            '₹ ' +mContent.ebook_cost.toString()+'/-',
+                            mContent.ebook_cost==0?"Free":'₹ ' +mContent.ebook_cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
                           ):Container(),
                           Spacer(),
@@ -316,6 +320,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
                         ]))
              ,
+
                 PreferredSize(
 
                   preferredSize: Size.fromHeight(50.0),
@@ -324,25 +329,36 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                       child:TabBar(
                         controller: _tabcontroller,
                     labelColor: Colors.black,
+                        indicatorSize: TabBarIndicatorSize.label,
                         indicatorWeight: 2,
                         indicatorColor: Colors.orange,
                     tabs: [
-                      Tab(
+                        SizedBox(
+                        height: 32,
+                      child:Tab(
                         child: Text("Description",
                             style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
-                      ),
-                      Tab(
+                      )),
+                      SizedBox(
+                        height: 32, child:Tab(
                         child: Text("Photos",
                             style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
-                      ),
-                      Tab(
+                      )),
+                      SizedBox(
+                        height: 32,child:Tab(
                         child: Text("Offers",
                             style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(15), color:  isDescription?Color(0xFFffa500).withOpacity(1):Color(0xFFffffff),fontWeight: FontWeight.w500)),
-                      )
+                      ))
                     ], // list of tabs
                   )),
                 ),
-                //TabBarView(children: [ImageList(),])
+                Divider(
+
+                  height: 6,
+
+                  thickness: 6,
+                  color: Color(0xFF494949),
+                ),//TabBarView(children: [ImageList(),])
                 Container(
                   height: 1000.0,
                   child: TabBarView(
@@ -358,7 +374,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                         )),
                       ),
                       Container(
-
+                        padding: EdgeInsets.fromLTRB(10,10,10,10),
                         child: SizedBox(
                            child: GridView.builder(
                               shrinkWrap: true,
@@ -392,7 +408,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
                         child:   Padding(
     padding: EdgeInsets.fromLTRB(20,20,20,100),
-    child:Text("If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456",
+    child:Text(mContent.is_ebook_free?"If you buy a printed book you can also read the book online.\n\n if you buy in bulk to distribute, \n contact 8876873456":"No Offer",
                             style: GoogleFonts.poppins( fontSize: ScreenUtil().setSp(16), color: Color(0xFF5a5a5a),fontWeight: FontWeight.w500))),
                       ) // class name
                     ],

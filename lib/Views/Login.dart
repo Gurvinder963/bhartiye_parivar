@@ -106,13 +106,13 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
             controller: myControllerPhone,
             obscureText: false,
-            style: GoogleFonts.roboto(color: Colors.black,fontWeight: FontWeight.w500,letterSpacing: 1.7,),
+            style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.w500,letterSpacing: 1.7,),
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               hintText:"Phone number",
 
-              labelStyle: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
-              hintStyle: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              labelStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
+              hintStyle: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(14),color: Colors.black,fontWeight: FontWeight.w500),
 
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
@@ -503,9 +503,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       }
 
         else {
-        var s2 = myControllerContryCode.text.substring(1);
+     var s2 = myControllerContryCode.text.substring(1);
         print(s2);
-        String mobile;
+     /*  String mobile;
         if(s2=='91') {
           var arr = myControllerPhone.text.split(" ");
           String newStringMob = arr[0] + arr[1];
@@ -546,18 +546,18 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                 ))
           });
         }
-        else{
+        else{*/
           Navigator.of(context, rootNavigator: true)
               .push( // ensures fullscreen
               MaterialPageRoute(
                   builder: (BuildContext context) {
                     return VerifyOTPPage(c_code: s2,
                         mobile: myControllerPhone.text,
-                        otpCode: pin.toString(),
-                        otpSendDate: date1);
+                        otpCode: "",
+                        otpSendDate:null);
                   }
               ));
-        }
+      //  }
 
 
 

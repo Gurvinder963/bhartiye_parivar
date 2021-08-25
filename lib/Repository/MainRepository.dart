@@ -13,6 +13,7 @@ import '../ApiResponses/HomeAPIResponse.dart';
 import '../ApiResponses/TrackOrderResponse.dart';
 import '../ApiResponses/ShippingAddressResponse.dart';
 import '../ApiResponses/BookDetailResponse.dart';
+import '../ApiResponses/NewsResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -123,5 +124,10 @@ class MainRepository {
   Future<AddToCartResponse> fetchUpdateShippingAddress(String id,var body,String token) async {
     final response = await _provider.putWithToken("public/api/v1/shipping-addresses/"+id,body,token);
     return AddToCartResponse.fromJson(response);
+  }
+
+  Future<NewsResponse> fetchNewsData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/news",body,token);
+    return NewsResponse.fromJson(response);
   }
 }

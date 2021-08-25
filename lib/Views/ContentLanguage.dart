@@ -22,27 +22,25 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
     super.initState();
 
     getLocaleContentLang().then((locale) {
-      setState(() {
 
-        var mainArray = locale.split(',');
+      if(locale!=null) {
+        setState(() {
+          var mainArray = locale.split(',');
 
-        for(int z=0;z<mainArray.length;z++){
+          for (int z = 0; z < mainArray.length; z++) {
+            var item = mainArray[z];
+            print("my_item" + item);
 
-          var item=mainArray[z];
-          print("my_item"+item);
-
-        for(int i = 0; i < choices.length; i++){
-
-          if(item==choices[i].lnCode){
-            choices[i].isSelected=true;
-            break;
-
+            for (int i = 0; i < choices.length; i++) {
+              if (item == choices[i].lnCode) {
+                choices[i].isSelected = true;
+                break;
+              }
+            }
           }
+        });
+      }
 
-
-        }
-        }
-      });
     });
 
   }

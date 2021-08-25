@@ -14,6 +14,10 @@ import '../Views/CustomPageViewScrollPhysics.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:social_embed_webview/social_embed_webview.dart';
 import 'package:social_embed_webview/platforms/twitter.dart';
+import '../ApiResponses/NewsResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class NewsMainPage extends StatefulWidget {
   @override
   NewsMainPageState createState() {
@@ -27,6 +31,57 @@ class NewsMainPageState extends State<NewsMainPage> {
   int selectedRadioTile = 0;
   int _curr=0;
 
+
+  Future<NewsResponse> getNewsList(String user_Token) async {
+
+    var body ={'lang_code':''};
+    MainRepository repository=new MainRepository();
+    return repository.fetchNewsData(body,user_Token);
+
+  }
+  List mainData = new List();
+  bool isLoading = false;
+
+  String user_Token;
+  @override
+  void initState() {
+    super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      if (!isLoading) {
+        setState(() {
+          isLoading = true;
+        });}
+
+      getNewsList(user_Token).then((value) => {
+
+        setState(() {
+          isLoading = false;
+          mainData.addAll(value.data);
+
+        })
+
+      });
+
+
+      return (prefs.getString('token'));
+    });
+
+  }
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: new Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: new CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -72,28 +127,34 @@ class NewsMainPageState extends State<NewsMainPage> {
                 height: MediaQuery.of(context).size.height*0.80 ,
                 child:new PreloadPageView.builder(
                   scrollDirection: Axis.vertical,
-                    itemCount:5,
+                    itemCount:mainData.length+1,
                     itemBuilder: (BuildContext context, int position)
                         {
+                        if (position == mainData.length) {
+                        return _buildProgressIndicator();
+                        } else {
                           print("my_pos"+position.toString());
                           Widget wid;
-                          if(position==0){
-                             wid= _buildBoxMultipleImagesList(context);
+                          if(mainData[position].newsType==1){
+                            wid=
+                                _buildBoxMultipleImagesList(context,mainData[position],mainData[position].embedUrls);
                           }
-                          else if(position==1){
-                            wid= _buildBoxVideo(context);
+                          else if(mainData[position].newsType==2){
+                            wid= _buildBoxVideo(context,mainData[position],mainData[position].embedUrls);
                           }
-                          else if(position==2){
-                            wid=  _buildBoxTweet(context);
+                          else if(mainData[position].newsType==3){
+                            wid=  _buildBoxTweet(context,mainData[position].embedUrls);
                           }
-                          else if(position==3){
-                            wid=  _buildBoxPotraitImage(context);
+                          else if(mainData[position].newsType==4){
+
                           }
-                          else if(position==4){
-                            wid=  _buildBoxPoll(context);
+                          else if(mainData[position].newsType==5){
+                            wid=  _buildBoxPotraitImage(context,mainData[position].embedUrls);
                           }
+
+
                           return wid;
-                        },
+                        }},
                     onPageChanged: (int position) {},
 
                     preloadPagesCount: 3,
@@ -273,9 +334,10 @@ class NewsMainPageState extends State<NewsMainPage> {
 
 }
 
-Widget _buildBoxMultipleImagesList(BuildContext context){
+Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
   PageController controller1=PageController();
 
+   var newsArr=newsData.createdAt.split(" ");
 
   return
     Column(
@@ -285,54 +347,19 @@ Widget _buildBoxMultipleImagesList(BuildContext context){
               height:  MediaQuery.of(context).size.height*0.30,
               color: Colors.black,
               child:
-              PageView(
+              PageView.builder(
                 controller: controller1,
                 scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
-                      child:Container(
+                itemCount:embedUrls.length,
+                itemBuilder: (BuildContext context, int position)
+                {
+                  print("my_pos"+position.toString());
 
 
-                        alignment: Alignment.center,
-
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new AssetImage("assets/dummy1.jpg"),
-
-                            alignment: Alignment.center,
-                          ),
-
-                        ),
-
-                      )),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
-                      child:
+                  return Stack(
+                      children: <Widget>[
                       Container(
-
-
-                        alignment: Alignment.center,
-
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new AssetImage("assets/dummy2.jpg"),
-
-                            alignment: Alignment.center,
-                          ),
-
-                        ),
-
-                      )),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
-                      child:
-                      Container(
-
+                       margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
 
                         alignment: Alignment.center,
 
@@ -340,31 +367,51 @@ Widget _buildBoxMultipleImagesList(BuildContext context){
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: new AssetImage("assets/dummy3.jpeg"),
+                            image: new NetworkImage(embedUrls[position].url),
 
                             alignment: Alignment.center,
                           ),
 
                         ),
 
-                      )),
+                      ),
+                        Positioned.fill(
+                            child:Align(
+                                alignment: Alignment.bottomRight,
+                                child: Container(
+                                    padding: EdgeInsets.fromLTRB(10,3,10,5),
+                                    margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                                    color:  Color(0xFF5a5a5a),
+                                    child: Text((position+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
+                                      fontSize:14.0,
 
-                ],
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+
+                                    ),))
+
+
+                            )),
+
+                      ]);
+                },
+
+
               )),
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("भारत ने इंग्लैंड के खिलाफ 3-1 से 4 मैचों की सीरीज जीती",style:  GoogleFonts.poppins(
+              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
               fontSize: 18,fontWeight:FontWeight.w500),)),
           Divider(
             color: Colors.black,
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("India topple in ICC Test rankings: भारत ने इंग्लैंड के खिलाफ 4 मैचों की सीरीज को 3-1 से जीता। उसके बाद जारी ताजा आईसीसी रैंकिंग में वह दुनिया के नंबर वन टेस्ट टीम बन गई है। उसने न्यूजीलैंड को पीछे छोड़ा है।",style:  GoogleFonts.roboto(
+              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
               fontSize: 16,fontWeight:FontWeight.w500),)),
 
           Row(
               children:<Widget>[
                 Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("13-05-2021",style:  GoogleFonts.poppins(
+                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
                     fontSize: 16,fontWeight:FontWeight.w500),)),
                 Spacer(),
                 Padding(
@@ -380,12 +427,12 @@ Widget _buildBoxMultipleImagesList(BuildContext context){
     );
 
 }
-Widget _buildBoxTweet(BuildContext context){
+Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
 
-
-  String  sampleTweet = """
+  String  sampleTweet ="""${embedUrls[0].url}""";
+/*  String  sampleTweet = """
 <blockquote class="twitter-tweet"><p lang="hi" dir="ltr">हमें कोरोना की इस उभरती हुई &quot;सेकंड पीक&quot; को तुरंत रोकना होगा।<br><br>इसके लिए हमें Quick और Decisive कदम उठाने होंगे: PM <a href="https://twitter.com/narendramodi?ref_src=twsrc%5Etfw">@narendramodi</a></p>&mdash; PMO India (@PMOIndia) <a href="https://twitter.com/PMOIndia/status/1372104052746559489?ref_src=twsrc%5Etfw">March 17, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-  """;
+  """;*/
 
  /* String  sampleTweet = """
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Here’s an edit I did of one of my drawings. I tend to draw a lot of aot stuff when each chapter is released. Sorry about that!<br>Song: polnalyubvi кометы<br>Character: Annie Leonhart <a href="https://twitter.com/hashtag/annieleonhart?src=hash&amp;ref_src=twsrc%5Etfw">#annieleonhart</a> <a href="https://twitter.com/hashtag/aot131spoilers?src=hash&amp;ref_src=twsrc%5Etfw">#aot131spoilers</a> <a href="https://twitter.com/hashtag/aot?src=hash&amp;ref_src=twsrc%5Etfw">#aot</a> <a href="https://twitter.com/hashtag/AttackOnTitan131?src=hash&amp;ref_src=twsrc%5Etfw">#AttackOnTitan131</a> <a href="https://twitter.com/hashtag/AttackOnTitans?src=hash&amp;ref_src=twsrc%5Etfw">#AttackOnTitans</a> <a href="https://twitter.com/hashtag/snk?src=hash&amp;ref_src=twsrc%5Etfw">#snk</a> <a href="https://twitter.com/hashtag/snk131?src=hash&amp;ref_src=twsrc%5Etfw">#snk131</a> <a href="https://twitter.com/hashtag/shingekinokyojin?src=hash&amp;ref_src=twsrc%5Etfw">#shingekinokyojin</a> <a href="https://t.co/b4z48ruCoD">pic.twitter.com/b4z48ruCoD</a></p>&mdash; evie (@hazbin_freak22) <a href="https://twitter.com/hazbin_freak22/status/1291884358870142976?ref_src=twsrc%5Etfw">August 7, 2020</a></blockquote>
@@ -397,7 +444,9 @@ Widget _buildBoxTweet(BuildContext context){
            <iframe src='${html}></iframe>
 
      ''';
-  return
+  return Container(
+      padding: EdgeInsets.fromLTRB(10,0,10,0),
+      child:
     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
@@ -418,12 +467,13 @@ Widget _buildBoxTweet(BuildContext context){
             },
           )*/
         ]
-    );
+    ));
 
 }
-Widget _buildBoxVideo(BuildContext context){
-  String url='https://www.youtube.com/watch?v=wY6UyatwVTA';
-
+Widget _buildBoxVideo(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
+ // String url='https://www.youtube.com/watch?v=wY6UyatwVTA';
+  var newsArr=newsData.createdAt.split(" ");
+  String url=embedUrls[0].url;
   String html;
 
   if(url.contains('youtube')) {
@@ -462,19 +512,19 @@ Widget _buildBoxVideo(BuildContext context){
               )
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("भारत ने इंग्लैंड के खिलाफ 3-1 से 4 मैचों की सीरीज जीती",style:  GoogleFonts.poppins(
+              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
               fontSize: 18,fontWeight:FontWeight.w500),)),
           Divider(
             color: Colors.black,
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("India topple in ICC Test rankings: भारत ने इंग्लैंड के खिलाफ 4 मैचों की सीरीज को 3-1 से जीता। उसके बाद जारी ताजा आईसीसी रैंकिंग में वह दुनिया के नंबर वन टेस्ट टीम बन गई है। उसने न्यूजीलैंड को पीछे छोड़ा है।",style:  GoogleFonts.roboto(
+              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
               fontSize: 16,fontWeight:FontWeight.w500),)),
 
           Row(
               children:<Widget>[
                 Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("13-05-2021",style:  GoogleFonts.poppins(
+                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
                     fontSize: 16,fontWeight:FontWeight.w500),)),
                 Spacer(),
                 Padding(
@@ -494,7 +544,7 @@ Widget _buildBoxVideo(BuildContext context){
 Widget _buildBoxPotraitVideo(BuildContext context){
 
 }
-Widget _buildBoxPotraitImage(BuildContext context){
+Widget _buildBoxPotraitImage(BuildContext context,List<EmbedUrls> embedUrls){
   return Container(
       padding: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
       child:

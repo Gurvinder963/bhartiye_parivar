@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:country_list_pick/country_list_pick.dart';
@@ -28,7 +28,7 @@ import '../Utils/Prefer.dart';
 import '../Views/Home.dart';
 //import 'package:device_info/device_info.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-
+import '../ApiResponses/OTPResponse.dart';
 
 
 
@@ -119,11 +119,54 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
 
+    var s2 = myControllerContryCode.text;
+    print(s2);
+    String mobile;
+    if(s2=='91') {
+      var arr = myControllerPhone.text.split(" ");
+      String newStringMob = arr[0] + arr[1];
 
+      mobile = s2 + newStringMob;
+    }
+    else{
+      mobile=s2+myControllerPhone.text;
+    }
+    print(mobile);
+    var pin=nextIntOfDigits(4);
+
+    print(pin);
+    var date1 = DateTime.now();
+    mOTPCode = pin.toString();
+    mOTPSendDate=date1;
+    if(s2=='91') {
+      String msg = pin.toString() +
+          " is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
+
+
+      getOTPData(mobile, msg).then((value) =>
+      {
+
+
+
+      });
+    }
 
 
   }
+  int nextIntOfDigits(int digitCount) {
+    Random rnd = new Random();
+    assert(1 <= digitCount && digitCount <= 9);
+    int min = digitCount == 1 ? 0 : pow(10, digitCount - 1);
+    int max = pow(10, digitCount);
+    return min + rnd.nextInt(max - min);
+  }
+  Future<OTPResponse> getOTPData(String mobileNo,String msg) async {
 
+    var body ={'user':'ravi10','password':'59034636','senderid':'NOTIFI','channel':'Trans','DCS':'0','flashsms':'0','number':mobileNo,'text':msg,'route':'15'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchOTPData(body);
+
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -425,7 +468,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                           Padding(
                             padding: EdgeInsets.fromLTRB(10,10,10,10),
                             child:  Text("Verify +"+mC_code+" "+mMobile, textAlign: TextAlign.center,
-                                style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black,letterSpacing: 1.7,)),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: ScreenUtil().setSp(18),color: Colors.black,letterSpacing: 1.7,)),
                           ),
 
                           GestureDetector(
@@ -475,7 +518,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
                                 var date1 = DateTime.now();
-
+                                print(mOTPSendDate.toString()+"hii");
                                 final difference = date1.difference(mOTPSendDate);
 
                                 if(difference.inMinutes>5){
