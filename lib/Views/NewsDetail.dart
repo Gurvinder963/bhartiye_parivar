@@ -19,25 +19,28 @@ import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/NewsData.dart';
-class NewsMainPage extends StatefulWidget {
+import '../ApiResponses/NewsDetailResponse.dart';
+
+class NewsDetailPage extends StatefulWidget {
   @override
-  NewsMainPageState createState() {
-    return NewsMainPageState();
+  NewsDetailPageState createState() {
+    return NewsDetailPageState();
   }
 }
 
-class NewsMainPageState extends State<NewsMainPage> {
+class NewsDetailPageState extends State<NewsDetailPage> {
   PageController controller=PageController();
   int selectedRadio = 0;
   int selectedRadioTile = 0;
   int _curr=0;
+  NewsData mContent;
+  String mId;
 
-
-  Future<NewsResponse> getNewsList(String user_Token) async {
+  Future<NewsDetailResponse> getNewsDetail(String id,String user_Token) async {
 
     var body ={'lang_code':''};
     MainRepository repository=new MainRepository();
-    return repository.fetchNewsData(body,user_Token);
+    return repository.fetchNewsDetailData(id,body,user_Token);
 
   }
   List mainData = new List();
@@ -57,11 +60,11 @@ class NewsMainPageState extends State<NewsMainPage> {
           isLoading = true;
         });}
 
-      getNewsList(user_Token).then((value) => {
+      getNewsDetail(mId,user_Token).then((value) => {
 
         setState(() {
           isLoading = false;
-          mainData.addAll(value.data);
+          mContent=  value.data;
 
         })
 
@@ -85,164 +88,100 @@ class NewsMainPageState extends State<NewsMainPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () {
-      print('Backbutton pressed (device or appbar button), do whatever you want.');
-      print("On bottom back clicked");
+    return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+              toolbarHeight: 50,
+              backgroundColor: Color(AppColors.BaseColor),
+              title: Text('News', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+              actions: <Widget>[
 
-      //trigger leaving and use own data
-      Navigator.pop(context, false);
+                Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
 
+                SizedBox(
+                  width: 20,
+                ),
 
-      eventBus1.fire(OnNewsBack("FIND"));
-      //we need to return a future
-      return Future.value(false);
-    },
-    child:Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 50,
-        backgroundColor: Color(AppColors.BaseColor),
-        title: Text('News', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
-        actions: <Widget>[
-
-          Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
-
-          SizedBox(
-            width: 20,
+              ],
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => {
+                  print("On tap back clicked"),
+                  eventBus1.fire(OnNewsBack("FIND")),
+                  Navigator.of(context).pop()},
+              )
           ),
+          body:  Column (
 
-        ],
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => {
-              print("On tap back clicked"),
-            eventBus1.fire(OnNewsBack("FIND")),
-              Navigator.of(context).pop()},
-          )
-      ),
-      body:  Column (
-
-          children: [
-            Container(
-                height: MediaQuery.of(context).size.height*0.80 ,
-                child:new PreloadPageView.builder(
-                  scrollDirection: Axis.vertical,
-                    itemCount:mainData.length+1,
-                    itemBuilder: (BuildContext context, int position)
-                        {
-                        if (position == mainData.length) {
-                        return _buildProgressIndicator();
-                        } else {
-                          print("my_pos"+position.toString());
-                          Widget wid;
-                          if(mainData[position].newsType==1){
-                            wid=
-                                _buildBoxMultipleImagesList(context,mainData[position],mainData[position].embedUrls);
-                          }
-                          else if(mainData[position].newsType==2){
-                            wid= _buildBoxVideo(context,mainData[position],mainData[position].embedUrls);
-                          }
-                          else if(mainData[position].newsType==3){
-                            wid=  _buildBoxTweet(context,mainData[position].embedUrls);
-                          }
-                          else if(mainData[position].newsType==4){
-
-                          }
-                          else if(mainData[position].newsType==5){
-                            wid=  _buildBoxPotraitImage(context,mainData[position].embedUrls);
-                          }
+              children: [
+                Container(
+                    height: MediaQuery.of(context).size.height*0.80 ,
+                    child:
+                    mContent.newsType==1?_buildBoxMultipleImagesList(context,mContent,mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):Container()
 
 
-                          return wid;
-                        }},
-                    onPageChanged: (int position) {},
 
-                    preloadPagesCount: 3,
-                    controller: PreloadPageController(),
-    )
-     /*       PageView(
+                  ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height*0.09 ,
+                    child:Column ( children: <Widget>[
+                      Divider(
+                        height: 0.5,
+                        thickness: 0.6,
+                        color: Colors.black,
+                      ),
+                      Container(
+                          margin:  EdgeInsets.fromLTRB(20,15,10,10),
+                          child:Row(
 
-        physics: const CustomPageViewScrollPhysics(),
-        children: <Widget>[
-
-          _buildBoxMultipleImagesList(context),
-          _buildBoxVideo(context),
-          _buildBoxTweet(context),
-          _buildBoxPotraitImage(context),
-          _buildBoxPoll(context)
-        ],
-        scrollDirection: Axis.vertical,
-
-        // reverse: true,
-        // physics: BouncingScrollPhysics(),
-        controller: controller,
-        onPageChanged: (num){
-          setState(() {
-            _curr=num;
-          });
-        },
-      )*/),
-       SizedBox(
-              height: MediaQuery.of(context).size.height*0.09 ,
-              child:Column ( children: <Widget>[
-            Divider(
-            height: 0.5,
-            thickness: 0.6,
-            color: Colors.black,
-          ),
-            Container(
-              margin:  EdgeInsets.fromLTRB(20,15,10,10),
-              child:Row(
-
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(width: 5,),
-                    Image(
-                      image: new AssetImage("assets/like_unsel.png"),
-                      width: 24,
-                      height:  24,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
-                    SizedBox(width: 17,),
-                    Image(
-                      image: new AssetImage("assets/dislike_unsel.png"),
-                      width: 24,
-                      height:  24,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
-                    SizedBox(width: 17,),
-                    Icon(Icons.report_outlined,size: 28,color:Colors.black,),
-                    SizedBox(width: 17,),
-                    Image(
-                      image: new AssetImage("assets/share.png"),
-                      width: 23,
-                      height:  23,
-                      color:Colors.black,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
-                    SizedBox(width: 17,),
-                    Image(
-                      image: new AssetImage("assets/bookmark_unsel.png"),
-                      width: 24,
-                      height:  24,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
-                    //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
-                  SizedBox(width: 5,),
-                  ]))]))
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(width: 5,),
+                                Image(
+                                  image: new AssetImage("assets/like_unsel.png"),
+                                  width: 24,
+                                  height:  24,
+                                  color: null,
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                ),
+                                SizedBox(width: 17,),
+                                Image(
+                                  image: new AssetImage("assets/dislike_unsel.png"),
+                                  width: 24,
+                                  height:  24,
+                                  color: null,
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                ),
+                                SizedBox(width: 17,),
+                                Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+                                SizedBox(width: 17,),
+                                Image(
+                                  image: new AssetImage("assets/share.png"),
+                                  width: 23,
+                                  height:  23,
+                                  color:Colors.black,
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                ),
+                                SizedBox(width: 17,),
+                                Image(
+                                  image: new AssetImage("assets/bookmark_unsel.png"),
+                                  width: 24,
+                                  height:  24,
+                                  color: null,
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                ),
+                                //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
+                                SizedBox(width: 5,),
+                              ]))]))
 
 
-      ]),
+              ]),
 
-    ));
+        );
   }
   setSelectedRadioTile(int val) {
     setState(() {
@@ -338,7 +277,7 @@ class NewsMainPageState extends State<NewsMainPage> {
 Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
   PageController controller1=PageController();
 
-   var newsArr=newsData.createdAt.split(" ");
+  var newsArr=newsData.createdAt.split(" ");
 
   return
     Column(
@@ -359,23 +298,23 @@ Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<E
 
                   return Stack(
                       children: <Widget>[
-                      Container(
-                       margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
 
-                        alignment: Alignment.center,
+                          alignment: Alignment.center,
 
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new NetworkImage(embedUrls[position].url),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(embedUrls[position].url),
 
-                            alignment: Alignment.center,
+                              alignment: Alignment.center,
+                            ),
+
                           ),
 
                         ),
-
-                      ),
                         Positioned.fill(
                             child:Align(
                                 alignment: Alignment.bottomRight,
@@ -435,7 +374,7 @@ Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
 <blockquote class="twitter-tweet"><p lang="hi" dir="ltr">हमें कोरोना की इस उभरती हुई &quot;सेकंड पीक&quot; को तुरंत रोकना होगा।<br><br>इसके लिए हमें Quick और Decisive कदम उठाने होंगे: PM <a href="https://twitter.com/narendramodi?ref_src=twsrc%5Etfw">@narendramodi</a></p>&mdash; PMO India (@PMOIndia) <a href="https://twitter.com/PMOIndia/status/1372104052746559489?ref_src=twsrc%5Etfw">March 17, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   """;*/
 
- /* String  sampleTweet = """
+  /* String  sampleTweet = """
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Here’s an edit I did of one of my drawings. I tend to draw a lot of aot stuff when each chapter is released. Sorry about that!<br>Song: polnalyubvi кометы<br>Character: Annie Leonhart <a href="https://twitter.com/hashtag/annieleonhart?src=hash&amp;ref_src=twsrc%5Etfw">#annieleonhart</a> <a href="https://twitter.com/hashtag/aot131spoilers?src=hash&amp;ref_src=twsrc%5Etfw">#aot131spoilers</a> <a href="https://twitter.com/hashtag/aot?src=hash&amp;ref_src=twsrc%5Etfw">#aot</a> <a href="https://twitter.com/hashtag/AttackOnTitan131?src=hash&amp;ref_src=twsrc%5Etfw">#AttackOnTitan131</a> <a href="https://twitter.com/hashtag/AttackOnTitans?src=hash&amp;ref_src=twsrc%5Etfw">#AttackOnTitans</a> <a href="https://twitter.com/hashtag/snk?src=hash&amp;ref_src=twsrc%5Etfw">#snk</a> <a href="https://twitter.com/hashtag/snk131?src=hash&amp;ref_src=twsrc%5Etfw">#snk131</a> <a href="https://twitter.com/hashtag/shingekinokyojin?src=hash&amp;ref_src=twsrc%5Etfw">#shingekinokyojin</a> <a href="https://t.co/b4z48ruCoD">pic.twitter.com/b4z48ruCoD</a></p>&mdash; evie (@hazbin_freak22) <a href="https://twitter.com/hazbin_freak22/status/1291884358870142976?ref_src=twsrc%5Etfw">August 7, 2020</a></blockquote>
   """;*/
 
@@ -448,13 +387,13 @@ Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
   return Container(
       padding: EdgeInsets.fromLTRB(10,0,10,0),
       child:
-    Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:<Widget>[
-          SocialEmbed(
-              socialMediaObj:
-              TwitterEmbedData(embedHtml: sampleTweet)),
-    /* HtmlWidget(
+      Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:<Widget>[
+            SocialEmbed(
+                socialMediaObj:
+                TwitterEmbedData(embedHtml: sampleTweet)),
+            /* HtmlWidget(
 
             sampleTweet,
             webView: true,
@@ -467,12 +406,12 @@ Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
               return null;
             },
           )*/
-        ]
-    ));
+          ]
+      ));
 
 }
 Widget _buildBoxVideo(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
- // String url='https://www.youtube.com/watch?v=wY6UyatwVTA';
+  // String url='https://www.youtube.com/watch?v=wY6UyatwVTA';
   var newsArr=newsData.createdAt.split(" ");
   String url=embedUrls[0].url;
   String html;

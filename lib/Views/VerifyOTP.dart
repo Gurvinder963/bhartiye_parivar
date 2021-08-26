@@ -74,8 +74,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
 
-  final myControllerPhone = TextEditingController();
-  final myControllerContryCode = TextEditingController();
+//  final myControllerPhone = TextEditingController();
+  //final myControllerContryCode = TextEditingController();
 
   String fcm_token;
 
@@ -119,17 +119,17 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
 
-    var s2 = myControllerContryCode.text;
+    var s2 = mC_code;
     print(s2);
     String mobile;
     if(s2=='91') {
-      var arr = myControllerPhone.text.split(" ");
+      var arr = mMobile.split(" ");
       String newStringMob = arr[0] + arr[1];
 
       mobile = s2 + newStringMob;
     }
     else{
-      mobile=s2+myControllerPhone.text;
+      mobile=s2+mMobile;
     }
     print(mobile);
     var pin=nextIntOfDigits(4);
@@ -351,8 +351,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     // Clean up the controller when the widget is disposed.
-    myControllerPhone.dispose();
-    myControllerContryCode.dispose();
+  //  myControllerPhone.dispose();
+ //   myControllerContryCode.dispose();
     super.dispose();
   }
 

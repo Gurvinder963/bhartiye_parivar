@@ -14,6 +14,8 @@ import '../ApiResponses/TrackOrderResponse.dart';
 import '../ApiResponses/ShippingAddressResponse.dart';
 import '../ApiResponses/BookDetailResponse.dart';
 import '../ApiResponses/NewsResponse.dart';
+import '../ApiResponses/VideoDetailResponse.dart';
+import '../ApiResponses/NewsDetailResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -37,6 +39,11 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/videos",body,token);
     return VideoListResponse.fromJson(response);
   }
+  Future<VideoDetailResponse> fetchVideoDetailData(String id,var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/videos/"+id,body,token);
+    return VideoDetailResponse.fromJson(response);
+  }
+
   Future<BookListResponse> fetchBooksData(var body,String token) async {
     final response = await _provider.getWithToken("public/api/v1/books",body,token);
     return BookListResponse.fromJson(response);
@@ -130,4 +137,10 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/news",body,token);
     return NewsResponse.fromJson(response);
   }
+  Future<NewsDetailResponse> fetchNewsDetailData(String id,var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/news/"+id,body,token);
+    return NewsDetailResponse.fromJson(response);
+  }
+
+
 }

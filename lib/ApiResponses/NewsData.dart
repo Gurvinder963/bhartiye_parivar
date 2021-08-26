@@ -1,0 +1,93 @@
+
+class NewsData {
+  int id;
+  String title;
+  int newsType;
+  String description;
+  List<EmbedUrls> embedUrls;
+  bool status;
+  String displayStatus;
+  String createdAt;
+  String updatedAt;
+
+  NewsData(
+      {this.id,
+        this.title,
+        this.newsType,
+        this.description,
+        this.embedUrls,
+        this.status,
+        this.displayStatus,
+        this.createdAt,
+        this.updatedAt});
+
+  NewsData.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    newsType = json['news_type'];
+    description = json['description'];
+    if (json['embed_urls'] != null) {
+      embedUrls = new List<EmbedUrls>();
+      json['embed_urls'].forEach((v) {
+        embedUrls.add(new EmbedUrls.fromJson(v));
+      });
+    }
+    status = json['status'];
+    displayStatus = json['display_status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['news_type'] = this.newsType;
+    data['description'] = this.description;
+    if (this.embedUrls != null) {
+      data['embed_urls'] = this.embedUrls.map((v) => v.toJson()).toList();
+    }
+    data['status'] = this.status;
+    data['display_status'] = this.displayStatus;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+
+class EmbedUrls {
+  int id;
+  int newsId;
+  String url;
+  String createdAt;
+  String updatedAt;
+  Null deletedAt;
+
+  EmbedUrls(
+      {this.id,
+        this.newsId,
+        this.url,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt});
+
+  EmbedUrls.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    newsId = json['news_id'];
+    url = json['url'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['news_id'] = this.newsId;
+    data['url'] = this.url;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    return data;
+  }
+}

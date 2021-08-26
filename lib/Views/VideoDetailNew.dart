@@ -13,9 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import '../ApiResponses/VideoData.dart';
+
+import '../ApiResponses/VideoDetailResponse.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
-  final Data content;
+  final VideoData content;
 
 
   VideoDetailNewPage({Key key,@required this.content}) : super(key: key);
@@ -40,8 +43,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
-  Data mContent;
-  VideoDetailNewPageState(Data content){
+  VideoData mContent;
+  VideoDetailNewPageState(VideoData content){
     mContent=content;
   }
   @override
@@ -72,6 +75,19 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         setState(() {
           isLoading = true;
         });}
+
+      getVideoDetail(user_Token,mContent.id.toString()).then((value) => {
+
+        setState(() {
+          mContent=value.data;
+          //   isLoading = false;
+          // mainData.addAll(value.data);
+
+        })
+
+      });
+
+
       getVideosList(user_Token,videoCategory,mContent.id.toString()).then((value) => {
 
         setState(() {
@@ -87,7 +103,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     });
 
   }
+  Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
 
+    var body ={'lang_code':''};
+    MainRepository repository=new MainRepository();
+    return repository.fetchVideoDetailData(id,body,user_Token);
+
+  }
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory,String videoId) async {
 
     var body ={'video_category':videoCategory,"video_id":videoId};
@@ -664,7 +686,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       ),
     );
   }
-  Widget _buildBoxVideo(BuildContext context,Data content){
+  Widget _buildBoxVideo(BuildContext context,VideoData content){
    var channel=content.channel==null?"My Channel":content.channel;
     final width = MediaQuery.of(context).size.width;
 

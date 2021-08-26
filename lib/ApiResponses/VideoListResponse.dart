@@ -1,5 +1,6 @@
+import '../ApiResponses/VideoData.dart';
 class VideoListResponse {
-  List<Data> data;
+  List<VideoData> data;
   Links links;
   Meta meta;
 
@@ -7,9 +8,9 @@ class VideoListResponse {
 
   VideoListResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = new List<VideoData>();
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new VideoData.fromJson(v));
       });
     }
     links = json['links'] != null ? new Links.fromJson(json['links']) : null;
@@ -31,86 +32,7 @@ class VideoListResponse {
   }
 }
 
-class Data {
-  int id;
-  String title;
-  String videoUrl;
-  String videoCategory;
-  String videoSourceType;
-  String videoImage;
-  String publisher;
-  String channel;
-  int channel_id;
-  String video_duration;
-  String lang;
-  bool status;
-  String displayStatus;
-  String createdAt;
-  String createdBy;
-  String updatedAt;
-  Null updatedBy;
 
-  Data(
-      {this.id,
-        this.title,
-        this.videoUrl,
-        this.videoCategory,
-        this.videoSourceType,
-        this.videoImage,
-        this.publisher,
-        this.channel,
-        this.channel_id,
-        this.video_duration,
-        this.lang,
-        this.status,
-        this.displayStatus,
-        this.createdAt,
-        this.createdBy,
-        this.updatedAt,
-        this.updatedBy});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    videoUrl = json['video_url'];
-    videoCategory = json['video_category'];
-    videoSourceType = json['video_source_type'];
-    videoImage = json['video_Image'];
-    publisher = json['publisher'];
-    channel = json['channel'];
-    channel_id = json['channel_id'];
-    video_duration = json['video_duration'];
-    lang = json['lang'];
-    status = json['status'];
-    displayStatus = json['display_status'];
-    createdAt = json['created_at'];
-    createdBy = json['created_by'];
-    updatedAt = json['updated_at'];
-    updatedBy = json['updated_by'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['video_url'] = this.videoUrl;
-    data['video_category'] = this.videoCategory;
-    data['video_source_type'] = this.videoSourceType;
-    data['video_Image'] = this.videoImage;
-    data['video_duration'] = this.video_duration;
-    data['publisher'] = this.publisher;
-    data['channel'] = this.channel;
-    data['channel_id'] = this.channel_id;
-    data['lang'] = this.lang;
-    data['status'] = this.status;
-    data['display_status'] = this.displayStatus;
-    data['created_at'] = this.createdAt;
-    data['created_by'] = this.createdBy;
-    data['updated_at'] = this.updatedAt;
-    data['updated_by'] = this.updatedBy;
-    return data;
-  }
-}
 
 class Links {
   String first;

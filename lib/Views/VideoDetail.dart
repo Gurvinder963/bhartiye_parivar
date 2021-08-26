@@ -7,10 +7,11 @@ import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoListResponse.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../ApiResponses/VideoData.dart';
 
 
 class VideoDetailPage extends StatefulWidget {
-  final Data content;
+  final VideoData content;
 
 
   VideoDetailPage({Key key,@required this.content}) : super(key: key);
@@ -30,8 +31,8 @@ class VideoDetailPageState extends State<VideoDetailPage> {
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
-   Data mContent;
-  VideoDetailPageState(Data content){
+  VideoData mContent;
+  VideoDetailPageState(VideoData content){
     mContent=content;
   }
   void listener() {
@@ -195,7 +196,7 @@ class VideoDetailPageState extends State<VideoDetailPage> {
     ));
   }
 
-  Widget _buildBoxVideo(BuildContext context,Data content, Widget player){
+  Widget _buildBoxVideo(BuildContext context,VideoData content, Widget player){
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
 
