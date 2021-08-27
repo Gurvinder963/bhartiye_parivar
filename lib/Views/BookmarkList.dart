@@ -23,6 +23,8 @@ import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'privacyScreen.dart';
+import 'VideoDetailNew.dart';
+import 'NewsDetail.dart';
 
 class ItemData {
 
@@ -45,14 +47,14 @@ class ItemData {
     };
   }
 }
-class OnlineBooksPage extends StatefulWidget {
+class BookmarkListPage extends StatefulWidget {
   @override
-  OnlineBooksPageState createState() {
-    return OnlineBooksPageState();
+  BookmarkListPageState createState() {
+    return BookmarkListPageState();
   }
 }
 
-class OnlineBooksPageState extends State<OnlineBooksPage> {
+class BookmarkListPageState extends State<BookmarkListPage> {
 
   List mainData = new List();
   List<String> qtyData = new List();
@@ -86,9 +88,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
         _isInAsyncCall = true;
       });
 
-      getBooksList(user_Token).then((value) => {
-
-
+      getBookmarkList(user_Token).then((value) => {
 
 
         setState(() {
@@ -107,11 +107,11 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
   }
 
-  Future<BookListResponse> getBooksList(String user_Token) async {
+  Future<BookListResponse> getBookmarkList(String user_Token) async {
 
     var body ={'none':'none'};
     MainRepository repository=new MainRepository();
-    return repository.fetchMyBooksData(body,user_Token);
+    return repository.fetchBookmarkData(body,user_Token);
 
   }
 
@@ -141,23 +141,16 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                 mainData.length>0?
 
-                    _buildList() :Container(
+                _buildList() :Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child:_isInAsyncCall?Container():Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          new Image(
-                            image: new AssetImage("assets/empty_mybook.png"),
-                            width: 200,
-                            height:  200,
-                            color: null,
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.center,
-                          ),
+
                           Text(
-                            'You have not purchased any \nbook yet for online reading' ,
+                            'You have not set any bookmark yet' ,
                             style: GoogleFonts.poppins(
                               fontSize: ScreenUtil().setSp(16),
                               letterSpacing: 1.2,
@@ -198,13 +191,27 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
             onTap: () =>
             {
 
+              if(mainData[index].contentid==1){
                 Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return ViewOnlineBookPage();
+                          return VideoDetailNewPage();
                         }
                     ))
+              }
+              else{
+                Navigator.of(context, rootNavigator: true)
+                    .push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return NewsDetailPage();
+                        }
+                    ))
+              }
+
+
+
             },
             child:
             _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
@@ -217,14 +224,6 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
       ,
 
     );
-  }
-  Future<AddToCartResponse> postDeleteMyBooks(String id,String token) async {
-
-    //  print('my_token'+token);
-    var body =json.encode({"id":id});
-    MainRepository repository=new MainRepository();
-    return repository.fetchDeleteMyBooksData(body,token);
-
   }
 
 
@@ -259,10 +258,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     lang=lang==null?"":lang;
 // print("my_qty--"+qty);
-  //  title= title.length>22?title=title.substring(0,22)+"...":title;
+    //  title= title.length>22?title=title.substring(0,22)+"...":title;
     return    SizedBox(child:Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-      //  height: 170,
+        //  height: 170,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -293,8 +292,8 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                           ),
 
                         ),
-        new Expanded(
-            flex: 7, child: Container(
+                        new Expanded(
+                            flex: 7, child: Container(
 
                             child:Column(
 
@@ -320,14 +319,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                                         ),)),
 
-                                  Padding(
-                                      padding: EdgeInsets.fromLTRB(15,7,0,0),
-                                      child: Text(pageCount+" Pages",   overflow: TextOverflow.ellipsis,
-                                        maxLines: 1, style: GoogleFonts.poppins(
-                                          fontSize:12.0,
-                                          color: Color(0xFF000000),
 
-                                        ),)),
 
 
                                 ])))
@@ -336,36 +328,6 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
 
 
-                        new Expanded(
-                            flex: 1,
-
-                            child:PopupMenuButton(
-                                icon: Icon(Icons.more_vert),
-                                onSelected: (newValue) { // add this property
-
-                                  if(newValue==2){
-
-                                    showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item ?",id.toString(),index);
-
-
-
-                                  }
-
-
-                                },
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    child: Text("Recommend Book"),
-                                    value: 1,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Remove"),
-                                    value: 2,
-                                  ),
-
-                                ]
-                            )
-                        ),
                         SizedBox(
                           width: 15,
                         ),
@@ -386,72 +348,5 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
             ]
         )));
-  }
-
-  showAlertDialogValidationdELETE(BuildContext context,String message,String id,int index) {
-
-    Widget yesButton = FlatButton(
-      child: Text("YES"),
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pop('dialog');
-        setState(() {
-          _isInAsyncCall = true;
-        });
-        postDeleteMyBooks(id.toString(),user_Token)
-            .then((res) async {
-          setState(() {
-            _isInAsyncCall = false;
-          });
-
-
-          if (res.status == 1) {
-
-            Fluttertoast.showToast(
-                msg: "Item has been deleted !",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.black,
-                textColor: Colors.white,
-                fontSize: 16.0);
-            setState(() {
-              mainData.removeAt(index);
-
-            });
-
-
-
-          }
-          else {
-            showAlertDialogValidation(context,"Some error occured!");
-          }
-        });
-
-      },
-    );
-    Widget noButton = FlatButton(
-      child: Text("NO"),
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pop('dialog');
-
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(Constants.AppName),
-      content: Text(message),
-      actions: [
-        yesButton,
-        noButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }

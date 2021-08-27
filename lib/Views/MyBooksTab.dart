@@ -30,11 +30,12 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
     labelColor: Colors.black,
     labelPadding: EdgeInsets.symmetric (horizontal: 5),
     indicatorWeight: 2,
+    indicatorSize: TabBarIndicatorSize.label,
     indicatorColor: Colors.orange,
     tabs: [
       Tab(child: Text('Online Books', style: GoogleFonts.poppins(fontSize: 17,fontWeight: FontWeight.w600))),
-
-      Tab(child: Container(
+  Tab(child: Text('Track Order', style: GoogleFonts.poppins(fontSize: 17,fontWeight: FontWeight.w600))),
+     /* Tab(child: Container(
 
           width: double.infinity,
   child:
@@ -52,7 +53,7 @@ class MyBooksTabPageState extends State<MyBooksTabPage> {
 
 ])
 
-          )),
+          ))*/
     ],
   );
   @override

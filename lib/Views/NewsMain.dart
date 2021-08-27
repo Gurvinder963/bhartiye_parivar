@@ -126,7 +126,55 @@ class NewsMainPageState extends State<NewsMainPage> {
         title: Text('News', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
         actions: <Widget>[
 
-          Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
+          IconButton(
+              icon: isBookMarked? Image(
+                image: new AssetImage("assets/bookmark_sel.png"),
+                width: 24,
+                height:  24,
+                color: null,
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+              ): Image(
+                image: new AssetImage("assets/bookmark_unsel.png"),
+                width: 24,
+                height:  24,
+                color: null,
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isInAsyncCall = true;
+                });
+
+                postAddBookMark("2",user_Token,mainData[mPagePosition].id.toString())
+                    .then((res) async {
+                  setState(() {
+                    _isInAsyncCall = false;
+                  });
+
+
+                  if (res.status == 1) {
+
+
+                    Fluttertoast.showToast(
+                        msg: "Bookmark added!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+
+
+                  }
+                  else {
+                    // showAlertDialogValidation(context,"Some error occured!");
+                  }
+                });
+
+                //  submitFavourite("1",tok,MyContentId.toString(),false);
+              }),
 
           SizedBox(
             width: 20,
@@ -256,49 +304,7 @@ class NewsMainPageState extends State<NewsMainPage> {
                       alignment: Alignment.center,
                     ),
                     SizedBox(width: 17,),
-                    IconButton(
-                        icon: isBookMarked?ImageIcon(
 
-                          AssetImage("assets/bookmark_sel.png"),
-
-
-                        ):ImageIcon(
-                          AssetImage("assets/bookmark_unsel.png"),
-
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isInAsyncCall = true;
-                          });
-
-                          postAddBookMark("2",user_Token,mainData[mPagePosition].id.toString())
-                              .then((res) async {
-                            setState(() {
-                              _isInAsyncCall = false;
-                            });
-
-
-                            if (res.status == 1) {
-
-
-                              Fluttertoast.showToast(
-                                  msg: "Bookmark added!",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-
-
-                            }
-                            else {
-                              // showAlertDialogValidation(context,"Some error occured!");
-                            }
-                          });
-
-                          //  submitFavourite("1",tok,MyContentId.toString(),false);
-                        }),
                /*     Image(
                       image: new AssetImage("assets/bookmark_unsel.png"),
                       width: 24,

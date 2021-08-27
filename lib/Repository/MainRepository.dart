@@ -90,12 +90,12 @@ class MainRepository {
     return BookListResponse.fromJson(response);
   }
 
-  Future<AddToCartResponse> fetchDeleteMyBooksData(String id,String token) async {
-    final response = await _provider.deleteWithToken("public/api/v1/userBooks/"+id,token);
+  Future<AddToCartResponse> fetchDeleteMyBooksData(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/delete/mybooks",body,token);
     return AddToCartResponse.fromJson(response);
   }
   Future<AddToCartResponse> fetchAddMyBooksData(var body,String token) async {
-    final response = await _provider.postWithToken("public/api/v1/userBooks",body,token);
+    final response = await _provider.postWithToken("public/api/v1/mybooks",body,token);
     return AddToCartResponse.fromJson(response);
   }
 
@@ -155,4 +155,8 @@ class MainRepository {
     return AddToCartResponse.fromJson(response);
   }
 
+  Future<BookListResponse> fetchBookmarkData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/mybooks",body,token);
+    return BookListResponse.fromJson(response);
+  }
 }

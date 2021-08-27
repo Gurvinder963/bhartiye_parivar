@@ -33,10 +33,10 @@ class VideoDetailNewPage extends StatefulWidget {
 
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   bool _isInAsyncCall = false;
-  var marginPixel=0;
+  var marginPixel=25;
   List mainData = new List();
   bool isLoading = false;
-  bool isBookMarked=false;
+  bool isBookMarked = false;
   YoutubePlayerController _controller;
   final List<String> _ids = [];
   TextEditingController _idController;
@@ -151,15 +151,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     if(!isPortrait){
-      marginPixel=40;
+      marginPixel=25;
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     }
     else{
-      marginPixel=0;
+      marginPixel=25;
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
     var channel=mContent.channel==null?"My Channel":mContent.channel;
-
+    print(isBookMarked?"hello":"jjjjj");
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
@@ -311,14 +311,20 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                               ),
                               SizedBox(width: 17,),
                               IconButton(
-                                  icon: isBookMarked?ImageIcon(
-
-                                    AssetImage("assets/bookmark_sel.png"),
-
-
-                                  ):ImageIcon(
-                                    AssetImage("assets/bookmark_unsel.png"),
-
+                                  icon: isBookMarked? Image(
+                                    image: new AssetImage("assets/bookmark_sel.png"),
+                                    width: 24,
+                                    height:  24,
+                                    color: null,
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.center,
+                                  ): Image(
+                                    image: new AssetImage("assets/bookmark_unsel.png"),
+                                    width: 24,
+                                    height:  24,
+                                    color: null,
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.center,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -774,7 +780,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     else if(content.videoSourceType=='facebook'){
       html = '''
-           <iframe width="100%" height="100%"
+           <iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" width="100%" height="100%"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
             allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe>
      ''';

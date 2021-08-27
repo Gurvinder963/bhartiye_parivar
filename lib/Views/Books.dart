@@ -159,7 +159,7 @@ class BooksPageState extends State<BooksPage> {
     return Scaffold(
 
         body: Container(
-          margin: EdgeInsets.fromLTRB(4,0,0,0),
+          margin: EdgeInsets.fromLTRB(0,0,0,0),
           padding:  EdgeInsets.fromLTRB(2,8,2,0),
         child: ListView(
        // crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +168,7 @@ class BooksPageState extends State<BooksPage> {
 
 
         Container(
-          height: MediaQuery.of(context).size.height*0.22,
+          height: MediaQuery.of(context).size.height*0.24,
         child:
           Row(
 
@@ -192,7 +192,7 @@ class BooksPageState extends State<BooksPage> {
                       alignment: Alignment.center,
         children: <Widget>[
         Opacity(
-        opacity: 0.75,
+        opacity: 0.7,
         child:  Container(
             margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
@@ -251,7 +251,7 @@ class BooksPageState extends State<BooksPage> {
                       alignment: Alignment.center,
                       children: <Widget>[
                     Opacity(
-                    opacity: 0.75,
+                    opacity: 0.7,
                     child:
                         Container(
                           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),

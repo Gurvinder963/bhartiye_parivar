@@ -190,14 +190,20 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                 ),
                                 SizedBox(width: 17,),
                                 IconButton(
-                                    icon: isBookMarked?ImageIcon(
-
-                                      AssetImage("assets/bookmark_sel.png"),
-
-
-                                    ):ImageIcon(
-                                      AssetImage("assets/bookmark_unsel.png"),
-
+                                    icon: isBookMarked? Image(
+                                      image: new AssetImage("assets/bookmark_sel.png"),
+                                      width: 24,
+                                      height:  24,
+                                      color: null,
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.center,
+                                    ): Image(
+                                      image: new AssetImage("assets/bookmark_unsel.png"),
+                                      width: 24,
+                                      height:  24,
+                                      color: null,
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.center,
                                     ),
                                     onPressed: () {
                                       setState(() {

@@ -128,7 +128,8 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
       isAddtoCartVisible=false;
       isBuyNowVisible=false;
     }
-    else*/ if(mContent.book_type_id==2 && mContent.is_ebook_purchased){
+    else*/
+    if(mContent.book_type_id==2 && (mContent.is_ebook_purchased || mContent.ebook_cost==0)){
       isAddtoCartVisible=false;
       isBuyNowVisibleEbook=false;
     }
@@ -890,9 +891,15 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
       onTap: () {
 
         if(ebookCost==0){
+          setState(() {
+            _isInAsyncCall = true;
+          });
+
           postAddToMyBooks(booksid.toString(),user_Token)
               .then((res) async {
-
+            setState(() {
+              _isInAsyncCall = false;
+            });
             Navigator.of(context, rootNavigator: true)
                 .push( // ensures fullscreen
                 MaterialPageRoute(
