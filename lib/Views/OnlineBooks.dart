@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 import '../Views/ViewOnlineBook.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -216,7 +218,14 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     );
   }
+  Future<AddToCartResponse> postDeleteMyBooks(String id,String token) async {
 
+    //  print('my_token'+token);
+    //  var body =json.encode({"book_id":book_id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchDeleteMyBooksData(id,token);
+
+  }
 
 
   showAlertDialogValidation(BuildContext context,String message) {
@@ -332,6 +341,144 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                             child:PopupMenuButton(
                                 icon: Icon(Icons.more_vert),
+                                onSelected: (newValue) { // add this property
+
+                                  if(newValue==2){
+                                    showCupertinoModalPopup(
+                                        context: context,
+                                        builder: (context) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+
+                                              Text("Are you sure you want to\n delete this item?",
+                                                textAlign: TextAlign.center,),
+                                              Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _isInAsyncCall = true;
+                                                        });
+                                                        postDeleteMyBooks(id.toString(),user_Token)
+                                                            .then((res) async {
+                                                          setState(() {
+                                                            _isInAsyncCall = false;
+                                                          });
+
+
+                                                          if (res.status == 1) {
+
+                                                            Fluttertoast.showToast(
+                                                                msg: "Item has been deleted !",
+                                                                toastLength: Toast.LENGTH_SHORT,
+                                                                gravity: ToastGravity.BOTTOM,
+                                                                timeInSecForIosWeb: 1,
+                                                                backgroundColor: Colors.black,
+                                                                textColor: Colors.white,
+                                                                fontSize: 16.0);
+                                                            setState(() {
+                                                              mainData.removeAt(index);
+
+                                                            });
+
+
+
+
+
+                                                          }
+                                                          else {
+                                                            showAlertDialogValidation(context,"Some error occured!");
+                                                          }
+                                                        });
+
+                                                      },
+
+                                                      child: Container(
+                                                        width: 100,
+                                                        margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                                        alignment: Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                            boxShadow: <BoxShadow>[
+                                                              BoxShadow(
+                                                                  color: Colors.grey.shade200,
+                                                                  offset: Offset(1, 1),
+                                                                  blurRadius: 0,
+                                                                  spreadRadius: 0)
+                                                            ],
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.centerLeft,
+                                                                end: Alignment.centerRight,
+                                                                colors: [
+                                                                  Color(0xFFD8D8D8),
+                                                                  Color(0xFFD8D8D8)
+                                                                ])),
+                                                        child: Text(
+                                                          'Yes',
+                                                          style: GoogleFonts.poppins(
+
+                                                              color: Colors.white,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    SizedBox(
+                                                      width: 20,
+                                                    ),
+
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pop(context, false);
+
+                                                      },
+
+                                                      child: Container(
+                                                        width: 100,
+                                                        margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                                        alignment: Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                            boxShadow: <BoxShadow>[
+                                                              BoxShadow(
+                                                                  color: Colors.grey.shade200,
+                                                                  offset: Offset(1, 1),
+                                                                  blurRadius: 0,
+                                                                  spreadRadius: 0)
+                                                            ],
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.centerLeft,
+                                                                end: Alignment.centerRight,
+                                                                colors: [
+                                                                  Color(AppColors.BaseColor),
+                                                                  Color(AppColors.BaseColor)
+                                                                ])),
+                                                        child: Text(
+                                                          'No',
+                                                          style: GoogleFonts.poppins(
+
+                                                              color: Colors.white,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                    )]),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  }
+
+
+                                },
                                 itemBuilder: (context) => [
                                   PopupMenuItem(
                                     child: Text("Recommend Book"),

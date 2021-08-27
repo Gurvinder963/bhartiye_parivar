@@ -309,7 +309,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           (mContent.is_ebook_purchased || mContent.ebook_cost==0)&& mContent.book_type_id!=1?
-                         _ReadNowButton(): Container(),
+                         _ReadNowButton(mContent.books_id,mContent.ebook_cost): Container(),
                           (!mContent.is_ebook_purchased && mContent.ebook_cost!=0 && (mContent.book_type_id==2 ||mContent.book_type_id==3))?
                           _buyNowButtonEbook(goToCartFromBuyNow):Container(),
 
@@ -665,6 +665,17 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
 
   }
 
+
+
+  Future<AddToCartResponse> postAddToMyBooks(String book_id,String token) async {
+
+    print('my_token'+token);
+    var body =json.encode({"book_id":book_id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddMyBooksData(body,token);
+
+  }
+
   showAlertDialogValidation(BuildContext context,String message) {
 
     Widget okButton = FlatButton(
@@ -874,17 +885,33 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
     );
   }
 
-  Widget _ReadNowButton() {
+  Widget _ReadNowButton(int booksid,int ebookCost) {
     return InkWell(
       onTap: () {
-        Navigator.of(context, rootNavigator: true)
-            .push( // ensures fullscreen
-            MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return ViewOnlineBookPage();
-                }
-            ));
 
+        if(ebookCost==0){
+          postAddToMyBooks(booksid.toString(),user_Token)
+              .then((res) async {
+
+            Navigator.of(context, rootNavigator: true)
+                .push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return ViewOnlineBookPage();
+                    }
+                ));
+
+          });
+        }
+        else {
+          Navigator.of(context, rootNavigator: true)
+              .push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return ViewOnlineBookPage();
+                  }
+              ));
+        }
 
       },
 

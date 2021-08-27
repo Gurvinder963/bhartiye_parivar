@@ -894,21 +894,7 @@ class MyCartPageState extends State<MyCartPage> {
 
 
           });
- /*   setState(() {
-  mainData.clear();
-  _isInAsyncCall = true;
-    });
 
-    getBooksList(user_Token).then((value) => {
-
-      setState(() {
-        _isInAsyncCall = false;
-        isLoading = false;
-        mainData.addAll(value.data);
-
-      })
-
-    });*/
 
         }
         else {

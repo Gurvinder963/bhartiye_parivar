@@ -19,6 +19,9 @@ import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/NewsData.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 class NewsMainPage extends StatefulWidget {
   @override
   NewsMainPageState createState() {
@@ -30,8 +33,25 @@ class NewsMainPageState extends State<NewsMainPage> {
   PageController controller=PageController();
   int selectedRadio = 0;
   int selectedRadioTile = 0;
+  bool isBookMarked=false;
+  int mPagePosition=0;
   int _curr=0;
 
+  Future<AddToCartResponse> postAddBookMark(String content_type,String token,String content_id) async {
+    String status = "0";
+    if (isBookMarked) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
+    print('my_token'+token);
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"keyStatus": status});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddBookMark(body,token);
+
+  }
 
   Future<NewsResponse> getNewsList(String user_Token) async {
 
@@ -42,7 +62,7 @@ class NewsMainPageState extends State<NewsMainPage> {
   }
   List mainData = new List();
   bool isLoading = false;
-
+  bool _isInAsyncCall = false;
   String user_Token;
   @override
   void initState() {
@@ -121,7 +141,12 @@ class NewsMainPageState extends State<NewsMainPage> {
               Navigator.of(context).pop()},
           )
       ),
-      body:  Column (
+      body:  ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:Column (
 
           children: [
             Container(
@@ -156,7 +181,11 @@ class NewsMainPageState extends State<NewsMainPage> {
 
                           return wid;
                         }},
-                    onPageChanged: (int position) {},
+                    onPageChanged: (int position) {
+
+                      mPagePosition=position;
+
+                    },
 
                     preloadPagesCount: 3,
                     controller: PreloadPageController(),
@@ -227,20 +256,63 @@ class NewsMainPageState extends State<NewsMainPage> {
                       alignment: Alignment.center,
                     ),
                     SizedBox(width: 17,),
-                    Image(
+                    IconButton(
+                        icon: isBookMarked?ImageIcon(
+
+                          AssetImage("assets/bookmark_sel.png"),
+
+
+                        ):ImageIcon(
+                          AssetImage("assets/bookmark_unsel.png"),
+
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isInAsyncCall = true;
+                          });
+
+                          postAddBookMark("2",user_Token,mainData[mPagePosition].id.toString())
+                              .then((res) async {
+                            setState(() {
+                              _isInAsyncCall = false;
+                            });
+
+
+                            if (res.status == 1) {
+
+
+                              Fluttertoast.showToast(
+                                  msg: "Bookmark added!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+
+
+                            }
+                            else {
+                              // showAlertDialogValidation(context,"Some error occured!");
+                            }
+                          });
+
+                          //  submitFavourite("1",tok,MyContentId.toString(),false);
+                        }),
+               /*     Image(
                       image: new AssetImage("assets/bookmark_unsel.png"),
                       width: 24,
                       height:  24,
                       color: null,
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.center,
-                    ),
+                    ),*/
                     //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                   SizedBox(width: 5,),
                   ]))]))
 
 
-      ]),
+      ])),
 
     ));
   }

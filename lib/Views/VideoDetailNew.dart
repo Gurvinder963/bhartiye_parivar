@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,8 +14,9 @@ import '../Utils/Prefer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../ApiResponses/VideoData.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
+import '../ApiResponses/AddToCartResponse.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -31,9 +32,11 @@ class VideoDetailNewPage extends StatefulWidget {
 }
 
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
+  bool _isInAsyncCall = false;
   var marginPixel=0;
   List mainData = new List();
   bool isLoading = false;
+  bool isBookMarked=false;
   YoutubePlayerController _controller;
   final List<String> _ids = [];
   TextEditingController _idController;
@@ -44,6 +47,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   bool _muted = false;
   bool _isPlayerReady = false;
   VideoData mContent;
+
+  String user_Token;
   VideoDetailNewPageState(VideoData content){
     mContent=content;
   }
@@ -69,7 +74,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+       user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
       if (!isLoading) {
         setState(() {
@@ -101,6 +106,22 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       return (prefs.getString('token'));
     });
+
+  }
+
+  Future<AddToCartResponse> postAddBookMark(String content_type,String token,String content_id) async {
+    String status = "0";
+    if (isBookMarked) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
+    print('my_token'+token);
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"keyStatus": status});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddBookMark(body,token);
 
   }
   Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
@@ -154,7 +175,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
             title: Text(AppStrings.PlayingVideo),
           ):null,
 
-          body: Container(
+          body: ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child: Container(
 
               child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,14 +310,57 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 alignment: Alignment.center,
                               ),
                               SizedBox(width: 17,),
-                              Image(
+                              IconButton(
+                                  icon: isBookMarked?ImageIcon(
+
+                                    AssetImage("assets/bookmark_sel.png"),
+
+
+                                  ):ImageIcon(
+                                    AssetImage("assets/bookmark_unsel.png"),
+
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isInAsyncCall = true;
+                                    });
+
+                                    postAddBookMark("1",user_Token,mContent.id.toString())
+                                        .then((res) async {
+                                      setState(() {
+                                        _isInAsyncCall = false;
+                                      });
+
+
+                                      if (res.status == 1) {
+
+                                     
+                                        Fluttertoast.showToast(
+                                            msg: "Bookmark added!",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+
+                                 
+                                      }
+                                      else {
+                                       // showAlertDialogValidation(context,"Some error occured!");
+                                      }
+                                    });
+
+                                  //  submitFavourite("1",tok,MyContentId.toString(),false);
+                                  }),
+                            /*  Image(
                                 image: new AssetImage("assets/bookmark_unsel.png"),
                                 width: 24,
                                 height:  24,
                                 color: null,
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
-                              ),
+                              ),*/
                             //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                               Expanded( child:Align(
                                 alignment: Alignment.centerRight,
@@ -341,7 +410,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                   ]))])
 
-          ),
+          )),
 
         );
   }
