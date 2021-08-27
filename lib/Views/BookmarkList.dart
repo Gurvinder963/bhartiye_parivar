@@ -25,6 +25,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'privacyScreen.dart';
 import 'VideoDetailNew.dart';
 import 'NewsDetail.dart';
+import '../ApiResponses/BookmarkResponse.dart';
+import '../ApiResponses/VideoData.dart';
+import '../ApiResponses/NewsData.dart';
 
 class ItemData {
 
@@ -47,6 +50,8 @@ class ItemData {
     };
   }
 }
+VideoData videodata=new VideoData();
+NewsData newsData=new NewsData();
 class BookmarkListPage extends StatefulWidget {
   @override
   BookmarkListPageState createState() {
@@ -178,6 +183,7 @@ class BookmarkListPageState extends State<BookmarkListPage> {
 
 
   Widget _buildList() {
+
     return ListView.builder(
       padding: EdgeInsets.all(0.0),
       itemCount: mainData.length , // Add one more item for progress indicator
@@ -192,20 +198,44 @@ class BookmarkListPageState extends State<BookmarkListPage> {
             {
 
               if(mainData[index].contentid==1){
+
+                videodata.id=mainData[index].id,
+                videodata.title=mainData[index].title,
+                videodata.videoCategory=mainData[index].videoCategory,
+                videodata.video_duration=mainData[index].video_duration,
+                videodata.videoUrl=mainData[index].videoUrl,
+                videodata.videoImage=mainData[index].videoImage,
+                videodata.videoSourceType=mainData[index].videoSourceType,
+                videodata.channel_id=mainData[index].channel_id,
+                videodata.publisher=mainData[index].publisher,
+                videodata.channel=mainData[index].channel,
+                videodata.createdAt=mainData[index].createdAt,
+                videodata.lang=mainData[index].lang,
+
+
                 Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return VideoDetailNewPage();
+                          return VideoDetailNewPage(content: videodata);
                         }
                     ))
               }
               else{
+
+                newsData.id=mainData[index].id,
+                newsData.title=mainData[index].title,
+                newsData.description=mainData[index].description,
+                newsData.embedUrls=mainData[index].embedUrls,
+                newsData.createdAt=mainData[index].createdAt,
+                newsData.newsType=mainData[index].newsType,
+
+
                 Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return NewsDetailPage();
+                          return NewsDetailPage(content: newsData);
                         }
                     ))
               }

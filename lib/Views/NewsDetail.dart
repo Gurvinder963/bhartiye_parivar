@@ -23,7 +23,11 @@ import '../ApiResponses/NewsDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import '../ApiResponses/NewsData.dart';
 class NewsDetailPage extends StatefulWidget {
+  NewsData content;
+
+  NewsDetailPage({Key key,@required this.content}) : super(key: key);
   @override
   NewsDetailPageState createState() {
     return NewsDetailPageState();
