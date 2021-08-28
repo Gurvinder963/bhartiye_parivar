@@ -160,7 +160,7 @@ class BooksPageState extends State<BooksPage> {
 
         body: Container(
           margin: EdgeInsets.fromLTRB(0,0,0,0),
-          padding:  EdgeInsets.fromLTRB(2,8,2,0),
+          padding:  EdgeInsets.fromLTRB(1,8,1,0),
         child: ListView(
        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -24,26 +24,32 @@ import '../ApiResponses/AddToCartResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../ApiResponses/NewsData.dart';
+import '../ApiResponses/BookMarkSaveResponse.dart';
 class NewsDetailPage extends StatefulWidget {
   NewsData content;
 
   NewsDetailPage({Key key,@required this.content}) : super(key: key);
   @override
   NewsDetailPageState createState() {
-    return NewsDetailPageState();
+    return NewsDetailPageState(content);
   }
 }
 
 class NewsDetailPageState extends State<NewsDetailPage> {
+  NewsData mContent;
+  NewsDetailPageState(NewsData content){
+    mContent=content;
+  }
+
   PageController controller=PageController();
   int selectedRadio = 0;
   int selectedRadioTile = 0;
   int _curr=0;
-  NewsData mContent;
+
   String mId;
   bool isBookMarked=false;
   bool _isInAsyncCall = false;
-  Future<AddToCartResponse> postAddBookMark(String content_type,String token,String content_id) async {
+  Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
     if (isBookMarked) {
       status = "0";
@@ -53,7 +59,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
       status = "1";
     }
     print('my_token'+token);
-    var body =json.encode({"content_type": content_type, "content_id": content_id,"keyStatus": status});
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
     return repository.fetchAddBookMark(body,token);
 
@@ -118,7 +124,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
               title: Text('News', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
               actions: <Widget>[
 
-                Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
+               // Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,),
 
                 SizedBox(
                   width: 20,
@@ -193,7 +199,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                   alignment: Alignment.center,
                                 ),
                                 SizedBox(width: 17,),
-                                IconButton(
+                            /*    IconButton(
                                     icon: isBookMarked? Image(
                                       image: new AssetImage("assets/bookmark_sel.png"),
                                       width: 24,
@@ -219,29 +225,34 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                         setState(() {
                                           _isInAsyncCall = false;
                                         });
+                                        String mmsg="";
+                                        if (res.bookmarkType == 1) {
 
+                                          mmsg="Bookmark added!";
 
-                                        if (res.status == 1) {
-
-
-                                          Fluttertoast.showToast(
-                                              msg: "Bookmark added!",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.black,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
 
 
                                         }
                                         else {
-                                          // showAlertDialogValidation(context,"Some error occured!");
+                                          mmsg="Bookmark removed!";
                                         }
+
+
+                                        Fluttertoast.showToast(
+                                            msg: mmsg,
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+
+
+
                                       });
 
                                       //  submitFavourite("1",tok,MyContentId.toString(),false);
-                                    }),
+                                    }),*/
                              /*   Image(
                                   image: new AssetImage("assets/bookmark_unsel.png"),
                                   width: 24,

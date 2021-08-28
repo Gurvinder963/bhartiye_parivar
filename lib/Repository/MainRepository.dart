@@ -16,6 +16,8 @@ import '../ApiResponses/BookDetailResponse.dart';
 import '../ApiResponses/NewsResponse.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/NewsDetailResponse.dart';
+import '../ApiResponses/BookMarkSaveResponse.dart';
+import '../ApiResponses/BookmarkResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -150,13 +152,13 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/news/"+id,body,token);
     return NewsDetailResponse.fromJson(response);
   }
-  Future<AddToCartResponse> fetchAddBookMark(var body,String token) async {
-    final response = await _provider.postWithToken("public/api/v1/addBookMark",body,token);
-    return AddToCartResponse.fromJson(response);
+  Future<BookMarkSaveResponse> fetchAddBookMark(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/bookmarks",body,token);
+    return BookMarkSaveResponse.fromJson(response);
   }
 
-  Future<BookListResponse> fetchBookmarkData(var body,String token) async {
-    final response = await _provider.getWithToken("public/api/v1/mybooks",body,token);
-    return BookListResponse.fromJson(response);
+  Future<BookmarkListResponse> fetchBookmarkData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/bookmarks",body,token);
+    return BookmarkListResponse.fromJson(response);
   }
 }

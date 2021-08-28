@@ -22,6 +22,7 @@ import '../ApiResponses/NewsData.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import '../ApiResponses/BookMarkSaveResponse.dart';
 class NewsMainPage extends StatefulWidget {
   @override
   NewsMainPageState createState() {
@@ -36,8 +37,8 @@ class NewsMainPageState extends State<NewsMainPage> {
   bool isBookMarked=false;
   int mPagePosition=0;
   int _curr=0;
-
-  Future<AddToCartResponse> postAddBookMark(String content_type,String token,String content_id) async {
+  int mposition=0;
+  Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
     if (isBookMarked) {
       status = "0";
@@ -47,7 +48,7 @@ class NewsMainPageState extends State<NewsMainPage> {
       status = "1";
     }
     print('my_token'+token);
-    var body =json.encode({"content_type": content_type, "content_id": content_id,"keyStatus": status});
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
     return repository.fetchAddBookMark(body,token);
 
@@ -83,8 +84,13 @@ class NewsMainPageState extends State<NewsMainPage> {
           isLoading = false;
           mainData.addAll(value.data);
 
-        })
-
+        }),
+if(value.data.length>0){
+          setState(()
+      {
+        isBookMarked = mainData[0].bookmark;
+      })
+      }
       });
 
 
@@ -102,6 +108,112 @@ class NewsMainPageState extends State<NewsMainPage> {
         ),
       ),
     );
+  }
+  Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
+
+
+    PageController controller1=PageController();
+
+    var newsArr=newsData.createdAt.split(" ");
+
+    return
+      Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:<Widget>[
+            Stack(
+                children: <Widget>[
+                  Container(
+                      height:  MediaQuery.of(context).size.height*0.30,
+                      color: Colors.black,
+                      child:
+                      PageView.builder(
+                        controller: controller1,
+                        scrollDirection: Axis.horizontal,
+                        itemCount:embedUrls.length,
+                        onPageChanged: (int position) {
+                          setState(() {
+                            mposition=position;
+                          });
+
+
+
+                        },
+                        itemBuilder: (BuildContext context, int position)
+                        {
+                          print("my_pos"+position.toString());
+
+
+                          return
+                            Container(
+                              margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
+
+                              alignment: Alignment.center,
+
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new NetworkImage(embedUrls[position].url),
+
+                                  alignment: Alignment.center,
+                                ),
+
+                              ),
+
+                            );
+
+
+
+                        },
+
+
+                      )),
+                  Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                              padding: EdgeInsets.fromLTRB(10,3,10,5),
+                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                              color:  Color(0xFF5a5a5a),
+                              child: Text((mposition+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
+                                fontSize:14.0,
+
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+
+                              ),))
+
+
+                      )),
+                ]),
+            Padding(
+                padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
+                fontSize: 18,fontWeight:FontWeight.w500),)),
+            Divider(
+              color: Colors.black,
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
+                fontSize: 16,fontWeight:FontWeight.w500),)),
+
+            Row(
+                children:<Widget>[
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
+                      fontSize: 16,fontWeight:FontWeight.w500),)),
+                  Spacer(),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("Read More >",style:  GoogleFonts.poppins(color: Colors.orange,
+                      fontSize: 16,fontWeight:FontWeight.w500),)),
+
+
+                ]
+
+            ),
+
+          ]
+      );
+
   }
   @override
   Widget build(BuildContext context) {
@@ -154,23 +266,33 @@ class NewsMainPageState extends State<NewsMainPage> {
                   });
 
 
-                  if (res.status == 1) {
+                  String mmsg="";
+                  if (res.bookmarkType == 1) {
 
+                    mmsg="Bookmark added!";
 
-                    Fluttertoast.showToast(
-                        msg: "Bookmark added!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-
+                    setState(() {
+                      isBookMarked = true;
+                    });
 
                   }
                   else {
-                    // showAlertDialogValidation(context,"Some error occured!");
+                    mmsg="Bookmark removed!";
+                    setState(() {
+                      isBookMarked = false;
+                    });
                   }
+
+
+                  Fluttertoast.showToast(
+                      msg: mmsg,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+
                 });
 
                 //  submitFavourite("1",tok,MyContentId.toString(),false);
@@ -198,7 +320,7 @@ class NewsMainPageState extends State<NewsMainPage> {
 
           children: [
             Container(
-                height: MediaQuery.of(context).size.height*0.80 ,
+                height: MediaQuery.of(context).size.height*0.81 ,
                 child:new PreloadPageView.builder(
                   scrollDirection: Axis.vertical,
                     itemCount:mainData.length+1,
@@ -232,6 +354,10 @@ class NewsMainPageState extends State<NewsMainPage> {
                     onPageChanged: (int position) {
 
                       mPagePosition=position;
+                      setState(() {
+                        isBookMarked = mainData[position].bookmark;
+                      });
+
 
                     },
 
@@ -261,7 +387,7 @@ class NewsMainPageState extends State<NewsMainPage> {
         },
       )*/),
        SizedBox(
-              height: MediaQuery.of(context).size.height*0.09 ,
+              height: MediaQuery.of(context).size.height*0.08 ,
               child:Column ( children: <Widget>[
             Divider(
             height: 0.5,
@@ -413,99 +539,7 @@ class NewsMainPageState extends State<NewsMainPage> {
 
 }
 
-Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
-  PageController controller1=PageController();
 
-   var newsArr=newsData.createdAt.split(" ");
-
-  return
-    Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:<Widget>[
-          Container(
-              height:  MediaQuery.of(context).size.height*0.30,
-              color: Colors.black,
-              child:
-              PageView.builder(
-                controller: controller1,
-                scrollDirection: Axis.horizontal,
-                itemCount:embedUrls.length,
-                itemBuilder: (BuildContext context, int position)
-                {
-                  print("my_pos"+position.toString());
-
-
-                  return Stack(
-                      children: <Widget>[
-                      Container(
-                       margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
-
-                        alignment: Alignment.center,
-
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new NetworkImage(embedUrls[position].url),
-
-                            alignment: Alignment.center,
-                          ),
-
-                        ),
-
-                      ),
-                        Positioned.fill(
-                            child:Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                    padding: EdgeInsets.fromLTRB(10,3,10,5),
-                                    margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                                    color:  Color(0xFF5a5a5a),
-                                    child: Text((position+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
-                                      fontSize:14.0,
-
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-
-                                    ),))
-
-
-                            )),
-
-                      ]);
-                },
-
-
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
-              fontSize: 18,fontWeight:FontWeight.w500),)),
-          Divider(
-            color: Colors.black,
-          ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
-              fontSize: 16,fontWeight:FontWeight.w500),)),
-
-          Row(
-              children:<Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
-                    fontSize: 16,fontWeight:FontWeight.w500),)),
-                Spacer(),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("Read More >",style:  GoogleFonts.poppins(color: Colors.orange,
-                    fontSize: 16,fontWeight:FontWeight.w500),)),
-
-
-              ]
-
-          ),
-
-        ]
-    );
-
-}
 Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
 
   String  sampleTweet ="""${embedUrls[0].url}""";

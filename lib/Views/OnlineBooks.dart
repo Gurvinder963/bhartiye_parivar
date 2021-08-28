@@ -89,8 +89,6 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
       getBooksList(user_Token).then((value) => {
 
 
-
-
         setState(() {
 
           _isInAsyncCall = false;
@@ -98,6 +96,8 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
           mainData.addAll(value.data);
 
         })
+
+
 
       });
 
@@ -107,6 +107,29 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
   }
 
+  void castList(var value)
+  {
+/*    mainData.addAll(value);
+    final jsonList = mainData.map((item) =>
+        jsonEncode(item)).toList();
+
+    // using toSet - toList strategy
+    final uniqueJsonList = jsonList.toSet().toList();
+
+    // convert each item back to the original form using JSON decoding
+    final result = uniqueJsonList.map((item) => jsonDecode(item)).toList();
+
+    print(result);
+    mainData.clear();*/
+    setState(() {
+
+      _isInAsyncCall = false;
+      isLoading = false;
+      mainData.addAll(value.data);
+
+    });
+
+  }
   Future<BookListResponse> getBooksList(String user_Token) async {
 
     var body ={'none':'none'};

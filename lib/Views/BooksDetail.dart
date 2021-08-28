@@ -310,7 +310,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           (mContent.is_ebook_purchased || mContent.ebook_cost==0)&& mContent.book_type_id!=1?
-                         _ReadNowButton(mContent.books_id,mContent.ebook_cost): Container(),
+                         _ReadNowButton(mContent.id,mContent.ebook_cost): Container(),
                           (!mContent.is_ebook_purchased && mContent.ebook_cost!=0 && (mContent.book_type_id==2 ||mContent.book_type_id==3))?
                           _buyNowButtonEbook(goToCartFromBuyNow):Container(),
 
@@ -671,7 +671,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
   Future<AddToCartResponse> postAddToMyBooks(String book_id,String token) async {
 
     print('my_token'+token);
-    var body =json.encode({"book_id":book_id});
+    var body =json.encode({"book_id":book_id,"book_type_id":"2","order_id":"-1","payment_status":"success","quantity":"1"});
     MainRepository repository=new MainRepository();
     return repository.fetchAddMyBooksData(body,token);
 

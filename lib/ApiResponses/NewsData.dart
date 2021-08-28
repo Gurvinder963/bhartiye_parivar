@@ -6,7 +6,9 @@ class NewsData {
   String description;
   List<EmbedUrls> embedUrls;
   bool status;
+  bool bookmark;
   String displayStatus;
+  String display_news_type;
   String createdAt;
   String updatedAt;
 
@@ -17,7 +19,9 @@ class NewsData {
         this.description,
         this.embedUrls,
         this.status,
+        this.bookmark,
         this.displayStatus,
+        this.display_news_type,
         this.createdAt,
         this.updatedAt});
 
@@ -33,7 +37,9 @@ class NewsData {
       });
     }
     status = json['status'];
+    bookmark = json['bookmark'];
     displayStatus = json['display_status'];
+    display_news_type = json['display_news_type'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -48,7 +54,9 @@ class NewsData {
       data['embed_urls'] = this.embedUrls.map((v) => v.toJson()).toList();
     }
     data['status'] = this.status;
+    data['bookmark'] = this.bookmark;
     data['display_status'] = this.displayStatus;
+    data['display_news_type'] = this.display_news_type;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;

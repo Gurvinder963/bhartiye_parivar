@@ -11,9 +11,10 @@ class VideoData {
   String video_duration;
   String lang;
   bool status;
+  bool bookmark;
   String displayStatus;
   String createdAt;
-  String createdBy;
+//  String createdBy;
   String updatedAt;
   Null updatedBy;
 
@@ -29,9 +30,10 @@ class VideoData {
     this.video_duration,
     this.lang,
     this.status,
+    this.bookmark,
     this.displayStatus,
     this.createdAt,
-    this.createdBy,
+   // this.createdBy,
     this.updatedAt,
     this.updatedBy});
 
@@ -48,9 +50,10 @@ class VideoData {
     video_duration = json['video_duration'];
     lang = json['lang'];
     status = json['status'];
+    bookmark = json['bookmark'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
-    createdBy = json['created_by'];
+  //  createdBy = json['created_by'];
     updatedAt = json['updated_at'];
     updatedBy = json['updated_by'];
   }
@@ -69,9 +72,10 @@ class VideoData {
     data['channel_id'] = this.channel_id;
     data['lang'] = this.lang;
     data['status'] = this.status;
+    data['bookmark'] = this.bookmark;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;
-    data['created_by'] = this.createdBy;
+   // data['created_by'] = this.createdBy;
     data['updated_at'] = this.updatedAt;
     data['updated_by'] = this.updatedBy;
     return data;

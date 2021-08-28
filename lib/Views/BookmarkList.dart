@@ -112,7 +112,7 @@ class BookmarkListPageState extends State<BookmarkListPage> {
 
   }
 
-  Future<BookListResponse> getBookmarkList(String user_Token) async {
+  Future<BookmarkListResponse> getBookmarkList(String user_Token) async {
 
     var body ={'none':'none'};
     MainRepository repository=new MainRepository();
@@ -134,6 +134,13 @@ class BookmarkListPageState extends State<BookmarkListPage> {
         orientation: Orientation.portrait);
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+            toolbarHeight: 50,
+            backgroundColor: Color(AppColors.BaseColor),
+            title: Text('BookMark', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+
+
+        ),
 
         body:ModalProgressHUD(
             inAsyncCall: _isInAsyncCall,
@@ -197,45 +204,29 @@ class BookmarkListPageState extends State<BookmarkListPage> {
             onTap: () =>
             {
 
-              if(mainData[index].contentid==1){
+              if(mainData[index].contentType==1){
 
-                videodata.id=mainData[index].id,
-                videodata.title=mainData[index].title,
-                videodata.videoCategory=mainData[index].videoCategory,
-                videodata.video_duration=mainData[index].video_duration,
-                videodata.videoUrl=mainData[index].videoUrl,
-                videodata.videoImage=mainData[index].videoImage,
-                videodata.videoSourceType=mainData[index].videoSourceType,
-                videodata.channel_id=mainData[index].channel_id,
-                videodata.publisher=mainData[index].publisher,
-                videodata.channel=mainData[index].channel,
-                videodata.createdAt=mainData[index].createdAt,
-                videodata.lang=mainData[index].lang,
+
 
 
                 Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return VideoDetailNewPage(content: videodata);
+                          return VideoDetailNewPage(content: mainData[index].video);
                         }
                     ))
               }
               else{
 
-                newsData.id=mainData[index].id,
-                newsData.title=mainData[index].title,
-                newsData.description=mainData[index].description,
-                newsData.embedUrls=mainData[index].embedUrls,
-                newsData.createdAt=mainData[index].createdAt,
-                newsData.newsType=mainData[index].newsType,
+
 
 
                 Navigator.of(context, rootNavigator: true)
                     .push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return NewsDetailPage(content: newsData);
+                          return NewsDetailPage(content: mainData[index].news);
                         }
                     ))
               }
@@ -243,9 +234,8 @@ class BookmarkListPageState extends State<BookmarkListPage> {
 
 
             },
-            child:
-            _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
-                mainData[index].thumbImage, mainData[index].publisher, mainData[index].cost.toString(),mainData[index].quantity.toString(),mainData[index].actual_cost.toString(),mainData[index].pageCount.toString(),mainData[index].lang_name));
+            child:mainData[index].contentType==1?
+            _buildBoxBook(context,index, mainData[index].id, mainData[index].video.title, mainData[index].video.videoCategory):_buildBoxBook(context,index, mainData[index].id, mainData[index].news.title, mainData[index].news.display_news_type));
 
 
 
@@ -284,9 +274,9 @@ class BookmarkListPageState extends State<BookmarkListPage> {
       },
     );
   }
-  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,String pageCount,String lang){
+  Widget _buildBoxBook(BuildContext context,int index,int id,String title,String category){
 
-    lang=lang==null?"":lang;
+
 // print("my_qty--"+qty);
     //  title= title.length>22?title=title.substring(0,22)+"...":title;
     return    SizedBox(child:Container(
@@ -307,18 +297,20 @@ class BookmarkListPageState extends State<BookmarkListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          margin: EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                          height: 140,
-                          width: 100,
+                          margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                          height: 80,
+                          width:70,
                           alignment: Alignment.center,
+                          // height: ScreenUtil().setHeight(175),
 
                           decoration: BoxDecoration(
-
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
                             image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: NetworkImage(thumbnail),
+                              image: new AssetImage("assets/thumbnail.png"),
+
+                              alignment: Alignment.center,
                             ),
+
                           ),
 
                         ),
@@ -342,7 +334,7 @@ class BookmarkListPageState extends State<BookmarkListPage> {
 
                                   Padding(
                                       padding: EdgeInsets.fromLTRB(15,7,0,0),
-                                      child: Text(publisher,   overflow: TextOverflow.ellipsis,
+                                      child: Text(category,   overflow: TextOverflow.ellipsis,
                                         maxLines: 1, style: GoogleFonts.poppins(
                                           fontSize:12.0,
                                           color: Color(0xFF000000),

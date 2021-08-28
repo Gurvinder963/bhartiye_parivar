@@ -17,6 +17,7 @@ import '../ApiResponses/VideoData.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/BookMarkSaveResponse.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -85,6 +86,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
         setState(() {
           mContent=value.data;
+          isBookMarked=mContent.bookmark;
           //   isLoading = false;
           // mainData.addAll(value.data);
 
@@ -109,7 +111,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   }
 
-  Future<AddToCartResponse> postAddBookMark(String content_type,String token,String content_id) async {
+  Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
     if (isBookMarked) {
       status = "0";
@@ -119,7 +121,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       status = "1";
     }
     print('my_token'+token);
-    var body =json.encode({"content_type": content_type, "content_id": content_id,"keyStatus": status});
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
     return repository.fetchAddBookMark(body,token);
 
@@ -159,7 +161,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
     var channel=mContent.channel==null?"My Channel":mContent.channel;
-    print(isBookMarked?"hello":"jjjjj");
+
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
@@ -338,23 +340,33 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       });
 
 
-                                      if (res.status == 1) {
+                                      String mmsg="";
+                                      if (res.bookmarkType == 1) {
 
-                                     
-                                        Fluttertoast.showToast(
-                                            msg: "Bookmark added!",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            timeInSecForIosWeb: 1,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0);
+                                        mmsg="Bookmark added!";
 
-                                 
+                                        setState(() {
+                                          isBookMarked = true;
+                                        });
+
                                       }
                                       else {
-                                       // showAlertDialogValidation(context,"Some error occured!");
+                                        mmsg="Bookmark removed!";
+                                        setState(() {
+                                          isBookMarked = false;
+                                        });
                                       }
+
+
+                                      Fluttertoast.showToast(
+                                          msg: mmsg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+
                                     });
 
                                   //  submitFavourite("1",tok,MyContentId.toString(),false);

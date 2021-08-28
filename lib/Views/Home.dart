@@ -40,6 +40,7 @@ import '../Repository/MainRepository.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
 import '../Interfaces/OnCartCount.dart';
 import '../Interfaces/OnNewsBack.dart';
+import '../Views/BookmarkList.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -308,7 +309,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
             SizedBox(
               width: 7,
             ),
-            selectedIndex==0?Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,):Container(),
+            selectedIndex==0? GestureDetector(
+    onTap: () {
+
+      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+          MaterialPageRoute(
+              builder: (BuildContext context) {
+                return BookmarkListPage();
+              }
+          ) );
+
+    },child:
+    Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,)):Container(),
             SizedBox(
               width: 7,
             ),
