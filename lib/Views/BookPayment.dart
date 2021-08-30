@@ -105,14 +105,27 @@ class BookPaymentPageState extends State<BookPaymentPage> {
       res="Payment Failed";
     }
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () {
+      print('Backbutton pressed (device or appbar button), do whatever you want.');
+      print("On bottom back clicked");
+
+      //trigger leaving and use own data
+      int count = 0;
+      Navigator.of(context).popUntil((_) => count++ >= 3);
+
+
+      //we need to return a future
+      return Future.value(false);
+    },
+    child:Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+    /*  appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text("Payment", style: GoogleFonts.poppins(fontSize: 22,color: Color(0xFFFFFFFF))),
 
-      ),
+      ),*/
       body:   ModalProgressHUD(
     inAsyncCall: _isInAsyncCall,
     // demo of some additional parameters
@@ -126,7 +139,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 140),
+            SizedBox(height: 200),
             IsPaymentSuccess? new Image(
               image: new AssetImage("assets/green_tick_pay.png"),
               width: 120,
@@ -154,7 +167,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
               ),
             ),
             SizedBox(height: 30),
-            Text(
+            IsPaymentSuccess? Text(
               'Track your order / Read your book Here',
               style: GoogleFonts.roboto(
                 fontSize: ScreenUtil().setSp(16),
@@ -163,9 +176,9 @@ class BookPaymentPageState extends State<BookPaymentPage> {
                 fontWeight: FontWeight.w500,
 
               ),
-            ),
+            ):Container(),
             SizedBox(height: 20),
-            _addBooksButton(),
+            IsPaymentSuccess? _addBooksButton():Container(),
             Spacer(),
             IsPayment?Align(
               alignment: FractionalOffset.bottomCenter,
@@ -195,7 +208,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
       )
 
-    );
+    ));
   }
   Widget _addBooksButton() {
     return InkWell(
@@ -237,6 +250,14 @@ class BookPaymentPageState extends State<BookPaymentPage> {
       ),
     );
   }
+
+  void clearCartData() async{
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+
+    Prefs.setCartCount(_prefs, "0");
+}
+
  void startPayment(){
 
    try {
@@ -256,6 +277,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
        bool isPaySuccess=false;
        if(payment_response=='TXN_SUCCESS'){
+         clearCartData();
          eventBus.fire(OnCartCount("FIND"));
          payment_response="success";
          isPaySuccess=true;
@@ -283,18 +305,48 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
 
      }).catchError((onError) {
+       print("oncatcherror");
        if (onError is PlatformException) {
          setState(() {
+           IsPayment=true;
+           IsPaymentSuccess=false;
            result = onError.message + " \n  " + onError.details.toString();
          });
        } else {
          setState(() {
+           IsPayment=true;
+           IsPaymentSuccess=false;
            result = onError.toString();
          });
        }
+
+
+      /* callOrderUpdateAPI(txnToken,"cancelled",orderId,user_Token).then((value) => {
+         print("call_update_api"),
+         setState(() {
+           _isInAsyncCall = false;
+         }),
+
+       });
+*/
+
      });
    } catch (err) {
-     result = err.message;
+     print("oncatcherrorwer");
+    // result = err.message;
+     setState(() {
+       IsPayment=true;
+       IsPaymentSuccess=false;
+       result = err.message;
+     });
+  /*   callOrderUpdateAPI(txnToken,"error",orderId,user_Token).then((value) => {
+       print("call_update_api"),
+       setState(() {
+         _isInAsyncCall = false;
+       }),
+
+     });*/
+
    }
 
 

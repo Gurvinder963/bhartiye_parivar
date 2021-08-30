@@ -8,6 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 class ViewOnlineBookPage extends StatefulWidget {
 
 
@@ -32,11 +33,15 @@ class ViewOnlineBookPageState extends State<ViewOnlineBookPage> {
 
     ]);
     super.dispose();
+     FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
-
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
 
   @override
   void initState() {
+    secureScreen();
     // TODO: implement initState
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,

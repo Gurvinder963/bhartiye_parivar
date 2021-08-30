@@ -73,7 +73,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   }
   List mainData = new List();
   bool isLoading = false;
-
+ // int mposition=0;
   String user_Token;
   @override
   void initState() {
@@ -114,6 +114,8 @@ class NewsDetailPageState extends State<NewsDetailPage> {
       ),
     );
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,7 +152,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 Container(
                     height: MediaQuery.of(context).size.height*0.80 ,
                     child:
-                    mContent.newsType==1?_buildBoxMultipleImagesList(context,mContent,mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):Container()
+                    mContent.newsType==1?  MultipleImagesPage(newsData: mContent,embedUrls:mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):Container()
 
 
 
@@ -360,100 +362,135 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   }
 
 }
+class MultipleImagesPage extends StatefulWidget {
+  NewsData newsData;
+  List<EmbedUrls> embedUrls;
+  MultipleImagesPage({Key key, this.newsData,this.embedUrls}) : super(key: key);
 
-Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
-  PageController controller1=PageController();
-
-  var newsArr=newsData.createdAt.split(" ");
-
-  return
-    Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:<Widget>[
-          Container(
-              height:  MediaQuery.of(context).size.height*0.30,
-              color: Colors.black,
-              child:
-              PageView.builder(
-                controller: controller1,
-                scrollDirection: Axis.horizontal,
-                itemCount:embedUrls.length,
-                itemBuilder: (BuildContext context, int position)
-                {
-                  print("my_pos"+position.toString());
-
-
-                  return Stack(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
-
-                          alignment: Alignment.center,
-
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new NetworkImage(embedUrls[position].url),
-
-                              alignment: Alignment.center,
-                            ),
-
-                          ),
-
-                        ),
-                        Positioned.fill(
-                            child:Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                    padding: EdgeInsets.fromLTRB(10,3,10,5),
-                                    margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                                    color:  Color(0xFF5a5a5a),
-                                    child: Text((position+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
-                                      fontSize:14.0,
-
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-
-                                    ),))
-
-
-                            )),
-
-                      ]);
-                },
-
-
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
-              fontSize: 18,fontWeight:FontWeight.w500),)),
-          Divider(
-            color: Colors.black,
-          ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
-              fontSize: 16,fontWeight:FontWeight.w500),)),
-
-          Row(
-              children:<Widget>[
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
-                    fontSize: 16,fontWeight:FontWeight.w500),)),
-                Spacer(),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("Read More >",style:  GoogleFonts.poppins(color: Colors.orange,
-                    fontSize: 16,fontWeight:FontWeight.w500),)),
-
-
-              ]
-
-          ),
-
-        ]
-    );
-
+  @override
+  _MultipleImagesPageState createState() => _MultipleImagesPageState(newsData,embedUrls);
 }
+
+class _MultipleImagesPageState extends State<MultipleImagesPage> {
+  NewsData newsData;
+  List<EmbedUrls> embedUrls;
+  int mposition=0;
+
+  _MultipleImagesPageState(NewsData mnewsData,List<EmbedUrls> membedUrls){
+    newsData=mnewsData;
+    embedUrls=membedUrls;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    PageController controller1=PageController();
+
+    var newsArr=newsData.createdAt.split(" ");
+    return Scaffold(
+
+        body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:<Widget>[
+              Stack(
+                  children: <Widget>[
+                    Container(
+                        height:  MediaQuery.of(context).size.height*0.30,
+                        color: Colors.black,
+                        child:
+                        PageView.builder(
+                          controller: controller1,
+                          scrollDirection: Axis.horizontal,
+                          itemCount:embedUrls.length,
+                          onPageChanged: (int position) {
+                            setState(() {
+                              mposition=position;
+                            });
+
+
+
+                          },
+                          itemBuilder: (BuildContext context, int position)
+                          {
+                            print("my_pos"+position.toString());
+
+
+                            return
+                              Container(
+                                margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
+
+                                alignment: Alignment.center,
+
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new NetworkImage(embedUrls[position].url),
+
+                                    alignment: Alignment.center,
+                                  ),
+
+                                ),
+
+                              );
+
+
+
+                          },
+
+
+                        )),
+                    Positioned.fill(
+                        child:Align(
+                            alignment: Alignment.bottomRight,
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(10,3,10,5),
+                                margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                                color:  Color(0xFF5a5a5a),
+                                child: Text((mposition+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
+                                  fontSize:14.0,
+
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+
+                                ),))
+
+
+                        )),
+                  ]),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
+                  fontSize: 18,fontWeight:FontWeight.w500),)),
+              Divider(
+                color: Colors.black,
+              ),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
+                  fontSize: 16,fontWeight:FontWeight.w500),)),
+
+              Row(
+                  children:<Widget>[
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
+                        fontSize: 16,fontWeight:FontWeight.w500),)),
+                    Spacer(),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("Read More >",style:  GoogleFonts.poppins(color: Colors.orange,
+                        fontSize: 16,fontWeight:FontWeight.w500),)),
+
+
+                  ]
+
+              ),
+
+            ]
+        )
+    );
+  }
+}
+
 Widget _buildBoxTweet(BuildContext context,List<EmbedUrls> embedUrls){
 
   String  sampleTweet ="""${embedUrls[0].url}""";

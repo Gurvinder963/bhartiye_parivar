@@ -37,7 +37,7 @@ class NewsMainPageState extends State<NewsMainPage> {
   bool isBookMarked=false;
   int mPagePosition=0;
   int _curr=0;
-  int mposition=0;
+ // int mposition=0;
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
     if (isBookMarked) {
@@ -109,7 +109,12 @@ if(value.data.length>0){
       ),
     );
   }
-  Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
+
+
+
+
+
+ /* Widget _buildBoxMultipleImagesList(BuildContext context,NewsData newsData,List<EmbedUrls> embedUrls){
 
 
     PageController controller1=PageController();
@@ -214,7 +219,7 @@ if(value.data.length>0){
           ]
       );
 
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -319,7 +324,7 @@ if(value.data.length>0){
                           Widget wid;
                           if(mainData[position].newsType==1){
                             wid=
-                                _buildBoxMultipleImagesList(context,mainData[position],mainData[position].embedUrls);
+                                MultipleImagesPage(newsData: mainData[position],embedUrls:mainData[position].embedUrls);
                           }
                           else if(mainData[position].newsType==2){
                             wid= _buildBoxVideo(context,mainData[position],mainData[position].embedUrls);
@@ -523,6 +528,136 @@ if(value.data.length>0){
                       ])))]);
   }
 
+}
+
+
+class MultipleImagesPage extends StatefulWidget {
+  NewsData newsData;
+  List<EmbedUrls> embedUrls;
+  MultipleImagesPage({Key key, this.newsData,this.embedUrls}) : super(key: key);
+
+  @override
+  _MultipleImagesPageState createState() => _MultipleImagesPageState(newsData,embedUrls);
+}
+
+class _MultipleImagesPageState extends State<MultipleImagesPage> {
+  NewsData newsData;
+  List<EmbedUrls> embedUrls;
+  int mposition=0;
+
+  _MultipleImagesPageState(NewsData mnewsData,List<EmbedUrls> membedUrls){
+    newsData=mnewsData;
+    embedUrls=membedUrls;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    PageController controller1=PageController();
+
+    var newsArr=newsData.createdAt.split(" ");
+    return Scaffold(
+
+      body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:<Widget>[
+            Stack(
+                children: <Widget>[
+                  Container(
+                      height:  MediaQuery.of(context).size.height*0.30,
+                      color: Colors.black,
+                      child:
+                      PageView.builder(
+                        controller: controller1,
+                        scrollDirection: Axis.horizontal,
+                        itemCount:embedUrls.length,
+                        onPageChanged: (int position) {
+                          setState(() {
+                            mposition=position;
+                          });
+
+
+
+                        },
+                        itemBuilder: (BuildContext context, int position)
+                        {
+                          print("my_pos"+position.toString());
+
+
+                          return
+                            Container(
+                              margin: EdgeInsets.fromLTRB(50.0,0.0,50.0,0.0),
+
+                              alignment: Alignment.center,
+
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new NetworkImage(embedUrls[position].url),
+
+                                  alignment: Alignment.center,
+                                ),
+
+                              ),
+
+                            );
+
+
+
+                        },
+
+
+                      )),
+                  Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                              padding: EdgeInsets.fromLTRB(10,3,10,5),
+                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                              color:  Color(0xFF5a5a5a),
+                              child: Text((mposition+1).toString()+"/"+embedUrls.length.toString(),  style: GoogleFonts.roboto(
+                                fontSize:14.0,
+
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+
+                              ),))
+
+
+                      )),
+                ]),
+            Padding(
+                padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.poppins(
+                fontSize: 18,fontWeight:FontWeight.w500),)),
+            Divider(
+              color: Colors.black,
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.description,style:  GoogleFonts.roboto(
+                fontSize: 16,fontWeight:FontWeight.w500),)),
+
+            Row(
+                children:<Widget>[
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsArr[0],style:  GoogleFonts.poppins(
+                      fontSize: 16,fontWeight:FontWeight.w500),)),
+                  Spacer(),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text("Read More >",style:  GoogleFonts.poppins(color: Colors.orange,
+                      fontSize: 16,fontWeight:FontWeight.w500),)),
+
+
+                ]
+
+            ),
+
+          ]
+      )
+    );
+  }
 }
 
 

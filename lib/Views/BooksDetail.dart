@@ -332,6 +332,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                       child:TabBar(
                         controller: _tabcontroller,
                     labelColor: Colors.black,
+
                         indicatorSize: TabBarIndicatorSize.label,
                         indicatorWeight: 2,
 
@@ -771,6 +772,27 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
             });
           });
         }
+        else if(mContent.is_printed_added_cart && mContent.is_ebook_free){
+          Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+              MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return MyCartPage();
+                  }
+              )).then((_) {
+            // This block runs when you have returned back to the 1st Page from 2nd.
+
+            getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
+
+              setState(() {
+                mContent=value.data;
+                //   isLoading = false;
+                // mainData.addAll(value.data);
+
+              })
+
+            });
+          });
+        }
         else {
           if(mContent.is_ebook_added_cart){
             Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
@@ -880,7 +902,7 @@ void addToCartAPI(String book_type_id,bool isBuyNow){
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Colors.red, Colors.red])),
+                colors: [Color(0xFFff0000), Color(0xFFff0000)])),
         child: Text(
           'BUY NOW',
           style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(16), color: Colors.white,fontWeight: FontWeight.w500),

@@ -152,12 +152,15 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
       _entryField("village"),
       SizedBox(height: 6),
       TextFormField(
+
         controller: myControllerShippingAddress,
         minLines: 5,
         maxLines: 5,
         enabled: false,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
+          fillColor: Color(0xFFc3c3c3),
+             filled: true,
           hintText: '',
           hintStyle: TextStyle(
               color: Colors.black

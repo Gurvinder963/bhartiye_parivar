@@ -55,6 +55,7 @@ class OnlineBooksPage extends StatefulWidget {
 class OnlineBooksPageState extends State<OnlineBooksPage> {
 
   List mainData = new List();
+  Set mainDataSet = new Set();
   List<String> qtyData = new List();
   bool isLoading = false;
   String _chosenValue="1";
@@ -105,9 +106,25 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
   void castList(List data)
   {
 
-/*   data.sort((a, b) => a.books_id.compareTo(b.books_id));
-
+   data.sort((a, b) => a.books_id.compareTo(b.books_id));
+  /* for (int i = 0; i < data.length; i++) {
+     mainDataSet.add(data[i]);
+   }*/
    List newdata=new List();
+
+   for (int i = 0; i < data.length; i++) {
+     bool isFound = false;
+     // check if the event name exists in noRepeat
+     for (int z = 0; z < newdata.length; z++) {
+       if (newdata[z].books_id == (data[i].books_id)) {
+         isFound = true;
+         break;
+       }
+     }
+     if (!isFound) newdata.add(data[i]);
+   }
+
+     /* List newdata=new List();
       int j = 0;
       for (int i=0; i<data.length-1; i++){
         if (data[i].books_id != data[i+1].books_id){
@@ -118,7 +135,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
       _isInAsyncCall = false;
       isLoading = false;
-      mainData.addAll(data);
+      mainData.addAll(newdata);
 
     });
 
@@ -371,7 +388,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                             flex: 1,
 
                             child:PopupMenuButton(
-                                icon: Icon(Icons.more_vert),
+                                icon: Icon(Icons.more_vert,size: 27,),
                                 onSelected: (newValue) { // add this property
 
                                   if(newValue==2){

@@ -279,6 +279,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
+
+    var tit=selectedIndex==0?Languages
+        .of(context)
+        .appName:"Books";
+
     var shouldShowBadge=int.parse(cartCount)>0?true:false;
     var mfontSize=20.0;
     if(Languages.of(context).langCode=='en'){
@@ -298,9 +303,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           elevation: 0,
           toolbarHeight: 56,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text(Languages
-              .of(context)
-              .appName, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+          title: Text(tit, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
 
           actions: <Widget>[
 
