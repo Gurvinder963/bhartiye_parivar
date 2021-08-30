@@ -244,7 +244,7 @@ if(value.data.length>0){
         actions: <Widget>[
 
           IconButton(
-              icon: isBookMarked?  Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,):  Icon(Icons.bookmark_border_outlined,size: 25,),
+              icon: isBookMarked?  Icon(Icons.bookmark_outlined,color: Colors.white,size: 28,):  Icon(Icons.bookmark_border_outlined,size: 25,),
               onPressed: () {
                 setState(() {
                   _isInAsyncCall = true;
@@ -290,7 +290,7 @@ if(value.data.length>0){
               }),
 
           SizedBox(
-            width: 20,
+            width: 5,
           ),
 
         ],
@@ -310,8 +310,9 @@ if(value.data.length>0){
     child:Column (
 
           children: [
-            Container(
-                height: MediaQuery.of(context).size.height*0.81 ,
+
+            Expanded(child:Container(
+
                 child:new PreloadPageView.builder(
                   scrollDirection: Axis.vertical,
                     itemCount:mainData.length+1,
@@ -354,31 +355,9 @@ if(value.data.length>0){
 
                     preloadPagesCount: 3,
                     controller: PreloadPageController(),
-    )
-     /*       PageView(
-
-        physics: const CustomPageViewScrollPhysics(),
-        children: <Widget>[
-
-          _buildBoxMultipleImagesList(context),
-          _buildBoxVideo(context),
-          _buildBoxTweet(context),
-          _buildBoxPotraitImage(context),
-          _buildBoxPoll(context)
-        ],
-        scrollDirection: Axis.vertical,
-
-        // reverse: true,
-        // physics: BouncingScrollPhysics(),
-        controller: controller,
-        onPageChanged: (num){
-          setState(() {
-            _curr=num;
-          });
-        },
-      )*/),
+    ))),
        SizedBox(
-              height: MediaQuery.of(context).size.height*0.08 ,
+              height: 50 ,
               child:Column ( children: <Widget>[
             Divider(
             height: 0.5,
@@ -386,7 +365,7 @@ if(value.data.length>0){
             color: Colors.black,
           ),
             Container(
-              margin:  EdgeInsets.fromLTRB(20,15,10,10),
+              margin:  EdgeInsets.fromLTRB(20,10,10,10),
               child:Row(
 
                   crossAxisAlignment: CrossAxisAlignment.center,

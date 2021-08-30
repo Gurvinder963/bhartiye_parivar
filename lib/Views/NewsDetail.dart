@@ -149,16 +149,16 @@ class NewsDetailPageState extends State<NewsDetailPage> {
     child:Column (
 
               children: [
-                Container(
-                    height: MediaQuery.of(context).size.height*0.80 ,
+                Expanded(child:Container(
+
                     child:
                     mContent.newsType==1?  MultipleImagesPage(newsData: mContent,embedUrls:mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):Container()
 
 
 
-                  ),
+                  )),
                 SizedBox(
-                    height: MediaQuery.of(context).size.height*0.09 ,
+                    height: 50 ,
                     child:Column ( children: <Widget>[
                       Divider(
                         height: 0.5,
@@ -166,7 +166,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                         color: Colors.black,
                       ),
                       Container(
-                          margin:  EdgeInsets.fromLTRB(20,15,10,10),
+                          margin:  EdgeInsets.fromLTRB(20,10,10,10),
                           child:Row(
 
                               crossAxisAlignment: CrossAxisAlignment.center,
