@@ -342,7 +342,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
                   children: <Widget>[
 
 
-                    _buildBoxItem(bookList[index].title,bookList[index].thumbImage),
+                    _buildBoxItem(bookList[index].title,bookList[index].thumbImage,bookList[index]),
 
                     SizedBox(height: 5),
                     _buildText(bookList[index].title),
@@ -370,10 +370,13 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
 
   }
-  Widget _buildBoxItem(String title,String thumbnail){
+  Widget _buildBoxItem(String title,String thumbnail, BookData bookData){
     var divwidth=MediaQuery.of(context).size.width*.20+50;
     print("my_divwidth"+divwidth.toString());
-
+    bool greenTick=false;
+    if((bookData.ebook_cost==0 && bookData.book_type_id==2)|| bookData.is_ebook_purchased || bookData.is_printed_purchased){
+      greenTick=true;
+    }
     return    Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -392,8 +395,20 @@ class BookGroupListPageState extends State<BookGroupListPage> {
             ),
           ),
 
-        )
+        ),
+        greenTick?Positioned(
+            top: 0.0,
+            right: 0.0,
+            child:
+            Image(
+              image: new AssetImage("assets/green_tick.png"),
 
+              height:  25,
+              width:  25,
+
+              fit: BoxFit.fill,
+              alignment: Alignment.center,
+            )):Container()
 
       ],
     );}

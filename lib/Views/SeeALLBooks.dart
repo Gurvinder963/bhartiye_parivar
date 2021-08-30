@@ -74,8 +74,12 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
   }
 
 
-  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher){
+  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased, int book_type_id){
 
+    bool greenTick=false;
+    if((ebookCost==0 && book_type_id==2)|| isEbookPurchased || isPrinterPurchased){
+      greenTick=true;
+    }
 
 
     return SizedBox( child:Container(
@@ -88,26 +92,43 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
         child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-        AspectRatio(
-        aspectRatio: 2 / 3,
-            child:
+              AspectRatio(
+                  aspectRatio: 2 / 3,
+                  child:
+                  Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
-              Container(
-                margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                          alignment: Alignment.center,
 
-                alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(thumbnail),
+                            ),
+                          ),
 
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(thumbnail),
-                  ),
-                ),
+                        ),
+                        greenTick?Positioned(
+                            top: 0.0,
+                            right: 0.0,
+                            child:
+                            Image(
+                              image: new AssetImage("assets/green_tick.png"),
 
-              )),
+                              height:  25,
+                              width:  25,
+
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                            )):Container()
+
+                      ])),
               Padding(
-                  padding: EdgeInsets.fromLTRB(10,4,0,0),
+                  padding: EdgeInsets.fromLTRB(0,4,0,0),
                   child:
                   Text(title,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.roboto(
@@ -117,7 +138,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
                     ),)),
 
               Padding(
-                  padding: EdgeInsets.fromLTRB(10,2,0,0),
+                  padding: EdgeInsets.fromLTRB(0,2,0,0),
                   child: Text(publisher,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.roboto(
                       fontSize:11.0,
@@ -211,7 +232,7 @@ class SeeALLBooksPageState extends State<SeeALLBooksPage> {
                                       ))
                                 },
                                 child: _buildBoxBook(context, mBookArray[index].id, mBookArray[index].title,
-                                    mBookArray[index].thumbImage, mBookArray[index].publisher));
+                                    mBookArray[index].thumbImage, mBookArray[index].publisher,mBookArray[index].ebook_cost,mBookArray[index].is_ebook_purchased,mBookArray[index].is_printed_purchased,mBookArray[index].book_type_id));
                           },
                         )))
 

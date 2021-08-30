@@ -162,7 +162,9 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
       addtoCartBgColor=Color(AppColors.ColorGreen);
     }*/
 
-
+    if(mContent.book_type_id==3 &&  mContent.is_printed_added_cart && mContent.is_ebook_free){
+      goToCartFromBuyNow=false;
+    }
 
 
     final height = MediaQuery.of(context).size.height;
@@ -321,7 +323,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
                         ]))
              ,
-
+                SizedBox(height: 10),
                 PreferredSize(
 
                   preferredSize: Size.fromHeight(50.0),
@@ -332,6 +334,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                     labelColor: Colors.black,
                         indicatorSize: TabBarIndicatorSize.label,
                         indicatorWeight: 2,
+
                         indicatorColor: Colors.orange,
                     tabs: [
                         SizedBox(

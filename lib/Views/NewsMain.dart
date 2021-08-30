@@ -239,21 +239,7 @@ if(value.data.length>0){
         actions: <Widget>[
 
           IconButton(
-              icon: isBookMarked? Image(
-                image: new AssetImage("assets/bookmark_sel.png"),
-                width: 24,
-                height:  24,
-                color: null,
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.center,
-              ): Image(
-                image: new AssetImage("assets/bookmark_unsel.png"),
-                width: 24,
-                height:  24,
-                color: null,
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.center,
-              ),
+              icon: isBookMarked?  Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,):  Icon(Icons.bookmark_border_outlined,size: 25,),
               onPressed: () {
                 setState(() {
                   _isInAsyncCall = true;

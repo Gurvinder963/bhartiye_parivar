@@ -89,13 +89,8 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
       getBooksList(user_Token).then((value) => {
 
 
-        setState(() {
+        castList(value.data)
 
-          _isInAsyncCall = false;
-          isLoading = false;
-          mainData.addAll(value.data);
-
-        })
 
 
 
@@ -107,8 +102,27 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
   }
 
-  void castList(var value)
+  void castList(List data)
   {
+
+/*   data.sort((a, b) => a.books_id.compareTo(b.books_id));
+
+   List newdata=new List();
+      int j = 0;
+      for (int i=0; i<data.length-1; i++){
+        if (data[i].books_id != data[i+1].books_id){
+          newdata.add(data[i]);
+        }
+      }*/
+    setState(() {
+
+      _isInAsyncCall = false;
+      isLoading = false;
+      mainData.addAll(data);
+
+    });
+
+
 /*    mainData.addAll(value);
     final jsonList = mainData.map((item) =>
         jsonEncode(item)).toList();
@@ -121,13 +135,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     print(result);
     mainData.clear();*/
-    setState(() {
 
-      _isInAsyncCall = false;
-      isLoading = false;
-      mainData.addAll(value.data);
-
-    });
 
   }
   Future<BookListResponse> getBooksList(String user_Token) async {

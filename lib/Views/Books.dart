@@ -115,7 +115,7 @@ class BooksPageState extends State<BooksPage> {
 
             ])),
         Padding(
-            padding: EdgeInsets.fromLTRB(10,4,0,0),
+            padding: EdgeInsets.fromLTRB(0,4,0,0),
             child:
       Text(title,   overflow: TextOverflow.ellipsis,
         maxLines: 1, style: GoogleFonts.roboto(
@@ -125,7 +125,7 @@ class BooksPageState extends State<BooksPage> {
         ),)),
 
         Padding(
-            padding: EdgeInsets.fromLTRB(10,2,0,0),
+            padding: EdgeInsets.fromLTRB(0,2,0,0),
             child: Text(publisher,   overflow: TextOverflow.ellipsis,
         maxLines: 1, style: GoogleFonts.roboto(
         fontSize:11.0,
@@ -168,7 +168,7 @@ class BooksPageState extends State<BooksPage> {
 
 
         Container(
-          height: MediaQuery.of(context).size.height*0.24,
+          height: MediaQuery.of(context).size.height*0.23,
         child:
           Row(
 
