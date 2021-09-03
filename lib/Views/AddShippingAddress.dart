@@ -436,7 +436,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
           TextField(
             onChanged: (text) {
 
-              if(text.isNotEmpty){
+             // if(text.isNotEmpty){
 
                // if(title=="full name"){
                     setState(() {
@@ -449,7 +449,7 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
 
 
 
-              }
+            //  }
 
 
             },

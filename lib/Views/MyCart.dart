@@ -474,31 +474,40 @@ class MyCartPageState extends State<MyCartPage> {
 
           if (res.status == 1) {
 
-            Fluttertoast.showToast(
+            bool isHavePrinted=false;
+            for(var i=0;i<mainData.length;i++){
+              if(mainData[i].book_type_id==1){
+
+                 isHavePrinted=true;
+                 break;
+
+              }
+            }
+           /* Fluttertoast.showToast(
                 msg: "Order generated successfully!",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 backgroundColor: Colors.black,
                 textColor: Colors.white,
-                fontSize: 16.0);
-
-            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return AddShippingAddressPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
-                    }
-                ) );
-
-
-            /*    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return BookPaymentPage(amount:amountPayable.toString(),orderId:res.data.order.id.toString());
-                    }
-                ) );
-
-*/
+                fontSize: 16.0);*/
+if(isHavePrinted) {
+  Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+      MaterialPageRoute(
+          builder: (BuildContext context) {
+            return AddShippingAddressPage(amount: amountPayable.toString(),
+                orderId: res.data.order.id.toString());
+          }
+      ));
+}else {
+  Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
+      MaterialPageRoute(
+          builder: (BuildContext context) {
+            return BookPaymentPage(amount: amountPayable.toString(),
+                orderId: res.data.order.id.toString());
+          }
+      ));
+}
           }
           else {
             showAlertDialogValidation(context,"Some error occured!");

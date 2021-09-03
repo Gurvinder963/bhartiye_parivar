@@ -180,7 +180,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
             SizedBox(height: 20),
             IsPaymentSuccess? _addBooksButton():Container(),
             Spacer(),
-            IsPayment?Align(
+          /*  IsPayment?Align(
               alignment: FractionalOffset.bottomCenter,
               child:    GestureDetector(
                   onTap: () {
@@ -202,7 +202,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
 
               )),
-            ):Container(),
+            ):Container(),*/
 
           ])):Container()
 
@@ -277,8 +277,8 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
        bool isPaySuccess=false;
        if(payment_response=='TXN_SUCCESS'){
-         clearCartData();
-         eventBus.fire(OnCartCount("FIND"));
+
+         //eventBus.fire(OnCartCount("FIND"));
          payment_response="success";
          isPaySuccess=true;
        }
@@ -295,6 +295,9 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
 
        callOrderUpdateAPI(txnToken,payment_response,orderId,user_Token).then((value) => {
+
+       clearCartData(),
+       eventBus.fire(OnCartCount("FIND")),
         print("call_update_api"),
          setState(() {
            _isInAsyncCall = false;

@@ -88,12 +88,39 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   String ipAddress;
 
   String SCREEN_NAME="Login_Screen";
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setCartCount();
+    }
+  }
+
+  setCartCount() async{
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      cartCount=prefs.getString(Prefs.CART_COUNT);
+      setState(() {});
+
+        setState(() {
+          cartCount = cartCount;
+        });
 
 
+      return (prefs.getString('token'));
+    });
 
+  }
   @override
   void initState() {
-    // TODO: implement initState
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
     _children = [
@@ -166,13 +193,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
 
-  @override
-  void dispose() {
-
-    // Clean up the controller when the widget is disposed.
-
-    super.dispose();
-  }
 
   void onItemTapped(int index) {
 

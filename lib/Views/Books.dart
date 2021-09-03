@@ -333,6 +333,8 @@ class BooksPageState extends State<BooksPage> {
                   return BooksDetailPage(content: mainData[index]);
                 }
             )).then((_) {
+
+
           // This block runs when you have returned back to the 1st Page from 2nd.
      /*     setState(() {
         mainData.clear();

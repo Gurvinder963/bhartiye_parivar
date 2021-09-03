@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoListResponse.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +18,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -38,12 +39,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
-  YoutubePlayerController _controller;
+  //YoutubePlayerController _controller;
   final List<String> _ids = [];
   TextEditingController _idController;
   TextEditingController _seekToController;
-  PlayerState _playerState;
-  YoutubeMetaData _videoMetaData;
+  //PlayerState _playerState;
+  //YoutubeMetaData _videoMetaData;
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
@@ -422,7 +423,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           color: Colors.grey,
         )),
 
-                    _buildList(),
+                 //   _buildList(),
 
 
 
@@ -447,7 +448,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     }
     else {
       var videoIdd;
-      try {
+     /* try {
         videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
         print('this is ' + videoIdd);
       } on Exception catch (exception) {
@@ -458,7 +459,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         print('catch error');
         //  videoIdd="error";
 
-      }
+      }*/
       // mqdefault
       url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
     }
@@ -812,7 +813,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
    else {
       var videoIdd;
-      try {
+     /* try {
         videoIdd = YoutubePlayer.convertUrlToId(content.videoUrl);
         print('this is ' + videoIdd);
       } on Exception catch (exception) {
@@ -823,7 +824,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         print('catch error');
         //  videoIdd="error";
 
-      }
+      }*/
        html = '''
           <iframe id="ytplayer" style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
@@ -831,7 +832,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
      ''';
 
     }
-
+   YoutubePlayerController _controller = YoutubePlayerController(
+     initialVideoId: 'CtSCypcd5A8',
+     params: YoutubePlayerParams(
+       playlist: [], // Defining custom playlist
+       startAt: Duration(seconds: 30),
+       showControls: true,
+       showFullscreenButton: true,
+     ),
+   );
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
 
@@ -876,12 +885,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                   ),
 */
-                  HtmlWidget(
+                /*  HtmlWidget(
 
                     html,
                     webView: true,
-                  )
-
+                  )*/
+                  YoutubePlayerIFrame(
+                    controller: _controller,
+                    aspectRatio: 16 / 9,
+                  ),
 
                 ],
               ),

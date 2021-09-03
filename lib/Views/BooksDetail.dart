@@ -35,7 +35,7 @@ class BooksDetailPage extends StatefulWidget {
   }
 }
 
-class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderStateMixin{
+class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderStateMixin,WidgetsBindingObserver{
   TabController _tabcontroller;
 
   YoutubePlayerController _controller;
@@ -57,9 +57,41 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
   BooksDetailPageState(BookData content){
     mContent=content;
   }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('on_resumed_called');
+    if (state == AppLifecycleState.resumed) {
+      print('on_resumed_called');
+      setCartCount();
+    }
+  }
 
+  setCartCount() async{
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      cartCount=prefs.getString(Prefs.CART_COUNT);
+      setState(() {});
+
+      setState(() {
+        cartCount = cartCount;
+      });
+
+
+      return (prefs.getString('token'));
+    });
+
+  }
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
     _tabcontroller = new TabController(length: 3, vsync: this);
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -187,7 +219,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                       }
                   )).then((_) {
                 // This block runs when you have returned back to the 1st Page from 2nd.
-
+                setCartCount();
                 getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
 
                   setState(() {
@@ -328,6 +360,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
                   preferredSize: Size.fromHeight(50.0),
                   child: Container(
+                      padding: EdgeInsets.fromLTRB(0,6,0,8),
                       color: Color(0xFF494949),
                       child:TabBar(
                         controller: _tabcontroller,
@@ -357,13 +390,13 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                     ], // list of tabs
                   )),
                 ),
-                Divider(
+             /*   Divider(
 
                   height: 6,
 
                   thickness: 6,
                   color: Color(0xFF494949),
-                ),//TabBarView(children: [ImageList(),])
+                ),*///TabBarView(children: [ImageList(),])
                 Container(
                   height: 1000.0,
                   child: TabBarView(
@@ -436,7 +469,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                 }
             )).then((_) {
           // This block runs when you have returned back to the 1st Page from 2nd.
-
+          setCartCount();
           getBooksListDetail(user_Token,mContent.id.toString()).then((value) => {
 
             setState(() {
@@ -466,11 +499,11 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
           }
           else{*/
-            if(mContent.is_printed_purchased){
+           /* if(mContent.is_printed_purchased){
               addToCartAPI("2", false);
-            }
+            }*/
 
-            else if(mContent.is_ebook_purchased){
+             if(mContent.is_ebook_purchased){
               addToCartAPI("1", false);
             }
             else{
