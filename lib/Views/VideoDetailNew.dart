@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoListResponse.dart';
-//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +18,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -35,16 +34,16 @@ class VideoDetailNewPage extends StatefulWidget {
 
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   bool _isInAsyncCall = false;
-  var marginPixel=25;
+  var marginPixel=0;
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
-  //YoutubePlayerController _controller;
+  YoutubePlayerController _controller;
   final List<String> _ids = [];
   TextEditingController _idController;
   TextEditingController _seekToController;
-  //PlayerState _playerState;
-  //YoutubeMetaData _videoMetaData;
+  PlayerState _playerState;
+  YoutubeMetaData _videoMetaData;
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
@@ -76,7 +75,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
-       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
       if (!isLoading) {
         setState(() {
@@ -154,11 +153,11 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     if(!isPortrait){
-      marginPixel=25;
+      marginPixel=0;
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     }
     else{
-      marginPixel=25;
+      marginPixel=0;
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
     var channel=mContent.channel==null?"My Channel":mContent.channel;
@@ -167,23 +166,23 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
     return  Scaffold(
-          appBar: isPortrait?AppBar(
-              toolbarHeight: 50,
-            backgroundColor: Color(AppColors.BaseColor),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () =>
-                  Navigator.of(context, rootNavigator: true).pop(context),
-            ),
-            title: Text(AppStrings.PlayingVideo),
-          ):null,
+      appBar: isPortrait?AppBar(
+        toolbarHeight: 50,
+        backgroundColor: Color(AppColors.BaseColor),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>
+              Navigator.of(context, rootNavigator: true).pop(context),
+        ),
+        title: Text(AppStrings.PlayingVideo),
+      ):null,
 
-          body: ModalProgressHUD(
-    inAsyncCall: _isInAsyncCall,
-    // demo of some additional parameters
-    opacity: 0.01,
-    progressIndicator: CircularProgressIndicator(),
-    child: Container(
+      body: ModalProgressHUD(
+          inAsyncCall: _isInAsyncCall,
+          // demo of some additional parameters
+          opacity: 0.01,
+          progressIndicator: CircularProgressIndicator(),
+          child: Container(
 
               child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,188 +190,188 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                   children: <Widget>[
                     _buildBoxVideo(context,mContent),
-              Expanded(
-                  child:
-              ListView( // parent ListView
-                  children: <Widget>[
-                    Container(
-                        margin:  EdgeInsets.fromLTRB(10,0,10,0),
-                        child:Row(
-
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                    Expanded(
+                        child:
+                        ListView( // parent ListView
                             children: <Widget>[
+                              Container(
+                                  margin:  EdgeInsets.fromLTRB(10,0,10,0),
+                                  child:Row(
 
-                              new Image(
-                                image: new AssetImage("assets/avatar.png"),
-                                width: 42,
-                                height:  42,
-                                color: null,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),
-                              SizedBox(height: 5,width: 8,),
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
 
-                              new Expanded(
-                                  flex: 7,
-                                  child:Container(
+                                        new Image(
+                                          image: new AssetImage("assets/avatar.png"),
+                                          width: 42,
+                                          height:  42,
+                                          color: null,
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(height: 5,width: 8,),
 
-                                      child:Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            SizedBox(height: 5),
-                                            Text(mContent.title,
+                                        new Expanded(
+                                            flex: 7,
+                                            child:Container(
 
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                              style: GoogleFonts.roboto(
-                                                fontSize:15.0,
-
-                                                color: Color(0xFF000000),
-                                                fontWeight: FontWeight.w500,
-
-                                              ),),
-                                            Container(
-                                                margin:  EdgeInsets.fromLTRB(0,5,10,0),
-                                                child:Row(
-
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                child:Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
-                                                      Text(channel,   overflow: TextOverflow.ellipsis,
-                                                        maxLines: 1, style: GoogleFonts.roboto(
-                                                          fontSize:12.0,
-                                                          color: Color(0xFF5a5a5a),
+                                                      SizedBox(height: 5),
+                                                      Text(mContent.title,
+
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 2,
+                                                        style: GoogleFonts.roboto(
+                                                          fontSize:15.0,
+
+                                                          color: Color(0xFF000000),
+                                                          fontWeight: FontWeight.w500,
 
                                                         ),),
-
-
-                                                      SizedBox(width: 10),
-
                                                       Container(
-                                                        width: 8,
-                                                        height: 8,
+                                                          margin:  EdgeInsets.fromLTRB(0,5,10,0),
+                                                          child:Row(
 
-                                                        decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: Color(0xFF5a5a5a)),
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text(formatted,   overflow: TextOverflow.ellipsis,
-                                                        maxLines: 1, style: GoogleFonts.roboto(
-                                                          fontSize:12.0,
-                                                          color: Color(0xFF5a5a5a),
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: <Widget>[
+                                                                Text(channel,   overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1, style: GoogleFonts.roboto(
+                                                                    fontSize:12.0,
+                                                                    color: Color(0xFF5a5a5a),
 
-                                                        ),),
-                                                      SizedBox(width: 10),
-                                                    ])),
+                                                                  ),),
 
 
+                                                                SizedBox(width: 10),
 
-                                          ]))),
-                              /*  new Expanded(
+                                                                Container(
+                                                                  width: 8,
+                                                                  height: 8,
+
+                                                                  decoration: BoxDecoration(
+                                                                      shape: BoxShape.circle,
+                                                                      color: Color(0xFF5a5a5a)),
+                                                                ),
+                                                                SizedBox(width: 10),
+                                                                Text(formatted,   overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1, style: GoogleFonts.roboto(
+                                                                    fontSize:12.0,
+                                                                    color: Color(0xFF5a5a5a),
+
+                                                                  ),),
+                                                                SizedBox(width: 10),
+                                                              ])),
+
+
+
+                                                    ]))),
+                                        /*  new Expanded(
               flex: 1,
 
               child:Icon(Icons.more_vert)
           )
 */
 
-                            ])),
+                                      ])),
 
-                    Container(
-                        margin:  EdgeInsets.fromLTRB(20,15,10,0),
-                        child:Row(
+                              Container(
+                                  margin:  EdgeInsets.fromLTRB(20,15,10,0),
+                                  child:Row(
 
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(width: 5,),
-                              Image(
-                                image: new AssetImage("assets/like_unsel.png"),
-                                width: 24,
-                                height:  24,
-                                color: null,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),
-                              SizedBox(width: 17,),
-                              Image(
-                                image: new AssetImage("assets/dislike_unsel.png"),
-                                width: 24,
-                                height:  24,
-                                color: null,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),
-                              SizedBox(width: 17,),
-                              Icon(Icons.report_outlined,size: 28,color:Colors.black,),
-                              SizedBox(width: 17,),
-                              Image(
-                                image: new AssetImage("assets/share.png"),
-                                width: 23,
-                                height:  23,
-                                color:Colors.black,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),
-                              SizedBox(width: 17,),
-                              IconButton(
-                                  icon: isBookMarked? Image(
-                                    image: new AssetImage("assets/bookmark_sel.png"),
-                                    width: 24,
-                                    height:  24,
-                                    color: null,
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.center,
-                                  ): Image(
-                                    image: new AssetImage("assets/bookmark_unsel.png"),
-                                    width: 24,
-                                    height:  24,
-                                    color: null,
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.center,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isInAsyncCall = true;
-                                    });
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(width: 5,),
+                                        Image(
+                                          image: new AssetImage("assets/like_unsel.png"),
+                                          width: 24,
+                                          height:  24,
+                                          color: null,
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(width: 17,),
+                                        Image(
+                                          image: new AssetImage("assets/dislike_unsel.png"),
+                                          width: 24,
+                                          height:  24,
+                                          color: null,
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(width: 17,),
+                                        Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+                                        SizedBox(width: 17,),
+                                        Image(
+                                          image: new AssetImage("assets/share.png"),
+                                          width: 23,
+                                          height:  23,
+                                          color:Colors.black,
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(width: 17,),
+                                        IconButton(
+                                            icon: isBookMarked? Image(
+                                              image: new AssetImage("assets/bookmark_sel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ): Image(
+                                              image: new AssetImage("assets/bookmark_unsel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                _isInAsyncCall = true;
+                                              });
 
-                                    postAddBookMark("1",user_Token,mContent.id.toString())
-                                        .then((res) async {
-                                      setState(() {
-                                        _isInAsyncCall = false;
-                                      });
-
-
-                                      String mmsg="";
-                                      if (res.bookmarkType == 1) {
-
-                                        mmsg="Bookmark added!";
-
-                                        setState(() {
-                                          isBookMarked = true;
-                                        });
-
-                                      }
-                                      else {
-                                        mmsg="Bookmark removed!";
-                                        setState(() {
-                                          isBookMarked = false;
-                                        });
-                                      }
+                                              postAddBookMark("1",user_Token,mContent.id.toString())
+                                                  .then((res) async {
+                                                setState(() {
+                                                  _isInAsyncCall = false;
+                                                });
 
 
-                                      Fluttertoast.showToast(
-                                          msg: mmsg,
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          timeInSecForIosWeb: 1,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
+                                                String mmsg="";
+                                                if (res.bookmarkType == 1) {
 
-                                    });
+                                                  mmsg="Bookmark added!";
 
-                                  //  submitFavourite("1",tok,MyContentId.toString(),false);
-                                  }),
-                            /*  Image(
+                                                  setState(() {
+                                                    isBookMarked = true;
+                                                  });
+
+                                                }
+                                                else {
+                                                  mmsg="Bookmark removed!";
+                                                  setState(() {
+                                                    isBookMarked = false;
+                                                  });
+                                                }
+
+
+                                                Fluttertoast.showToast(
+                                                    msg: mmsg,
+                                                    toastLength: Toast.LENGTH_SHORT,
+                                                    gravity: ToastGravity.BOTTOM,
+                                                    timeInSecForIosWeb: 1,
+                                                    backgroundColor: Colors.black,
+                                                    textColor: Colors.white,
+                                                    fontSize: 16.0);
+
+                                              });
+
+                                              //  submitFavourite("1",tok,MyContentId.toString(),false);
+                                            }),
+                                        /*  Image(
                                 image: new AssetImage("assets/bookmark_unsel.png"),
                                 width: 24,
                                 height:  24,
@@ -380,58 +379,58 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.center,
                               ),*/
-                            //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
-                              Expanded( child:Align(
-                                alignment: Alignment.centerRight,
-                                child:Text("SUBSCRIBE \nNOTIFICATIONS",
-                                textAlign: TextAlign.center,
+                                        //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
+                                        Expanded( child:Align(
+                                            alignment: Alignment.centerRight,
+                                            child:Text("SUBSCRIBE \nNOTIFICATIONS",
+                                              textAlign: TextAlign.center,
 
 
-                                style: GoogleFonts.roboto(
-                                  fontSize:14.0,
+                                              style: GoogleFonts.roboto(
+                                                fontSize:14.0,
 
-                                  color: Color(AppColors.BaseColor),
-                                  fontWeight: FontWeight.w600,
+                                                color: Color(AppColors.BaseColor),
+                                                fontWeight: FontWeight.w600,
 
-                                ),))),  SizedBox(width: 5,),
-                            ]))
-                    ,  Padding(
-                        padding: EdgeInsets.fromLTRB(10,7,10,3),
-                        child:
-                        Divider(
-                          color: Colors.grey,
-                        )),
+                                              ),))),  SizedBox(width: 5,),
+                                      ]))
+                              ,  Padding(
+                                  padding: EdgeInsets.fromLTRB(10,7,10,3),
+                                  child:
+                                  Divider(
+                                    color: Colors.grey,
+                                  )),
 
-                          Container(
-    margin:  EdgeInsets.fromLTRB(20,0,10,0),
-    child:Row(
+                              Container(
+                                  margin:  EdgeInsets.fromLTRB(20,0,10,0),
+                                  child:Row(
 
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
 
- _joinButton(),
-      SizedBox(width: 30,),
-      _DonateButton()
-
-
-    ]))
-,
-               Padding(
-          padding: EdgeInsets.fromLTRB(10,3,10,7),
-        child:
-        Divider(
-          color: Colors.grey,
-        )),
-
-                 //   _buildList(),
+                                        _joinButton(),
+                                        SizedBox(width: 30,),
+                                        _DonateButton()
 
 
+                                      ]))
+                              ,
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(10,3,10,7),
+                                  child:
+                                  Divider(
+                                    color: Colors.grey,
+                                  )),
 
-                  ]))])
+                              _buildList(),
+
+
+
+                            ]))])
 
           )),
 
-        );
+    );
   }
   Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
 
@@ -448,7 +447,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     }
     else {
       var videoIdd;
-     /* try {
+      try {
         videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
         print('this is ' + videoIdd);
       } on Exception catch (exception) {
@@ -459,7 +458,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         print('catch error');
         //  videoIdd="error";
 
-      }*/
+      }
       // mqdefault
       url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
     }
@@ -775,7 +774,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     );
   }
   Widget _buildBoxVideo(BuildContext context,VideoData content){
-   var channel=content.channel==null?"My Channel":content.channel;
+    var channel=content.channel==null?"My Channel":content.channel;
     final width = MediaQuery.of(context).size.width;
 
     String html;
@@ -783,27 +782,30 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     //<iframe src="http://instagram.com/p/a1wDZKopa2/embed" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
 
-   if(content.videoSourceType=='instagram'){
-     html = '''
+    if(content.videoSourceType=='instagram'){
+      html = '''
           <iframe src="http://instagram.com/p/CSgceH8nTFxjUMBDYnzT97db-ei_KY7fErctX40/embed" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
      ''';
 
-   }
+    }
 
 
     else if(content.videoSourceType=='facebook'){
       html = '''
-           <iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" width="100%" height="100%"
+          <div class="videoWrapper"><iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" width="100%" height="100%"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe>
+            allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe></div>
      ''';
+
+
+
 
     }
 
     else if(content.videoSourceType=='dailymotion'){
 
 
-       html = '''
+      html = '''
            <iframe src='${content.videoUrl}?quality=240&info=0&logo=0' allowFullScreen></iframe>
 
      ''';
@@ -811,9 +813,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     }
 
-   else {
+    else {
       var videoIdd;
-     /* try {
+      try {
         videoIdd = YoutubePlayer.convertUrlToId(content.videoUrl);
         print('this is ' + videoIdd);
       } on Exception catch (exception) {
@@ -824,23 +826,56 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         print('catch error');
         //  videoIdd="error";
 
-      }*/
-       html = '''
-          <iframe id="ytplayer" style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" type="text/html" width="100%" height="100%"
+      }
+     html = '''
+          <div style="position:relative;padding-bottom:56.25%;">
+          <iframe id="ytplayer" style="width:100%;height:100%;position:absolute;left:0px;top:0px;" type="text/html" width="100%" height="100%"
   src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
-  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
      ''';
 
+   /*   html = """<!DOCTYPE html>
+          <html>
+            <head>
+            <style>
+            body {
+              overflow: hidden; 
+            }
+        .embed-youtube {
+            position: relative;
+            padding-bottom: 56px; 
+            padding-top: 20px;
+            height: 0;
+            overflow: hidden;
+        }
+
+        
+        .embed-youtube iframe {
+            border: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+ 
+        </style>
+
+        <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          <meta http-equiv="X-UA-Compatible" content="ie=edge">
+           </head>
+          <body bgcolor="#121212">                                    
+        <div class="embed-youtube">
+     <iframe id="ytplayer" type="text/html" style ="padding-bottom: 65px;position: relative; padding-top: 0px;height: 0;
+            overflow: hidden;"; 
+  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
+  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+          </body>                                    
+        </html>
+  """;*/
     }
-   YoutubePlayerController _controller = YoutubePlayerController(
-     initialVideoId: 'CtSCypcd5A8',
-     params: YoutubePlayerParams(
-       playlist: [], // Defining custom playlist
-       startAt: Duration(seconds: 30),
-       showControls: true,
-       showFullscreenButton: true,
-     ),
-   );
+
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
 
@@ -851,7 +886,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                 children: <Widget>[
 
-                /*  Container(
+                  /*  Container(
                     margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
                     alignment: Alignment.center,
@@ -885,15 +920,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                   ),
 */
-                /*  HtmlWidget(
+                  HtmlWidget(
 
-                    html,
-                    webView: true,
-                  )*/
-                  YoutubePlayerIFrame(
-                    controller: _controller,
-                    aspectRatio: 16 / 9,
-                  ),
+                        html,
+                        webView: true,
+                      )
+
 
                 ],
               ),

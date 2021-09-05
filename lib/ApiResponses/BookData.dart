@@ -1,6 +1,7 @@
 class BookData {
   int id;
   int book_type_id;
+  int content_type;
   int books_id;
   String title;
   String description;
@@ -32,6 +33,7 @@ class BookData {
   BookData(
       {this.id,
         this.book_type_id,
+        this.content_type,
         this.title,
         this.books_id,
         this.description,
@@ -63,6 +65,7 @@ class BookData {
   BookData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     book_type_id = json['book_type_id'];
+    content_type = json['content_type'];
     books_id = json['books_id'];
     title = json['title'];
     description = json['description'];
@@ -98,6 +101,7 @@ class BookData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['book_type_id'] = this.book_type_id;
+    data['content_type'] = this.content_type;
     data['books_id'] = this.books_id;
     data['title'] = this.title;
     data['description'] = this.description;

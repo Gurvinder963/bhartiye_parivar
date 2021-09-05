@@ -1,6 +1,7 @@
 
 class NewsData {
   int id;
+  int content_type;
   String title;
   int newsType;
   String description;
@@ -14,6 +15,7 @@ class NewsData {
 
   NewsData(
       {this.id,
+      this.content_type,
         this.title,
         this.newsType,
         this.description,
@@ -27,6 +29,7 @@ class NewsData {
 
   NewsData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    content_type = json['content_type'];
     title = json['title'];
     newsType = json['news_type'];
     description = json['description'];
@@ -47,6 +50,7 @@ class NewsData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['content_type'] = this.content_type;
     data['title'] = this.title;
     data['news_type'] = this.newsType;
     data['description'] = this.description;

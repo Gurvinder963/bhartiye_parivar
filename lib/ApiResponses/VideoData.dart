@@ -8,6 +8,7 @@ class VideoData {
   String publisher;
   String channel;
   int channel_id;
+  int content_type;
   String video_duration;
   String lang;
   bool status;
@@ -27,6 +28,7 @@ class VideoData {
     this.publisher,
     this.channel,
     this.channel_id,
+    this.content_type,
     this.video_duration,
     this.lang,
     this.status,
@@ -47,6 +49,7 @@ class VideoData {
     publisher = json['publisher'];
     channel = json['channel'];
     channel_id = json['channel_id'];
+    content_type = json['content_type'];
     video_duration = json['video_duration'];
     lang = json['lang'];
     status = json['status'];
@@ -70,6 +73,7 @@ class VideoData {
     data['publisher'] = this.publisher;
     data['channel'] = this.channel;
     data['channel_id'] = this.channel_id;
+    data['content_type'] = this.content_type;
     data['lang'] = this.lang;
     data['status'] = this.status;
     data['bookmark'] = this.bookmark;

@@ -436,11 +436,19 @@ class AddShippingAddressPageState extends State<AddShippingAddressPage> {
           TextField(
             onChanged: (text) {
 
+              var pin="";
+              var phone="";
+              if(myControllerPincode.text.isNotEmpty){
+                pin="Pin - "+myControllerPincode.text;
+              }
+              if(myControllerPhone.text.isNotEmpty){
+                phone="Phone - "+myControllerPhone.text;
+              }
              // if(text.isNotEmpty){
 
                // if(title=="full name"){
                     setState(() {
-                     shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+"Village "+myControllerVillage.text+", "+myControllerTehsil.text+"\n"+ myControllerCity.text+", "+myControllerState.text+"\n"+"Pin - "+myControllerPincode.text+"  Phone - "+myControllerPhone.text;
+                     shpAddress = myControllerName.text+"\n"+myControllerBuilding.text+"\n"+myControllerVillage.text+" "+myControllerTehsil.text+"\n"+ myControllerCity.text+" "+myControllerState.text+"\n"+pin+" "+phone;
                      myControllerShippingAddress.text=shpAddress;
                     });
 

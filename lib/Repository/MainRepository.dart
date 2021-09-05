@@ -18,6 +18,7 @@ import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/NewsDetailResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
 import '../ApiResponses/BookmarkResponse.dart';
+import '../ApiResponses/SearchResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -161,4 +162,9 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/bookmarks",body,token);
     return BookmarkListResponse.fromJson(response);
   }
+  Future<SearchResponse> fetchSearchData(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/search",body,token);
+    return SearchResponse.fromJson(response);
+  }
+
 }
