@@ -1,4 +1,4 @@
-package com.bhartiyeparivar.bhartiye_parivar
+package com.bhartiyeparivar
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

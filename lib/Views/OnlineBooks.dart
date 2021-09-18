@@ -23,7 +23,11 @@ import '../ApiResponses/OrderResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'privacyScreen.dart';
-
+import 'package:share/share.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 class ItemData {
 
   String book_id;
@@ -64,6 +68,35 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
 
   String USER_ID;
+
+  _onShare(BuildContext context,String title,String thumbnail,String publisher) async {
+    // A builder is used to retrieve the context immediately
+    // surrounding the ElevatedButton.
+    //
+    // The context's `findRenderObject` returns the first
+    // RenderObject in its descendent tree when it's not
+    // a RenderObjectWidget. The ElevatedButton's RenderObject
+    // has its position and size after it's built.
+    // final RenderBox box = context.findRenderObject() as RenderBox;
+    var url = thumbnail;
+    var response = await get(url);
+    final documentDirectory = (await getExternalStorageDirectory()).path;
+    File imgFile = new File('$documentDirectory/flutter.png');
+    imgFile.writeAsBytesSync(response.bodyBytes);
+    List<String> imagePaths = [];
+    imagePaths.add('$documentDirectory/flutter.png');
+
+    if (imagePaths.isNotEmpty) {
+      await Share.shareFiles(imagePaths,
+        text: Constants.AppName+" - Hey checkout this book"+title,
+        subject: publisher,
+      );
+    } else {
+      await Share.share(title,
+        subject: publisher,
+      );
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -106,25 +139,25 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
   void castList(List data)
   {
 
-   data.sort((a, b) => a.books_id.compareTo(b.books_id));
-  /* for (int i = 0; i < data.length; i++) {
+   // data.sort((a, b) => a.books_id.compareTo(b.books_id));
+    /* for (int i = 0; i < data.length; i++) {
      mainDataSet.add(data[i]);
    }*/
-   List newdata=new List();
+/*    List newdata=new List();
 
-   for (int i = 0; i < data.length; i++) {
-     bool isFound = false;
-     // check if the event name exists in noRepeat
-     for (int z = 0; z < newdata.length; z++) {
-       if (newdata[z].books_id == (data[i].books_id)) {
-         isFound = true;
-         break;
-       }
-     }
-     if (!isFound) newdata.add(data[i]);
-   }
+    for (int i = 0; i < data.length; i++) {
+      bool isFound = false;
+      // check if the event name exists in noRepeat
+      for (int z = 0; z < newdata.length; z++) {
+        if (newdata[z].books_id == (data[i].books_id)) {
+          isFound = true;
+          break;
+        }
+      }
+      if (!isFound) newdata.add(data[i]);
+    }*/
 
-     /* List newdata=new List();
+    /* List newdata=new List();
       int j = 0;
       for (int i=0; i<data.length-1; i++){
         if (data[i].books_id != data[i+1].books_id){
@@ -135,7 +168,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
       _isInAsyncCall = false;
       isLoading = false;
-      mainData.addAll(newdata);
+      mainData.addAll(data);
 
     });
 
@@ -189,7 +222,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
                 mainData.length>0?
 
-                    _buildList() :Container(
+                _buildList() :Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child:_isInAsyncCall?Container():Column(
@@ -246,13 +279,13 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
             onTap: () =>
             {
 
-                Navigator.of(context, rootNavigator: true)
-                    .push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return ViewOnlineBookPage();
-                        }
-                    ))
+              Navigator.of(context, rootNavigator: true)
+                  .push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return ViewOnlineBookPage();
+                      }
+                  ))
             },
             child:
             _buildBoxBook(context,index, mainData[index].id, mainData[index].title,
@@ -307,10 +340,10 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
 
     lang=lang==null?"":lang;
 // print("my_qty--"+qty);
-  //  title= title.length>22?title=title.substring(0,22)+"...":title;
+    //  title= title.length>22?title=title.substring(0,22)+"...":title;
     return    SizedBox(child:Container(
         margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
-      //  height: 170,
+        //  height: 170,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
 
@@ -327,7 +360,7 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                          height: 140,
+                          height: 150,
                           width: 100,
                           alignment: Alignment.center,
 
@@ -341,8 +374,8 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                           ),
 
                         ),
-        new Expanded(
-            flex: 7, child: Container(
+                        new Expanded(
+                            flex: 7, child: Container(
 
                             child:Column(
 
@@ -391,7 +424,15 @@ class OnlineBooksPageState extends State<OnlineBooksPage> {
                                 icon: Icon(Icons.more_vert,size: 27,),
                                 onSelected: (newValue) { // add this property
 
-                                  if(newValue==2){
+                                  if(newValue==1){
+
+                                    _onShare(context,title,thumbnail,publisher);
+
+
+
+                                  }
+
+                                  else if(newValue==2){
 
                                     showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item ?",id.toString(),index);
 

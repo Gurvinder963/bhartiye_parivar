@@ -103,7 +103,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
 
       return (prefs.getString('token'));
     });
-    _prepare();
+  //  _prepare();
   }
 
 
@@ -210,7 +210,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
                     alignment: Alignment.center,
                   ),
                   Text(
-                    'You have not any order yet' ,
+                    'You have not any ordered anything yet' ,
                     style: GoogleFonts.poppins(
                       fontSize: ScreenUtil().setSp(16),
                       letterSpacing: 1.2,
@@ -454,6 +454,7 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
                         padding: EdgeInsets.fromLTRB(10,8,10,0),
                         child: GestureDetector(
                             onTap: () {
+
                             _requestDownload(orderId,id.toString());
                              // _prepare();
                             },child: Container(
@@ -507,6 +508,15 @@ class TrackOrderPageState extends State<TrackOrderPage>  {
             ]))));
   }
   void _requestDownload(String orderid,String id) async {
+
+    _permissionReady = await _checkPermission();
+
+
+    if (_permissionReady) {
+      print("muuu");
+      await _prepareSaveDir();
+    }
+
      final taskId = await FlutterDownloader.enqueue(
         url: "http://bankjaal.in/public/api/v1/invoice?order_id="+id,
         headers: {"auth": "test_for_sql_encoding"},

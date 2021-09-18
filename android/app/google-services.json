@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "573074605695",
+    "project_id": "bhartiyepariwar",
+    "storage_bucket": "bhartiyepariwar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573074605695:android:b452941f0660f5af0a614a",
+        "android_client_info": {
+          "package_name": "com.bhartiyeparivar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573074605695-l3qsn4k1n6ie14lm5dldrtlk90jkkc0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh_XZijmX8NCoH_btwCq2fHiGQ50sA21s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573074605695-l3qsn4k1n6ie14lm5dldrtlk90jkkc0d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,6 +14,7 @@ class BookData {
 
   int pageCount;
   String url;
+  String embed_url;
   List images;
   String publisher;
   String langCode;
@@ -28,7 +29,7 @@ class BookData {
   String createdAt;
  // String createdBy;
   String updatedAt;
-  Null updatedBy;
+  String updatedBy;
 
   BookData(
       {this.id,
@@ -46,6 +47,7 @@ class BookData {
 
         this.pageCount,
         this.url,
+        this.embed_url,
        this.images,
         this.publisher,
         this.langCode,
@@ -80,6 +82,7 @@ class BookData {
 
     pageCount = json['page_count'];
     url = json['url'];
+    embed_url = json['embed_url'];
     images = json['images'];
     publisher = json['publisher'];
     langCode = json['lang_code'];
@@ -115,6 +118,7 @@ class BookData {
 
     data['page_count'] = this.pageCount;
     data['url'] = this.url;
+    data['embed_url'] = this.embed_url;
   data['images'] = this.images;
     data['publisher'] = this.publisher;
     data['lang_code'] = this.langCode;

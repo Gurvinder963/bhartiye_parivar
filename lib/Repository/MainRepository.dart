@@ -19,6 +19,7 @@ import '../ApiResponses/NewsDetailResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
 import '../ApiResponses/BookmarkResponse.dart';
 import '../ApiResponses/SearchResponse.dart';
+import '../ApiResponses/NotificationListResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -167,4 +168,12 @@ class MainRepository {
     return SearchResponse.fromJson(response);
   }
 
+  Future<BookmarkListResponse> fetchNotificationData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/notification-list",body,token);
+    return BookmarkListResponse.fromJson(response);
+  }
+  Future<AddToCartResponse> savePollAnswers(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/save-answer",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }

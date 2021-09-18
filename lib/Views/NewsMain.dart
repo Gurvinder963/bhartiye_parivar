@@ -222,7 +222,7 @@ if(value.data.length>0){
   }*/
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return /*WillPopScope(
         onWillPop: () {
       print('Backbutton pressed (device or appbar button), do whatever you want.');
       print("On bottom back clicked");
@@ -235,7 +235,7 @@ if(value.data.length>0){
       //we need to return a future
       return Future.value(false);
     },
-    child:Scaffold(
+    child:*/Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 50,
@@ -299,7 +299,8 @@ if(value.data.length>0){
             onPressed: () => {
               print("On tap back clicked"),
             eventBus1.fire(OnNewsBack("FIND")),
-              Navigator.of(context).pop()},
+            //  Navigator.of(context).pop()
+            },
           )
       ),
       body:  ModalProgressHUD(
@@ -339,7 +340,9 @@ if(value.data.length>0){
                           else if(mainData[position].newsType==5){
                             wid=  _buildBoxPotraitImage(context,mainData[position].embedUrls);
                           }
-
+                          else if(mainData[position].newsType==6){
+                            wid=  _buildBoxPoll(context,mainData[position]);
+                          }
 
                           return wid;
                         }},
@@ -416,14 +419,88 @@ if(value.data.length>0){
 
       ])),
 
-    ));
+    );
   }
   setSelectedRadioTile(int val) {
     setState(() {
       selectedRadioTile = val;
     });
   }
-  Widget _buildBoxPoll(BuildContext context){
+  Future<AddToCartResponse> addPollAnsersAPI(String NewsId,List answers) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"news_id":NewsId,"answer":answers});
+    MainRepository repository=new MainRepository();
+
+
+
+      return repository.savePollAnswers(body,user_Token);
+
+
+  }
+
+  Widget _buildPollList(BuildContext context,String newsId,List<Answers> answers) {
+
+    return ListView.builder(
+      padding: EdgeInsets.all(0.0),
+      itemCount: answers.length , // Add one more item for progress indicator
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        /* if (index == mainData.length) {
+          return _buildProgressIndicator();
+        } else {*/
+        return GestureDetector(
+            onTap: () =>
+            {
+
+
+            },
+            child:  Stack(
+                children:<Widget>[
+                  LinearPercentIndicator(
+                    leading: new Text(""),
+                    trailing: new Text(""),
+                    lineHeight: 50.0,
+                    linearStrokeCap: LinearStrokeCap.butt,
+                    percent: 0.5,
+                    backgroundColor: Colors.grey,
+                    progressColor: Colors.lightGreen,
+                  ),
+
+                  RadioListTile(
+                    value: index+1,
+                    groupValue: selectedRadioTile,
+                    title: Text(answers[index].url),
+
+                    onChanged: (val) {
+                      print("Radio Tile pressed $val");
+                      setSelectedRadioTile(val);
+                      print(answers[index].url);
+
+                      List answerList = new List();
+                      answerList.add(answers[index].url);
+
+                      addPollAnsersAPI(newsId,answerList);
+
+                    },
+                    activeColor: Colors.black,
+                    secondary:  Text("55%"),
+
+                    selected: false,
+                  )]),);
+
+
+
+      }
+      // }
+      ,
+
+    );
+  }
+
+  Widget _buildBoxPoll(BuildContext context,NewsData newsData){
 
 
     String user = "king@mail.com";
@@ -438,73 +515,16 @@ if(value.data.length>0){
         crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("Bharat kya match jeet paega Bharat kya match jeet paega paega Bharat kya match jeet paega ?",style:  GoogleFonts.roboto(
+              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.roboto(
               fontSize: 16,fontWeight:FontWeight.w500),)),
           Padding(
               padding: const EdgeInsets.all(8.0),
               child:SizedBox(
                   height: 450,
-                  child:ListView(
-
-                      children:<Widget>[
-
-                        Stack(
-                            children:<Widget>[
-                              LinearPercentIndicator(
-                                leading: new Text(""),
-                                trailing: new Text(""),
-                                lineHeight: 50.0,
-                                linearStrokeCap: LinearStrokeCap.butt,
-                                percent: 0.5,
-                                backgroundColor: Colors.grey,
-                                progressColor: Colors.lightGreen,
-                              ),
-
-                              RadioListTile(
-                                value: 1,
-                                groupValue: selectedRadioTile,
-                                title: Text("Yes"),
-
-                                onChanged: (val) {
-                                  print("Radio Tile pressed $val");
-                                  setSelectedRadioTile(val);
-                                },
-                                activeColor: Colors.black,
-                                secondary:  Text("55%"),
-
-                                selected: true,
-                              )]),
-                        RadioListTile(
-                          value: 2,
-                          groupValue: selectedRadioTile,
-                          title: Text("No"),
-
-                          onChanged: (val) {
-                            print("Radio Tile pressed $val");
-                            setSelectedRadioTile(val);
-                          },
-                          activeColor: Colors.black,
-                          secondary: Text("45%"),
-
-
-                          selected: false,
-                        ),
-                        RadioListTile(
-                          value: 2,
-                          groupValue: selectedRadioTile,
-                          title: Text("May be"),
-
-                          onChanged: (val) {
-                            print("Radio Tile pressed $val");
-                            setSelectedRadioTile(val);
-                          },
-                          activeColor: Colors.black,
-                          secondary: Text("35%"),
-
-
-                          selected: false,
-                        ),
-                      ])))]);
+                  child:_buildPollList(context,newsData.id.toString(), newsData.answers)
+              )
+          )
+        ]);
   }
 
 }

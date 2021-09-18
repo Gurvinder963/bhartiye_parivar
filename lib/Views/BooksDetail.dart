@@ -23,6 +23,7 @@ import 'package:event_bus/event_bus.dart';
 import 'privacyScreen.dart';
 import '../Interfaces/OnCartCount.dart';
 import '../Views/ViewOnlineBook.dart';
+import '../Views/FullScreenGallery.dart';
 import '../ApiResponses/BookDetailResponse.dart';
 class BooksDetailPage extends StatefulWidget {
   final BookData content;
@@ -145,8 +146,35 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+
+
     //1 for printed
     //2 for e book
+
+    String html;
+    String url=mContent.embed_url;
+    if(url.isNotEmpty && url.contains('youtube')) {
+      var videoIdd;
+      try {
+        videoIdd = YoutubePlayer.convertUrlToId(url);
+        print('this is ' + videoIdd);
+      } on Exception catch (exception) {
+        // only executed if error is of type Exception
+        print('exception');
+      } catch (error) {
+        // executed for errors of all types other than Exception
+        print('catch error');
+        //  videoIdd="error";
+
+      }
+      html = '''
+          <iframe id="ytplayer" style="border-left: 0px solid black;border-right: 0px solid black;" type="text/html" width="100%" height="100%"
+  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
+  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+     ''';
+
+    }
+
 
     var shouldShowBadge=int.parse(cartCount)>0?true:false;
     bool isAddtoCartVisible=true;
@@ -198,6 +226,9 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
       goToCartFromBuyNow=false;
     }
 
+    if(mContent.book_type_id==4){
+      isAddtoCartVisible=false;
+    }
 
     final height = MediaQuery.of(context).size.height;
     return  Scaffold(
@@ -303,13 +334,13 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                 SizedBox(width: 15),
                 mContent.book_type_id==2 || mContent.book_type_id==3?
                 Text(
-                  'Online Book Price',
+                  'Online Book',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                 ):Container(),
                 Spacer(),
                 mContent.book_type_id==1 || mContent.book_type_id==3?
                 Text(
-                  'Printed Book Price',
+                  'Printed Book       ',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                 ):Container(),
               ]))
@@ -411,6 +442,9 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                           style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(16), color:  Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
                         )),
                       ),
+    Column(
+
+    children: [
                       Container(
                         padding: EdgeInsets.fromLTRB(10,10,10,10),
                         child: SizedBox(
@@ -425,8 +459,19 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                                   mainAxisSpacing: 4.0
                               ),
                               itemBuilder: (BuildContext context, int index){
-                                return  Container(
-                                  margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                                return  GestureDetector(
+                                    onTap: () =>
+                                {
+
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push( // ensures fullscreen
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return FullScreenGalleryPage(content: mContent,mIndex:index);
+                                          }
+                                      )).then((_) {})
+                                },child:Container(
+                                  margin: EdgeInsets.fromLTRB(0.0,8.0,0.0,0.0),
 
                                   alignment: Alignment.center,
 
@@ -438,10 +483,21 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
                                     ),
                                   ),
 
-                                );
+                                ));
                               },
                             )),
-                      ),
+                      ), url==''?Container():Container(
+       padding: EdgeInsets.fromLTRB(10.0,20.0,10.0,10.0),
+
+
+       child:  HtmlWidget(
+
+            html,
+            webView: true,
+          )
+      ),
+
+    ]),
                       Container(
 
                         child:   Padding(

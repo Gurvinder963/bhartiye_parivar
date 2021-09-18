@@ -261,6 +261,17 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     super.initState();
 
    // myControllerContryCode.text="+91";
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+      print(prefs.getString('token'));
+      fcm_token=prefs.getString('fcm_token');
+      print("fcm_token"+fcm_token);
+
+
+
+      return (prefs.getString('fcm_token'));
+    });
 
 
 
@@ -529,7 +540,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     else{
       varMobile=mobile;
     }
-    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":""});
+    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token});
     MainRepository repository=new MainRepository();
     return repository.fetchProfileData(body);
 

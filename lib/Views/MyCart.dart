@@ -689,7 +689,7 @@ if(isHavePrinted) {
 
     if(book_type_id==1 && is_ebook_free){
 
-      offerText=" (Online free in offer)";
+      offerText="(Online free in offer)";
     }
 
   //  title= title.length>25?title=title.substring(0,25)+"...":title;
@@ -714,7 +714,7 @@ if(isHavePrinted) {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                height: 120,
+                height: 150,
                 width: 100,
                 alignment: Alignment.center,
 
@@ -746,12 +746,20 @@ if(isHavePrinted) {
 
               Padding(
                   padding: EdgeInsets.fromLTRB(15,5,0,0),
-                  child: Text(bookType+" "+offerText,   overflow: TextOverflow.ellipsis,
+                  child: Text(bookType,   overflow: TextOverflow.ellipsis,
                     maxLines: 1, style: GoogleFonts.poppins(
                       fontSize:12.0,
                       color: Color(0xFF000000),
                         fontWeight: FontWeight.w500
                     ),)),
+      offerText==""?Container(): Padding(
+          padding: EdgeInsets.fromLTRB(15,5,0,0),
+          child: Text(offerText,   overflow: TextOverflow.ellipsis,
+            maxLines: 1, style: GoogleFonts.poppins(
+                fontSize:12.0,
+                color: Color(0xFF000000),
+                fontWeight: FontWeight.w500
+            ),)),
       Padding(
           padding: EdgeInsets.fromLTRB(15,0,0,0),
           child: Text(publisher,   overflow: TextOverflow.ellipsis,
@@ -764,9 +772,9 @@ if(isHavePrinted) {
 
 
     SizedBox(
-    width: 218,
+
     height: 55, child: Container(
-          margin: EdgeInsets.fromLTRB(5.0,20.0,0.0,0.0),
+          margin: EdgeInsets.fromLTRB(5.0,20.0,20.0,0.0),
 
           child:
           Row(

@@ -116,7 +116,17 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     WidgetsBinding.instance.addObserver(this);
     // TODO: implement initState
     super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+      print(prefs.getString('token'));
+      fcm_token=prefs.getString('fcm_token');
+      print("fcm_token"+fcm_token);
 
+
+
+      return (prefs.getString('fcm_token'));
+    });
 
 
     var s2 = mC_code;
@@ -620,7 +630,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     ));
   }
   Future<LoginResponse> getLoginResponse(String contry_code,String mobile) async {
-    var body =json.encode({"mobile_no":mobile,"country_code":contry_code});
+    var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token});
     MainRepository repository=new MainRepository();
     return repository.fetchLoginData(body);
 

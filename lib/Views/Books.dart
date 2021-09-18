@@ -12,7 +12,7 @@ import '../Repository/MainRepository.dart';
 import 'BooksDetail.dart';
 import'../ApiResponses/BookListResponse.dart';
 import '../Views/BookGroupList.dart';
-
+import '../localization/locale_constant.dart';
 class BooksPage extends StatefulWidget {
   @override
   BooksPageState createState() {
@@ -37,8 +37,12 @@ class BooksPageState extends State<BooksPage> {
         setState(() {
           isLoading = true;
         });}
+       getLocaleContentLang().then((locale) {
 
-      getBooksList(user_Token).then((value) => {
+         if(locale==null){
+           locale="";
+         }
+      getBooksList(user_Token,locale).then((value) => {
 
         setState(() {
           isLoading = false;
@@ -47,16 +51,16 @@ class BooksPageState extends State<BooksPage> {
         })
 
       });
-
+       });
 
       return (prefs.getString('token'));
     });
 
   }
 
-  Future<BookListResponse> getBooksList(String user_Token) async {
+  Future<BookListResponse> getBooksList(String user_Token,String locale) async {
 
-    var body ={'lang_code':''};
+    var body ={'lang_code':locale};
     MainRepository repository=new MainRepository();
     return repository.fetchBooksData(body,user_Token);
 

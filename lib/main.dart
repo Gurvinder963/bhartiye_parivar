@@ -9,15 +9,20 @@ import 'Views/Login.dart';
 import 'Utils/Prefer.dart';
 import 'Views/Home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-
+import 'Notification/push_nofitications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'localization/locale_constant.dart';
 import 'localization/localizations_delegate.dart';
 import 'package:flutter/services.dart';
+NotificationAppLaunchDetails notificationAppLaunchDetails;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-
+  NotificationAppLaunchDetails notificationAppLaunchDetails;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
   /*if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
    debugPrint("didNotificationLauchAPP");
     Future.delayed(const Duration(milliseconds: 5000), () {
@@ -53,7 +58,34 @@ class _MyAppState extends State<MyApp> {
 
 
   Locale _locale;
+  @override
+  void initState() {
+    super.initState();
+    PushNotificationsManager pfg =new PushNotificationsManager();
+    pfg.init(context);
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
 
+    final InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String payload) async {
+          if (payload != null) {
+            debugPrint('notification payload: ' + payload);
+
+            //   if(payload=='rate'){
+
+          /*  Future.delayed(const Duration(milliseconds: 1000), () {
+              RxBus.post(OnNotificationPayload(payload));
+            });*/
+            //  }
+          }
+          //  selectNotificationSubject.add(payload);
+        });
+  }
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;

@@ -27,7 +27,7 @@ import '../Utils/fab_bottom_app_bar.dart';
 
 import 'HomeChild.dart';
 import 'Books.dart';
-import 'News.dart';
+import 'NewsMain.dart';
 import 'Quick.dart';
 import 'Chat.dart';
 import 'ContentLanguage.dart';
@@ -42,6 +42,8 @@ import '../Interfaces/OnCartCount.dart';
 import '../Interfaces/OnNewsBack.dart';
 import '../Views/BookmarkList.dart';
 import '../Views/SearchScreen.dart';
+import '../Views/NotificationList.dart';
+
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -126,7 +128,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
     _children = [
       new HomeChildPage(),
-      new NewsPage(),
+      new NewsMainPage(),
       new BooksPage(),
 
     //  new QuickPage(),
@@ -298,6 +300,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         });
   }
 
+  onBackNews(){
+    eventBus1.fire(OnNewsBack("FIND"));
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -320,7 +325,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     ));
       return  WillPopScope(
         child:Scaffold(
-        appBar: AppBar(
+        appBar:selectedIndex==1?null: AppBar(
           elevation: 0,
           toolbarHeight: 56,
           backgroundColor: Color(AppColors.BaseColor),
@@ -358,7 +363,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
             SizedBox(
               width: 7,
             ),
-            selectedIndex==0? Icon(Icons.notifications_rounded,color: Colors.white,size: 25,):Container(),
+            selectedIndex==0?  GestureDetector(
+    onTap: () {
+
+      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+          MaterialPageRoute(
+              builder: (BuildContext context) {
+                return NotificationListPage();
+              }
+          ) );
+
+
+    },child:Icon(Icons.notifications_rounded,color: Colors.white,size: 25,)):Container(),
 
             selectedIndex==2?
             GestureDetector(
@@ -394,7 +410,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         ),
         drawer: navigationDrawer(),
         body: _children[selectedIndex],
-        bottomNavigationBar: FABBottomAppBar(
+        bottomNavigationBar: selectedIndex==1?null:FABBottomAppBar(
           backgroundColor: Color(AppColors.BaseColor),
           selectedColor:Colors.white,
           onTabSelected: onItemTapped,
@@ -419,7 +435,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ],
         ),
       ),
-          onWillPop: () => showModalBottomSheet(
+          onWillPop: () => selectedIndex==1? onBackNews():showModalBottomSheet(
               context: context,
               builder: (context) {
                 return Column(

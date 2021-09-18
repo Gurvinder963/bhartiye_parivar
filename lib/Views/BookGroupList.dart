@@ -319,7 +319,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
   Widget _horizontalListView(String title,List<BookData> bookList) {
     return SizedBox(
-       height: 208,
+       height: 250,
         child: ListView.builder(
           itemCount: bookList.length,
           scrollDirection: Axis.horizontal,
@@ -336,7 +336,8 @@ class BookGroupListPageState extends State<BookGroupListPage> {
             },
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                margin:EdgeInsets.fromLTRB(0, 10, 0, 0) ,
+                margin:EdgeInsets.fromLTRB(0, 10, 7, 0) ,
+                width: 130,
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -360,13 +361,15 @@ class BookGroupListPageState extends State<BookGroupListPage> {
   }
   Widget _buildText(String title){
     final text = title;
-    return Text(text.length > 12 ? '${text.substring(0, 12)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
+    return Text( text,overflow: TextOverflow.ellipsis,
+        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
 
 
   }
   Widget _buildTextPublisher(String title){
     final text = title;
-    return Text(text.length > 12 ? '${text.substring(0, 12)}...' : text,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 10));
+    return Text( text,overflow: TextOverflow.ellipsis,
+        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 10));
 
 
   }
@@ -383,8 +386,8 @@ class BookGroupListPageState extends State<BookGroupListPage> {
 
     Container(
           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-        height: 160,
-        width: divwidth,
+        height: 190,
+        width: 130,
           alignment: Alignment.center,
 
           decoration: BoxDecoration(
