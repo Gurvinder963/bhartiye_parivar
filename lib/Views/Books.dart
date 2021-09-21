@@ -65,7 +65,7 @@ class BooksPageState extends State<BooksPage> {
     return repository.fetchBooksData(body,user_Token);
 
   }
-  Widget _buildBoxBook(BuildContext context,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased, int book_type_id ){
+  Widget _buildBoxBook(BuildContext context,bool isBookRead,int id,String title,String thumbnail,String publisher,int ebookCost,bool isEbookPurchased,bool isPrinterPurchased, int book_type_id ){
 
     bool greenTick=false;
     if((ebookCost==0 && book_type_id==2)|| isEbookPurchased || isPrinterPurchased){
@@ -73,7 +73,7 @@ class BooksPageState extends State<BooksPage> {
     }
 
     return    SizedBox( child: Container(
-        margin:EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0) ,
+        margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
 
         decoration: BoxDecoration(
 
@@ -103,6 +103,19 @@ class BooksPageState extends State<BooksPage> {
         ),
 
       ),
+              isBookRead?Container(): Positioned(
+                  top: 0.0,
+                  left: 0.0,
+                  child:
+                  Image(
+                    image: new AssetImage("assets/ic_new.png"),
+
+                    height:  30,
+                    width:  30,
+
+                    fit: BoxFit.fill,
+                    alignment: Alignment.center,
+                  )),
               greenTick?Positioned(
             top: 0.0,
             right: 0.0,
@@ -321,7 +334,7 @@ class BooksPageState extends State<BooksPage> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 12.0,
-                        childAspectRatio: (2 / 4),
+                        childAspectRatio: (2 / 3.8),
                         mainAxisSpacing: 4.0
                     ),
                     itemBuilder: (BuildContext context, int index){
@@ -330,6 +343,9 @@ class BooksPageState extends State<BooksPage> {
           onTap: () =>
       {
 
+          setState(() {
+            mainData[index].is_read_book=true;
+          }),
         Navigator.of(context, rootNavigator: true)
             .push( // ensures fullscreen
             MaterialPageRoute(
@@ -354,7 +370,7 @@ class BooksPageState extends State<BooksPage> {
         });*/
           })
       },
-                      child: _buildBoxBook(context, mainData[index].id, mainData[index].title,
+                      child: _buildBoxBook(context, mainData[index].is_read_book,mainData[index].id, mainData[index].title,
           mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased,mainData[index].book_type_id));
     },
                   ))

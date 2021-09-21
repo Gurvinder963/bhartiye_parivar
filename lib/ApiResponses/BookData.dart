@@ -20,6 +20,7 @@ class BookData {
   String langCode;
   String lang_name;
   bool status;
+  bool is_read_book;
   bool is_ebook_added_cart;
   bool is_printed_added_cart;
   bool is_ebook_purchased;
@@ -53,6 +54,7 @@ class BookData {
         this.langCode,
         this.lang_name,
         this.status,
+        this.is_read_book,
         this.is_ebook_added_cart,
         this.is_printed_added_cart,
         this.is_ebook_purchased,
@@ -88,6 +90,7 @@ class BookData {
     langCode = json['lang_code'];
     lang_name = json['lang_name'];
     status = json['status'];
+    is_read_book = json['is_read_book'];
     is_ebook_added_cart = json['is_ebook_added_cart'];
     is_printed_added_cart = json['is_printed_added_cart'];
     is_ebook_purchased = json['is_ebook_purchased'];
@@ -124,6 +127,7 @@ class BookData {
     data['lang_code'] = this.langCode;
     data['lang_name'] = this.lang_name;
     data['status'] = this.status;
+    data['is_read_book'] = this.is_read_book;
     data['is_ebook_added_cart'] = this.is_ebook_added_cart;
     data['is_printed_added_cart'] = this.is_printed_added_cart;
     data['is_ebook_purchased'] = this.is_ebook_purchased;

@@ -133,6 +133,8 @@ flutter:
     - assets/dummy2.jpg
     - assets/dummy3.jpeg
     - assets/dummy5.jpg
+    - assets/ic_new.png
+    - assets/ic_not_bell.png
     - assets/BankonKaMayajaal/Bankjaal.html
     - assets/privacy.html
     - assets/terms.html

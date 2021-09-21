@@ -9,7 +9,7 @@ import 'dart:async';
 import 'dart:convert';
 
 
-
+import '../Interfaces/NewNotificationRecieved.dart';
 //import 'package:event_bus/event_bus.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
 import 'dart:io';
@@ -58,7 +58,10 @@ class PushNotificationsManager {
                 RxBus.post(NewNotificationRecieved("hello"));
 
               });*/
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                eventBusN.fire(NewNotificationRecieved("FIND"));
 
+              });
 
               int userId=prefs.getInt('userId') ?? 0;
 
@@ -67,7 +70,8 @@ class PushNotificationsManager {
               final DateFormat formatter = DateFormat('dd-MMM-yyyy hh:mm');
               final String formatted = formatter. format(now);
               print(formatted); // something like 2013-04-20
-              print("Message $message");
+            //  print("Message $message");
+             print("my-type");
               print(message['data']['type']);
           //    final db = SqliteDB();
               // db.createUserTable();
@@ -90,6 +94,11 @@ class PushNotificationsManager {
           //  }
           },
           onLaunch: (Map<String, dynamic> message) async {
+
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              eventBusN.fire(NewNotificationRecieved("FIND"));
+
+            });
             //debugPrint("onLaunch foo: " + message['data']['type']);
         /*    print('on launch $message');
             final type = message['data']['type'];
@@ -129,6 +138,10 @@ class PushNotificationsManager {
                 RxBus.post(NewNotificationRecieved("hello"));
 
               });*/
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                eventBusN.fire(NewNotificationRecieved("FIND"));
+
+              });
 
 
               //int userId=prefs.getInt('userId') ?? 0;
@@ -138,7 +151,8 @@ class PushNotificationsManager {
               final DateFormat formatter = DateFormat('dd-MMM-yyyy hh:mm');
               final String formatted = formatter. format(now);
               print(formatted); // something like 2013-04-20
-              print("Message $message");
+             // print("Message $message");
+              print("my-type");
               print(message['data']['type']);
 
               var big_image_url=message['data']['big_image_url'];

@@ -1,5 +1,8 @@
-class NewNotificationRecieved {
-  String key;
+import 'package:event_bus/event_bus.dart';
+EventBus eventBusN = EventBus();
+class NewNotificationRecieved{
 
-  NewNotificationRecieved(this.key);
+  String count;
+
+  NewNotificationRecieved(this.count);
 }

@@ -106,13 +106,23 @@ class NotificationListPageState extends State<NotificationListPage> {
         })
 
       });
-
+      readNotificationAPI().then((value) => {});
 
       return (prefs.getString('token'));
     });
 
   }
+  Future<AddToCartResponse> readNotificationAPI() async {
+    //  final String requestBody = json.encoder.convert(order_items);
 
+
+    var body =json.encode({"none":"none",});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReadNotification(body,user_Token);
+
+
+  }
   Future<BookmarkListResponse> getBookmarkList(String user_Token) async {
 
     var body ={'none':'none'};

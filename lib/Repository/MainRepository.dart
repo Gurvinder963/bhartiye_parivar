@@ -176,4 +176,13 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/save-answer",body,token);
     return AddToCartResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchReadBook(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/read-book",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchReadNotification(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/read-notification",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }

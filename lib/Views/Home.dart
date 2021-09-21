@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:country_list_pick/country_list_pick.dart';
@@ -44,6 +45,7 @@ import '../Views/BookmarkList.dart';
 import '../Views/SearchScreen.dart';
 import '../Views/NotificationList.dart';
 
+import '../Interfaces/NewNotificationRecieved.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -66,6 +68,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   List<Widget> _children;
   bool checkedValue=false;
   bool _isInAsyncCall = false;
+  bool isNewNotification=false;
   bool _isHidden = true;
 
   String user_Token;
@@ -149,7 +152,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
      // fABBottomAppBarState.updateIndexByNews(0);
 
     });
-
+    eventBusN.on<NewNotificationRecieved>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+      // print("my_cart_count"+event.count);
+      print("not_home_api_called");
+      homeAPICall();
+    });
    // EventBus eventBus = EventBus();
     eventBus.on<OnCartCount>().listen((event) {
       // All events are of type UserLoggedInEvent (or subtypes of it).
@@ -181,6 +189,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         Prefs.setCartCount(_prefs, (res.data.cartCount).toString());
         setState(() {
           cartCount=res.data.cartCount.toString();
+          isNewNotification=res.data.notification;
         });
 
       }
@@ -374,7 +383,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ) );
 
 
-    },child:Icon(Icons.notifications_rounded,color: Colors.white,size: 25,)):Container(),
+    },child: isNewNotification?Image(
+              image: new AssetImage("assets/ic_not_bell.png"),
+
+              height:  20,
+              width:  22,
+
+
+              alignment: Alignment.center,
+            ):Icon(Icons.notifications_rounded,color: Colors.white,size: 25,)):Container(),
 
             selectedIndex==2?
             GestureDetector(

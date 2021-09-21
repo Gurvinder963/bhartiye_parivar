@@ -112,7 +112,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
          })
 
        });
-
+       getBookRead(user_Token,mContent.id.toString()).then((value) => {});
       return (prefs.getString('token'));
     });
 
@@ -142,7 +142,13 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
     return repository.fetchBooksDetailData(id,body,user_Token);
 
   }
+  Future<AddToCartResponse> getBookRead(String user_Token,String book_id) async {
+    var body =json.encode({"book_id":book_id,});
 
+    MainRepository repository=new MainRepository();
+    return repository.fetchReadBook(body,user_Token);
+
+  }
 
   @override
   Widget build(BuildContext context) {

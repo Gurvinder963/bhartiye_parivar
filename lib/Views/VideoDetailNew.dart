@@ -38,23 +38,55 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
-  YoutubePlayerController _controller;
-  final List<String> _ids = [];
-  TextEditingController _idController;
-  TextEditingController _seekToController;
-  PlayerState _playerState;
-  YoutubeMetaData _videoMetaData;
+
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
   VideoData mContent;
+   YoutubePlayerController _controller;
+   TextEditingController _idController;
+   TextEditingController _seekToController;
+
+   PlayerState _playerState;
+   YoutubeMetaData _videoMetaData;
+
+  final List<String> _ids = [
+
+  ];
 
   String user_Token;
   VideoDetailNewPageState(VideoData content){
     mContent=content;
+    var videoIdd="nPt8bK2gbaU";
+   if(mContent.videoSourceType=='youtube'){
+    try {
+      videoIdd = YoutubePlayer.convertUrlToId(mContent.videoUrl);
+      print('this is ' + videoIdd);
+    } on Exception catch (exception) {
+      // only executed if error is of type Exception
+      print('exception');
+    } catch (error) {
+      // executed for errors of all types other than Exception
+      print('catch error');
+      //  videoIdd="error";
+
+    }
+   }
+    _ids.add(videoIdd);
   }
   @override
   dispose(){
+    if (_controller.value.isFullScreen) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+          .then((_) {
+        Navigator.pop(context);
+      });
+    } else {
+      _controller.dispose();
+      _idController.dispose();
+      _seekToController.dispose();
+      super.dispose();
+    }
     SystemChrome.setPreferredOrientations([
 
       DeviceOrientation.portraitUp,
@@ -108,8 +140,41 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       return (prefs.getString('token'));
     });
+    _controller = YoutubePlayerController(
+      initialVideoId: _ids.first,
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: true,
 
+        disableDragSeek: true,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
   }
+  void listener() {
+    if (_isPlayerReady && mounted) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
+  }
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+
+
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
@@ -153,20 +218,84 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     if(!isPortrait){
+
       marginPixel=0;
-      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        _controller.play();
+
+      });
+
     }
     else{
       marginPixel=0;
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        _controller.play();
+
+      });
     }
+
     var channel=mContent.channel==null?"My Channel":mContent.channel;
 
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
-    return  Scaffold(
-      appBar: isPortrait?AppBar(
+    return YoutubePlayerBuilder(
+        onExitFullScreen: () {
+      // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
+      // SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+      if (_controller.value.isFullScreen) {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+            .then((_) {
+          Navigator.pop(context);
+        });
+      }
+    },
+    player: YoutubePlayer(
+    controller: _controller,
+    showVideoProgressIndicator: false,
+    progressIndicatorColor: Colors.blueAccent,
+    topActions: <Widget>[
+    const SizedBox(width: 8.0),
+    Expanded(
+    child: _controller != null
+    ? Text(
+    _controller.metadata.title,
+    style: const TextStyle(
+    color: Colors.white,
+    fontSize: 18.0,
+    ),
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1,
+    )
+        : Container(),
+    ),
+    IconButton(
+    icon: const Icon(
+    Icons.settings,
+    color: Colors.white,
+    size: 25.0,
+    ),
+    onPressed: () {
+
+    },
+    ),
+    ],
+    onReady: () {
+    _isPlayerReady = true;
+
+
+    },
+    onEnded: (data) {
+    /*   _controller
+              .load(_ids[(_ids.indexOf(data.videoId) + 1) % _ids.length]);
+          _showSnackBar('Next Video Started!');*/
+    },
+    ),
+    builder: (context, player) => Scaffold(
+      appBar: AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         leading: IconButton(
@@ -175,7 +304,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
               Navigator.of(context, rootNavigator: true).pop(context),
         ),
         title: Text(AppStrings.PlayingVideo),
-      ):null,
+      ),
 
       body: ModalProgressHUD(
           inAsyncCall: _isInAsyncCall,
@@ -189,13 +318,14 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                   children: <Widget>[
-                    _buildBoxVideo(context,mContent),
+              mContent.videoSourceType=='facebook'?
+                    _buildBoxVideo(context,mContent):player,
                     Expanded(
                         child:
                         ListView( // parent ListView
                             children: <Widget>[
                               Container(
-                                  margin:  EdgeInsets.fromLTRB(10,0,10,0),
+                                  margin:  EdgeInsets.fromLTRB(10,10,10,0),
                                   child:Row(
 
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -430,7 +560,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
           )),
 
-    );
+    ));
   }
   Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
 
@@ -827,11 +957,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         //  videoIdd="error";
 
       }
-     html = '''
-          <div style="position:relative;padding-bottom:56.25%;">
-          <iframe id="ytplayer" style="width:100%;height:100%;position:absolute;left:0px;top:0px;" type="text/html" width="100%" height="100%"
-  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
-  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+     html = '''<iframe id="player" width="100%" height="100%" style ="padding: 0px;position: relative; padding-top: 0px;height: 0;
+            overflow: hidden;" type="text/html"
+  src="https://www.youtube.com/embed/${videoIdd}?autoplay=true"
+  frameborder="1"></iframe>
      ''';
 
    /*   html = """<!DOCTYPE html>
@@ -920,11 +1049,14 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                   ),
 */
+                  AspectRatio(
+          aspectRatio: 16 / 9,
+          child:
                   HtmlWidget(
 
                         html,
                         webView: true,
-                      )
+                      ))
 
 
                 ],
