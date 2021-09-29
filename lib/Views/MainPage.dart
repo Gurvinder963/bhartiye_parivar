@@ -136,7 +136,7 @@ class MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String duration,String videoUrl,String videoSourceType){
+  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
 
     String url="";
     if(videoSourceType=='facebook'){
@@ -161,7 +161,7 @@ class MainPageState extends State<MainPage> {
 
       }
       // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
+      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
     }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
@@ -260,14 +260,17 @@ class MainPageState extends State<MainPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
 
-                        new Image(
-                          image: new AssetImage("assets/avatar.png"),
-                          width: 42,
-                          height:  42,
-                          color: null,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
+                        new Container(
+                            width: 44.0,
+                            height: 44.0,
+                            decoration: new BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new NetworkImage(
+                                        channel_image)
+                                )
+                            )),
                         SizedBox(height: 5,width: 8,),
 
                         new Expanded(
@@ -413,6 +416,7 @@ class MainPageState extends State<MainPage> {
                       mainData[index].lang,
                       mainData[index].createdAt,
                       mainData[index].channel,
+                      mainData[index].channel_image,
                       mainData[index].video_duration,
                       mainData[index].videoUrl,
                       mainData[index].videoSourceType

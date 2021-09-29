@@ -30,7 +30,7 @@ class BookData {
   String createdAt;
  // String createdBy;
   String updatedAt;
-  String updatedBy;
+
 
   BookData(
       {this.id,
@@ -64,7 +64,7 @@ class BookData {
         this.createdAt,
        // this.createdBy,
         this.updatedAt,
-        this.updatedBy});
+       });
 
   BookData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -100,7 +100,7 @@ class BookData {
     createdAt = json['created_at'];
    // createdBy = json['created_by'];
     updatedAt = json['updated_at'];
-    updatedBy = json['updated_by'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -137,7 +137,7 @@ class BookData {
     data['created_at'] = this.createdAt;
    // data['created_by'] = this.createdBy;
     data['updated_at'] = this.updatedAt;
-    data['updated_by'] = this.updatedBy;
+
     return data;
   }
 }

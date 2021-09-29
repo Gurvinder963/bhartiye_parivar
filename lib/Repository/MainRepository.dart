@@ -185,4 +185,9 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/read-notification",body,token);
     return AddToCartResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchSubscribeChannel(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/subscriptions",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
 }

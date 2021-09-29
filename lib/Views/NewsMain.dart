@@ -426,11 +426,11 @@ if(value.data.length>0){
       selectedRadioTile = val;
     });
   }
-  Future<AddToCartResponse> addPollAnsersAPI(String NewsId,List answers) async {
+  Future<AddToCartResponse> addPollAnsersAPI(String NewsId,String answer) async {
     //  final String requestBody = json.encoder.convert(order_items);
 
 
-    var body =json.encode({"news_id":NewsId,"answer":answers});
+    var body =json.encode({"news_id":NewsId,"answer":answer});
     MainRepository repository=new MainRepository();
 
 
@@ -457,8 +457,13 @@ if(value.data.length>0){
 
 
             },
-            child:  Stack(
+            child:  Container(
+
+                margin:  EdgeInsets.fromLTRB(0,10,0,0),
+                child:Stack(
+
                 children:<Widget>[
+
                   LinearPercentIndicator(
                     leading: new Text(""),
                     trailing: new Text(""),
@@ -479,17 +484,17 @@ if(value.data.length>0){
                       setSelectedRadioTile(val);
                       print(answers[index].url);
 
-                      List answerList = new List();
-                      answerList.add(answers[index].url);
+                     // List answerList = new List();
+                     // answerList.add(answers[index].id);
 
-                      addPollAnsersAPI(newsId,answerList);
+                    //  addPollAnsersAPI(newsId,answers[index].id.toString());
 
                     },
                     activeColor: Colors.black,
                     secondary:  Text("55%"),
 
                     selected: false,
-                  )]),);
+                  )])),);
 
 
 
@@ -515,9 +520,10 @@ if(value.data.length>0){
         crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text(newsData.title,style:  GoogleFonts.roboto(
-              fontSize: 16,fontWeight:FontWeight.w500),)),
+              padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsData.title,style:  GoogleFonts.roboto(
+              fontSize: 20,fontWeight:FontWeight.w500),)),
           Padding(
+
               padding: const EdgeInsets.all(8.0),
               child:SizedBox(
                   height: 450,

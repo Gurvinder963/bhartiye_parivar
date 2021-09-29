@@ -95,16 +95,24 @@ class NotificationListPageState extends State<NotificationListPage> {
       });
 
       getBookmarkList(user_Token).then((value) => {
+      {
+
+      for (int i = 0; i < value.data.length; i++) {
+        if (value.data[i].video != null || value.data[i].book != null ||
+            value.data[i].news != null) {
+          mainData.add(value.data[i])
+        }
+      },
 
 
-        setState(() {
+      setState(() {
 
-          _isInAsyncCall = false;
-          isLoading = false;
-          mainData.addAll(value.data);
+      _isInAsyncCall = false;
+      isLoading = false;
+     // mainData.addAll(value.data);
 
-        })
-
+      })
+      }
       });
       readNotificationAPI().then((value) => {});
 
@@ -173,7 +181,7 @@ class NotificationListPageState extends State<NotificationListPage> {
                         children: [
 
                           Text(
-                            'You have not set any bookmark yet' ,
+                            'You have not set any notification yet' ,
                             style: GoogleFonts.poppins(
                               fontSize: ScreenUtil().setSp(16),
                               letterSpacing: 1.2,

@@ -375,6 +375,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
             selectedIndex==0?  GestureDetector(
     onTap: () {
 
+      setState(() {
+        isNewNotification = false;
+      });
+
       Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
           MaterialPageRoute(
               builder: (BuildContext context) {

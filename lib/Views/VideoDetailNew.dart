@@ -18,6 +18,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
+
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -38,6 +39,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
+  bool isSubscribed= false;
 
   double _volume = 100;
   bool _muted = false;
@@ -94,6 +96,25 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     ]);
     super.dispose();
   }
+
+  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String is_subscribed) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+    String status = "0";
+    if (isSubscribed) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
+
+    var body =json.encode({"channel_id":channelId,"is_subscribed":status});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchSubscribeChannel(body,user_Token);
+
+
+  }
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -119,6 +140,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         setState(() {
           mContent=value.data;
           isBookMarked=mContent.bookmark;
+          isSubscribed=mContent.is_subscribed;
           //   isLoading = false;
           // mainData.addAll(value.data);
 
@@ -146,7 +168,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         mute: false,
         autoPlay: true,
 
-        disableDragSeek: true,
+        disableDragSeek: false,
         loop: false,
         isLive: false,
         forceHD: false,
@@ -157,9 +179,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     _seekToController = TextEditingController();
     _videoMetaData = const YoutubeMetaData();
     _playerState = PlayerState.unknown;
+
   }
   void listener() {
-    if (_isPlayerReady && mounted) {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
       setState(() {
         _playerState = _controller.value.playerState;
         _videoMetaData = _controller.metadata;
@@ -169,7 +192,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   @override
   void deactivate() {
     // Pauses video while navigating to next page.
-    _controller.pause();
+  _controller.pause();
     super.deactivate();
   }
 
@@ -222,19 +245,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       marginPixel=0;
      // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        _controller.play();
-
-      });
 
     }
     else{
       marginPixel=0;
       //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        _controller.play();
 
-      });
     }
 
     var channel=mContent.channel==null?"My Channel":mContent.channel;
@@ -243,6 +259,18 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
     return YoutubePlayerBuilder(
+
+      onEnterFullScreen: (){
+        print("on full screen");
+        Future.delayed(const Duration(milliseconds: 2000), () {
+
+// Here you can write your code
+
+          _controller.play();
+
+        });
+
+      },
         onExitFullScreen: () {
       // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
       // SystemChrome.setPreferredOrientations(DeviceOrientation.values);
@@ -255,7 +283,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     },
     player: YoutubePlayer(
     controller: _controller,
+      aspectRatio: 16 / 9,
     showVideoProgressIndicator: false,
+
     progressIndicatorColor: Colors.blueAccent,
     topActions: <Widget>[
     const SizedBox(width: 8.0),
@@ -512,7 +542,52 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                         //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                                         Expanded( child:Align(
                                             alignment: Alignment.centerRight,
-                                            child:Text("SUBSCRIBE \nNOTIFICATIONS",
+                                            child: GestureDetector(
+    onTap: () {
+      subscribeChannelAPI(mContent.channel_id.toString(),"1").then((res) async {
+       String msg;
+        if(isSubscribed){
+          setState(() {
+            isSubscribed = false;
+          });
+
+          msg="Unsubscribe channel successfully";
+        }
+        else{
+          setState(() {
+            isSubscribed = true;
+          });
+          msg="Subscribe channel successfully";
+        }
+
+        if(res.status==1){
+
+          Fluttertoast.showToast(
+          msg: msg,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+
+        }
+
+      });
+
+
+    },child:isSubscribed?Text("Unsubscribe",
+                                              textAlign: TextAlign.center,
+
+
+                                              style: GoogleFonts.roboto(
+                                                fontSize:16.0,
+
+                                                color: Color(0xFF000000),
+                                                fontWeight: FontWeight.w600,
+
+                                              ),):Text("SUBSCRIBE \nNOTIFICATIONS",
                                               textAlign: TextAlign.center,
 
 
@@ -522,7 +597,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                                 color: Color(AppColors.BaseColor),
                                                 fontWeight: FontWeight.w600,
 
-                                              ),))),  SizedBox(width: 5,),
+                                              ),)))),  SizedBox(width: 5,),
                                       ]))
                               ,  Padding(
                                   padding: EdgeInsets.fromLTRB(10,7,10,3),
@@ -579,7 +654,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       var videoIdd;
       try {
         videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-        print('this is ' + videoIdd);
+
       } on Exception catch (exception) {
         // only executed if error is of type Exception
         print('exception');
@@ -590,7 +665,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       }
       // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
+      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
     }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));

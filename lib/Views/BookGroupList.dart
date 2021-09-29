@@ -255,6 +255,10 @@ class BookGroupListPageState extends State<BookGroupListPage> {
   }
 
   Widget _buildBox(BuildContext context,Data content){
+    if(content.langName==null){
+      content.langName="English";
+    }
+
     double c_width = MediaQuery.of(context).size.width*0.8;
     return  Container(decoration: BoxDecoration(
 
@@ -270,7 +274,7 @@ class BookGroupListPageState extends State<BookGroupListPage> {
                 Container (
                     width: c_width,
                     child:Padding(
-                      padding: EdgeInsets.fromLTRB(10,10,20,0),
+                      padding: EdgeInsets.fromLTRB(10,0,20,0),
                       child:  Text(content.langName+" books", textAlign: TextAlign.left,
                           style:  GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 18,color: Color(0xff1f2833))),
                     )),
@@ -362,14 +366,14 @@ class BookGroupListPageState extends State<BookGroupListPage> {
   Widget _buildText(String title){
     final text = title;
     return Text( text,overflow: TextOverflow.ellipsis,
-        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
+        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 13));
 
 
   }
   Widget _buildTextPublisher(String title){
     final text = title;
     return Text( text,overflow: TextOverflow.ellipsis,
-        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 10));
+        maxLines: 1,style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 12));
 
 
   }

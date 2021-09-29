@@ -676,7 +676,82 @@ if(isHavePrinted) {
       },
     );
   }
+
+  Future _asyncInputDialog(BuildContext context,int index,String value,String cost,String id) async {
+    String teamName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(Constants.AppName),
+          content: new Row(
+            children: [
+              new Expanded(
+                  child: new TextField(
+                    keyboardType: TextInputType.number,
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'Please Enter Qty', ),
+                    onChanged: (value) {
+                      teamName = value;
+                    },
+                  ))
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+
+                Navigator.of(context).pop(teamName);
+              },
+            ),
+
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                bool isMatched=false;
+                for(int i = 0; i < qtyData.length; i++){
+
+                  if (teamName== qtyData[i]) {
+                    setValue(index,teamName,cost,id.toString());
+                    isMatched=true;
+                    break;
+                  }
+                }
+
+
+                if(!isMatched && teamName.isNotEmpty){
+                qtyData.add(teamName);
+                setValue(index,teamName,cost,id.toString());
+                Navigator.of(context).pop(teamName);
+                }
+                else{
+                Navigator.of(context).pop(teamName);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildBoxBook(BuildContext context,int index,int id,String title,String thumbnail,String publisher,String cost,String qty,String actualCost,int book_type_id,bool is_ebook_free){
+
+    bool isMatched=false;
+
+    for(int i = 0; i < qtyData.length; i++){
+
+      if (qty== qtyData[i]) {
+        isMatched=true;
+        break;
+      }
+    }
+    if(!isMatched){
+      qtyData.add(qty);
+    }
 
     String bookType="";
     if(book_type_id==1){
@@ -815,8 +890,14 @@ if(isHavePrinted) {
                   value: qty,
 
                  onChanged: (value) => {
-                   setValue(index,value,actualCost,id.toString())
 
+
+                   if(value=='more'){
+                     _asyncInputDialog(context,index,value,actualCost,id.toString())
+                   }
+                   else{
+    setValue(index,value,actualCost,id.toString())
+    }
 
 
                  }
@@ -836,10 +917,19 @@ if(isHavePrinted) {
                     }).toList();
                   },
                   items: qtyData.map((String title) {
+                    int value=0;
+                    if(title=='more'){
+                      value=0;
+                    }
+                    else{
+                       value= int.parse(title);
+                    }
+
 
                     return new DropdownMenuItem<String>(
+
                       value: title,
-                      child: new Text(
+                      child: value>5?Text("",style:TextStyle(height: 0),):new Text(
                         title,
                         style: new TextStyle(color: Colors.black),
                       ),

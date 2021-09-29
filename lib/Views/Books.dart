@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MyBooksTab.dart';
 import 'BooksByLanguage.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,7 @@ class BooksPage extends StatefulWidget {
 class BooksPageState extends State<BooksPage> {
   List mainData = new List();
   bool isLoading = false;
-
+  bool _isInAsyncCall = false;
   String user_Token;
   @override
   void initState() {
@@ -42,10 +43,15 @@ class BooksPageState extends State<BooksPage> {
          if(locale==null){
            locale="";
          }
+
+         setState(() {
+           _isInAsyncCall = true;
+         });
       getBooksList(user_Token,locale).then((value) => {
 
         setState(() {
           isLoading = false;
+          _isInAsyncCall = false;
           mainData.addAll(value.data);
 
         })
@@ -110,8 +116,8 @@ class BooksPageState extends State<BooksPage> {
                   Image(
                     image: new AssetImage("assets/ic_new.png"),
 
-                    height:  30,
-                    width:  30,
+                    height:  33,
+                    width:  33,
 
                     fit: BoxFit.fill,
                     alignment: Alignment.center,
@@ -145,7 +151,7 @@ class BooksPageState extends State<BooksPage> {
             padding: EdgeInsets.fromLTRB(0,2,0,0),
             child: Text(publisher,   overflow: TextOverflow.ellipsis,
         maxLines: 1, style: GoogleFonts.roboto(
-        fontSize:11.0,
+        fontSize:12.0,
         color: Color(0xFF5a5a5a),
 
     ),)),
@@ -175,7 +181,12 @@ class BooksPageState extends State<BooksPage> {
 
     return Scaffold(
 
-        body: Container(
+        body: ModalProgressHUD(
+        inAsyncCall: _isInAsyncCall,
+        // demo of some additional parameters
+        opacity: 0.01,
+        progressIndicator: CircularProgressIndicator(),
+    child:Container(
           margin: EdgeInsets.fromLTRB(0,0,0,0),
           padding:  EdgeInsets.fromLTRB(1,8,1,0),
         child: ListView(
@@ -334,7 +345,7 @@ class BooksPageState extends State<BooksPage> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 12.0,
-                        childAspectRatio: (2 / 3.8),
+                        childAspectRatio: (2 / 3.7),
                         mainAxisSpacing: 4.0
                     ),
                     itemBuilder: (BuildContext context, int index){
@@ -379,7 +390,7 @@ class BooksPageState extends State<BooksPage> {
         ])
 
 
-        ),
+        )),
 
     );
   }

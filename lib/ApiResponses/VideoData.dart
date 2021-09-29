@@ -7,12 +7,14 @@ class VideoData {
   String videoImage;
   String publisher;
   String channel;
+  String channel_image;
   int channel_id;
   int content_type;
   String video_duration;
   String lang;
   bool status;
   bool bookmark;
+  bool is_subscribed;
   String displayStatus;
   String createdAt;
 //  String createdBy;
@@ -27,12 +29,14 @@ class VideoData {
     this.videoImage,
     this.publisher,
     this.channel,
+    this.channel_image,
     this.channel_id,
     this.content_type,
     this.video_duration,
     this.lang,
     this.status,
     this.bookmark,
+    this.is_subscribed,
     this.displayStatus,
     this.createdAt,
    // this.createdBy,
@@ -48,12 +52,14 @@ class VideoData {
     videoImage = json['video_Image'];
     publisher = json['publisher'];
     channel = json['channel'];
+    channel_image = json['channel_image'];
     channel_id = json['channel_id'];
     content_type = json['content_type'];
     video_duration = json['video_duration'];
     lang = json['lang'];
     status = json['status'];
     bookmark = json['bookmark'];
+    is_subscribed = json['is_subscribed'];
     displayStatus = json['display_status'];
     createdAt = json['created_at'];
   //  createdBy = json['created_by'];
@@ -72,11 +78,13 @@ class VideoData {
     data['video_duration'] = this.video_duration;
     data['publisher'] = this.publisher;
     data['channel'] = this.channel;
+    data['channel_image'] = this.channel_image;
     data['channel_id'] = this.channel_id;
     data['content_type'] = this.content_type;
     data['lang'] = this.lang;
     data['status'] = this.status;
     data['bookmark'] = this.bookmark;
+    data['is_subscribed'] = this.is_subscribed;
     data['display_status'] = this.displayStatus;
     data['created_at'] = this.createdAt;
    // data['created_by'] = this.createdBy;

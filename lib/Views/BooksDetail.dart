@@ -234,6 +234,7 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
     if(mContent.book_type_id==4){
       isAddtoCartVisible=false;
+     // isBuyNowVisibleEbook=false;
     }
 
     final height = MediaQuery.of(context).size.height;
@@ -332,62 +333,106 @@ class BooksDetailPageState extends State<BooksDetailPage>  with TickerProviderSt
 
 
       Container(
-          margin:  EdgeInsets.fromLTRB(20,10,20,0),
+          margin:  EdgeInsets.fromLTRB(0,10,0,0),
           child:Row(
 
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(width: 15),
-                mContent.book_type_id==2 || mContent.book_type_id==3?
-                Text(
+                Expanded(
+                    flex: 2,
+                    child:
+                    Container(child:
+                mContent.book_type_id==2 || mContent.book_type_id==3|| mContent.book_type_id==4?
+                Center(
+                    child: Text(
                   'Online Book',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                ):Container(),
-                Spacer(),
-                mContent.book_type_id==1 || mContent.book_type_id==3?
-                Text(
-                  'Printed Book       ',
+                )):Container())),
+                Expanded(
+                    flex: 1,child:Container()),
+
+                Expanded(
+                    flex: 2,
+                    child:
+                    Container(child:  mContent.book_type_id==1 || mContent.book_type_id==3|| mContent.book_type_id==4?
+                    Center(
+                        child:Text(
+                  'Printed Book',
                   style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(14), color: Color(0xFF5a5a5a).withOpacity(0.8),fontWeight: FontWeight.w500),
-                ):Container(),
+                )):Container())),
               ]))
 
                 ,
                 Container(
-                    margin:  EdgeInsets.fromLTRB(20,10,20,0),
+                    margin:  EdgeInsets.fromLTRB(0,10,0,0),
                     child:Row(
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(width: 35),
+                        Expanded(
+                        flex: 2,
+                        child:
+                         Container(child:
                           mContent.book_type_id==2 || mContent.book_type_id==3?
-                          Text(
+                          Center(
+                            child:  Text(
                             mContent.ebook_cost==0?"Free":'₹ ' +mContent.ebook_cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
-                          ):Container(),
-                          Spacer(),
+                          )):mContent.book_type_id==4?  Center(
+                              child: Text("Unavailable",
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.red.withOpacity(0.8),fontWeight: FontWeight.bold),
+                          )):Container())),
+                    Expanded(
+                        flex: 1,child:Container()),
+
+                          Expanded(
+                              flex: 2,
+                              child:
+                              Container(child:
                           mContent.book_type_id==1 || mContent.book_type_id==3?
-                          Text(
+                          Center(
+                            child:  Text(
                             '₹ ' +mContent.cost.toString()+'/-',
                             style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.black.withOpacity(0.8),fontWeight: FontWeight.bold),
-                          ):Container(),
-                          SizedBox(width: 35),
+                          )):mContent.book_type_id==4? Center(
+                              child:  Text("Out of Stock",
+                            style: GoogleFonts.roboto(fontSize: ScreenUtil().setSp(18), color: Colors.red.withOpacity(0.8),fontWeight: FontWeight.bold),
+                          )):Container(),))
+
                         ]))
 
                 ,
                 Container(
-                    margin:  EdgeInsets.fromLTRB(20,10,10,0),
+                    margin:  EdgeInsets.fromLTRB(3,10,0,0),
                     child:Row(
 
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          (mContent.is_ebook_purchased || mContent.ebook_cost==0)&& mContent.book_type_id!=1?
-                         _ReadNowButton(mContent.id,mContent.ebook_cost): Container(),
-                          (!mContent.is_ebook_purchased && mContent.ebook_cost!=0 && (mContent.book_type_id==2 ||mContent.book_type_id==3))?
-                          _buyNowButtonEbook(goToCartFromBuyNow):Container(),
+                          Expanded(
+                              flex: 2,
+                              child:
+                              Container(
+                                  child:Column(
 
-                        Spacer(),
-                          mContent.book_type_id!=2?
-                          _buyNowButtonPrinted(goToCartFromBuyNow):Container(),
+                                  children: <Widget>[
+                                    mContent.book_type_id!=4 && ((mContent.is_ebook_purchased || mContent.ebook_cost==0)&& mContent.book_type_id!=1) ?
+                                    _ReadNowButton(mContent.id,mContent.ebook_cost): Container(),
+
+
+                                    mContent.book_type_id!=4 && (!mContent.is_ebook_purchased && mContent.ebook_cost!=0 && (mContent.book_type_id==2 ||mContent.book_type_id==3))?
+                                    _buyNowButtonEbook(goToCartFromBuyNow):Container(),
+
+
+                                  ]))),
+
+                          Expanded(
+                              flex: 1,child:Container()),
+                          Expanded(
+                              flex: 2,
+                              child:
+                              Container(child:
+                         Center(child: mContent.book_type_id!=4 && mContent.book_type_id!=2?
+                          _buyNowButtonPrinted(goToCartFromBuyNow):Container()))),
 
 
                         ]))

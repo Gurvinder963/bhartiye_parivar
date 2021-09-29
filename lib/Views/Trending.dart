@@ -161,7 +161,7 @@ class TrendingPageState extends State<TrendingPage> {
 
       }
       // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/maxresdefault.jpg";
+      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
     }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));

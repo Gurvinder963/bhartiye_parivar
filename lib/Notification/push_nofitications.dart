@@ -152,30 +152,44 @@ class PushNotificationsManager {
               final String formatted = formatter. format(now);
               print(formatted); // something like 2013-04-20
              // print("Message $message");
-              print("my-type");
+              print("on-message");
+              print(message);
               print(message['data']['type']);
 
-              var big_image_url=message['data']['big_image_url'];
-              var small_image_url=message['data']['small_image_url'];
+              String big_image_url=message['data']['big_image_url'];
+              String small_image_url=message['data']['small_image_url'];
+
+              print(big_image_url);
+              print(small_image_url);
 
             //  final db = SqliteDB();
               // db.createUserTable();
              // db.putUser(userId.toString(),message['notification']['title'],message['notification']['body'],formatted,message['data']['type'],message['data']['id']);
               // _showBigPictureNotification(random(1,5), message['notification']['title'], message['notification']['body'], "");
               String type=message['data']['type'];
-              if(message['data']['type']=='3'){
-                type=type+","+message['data']['id'];
+             String msg;
+              if(type=='1'){
+                msg="New Video Added";
               }
+
+              else if(type=='2'){
+                msg="New News Added";
+              }
+              else if(type=='3'){
+                msg="New Book Added";
+              }
+
               if(big_image_url!=null && !big_image_url.toString().isEmpty){
+                print("in-big_image-url");
                 _showBigPictureNotification(
-                    random(1, 5), "New Book Added",
+                    random(1, 5), msg,
                     message['notification']['title'], type,big_image_url,small_image_url);
               }
               else {
-
+                print("in-only-notififaction");
 
                 _showBigTextNotification(
-                    random(1, 5), "New Book Added",
+                    random(1, 5), msg,
                     message['notification']['title'], type);
               }
 

@@ -67,6 +67,7 @@ class SearchScreenPageState extends State<SearchScreenPage> {
   bool isLoading = false;
   String _chosenValue="1";
   bool _isInAsyncCall = false;
+  bool _isApiCalled = false;
   String user_Token;
   Icon actionIcon = new Icon(Icons.search, color: Colors.black,);
   TextEditingController _searchQuery = new TextEditingController();
@@ -118,10 +119,16 @@ class SearchScreenPageState extends State<SearchScreenPage> {
       onChanged: (value){
 
 
-        if(value.length>3){
+        if(value.length>3 && !_isApiCalled){
           mainData.clear();
+          setState(() {
+            _isApiCalled = true;
+          });
           getSearchList(user_Token,value).then((value) => {
-            addData(value.data)
+            addData(value.data),
+          setState(() {
+            _isApiCalled = false;
+          })
 
           });
 
