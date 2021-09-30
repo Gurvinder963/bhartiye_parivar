@@ -52,6 +52,7 @@ dependencies:
   share: ^0.6.5+4
   firebase_messaging: ^5.0.2
   carousel_slider: ^2.1.0
+  firebase_dynamic_links: ^0.5.0+1
 
 
   flutter:

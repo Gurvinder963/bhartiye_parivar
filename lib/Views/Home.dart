@@ -41,9 +41,13 @@ import '../Repository/MainRepository.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
 import '../Interfaces/OnCartCount.dart';
 import '../Interfaces/OnNewsBack.dart';
+import '../Interfaces/OnDeepLinkContent.dart';
 import '../Views/BookmarkList.dart';
 import '../Views/SearchScreen.dart';
 import '../Views/NotificationList.dart';
+import 'VideoDetailNew.dart';
+import '../ApiResponses/VideoData.dart';
+import '../ApiResponses/VideoDetailResponse.dart';
 
 import '../Interfaces/NewNotificationRecieved.dart';
 class HomePage extends StatefulWidget {
@@ -177,8 +181,43 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
       return (prefs.getString('token'));
     });
-  }
 
+    eventBusDL.on<OnDeepLinkContent>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+      // print("my_cart_count"+event.count);
+        print(event.type);
+      if(event.type=='videos'){
+        print("--in videos--");
+
+
+        getVideoDetail(user_Token,event.key.toString()).then((value) => {
+
+        Navigator.of(context, rootNavigator: true)
+            .push( // ensures fullscreen
+        MaterialPageRoute(
+        builder: (BuildContext context) {
+        return VideoDetailNewPage(content: value.data);
+        }
+        ))
+
+        });
+
+
+
+      }
+
+    });
+
+
+
+  }
+  Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
+
+    var body ={'lang_code':''};
+    MainRepository repository=new MainRepository();
+    return repository.fetchVideoDetailData(id,body,user_Token);
+
+  }
   void homeAPICall(){
     getHOMEAPI(user_Token).then((res) async {
 

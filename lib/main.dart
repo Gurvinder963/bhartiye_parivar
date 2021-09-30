@@ -13,7 +13,10 @@ import 'Notification/push_nofitications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'localization/locale_constant.dart';
 import 'localization/localizations_delegate.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/services.dart';
+import 'Interfaces/OnDeepLinkContent.dart';
+
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -169,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     mDeepLinkContentId=-1;
     mContentType="";
-
+    initDynamicLinks();
 
 
 
@@ -214,7 +217,120 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   }
+  void initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+          final Uri deepLink = dynamicLink?.link;
 
+          print("in deep link method2");
+          if (deepLink != null) {
+            //  Navigator.pushNamed(context, deepLink.path);
+            print("deep_link_path"+deepLink.path);
+            var isContent=deepLink.pathSegments.contains('content');
+            var invitedby=deepLink.pathSegments.contains('invitedby');
+
+            if(invitedby){
+              var id=deepLink.queryParameters['referral_code'];
+              print("invited_id"+id);
+              mInvitedBy=id;
+           //   RxBus.post(OnDeepLinkReferel(mInvitedBy));
+            }
+            if(isContent){
+
+              var id=deepLink.queryParameters['contentId'];
+              var contentType=deepLink.queryParameters['contentType'];
+             // var referId=deepLink.queryParameters['referral_code'];
+              //mInvitedBy=referId;
+            //  RxBus.post(OnDeepLinkReferel(mInvitedBy));
+              print(contentType);
+              Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+              Future<String> token;
+              token = _prefs.then((SharedPreferences prefs) {
+                print(prefs.getString('TOKEN'));
+                var tok=prefs.getString('TOKEN');
+
+                if(tok==null){
+                 print("On--token--null");
+                }
+
+                else {
+                  Future.delayed(const Duration(milliseconds: 2000), () {
+                   // eventBusDL.fire(int.parse(id),contentType));
+                    print("On--fire");
+                    eventBusDL.fire(OnDeepLinkContent(int.parse(id),contentType));
+                   // RxBus.post(OnDeepLinkContent(int.parse(id),contentType));
+                  });
+                }
+
+                return (prefs.getString('TOKEN'));
+              });
+
+            }
+          }
+        },
+        onError: (OnLinkErrorException e) async {
+          print('onLinkError');
+          print(e.message);
+        }
+    );
+
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    print("in deep link method1");
+    final Uri deepLink = data?.link;
+
+    if (deepLink != null) {
+      print("deep_link_path"+deepLink.path);
+      var isContent=deepLink.pathSegments.contains('content');
+      var invitedby=deepLink.pathSegments.contains('invitedby');
+
+      if(invitedby){
+        var id=deepLink.queryParameters['referral_code'];
+        print("invited_id"+id);
+        mInvitedBy=id;
+      }
+
+
+      if(isContent){
+
+        var id=deepLink.queryParameters['contentId'];
+        var contentType=deepLink.queryParameters['contentType'];
+       // var referId=deepLink.queryParameters['referral_code'];
+      //  mInvitedBy=referId;
+        mContentType=contentType;
+        print(contentType);
+        mDeepLinkContentId=int.parse(id);
+        Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+        Future<String> token;
+        token = _prefs.then((SharedPreferences prefs) {
+          print(prefs.getString('TOKEN'));
+          var tok=prefs.getString('TOKEN');
+
+          if(tok==null){
+
+          }
+
+          else {
+
+         Timer(Duration(seconds: 4),
+                    ()=>  eventBusDL.fire(OnDeepLinkContent(int.parse(id),contentType))
+            );
+
+
+
+          }
+
+          return (prefs.getString('TOKEN'));
+        });
+
+      }
+      else{
+
+      }
+
+
+      // Navigator.pushNamed(context, deepLink.path);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(

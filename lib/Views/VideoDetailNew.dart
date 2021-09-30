@@ -18,7 +18,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
-
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:share/share.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -96,7 +101,28 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     ]);
     super.dispose();
   }
+  Future<ShortDynamicLink> getShortLink() async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?contentId=' +
+            mContent.id.toString() +
+            '&contentType=videos'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
 
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
     String status = "0";
@@ -228,7 +254,34 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return repository.fetchVideoData(body,user_Token);
 
   }
+  _onShare(BuildContext context,String title,String thumbnail) async {
+    // A builder is used to retrieve the context immediately
+    // surrounding the ElevatedButton.
+    //
+    // The context's `findRenderObject` returns the first
+    // RenderObject in its descendent tree when it's not
+    // a RenderObjectWidget. The ElevatedButton's RenderObject
+    // has its position and size after it's built.
+    // final RenderBox box = context.findRenderObject() as RenderBox;
+    var url = thumbnail;
+    var response = await get(url);
+    final documentDirectory = (await getExternalStorageDirectory()).path;
+    File imgFile = new File('$documentDirectory/flutter.png');
+    imgFile.writeAsBytesSync(response.bodyBytes);
+    List<String> imagePaths = [];
+    imagePaths.add('$documentDirectory/flutter.png');
 
+    if (imagePaths.isNotEmpty) {
+      await Share.shareFiles(imagePaths,
+        text: title,
+
+      );
+    } else {
+      await Share.share(title,
+
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var publisher=mContent.publisher==null?"My Channel":mContent.publisher;
@@ -463,7 +516,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                         SizedBox(width: 17,),
                                         Icon(Icons.report_outlined,size: 28,color:Colors.black,),
                                         SizedBox(width: 17,),
-                                        Image(
+                                  IconButton(
+                                      icon:Image(
                                           image: new AssetImage("assets/share.png"),
                                           width: 23,
                                           height:  23,
@@ -471,6 +525,25 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                           fit: BoxFit.scaleDown,
                                           alignment: Alignment.center,
                                         ),
+                                      onPressed: () {
+                                        getShortLink().then((res) {
+                                          setState(() {
+                                            _isInAsyncCall = false;
+                                          });
+                                          var url = res.shortUrl.toString();
+
+                                          _onShare(context,mContent.title +
+                                              ' ' +
+                                              url,mContent.videoImage);
+
+
+
+
+
+                                        });
+
+                                        //  submitFavourite("1",tok,MyContentId.toString(),false);
+                                      }),
                                         SizedBox(width: 17,),
                                         IconButton(
                                             icon: isBookMarked? Image(
