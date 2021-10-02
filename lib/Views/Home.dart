@@ -22,7 +22,7 @@ import 'DonatedSuccessfuly.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 //import 'package:device_info/device_info.dart';
-
+import '../Views/YoutubeApp.dart';
 import 'DonateUs.dart';
 import '../Utils/fab_bottom_app_bar.dart';
 
@@ -48,6 +48,7 @@ import '../Views/NotificationList.dart';
 import 'VideoDetailNew.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
+import '../Views/JoinUs.dart';
 
 import '../Interfaces/NewNotificationRecieved.dart';
 class HomePage extends StatefulWidget {
@@ -617,12 +618,12 @@ class navigationDrawer extends StatelessWidget {
               text: Languages
                   .of(context)
                   .joinUs,
-              onTap: () =>{ /*Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              onTap: () =>{ Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
-              return DonatedSuccessfulyPage();
+              return JoinUsPage();
               }
-              ) )*/}
+              ) )}
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(

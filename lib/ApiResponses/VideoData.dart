@@ -10,6 +10,7 @@ class VideoData {
   String channel_image;
   int channel_id;
   int content_type;
+  int is_like;
   String video_duration;
   String lang;
   bool status;
@@ -32,6 +33,7 @@ class VideoData {
     this.channel_image,
     this.channel_id,
     this.content_type,
+    this.is_like,
     this.video_duration,
     this.lang,
     this.status,
@@ -55,6 +57,7 @@ class VideoData {
     channel_image = json['channel_image'];
     channel_id = json['channel_id'];
     content_type = json['content_type'];
+    is_like = json['is_like'];
     video_duration = json['video_duration'];
     lang = json['lang'];
     status = json['status'];
@@ -81,6 +84,7 @@ class VideoData {
     data['channel_image'] = this.channel_image;
     data['channel_id'] = this.channel_id;
     data['content_type'] = this.content_type;
+    data['is_like'] = this.is_like;
     data['lang'] = this.lang;
     data['status'] = this.status;
     data['bookmark'] = this.bookmark;

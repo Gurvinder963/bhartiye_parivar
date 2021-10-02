@@ -45,6 +45,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   bool isLoading = false;
   bool isBookMarked = false;
   bool isSubscribed= false;
+  var likeStatus=0;
 
   double _volume = 100;
   bool _muted = false;
@@ -167,6 +168,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           mContent=value.data;
           isBookMarked=mContent.bookmark;
           isSubscribed=mContent.is_subscribed;
+          likeStatus=mContent.is_like;
           //   isLoading = false;
           // mainData.addAll(value.data);
 
@@ -240,6 +242,16 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return repository.fetchAddBookMark(body,token);
 
   }
+
+  Future<AddToCartResponse> postAddLike(String content_type,String token,String content_id) async {
+
+    print('my_token'+token);
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"like_status": likeStatus});
+    MainRepository repository=new MainRepository();
+    return repository.fetchSaveLikeStatus(body,token);
+
+  }
+
   Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
 
     var body ={'lang_code':''};
@@ -496,7 +508,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
                                         SizedBox(width: 5,),
-                                        Image(
+                                  IconButton(
+                                      icon: likeStatus==1? Image(
+                                        image: new AssetImage("assets/like_sel.png"),
+                                        width: 24,
+                                        height:  24,
+                                        color: null,
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.center,
+                                      ) :Image(
                                           image: new AssetImage("assets/like_unsel.png"),
                                           width: 24,
                                           height:  24,
@@ -504,15 +524,90 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                           fit: BoxFit.scaleDown,
                                           alignment: Alignment.center,
                                         ),
+                                      onPressed: () {
+                                        setState(() {
+                                          if(likeStatus==1){
+                                            likeStatus = 0;
+                                          }
+                                          else{
+                                            likeStatus = 1;
+                                          }
+
+                                        });
+
+                                        postAddLike("1",user_Token,mContent.id.toString())
+                                            .then((res) async {
+                                          String msg="";
+                                              if(likeStatus==1){
+                                                msg="Added to liked videos";
+                                          }
+                                          else{
+                                                msg="Removed from liked videos";
+                                          }
+                                          Fluttertoast.showToast(
+                                              msg: msg,
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.black,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+
+                                        });
+
+                                      }),
                                         SizedBox(width: 17,),
-                                        Image(
-                                          image: new AssetImage("assets/dislike_unsel.png"),
-                                          width: 24,
-                                          height:  24,
-                                          color: null,
-                                          fit: BoxFit.scaleDown,
-                                          alignment: Alignment.center,
-                                        ),
+                                        IconButton(
+                                            icon: likeStatus==2? Image(
+                                              image: new AssetImage("assets/dislike_sel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ) :Image(
+                                              image: new AssetImage("assets/dislike_unsel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ),
+                                            onPressed: () {
+
+                                              setState(() {
+                                                if(likeStatus==2){
+                                                  likeStatus = 0;
+                                                }
+                                                else{
+                                                  likeStatus = 2;
+                                                }
+
+                                              });
+
+
+
+                                              postAddLike("1",user_Token,mContent.id.toString())
+                                                  .then((res) async {
+                                                String msg="";
+                                                if(likeStatus==2){
+                                                  msg="You Dislike this video";
+                                                }
+                                                else{
+                                                  msg="Dislike Removed";
+                                                }
+                                                Fluttertoast.showToast(
+                                                    msg: msg,
+                                                    toastLength: Toast.LENGTH_SHORT,
+                                                    gravity: ToastGravity.BOTTOM,
+                                                    timeInSecForIosWeb: 1,
+                                                    backgroundColor: Colors.black,
+                                                    textColor: Colors.white,
+                                                    fontSize: 16.0);
+
+                                              });
+
+                                            }),
                                         SizedBox(width: 17,),
                                         Icon(Icons.report_outlined,size: 28,color:Colors.black,),
                                         SizedBox(width: 17,),

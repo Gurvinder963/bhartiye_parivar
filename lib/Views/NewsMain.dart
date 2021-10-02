@@ -487,7 +487,7 @@ if(value.data.length>0){
                      // List answerList = new List();
                      // answerList.add(answers[index].id);
 
-                    //  addPollAnsersAPI(newsId,answers[index].id.toString());
+                     addPollAnsersAPI(newsId,answers[index].id.toString());
 
                     },
                     activeColor: Colors.black,

@@ -831,6 +831,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0+2"
+  youtube_plyr_iframe:
+    dependency: "direct main"
+    description:
+      name: youtube_plyr_iframe
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.7"
 sdks:
   dart: ">=2.10.2 <2.11.0"
   flutter: ">=1.22.2 <2.0.0"
