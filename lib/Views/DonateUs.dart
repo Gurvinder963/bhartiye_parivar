@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'PayToAccount.dart';
@@ -7,8 +7,12 @@ import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-
+import '../Repository/MainRepository.dart';
+import '../ApiResponses/DonateOrderSaveResponse.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
+import '../Views/DonatePayment.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 class DonateUsPage extends StatefulWidget {
   @override
   DonateUsPageState createState() {
@@ -19,57 +23,35 @@ class DonateUsPage extends StatefulWidget {
 
 class DonateUsPageState extends State<DonateUsPage> {
   String _chosenValue= "Select";
-  static const platform = const MethodChannel("razorpay_flutter");
+  bool _isInAsyncCall = false;
 
-   Razorpay _razorpay;
+  String user_Token;
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+
+
+      return (prefs.getString('token'));
+    });
+
   }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(
-        msg: "ERROR: " + response.code.toString() + " - " + response.message,
-        toastLength: Toast.LENGTH_SHORT);
-  }
 
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName, toastLength: Toast.LENGTH_SHORT);
-  }
-  void openCheckout() async {
-    var options = {
-      'key': 'rzp_test_54VVLcnAL17lQz',
-      'amount': myControllerPhone.text,
-      'name': 'Gurvinder Singh',
-      'description': 'Donate',
-      'prefill': {'contact': '9799125180', 'email': 'test@razorpay.com'},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
 
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: e');
-    }
-  }
+
+
   @override
   void dispose() {
     super.dispose();
-    myControllerPhone.dispose();
-    _razorpay.clear();
+    myControllerAmount.clear();
   }
-  final myControllerPhone = TextEditingController();
+  final myControllerAmount = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,10 +59,16 @@ class DonateUsPageState extends State<DonateUsPage> {
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(AppStrings.DonatetoBhartiyaParivar),
       ),
-      body:   Container(
+      body:  ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:  Container(
         child:Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(height: 20),
           _entryField("Phone"),
 
           SizedBox(height: 20),
@@ -96,10 +84,23 @@ class DonateUsPageState extends State<DonateUsPage> {
                 fontWeight: FontWeight.w500),
           )),
 
-          Container(
-              width: 300,
-              margin: EdgeInsets.symmetric(vertical: 5),
-              child:
+    Container(
+    height: 35,
+    width: 300,
+        margin: EdgeInsets.symmetric(vertical: 5),
+    decoration: BoxDecoration(
+    border: Border(
+    bottom: BorderSide(width: 1.0, color: Colors.orange),
+    ),
+    ),
+
+    child:DropdownButtonHideUnderline(
+
+    child: Theme(
+    data: new ThemeData(
+    primaryColor: Colors.orange,
+    ),
+    child:
                 DropdownButton<String>(
                   isExpanded: true,
                   focusColor:Colors.white,
@@ -141,8 +142,8 @@ class DonateUsPageState extends State<DonateUsPage> {
                    }
 
                   },
-                )),
-
+                )))),
+          SizedBox(height: 20),
           _submitButton(),
           Divider(
             color: Colors.orange,
@@ -156,21 +157,74 @@ class DonateUsPageState extends State<DonateUsPage> {
 
         ])
 
-      ),
+      )),
 
+    );
+  }
+
+  Future<DonateOrderSaveResponse> saveOrderAPI() async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"amount":myControllerAmount.text.toString()});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchDonateOrderSave(body,user_Token);
+
+
+  }
+  showAlertDialogValidation(BuildContext context,String message) {
+
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-      /*  Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder:
-                (context) =>
-                VerifyOTPPage()
-            ), ModalRoute.withName("/VerifyOTP")
-        );*/
-      //  openCheckout();
+        if(myControllerAmount.text.trim().toString().isEmpty){
+          showAlertDialogValidation(context,"Please enter amount");
+        }
+        else {
+          setState(() {
+            _isInAsyncCall = true;
+          });
+          saveOrderAPI().then((res) async {
+            String msg;
+            setState(() {
+              _isInAsyncCall = false;
+            });
+            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return DonatePaymentPage(amount:myControllerAmount.text.trim().toString(),orderId:res.data.orderId.toString());
+                    }
+                ) );
 
+
+          });
+        }
       },
 
       child: Container(
@@ -210,7 +264,7 @@ class DonateUsPageState extends State<DonateUsPage> {
 
           TextField(
 
-            controller: myControllerPhone,
+            controller: myControllerAmount,
             obscureText: false,
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
@@ -231,7 +285,7 @@ class DonateUsPageState extends State<DonateUsPage> {
                 borderSide: BorderSide(color: Colors.orange, width: 1.0),
               ),
 
-              contentPadding: EdgeInsets.all(12),
+              contentPadding: EdgeInsets.all(0),
             ),
           )
         ],

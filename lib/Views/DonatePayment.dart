@@ -11,27 +11,28 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/TxnResponse.dart';
+import '../ApiResponses/DonateOrderSaveResponse.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Interfaces/OnCartCount.dart';
 import 'MyBooksTab.dart';
-class BookPaymentPage extends StatefulWidget {
+class DonatePaymentPage extends StatefulWidget {
 
   final String orderId;
   final String amount;
 
-  BookPaymentPage({Key key,@required this.orderId,@required this.amount}) : super(key: key);
+  DonatePaymentPage({Key key,@required this.orderId,@required this.amount}) : super(key: key);
 
   @override
-  BookPaymentPageState createState() {
-    return BookPaymentPageState(orderId,amount);
+  DonatePaymentPageState createState() {
+    return DonatePaymentPageState(orderId,amount);
   }
 }
 
-class BookPaymentPageState extends State<BookPaymentPage> {
+class DonatePaymentPageState extends State<DonatePaymentPage> {
   String mid = "TWsple62048587367612", orderId = "", amount = "", txnToken = "";
 
   String user_Token;
-  BookPaymentPageState(String orderId,String amount){
+  DonatePaymentPageState(String orderId,String amount){
     this.orderId=orderId;
     this.amount=amount;
 
@@ -99,7 +100,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
         orientation: Orientation.portrait);
     String res="";
     if(IsPaymentSuccess){
-      res="Order placed successfully";
+      res="Payment success";
     }
     else{
       res="Payment Failed";
@@ -138,7 +139,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 200),
+                          SizedBox(height: 250),
                           IsPaymentSuccess? new Image(
                             image: new AssetImage("assets/green_tick_pay.png"),
                             width: 120,
@@ -166,20 +167,11 @@ class BookPaymentPageState extends State<BookPaymentPage> {
                             ),
                           ),
                           SizedBox(height: 30),
-                          IsPaymentSuccess? Text(
-                            'Track your order / Read your book Here',
-                            style: GoogleFonts.roboto(
-                              fontSize: ScreenUtil().setSp(16),
 
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
 
-                            ),
-                          ):Container(),
-                          SizedBox(height: 20),
-                          IsPaymentSuccess? _addBooksButton():Container(),
+
                           Spacer(),
-                          /*  IsPayment?Align(
+                          IsPayment?Align(
               alignment: FractionalOffset.bottomCenter,
               child:    GestureDetector(
                   onTap: () {
@@ -196,53 +188,13 @@ class BookPaymentPageState extends State<BookPaymentPage> {
                     style: GoogleFonts.poppins( letterSpacing: 1.2,fontSize: ScreenUtil().setSp(16), color:  Color(0xFFffffff).withOpacity(0.8),fontWeight: FontWeight.w500),),
                 ),
               )),
-            ):Container(),*/
+            ):Container(),
 
                         ])):Container()
 
             )
 
         ));
-  }
-  Widget _addBooksButton() {
-    return InkWell(
-      onTap: () {
-        int count = 0;
-        Navigator.of(context).popUntil((_) => count++ >= 3);
-        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-            MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return MyBooksTabPage();
-                }
-            ) );
-
-      },
-
-      child: Container(
-        width: 150,
-        height: ScreenUtil().setWidth(40),
-        margin: EdgeInsets.fromLTRB(0,0,0,10),
-
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(1, 1),
-                  blurRadius: 0,
-                  spreadRadius: 0)
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Color(AppColors.BaseColor), Color(AppColors.BaseColor)])),
-        child: Text(
-          'My Books',
-          style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(18), color: Colors.white,fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
   }
 
   void clearCartData() async{
@@ -290,8 +242,7 @@ class BookPaymentPageState extends State<BookPaymentPage> {
 
         callOrderUpdateAPI(txnToken,payment_response,orderId,user_Token).then((value) => {
 
-          clearCartData(),
-          eventBus.fire(OnCartCount("FIND")),
+
           print("call_update_api"),
           setState(() {
             _isInAsyncCall = false;
@@ -361,11 +312,11 @@ class BookPaymentPageState extends State<BookPaymentPage> {
     return repository.fetchPostTxnToken(body,user_Token);
 
   }
-  Future<AddToCartResponse> callOrderUpdateAPI(String payment_id,String payment_status,String orderId,String user_Token) async {
+  Future<DonateOrderSaveResponse> callOrderUpdateAPI(String payment_id,String payment_status,String orderId,String user_Token) async {
     var body =json.encode({'payment_id':payment_id,'payment_status':payment_status,'order_id':orderId});
 
     MainRepository repository=new MainRepository();
-    return repository.fetchUpdateOrder(body,user_Token);
+    return repository.fetchUpdateDonateOrder(orderId,body,user_Token);
 
   }
 

@@ -632,12 +632,12 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .donateUs,
               onTap: () =>{
-                /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
                           return DonateUsPage();
                         }
-                    ) )*/
+                    ) )
 
               }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),

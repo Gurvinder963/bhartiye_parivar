@@ -19,7 +19,9 @@ import '../ApiResponses/NewsDetailResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
 import '../ApiResponses/BookmarkResponse.dart';
 import '../ApiResponses/SearchResponse.dart';
+import '../ApiResponses/DonateOrderSaveResponse.dart';
 import '../ApiResponses/NotificationListResponse.dart';
+import '../ApiResponses/DonateHistoryResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -193,4 +195,20 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/like-dislike",body,token);
     return AddToCartResponse.fromJson(response);
   }
+
+  Future<DonateOrderSaveResponse> fetchDonateOrderSave(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/user-donations",body,token);
+    return DonateOrderSaveResponse.fromJson(response);
+  }
+
+  Future<DonateHistoryResponse> fetchDonationHistoryData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/user-donations",body,token);
+    return DonateHistoryResponse.fromJson(response);
+  }
+
+  Future<DonateOrderSaveResponse> fetchUpdateDonateOrder(String id,var body,String token) async {
+    final response = await _provider.putWithToken("public/api/v1/user-donations/"+id,body,token);
+    return DonateOrderSaveResponse.fromJson(response);
+  }
+
 }
