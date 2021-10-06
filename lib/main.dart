@@ -254,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
 
                 else {
-                  Future.delayed(const Duration(milliseconds: 2000), () {
+                  Future.delayed(const Duration(milliseconds: 500), () {
                    // eventBusDL.fire(int.parse(id),contentType));
                     print("On--fire");
                     eventBusDL.fire(OnDeepLinkContent(int.parse(id),contentType));

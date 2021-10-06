@@ -23,6 +23,13 @@ import '../ApiResponses/AddToCartResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
+
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:share/share.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 class NewsMainPage extends StatefulWidget {
   @override
   NewsMainPageState createState() {
@@ -220,6 +227,56 @@ if(value.data.length>0){
       );
 
   }*/
+  Future<ShortDynamicLink> getShortLink(int id) async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?contentId=' +
+            id.toString() +
+            '&contentType=news'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
+
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
+  _onShare(BuildContext context,String title,String thumbnail) async {
+    // A builder is used to retrieve the context immediately
+    // surrounding the ElevatedButton.
+    //
+    // The context's `findRenderObject` returns the first
+    // RenderObject in its descendent tree when it's not
+    // a RenderObjectWidget. The ElevatedButton's RenderObject
+    // has its position and size after it's built.
+    // final RenderBox box = context.findRenderObject() as RenderBox;
+  //  var url = thumbnail;
+   // var response = await get(url);
+  //  final documentDirectory = (await getExternalStorageDirectory()).path;
+  //  File imgFile = new File('$documentDirectory/flutter.png');
+  //  imgFile.writeAsBytesSync(response.bodyBytes);
+    List<String> imagePaths = [];
+  //  imagePaths.add('$documentDirectory/flutter.png');
+
+    if (imagePaths.isNotEmpty) {
+      await Share.shareFiles(imagePaths,
+        text: title,
+
+      );
+    } else {
+      await Share.share(title,
+
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return /*WillPopScope(
@@ -394,14 +451,34 @@ if(value.data.length>0){
                     SizedBox(width: 17,),
                     Icon(Icons.report_outlined,size: 28,color:Colors.black,),
                     SizedBox(width: 17,),
-                    Image(
-                      image: new AssetImage("assets/share.png"),
-                      width: 23,
-                      height:  23,
-                      color:Colors.black,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
+                    IconButton(
+                        icon:Image(
+                          image: new AssetImage("assets/share.png"),
+                          width: 23,
+                          height:  23,
+                          color:Colors.black,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        onPressed: () {
+                          getShortLink(mainData[mPagePosition].id).then((res) {
+                            setState(() {
+                              _isInAsyncCall = false;
+                            });
+                            var url = res.shortUrl.toString();
+
+                            _onShare(context,mainData[mPagePosition].title +
+                                ' ' +
+                                url,"");
+
+
+
+
+
+                          });
+
+                          //  submitFavourite("1",tok,MyContentId.toString(),false);
+                        }),
                     SizedBox(width: 17,),
 
                /*     Image(

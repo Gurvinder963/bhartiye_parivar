@@ -37,8 +37,52 @@ class VideoDetailNewPage extends StatefulWidget {
     return VideoDetailNewPageState(content);
   }
 }
-
+class ReportList {
+  String name;
+  int index;
+  ReportList({this.name, this.index});
+}
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
+
+  String radioItem = '';
+
+  // Group Value for Radio Button.
+  int radioid = -1;
+
+  List<ReportList> fList = [
+    ReportList(
+      index: 1,
+      name: "Sexual Content",
+    ),
+    ReportList(
+      index: 2,
+      name: "Violent or repulsive content",
+    ),
+    ReportList(
+      index: 3,
+      name: "Hateful or abusive content",
+    ),
+    ReportList(
+      index: 4,
+      name: "Harassment or bullying",
+    ),
+    ReportList(
+      index: 5,
+      name: "Harmful or dangerous acts",
+    ),
+    ReportList(
+      index: 6,
+      name: "Child abuse",
+    ),
+    ReportList(
+      index: 7,
+      name: "Promotes terrorism",
+    ),
+    ReportList(
+      index: 8,
+      name: "Spam or misleading",
+    ),
+  ];
   bool _isInAsyncCall = false;
   var marginPixel=0;
   List mainData = new List();
@@ -266,15 +310,84 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return repository.fetchVideoData(body,user_Token);
 
   }
+  Future<AddToCartResponse> saveReportAPI(message) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"content_id":mContent.id.toString(),"content_type":"1","message":message});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReportSave(body,user_Token);
+
+
+  }
+  Future _asyncInputDialog(BuildContext context,String id) async {
+    String teamName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Report Video"),
+          content: new Row(
+            children: [
+              new Expanded(
+                  child: new TextField(
+
+                    maxLength: null,
+                    maxLines: null,  // allow user to enter 5 line in textfield
+                    keyboardType: TextInputType.multiline,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                      labelText: 'Type your reason here ', ),
+                    onChanged: (value) {
+                      teamName = value;
+                    },
+                  ))
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+
+                Navigator.of(context).pop(teamName);
+              },
+            ),
+
+            FlatButton(
+              child: Text('REPORT'),
+              onPressed: () {
+                setState(() {
+                  _isInAsyncCall = true;
+                });
+                Navigator.of(context).pop(teamName);
+                saveReportAPI(teamName).then((res) async {
+                  String msg;
+                  setState(() {
+                    _isInAsyncCall = false;
+                  });
+                  Fluttertoast.showToast(
+                      msg: "Report save successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   _onShare(BuildContext context,String title,String thumbnail) async {
-    // A builder is used to retrieve the context immediately
-    // surrounding the ElevatedButton.
-    //
-    // The context's `findRenderObject` returns the first
-    // RenderObject in its descendent tree when it's not
-    // a RenderObjectWidget. The ElevatedButton's RenderObject
-    // has its position and size after it's built.
-    // final RenderBox box = context.findRenderObject() as RenderBox;
+
     var url = thumbnail;
     var response = await get(url);
     final documentDirectory = (await getExternalStorageDirectory()).path;
@@ -609,8 +722,14 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                             }),
                                         SizedBox(width: 17,),
-                                        Icon(Icons.report_outlined,size: 28,color:Colors.black,),
-                                        SizedBox(width: 17,),
+                                  IconButton(
+                                      icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+
+                                      onPressed: () {
+                                        _asyncInputDialog(context,mContent.id.toString());
+
+                              //  submitFavourite("1",tok,MyContentId.toString(),false);
+                              }),
                                   IconButton(
                                       icon:Image(
                                           image: new AssetImage("assets/share.png"),

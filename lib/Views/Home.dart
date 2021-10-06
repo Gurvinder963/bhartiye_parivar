@@ -49,8 +49,9 @@ import 'VideoDetailNew.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../Views/JoinUs.dart';
-
+import '../ApiResponses/NewsDetailResponse.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
+import 'NewsDetail.dart';
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -188,8 +189,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       // print("my_cart_count"+event.count);
         print(event.type);
       if(event.type=='videos'){
-        print("--in videos--");
-
 
         getVideoDetail(user_Token,event.key.toString()).then((value) => {
 
@@ -203,15 +202,36 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
         });
 
-
-
       }
+       else if(event.type=='news'){
 
+        getNewsDetail(event.key.toString(),user_Token).then((value) => {
+
+            Navigator.of(context, rootNavigator: true)
+                .push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return NewsDetailPage(content: value.data);
+                    }
+                ))
+
+          });
+
+        }
     });
 
 
 
   }
+  Future<NewsDetailResponse> getNewsDetail(String id,String user_Token) async {
+
+    var body ={'lang_code':''};
+    MainRepository repository=new MainRepository();
+    return repository.fetchNewsDetailData(id,body,user_Token);
+
+  }
+
+
   Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
 
     var body ={'lang_code':''};

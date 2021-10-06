@@ -210,5 +210,8 @@ class MainRepository {
     final response = await _provider.putWithToken("public/api/v1/user-donations/"+id,body,token);
     return DonateOrderSaveResponse.fromJson(response);
   }
-
+  Future<AddToCartResponse> fetchReportSave(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/abusing-reports",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }
