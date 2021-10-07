@@ -43,6 +43,7 @@ class NewsMainPageState extends State<NewsMainPage> {
   int selectedRadioTile = 0;
   bool isBookMarked=false;
   int mPagePosition=0;
+  var likeStatus=0;
   int _curr=0;
  // int mposition=0;
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
@@ -408,6 +409,7 @@ if(value.data.length>0){
                       mPagePosition=position;
                       setState(() {
                         isBookMarked = mainData[position].bookmark;
+                        likeStatus = mainData[position].is_like;
                       });
 
 
@@ -431,25 +433,115 @@ if(value.data.length>0){
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(width: 5,),
-                    Image(
-                      image: new AssetImage("assets/like_unsel.png"),
-                      width: 24,
-                      height:  24,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
+                    IconButton(
+                        icon: likeStatus==1? Image(
+                          image: new AssetImage("assets/like_sel.png"),
+                          width: 24,
+                          height:  24,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ) :Image(
+                          image: new AssetImage("assets/like_unsel.png"),
+                          width: 24,
+                          height:  24,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if(likeStatus==1){
+                              likeStatus = 0;
+                            }
+                            else{
+                              likeStatus = 1;
+                            }
+
+                          });
+
+                          postAddLike("2",user_Token,mainData[mPagePosition].id.toString())
+                              .then((res) async {
+                            String msg="";
+                            if(likeStatus==1){
+                              msg="Added to liked news";
+                            }
+                            else{
+                              msg="Removed from liked news";
+                            }
+                            Fluttertoast.showToast(
+                                msg: msg,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+
+                          });
+
+                        }),
                     SizedBox(width: 17,),
-                    Image(
-                      image: new AssetImage("assets/dislike_unsel.png"),
-                      width: 24,
-                      height:  24,
-                      color: null,
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.center,
-                    ),
+                    IconButton(
+                        icon: likeStatus==2? Image(
+                          image: new AssetImage("assets/dislike_sel.png"),
+                          width: 24,
+                          height:  24,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ) :Image(
+                          image: new AssetImage("assets/dislike_unsel.png"),
+                          width: 24,
+                          height:  24,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        onPressed: () {
+
+                          setState(() {
+                            if(likeStatus==2){
+                              likeStatus = 0;
+                            }
+                            else{
+                              likeStatus = 2;
+                            }
+
+                          });
+
+
+
+                          postAddLike("2",user_Token,mainData[mPagePosition].id.toString())
+                              .then((res) async {
+                            String msg="";
+                            if(likeStatus==2){
+                              msg="You Dislike this news";
+                            }
+                            else{
+                              msg="Dislike Removed";
+                            }
+                            Fluttertoast.showToast(
+                                msg: msg,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+
+                          });
+
+                        }),
                     SizedBox(width: 17,),
-                    Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+                    IconButton(
+                        icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+
+                        onPressed: () {
+                          _asyncInputDialog(context,mainData[mPagePosition].id.toString());
+
+                          //  submitFavourite("1",tok,MyContentId.toString(),false);
+                        }),
                     SizedBox(width: 17,),
                     IconButton(
                         icon:Image(
@@ -502,6 +594,88 @@ if(value.data.length>0){
     setState(() {
       selectedRadioTile = val;
     });
+  }
+  Future _asyncInputDialog(BuildContext context,String id) async {
+    String teamName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Report News"),
+          content: new Row(
+            children: [
+              new Expanded(
+                  child: new TextField(
+
+                    maxLength: null,
+                    maxLines: null,  // allow user to enter 5 line in textfield
+                    keyboardType: TextInputType.multiline,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                      labelText: 'Type your reason here ', ),
+                    onChanged: (value) {
+                      teamName = value;
+                    },
+                  ))
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+
+                Navigator.of(context).pop(teamName);
+              },
+            ),
+
+            FlatButton(
+              child: Text('REPORT'),
+              onPressed: () {
+                setState(() {
+                  _isInAsyncCall = true;
+                });
+                Navigator.of(context).pop(teamName);
+                saveReportAPI(id,teamName).then((res) async {
+                  String msg;
+                  setState(() {
+                    _isInAsyncCall = false;
+                  });
+                  Fluttertoast.showToast(
+                      msg: "Report save successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<AddToCartResponse> saveReportAPI(id,message) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"content_id":id.toString(),"content_type":"2","message":message});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReportSave(body,user_Token);
+
+
+  }
+  Future<AddToCartResponse> postAddLike(String content_type,String token,String content_id) async {
+
+    print('my_token'+token);
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"like_status": likeStatus});
+    MainRepository repository=new MainRepository();
+    return repository.fetchSaveLikeStatus(body,token);
+
   }
   Future<AddToCartResponse> addPollAnsersAPI(String NewsId,String answer) async {
     //  final String requestBody = json.encoder.convert(order_items);

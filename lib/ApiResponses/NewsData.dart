@@ -4,6 +4,7 @@ class NewsData {
   int content_type;
   String title;
   int newsType;
+  int is_like;
   String description;
   List<EmbedUrls> embedUrls;
   List<Answers> answers;
@@ -19,6 +20,7 @@ class NewsData {
       this.content_type,
         this.title,
         this.newsType,
+       this.is_like,
         this.description,
         this.embedUrls,
         this.answers,
@@ -34,6 +36,7 @@ class NewsData {
     content_type = json['content_type'];
     title = json['title'];
     newsType = json['news_type'];
+    is_like = json['is_like'];
     description = json['description'];
     if (json['embed_urls'] != null) {
       embedUrls = new List<EmbedUrls>();
@@ -62,6 +65,7 @@ class NewsData {
     data['content_type'] = this.content_type;
     data['title'] = this.title;
     data['news_type'] = this.newsType;
+    data['is_like'] = this.is_like;
     data['description'] = this.description;
     if (this.embedUrls != null) {
       data['embed_urls'] = this.embedUrls.map((v) => v.toJson()).toList();

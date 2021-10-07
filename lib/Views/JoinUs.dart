@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class JoinUsPage extends StatefulWidget {
   @override
   JoinUsPageState createState() {
@@ -29,7 +31,36 @@ class JoinUsPageState extends State<JoinUsPage> {
   bool checkedValue9=false;
   bool checkedValue10=false;
   bool _isInAsyncCall = false;
+  String user_Token;
+  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
 
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      if (!isLoading) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+
+      var array='["No, I don not have time", "Yes, I can be active on social media.", "Yes, once in a year", "[Satsang or Dharmguru, Political Party]"]';
+
+      var lists = json.decode(array);
+      print(lists[3]);
+      setState(() {
+        _chosenValue1 = lists[0];
+       _chosenValue2 = lists[1];
+       _chosenValue3 = lists[2];
+      });
+
+      return (prefs.getString('token'));
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -491,7 +522,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
-                        title:Text("Socialist Ideology",
+                        title:Text("Non-Political Movement",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: ScreenUtil().setSp(14),
@@ -578,8 +609,60 @@ class JoinUsPageState extends State<JoinUsPage> {
         child:    GestureDetector(
             onTap: () {
 
+              List mainData = new List();
+              List checkedMainData = new List();
 
+           if(_chosenValue1=="Select your answer"){
 
+           }
+           else if(_chosenValue2=="Select your answer"){
+
+           }
+           else if(_chosenValue3=="Select your answer"){
+
+           }
+           else{
+             mainData.add(_chosenValue1);
+             mainData.add(_chosenValue2);
+             mainData.add(_chosenValue3);
+
+             if(checkedValue1){
+               checkedMainData.add("Satsang or Dharmguru");
+
+             }
+             if(checkedValue2){
+               checkedMainData.add("Non-Political Movement");
+             }
+             if(checkedValue3){
+               checkedMainData.add("Ambedkarite Ideology");
+             }
+             if(checkedValue4){
+               checkedMainData.add("Rajiv Dixit Ideology");
+             }
+             if(checkedValue5){
+               checkedMainData.add("Communist Ideology");
+             }
+             if(checkedValue6){
+               checkedMainData.add("Political Party");
+             }
+             if(checkedValue7){
+               checkedMainData.add("Non-Political Movement");
+             }
+             if(checkedValue8){
+               checkedMainData.add("RSS Ideology");
+             }
+             if(checkedValue9){
+               checkedMainData.add("Gandhian Ideology");
+             }
+             if(checkedValue10){
+               checkedMainData.add("Others");
+             }
+
+             mainData.add(checkedMainData);
+
+             print(mainData);
+
+           }
 
 
             },child:Container(
