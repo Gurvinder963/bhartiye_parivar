@@ -427,13 +427,14 @@ if(value.data.length>0){
             color: Colors.black,
           ),
             Container(
-              margin:  EdgeInsets.fromLTRB(20,10,10,10),
+              margin:  EdgeInsets.fromLTRB(10,0,10,0),
               child:Row(
 
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(width: 5,),
+                    SizedBox(width: 2,),
                     IconButton(
+                      iconSize: 24,
                         icon: likeStatus==1? Image(
                           image: new AssetImage("assets/like_sel.png"),
                           width: 24,
@@ -453,9 +454,11 @@ if(value.data.length>0){
                           setState(() {
                             if(likeStatus==1){
                               likeStatus = 0;
+                              mainData[mPagePosition].is_like=likeStatus;
                             }
                             else{
                               likeStatus = 1;
+                              mainData[mPagePosition].is_like=likeStatus;
                             }
 
                           });
@@ -481,8 +484,9 @@ if(value.data.length>0){
                           });
 
                         }),
-                    SizedBox(width: 17,),
+                    SizedBox(width: 2,),
                     IconButton(
+                        iconSize: 24,
                         icon: likeStatus==2? Image(
                           image: new AssetImage("assets/dislike_sel.png"),
                           width: 24,
@@ -503,9 +507,11 @@ if(value.data.length>0){
                           setState(() {
                             if(likeStatus==2){
                               likeStatus = 0;
+                              mainData[mPagePosition].is_like=likeStatus;
                             }
                             else{
                               likeStatus = 2;
+                              mainData[mPagePosition].is_like=likeStatus;
                             }
 
                           });
@@ -533,8 +539,9 @@ if(value.data.length>0){
                           });
 
                         }),
-                    SizedBox(width: 17,),
+                    SizedBox(width: 2,),
                     IconButton(
+                        iconSize: 24,
                         icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
 
                         onPressed: () {
@@ -542,8 +549,9 @@ if(value.data.length>0){
 
                           //  submitFavourite("1",tok,MyContentId.toString(),false);
                         }),
-                    SizedBox(width: 17,),
+                    SizedBox(width: 2,),
                     IconButton(
+                        iconSize: 24,
                         icon:Image(
                           image: new AssetImage("assets/share.png"),
                           width: 23,
@@ -603,22 +611,33 @@ if(value.data.length>0){
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Report News"),
-          content: new Row(
-            children: [
-              new Expanded(
-                  child: new TextField(
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: SizedBox(
+              height: 250,
+              width: 400,
+              child: new TextField(
+                autofocus: false,
+                maxLines: 500,
+                onChanged: (value) {
+                  teamName = value;
+                },
+                decoration: new InputDecoration(
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
 
-                    maxLength: null,
-                    maxLines: null,  // allow user to enter 5 line in textfield
-                    keyboardType: TextInputType.multiline,
-                    autofocus: false,
-                    decoration: new InputDecoration(
-                      labelText: 'Type your reason here ', ),
-                    onChanged: (value) {
-                      teamName = value;
-                    },
-                  ))
-            ],
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  hintText: 'Enter your report reason here',
+                ),
+              ),
+            ),
           ),
           actions: [
             FlatButton(

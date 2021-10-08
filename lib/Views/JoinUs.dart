@@ -7,7 +7,11 @@ import '../Utils/AppColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import'../ApiResponses/DonateHistoryResponse.dart';
 import '../Utils/Prefer.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class JoinUsPage extends StatefulWidget {
   @override
   JoinUsPageState createState() {
@@ -47,7 +51,7 @@ class JoinUsPageState extends State<JoinUsPage> {
         });
       }
 
-      var array='["No, I don not have time", "Yes, I can be active on social media.", "Yes, once in a year", "[Satsang or Dharmguru, Political Party]"]';
+   /*   var array='["No, I don not have time", "Yes, I can be active on social media.", "Yes, once in a year", ["Satsang or Dharmguru", "Political Party"]]';
 
       var lists = json.decode(array);
       print(lists[3]);
@@ -56,11 +60,59 @@ class JoinUsPageState extends State<JoinUsPage> {
        _chosenValue2 = lists[1];
        _chosenValue3 = lists[2];
       });
+      var lists1 = lists[3];
+
+      for(int i = 0; i < lists1.length; i++){
+
+        if (lists1[i]=="Satsang or Dharmguru") {
+          setState(() {
+            checkedValue1 = true;
+
+          });
+        }
+        if (lists1[i]=="Political Party") {
+          setState(() {
+            checkedValue2 = true;
+
+          });
+        }
+        if (lists1[i]=="Non-Political Movement") {
+          setState(() {
+            checkedValue3 = true;
+
+          });
+        }
+
+
+
+      }*/
+
 
       return (prefs.getString('token'));
     });
 
   }
+
+  Future<AddToCartResponse> saveJoinUsAPI(message) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"content":message});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchJoinUsSave(body,user_Token);
+
+
+  }
+
+  Future<DonateHistoryResponse> getJoinUsDataAPI(String user_Token) async {
+
+    var body ={'lang_code':""};
+    MainRepository repository=new MainRepository();
+    return repository.fetchJoinUsData(body,user_Token);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -661,6 +713,28 @@ class JoinUsPageState extends State<JoinUsPage> {
              mainData.add(checkedMainData);
 
              print(mainData);
+
+             setState(() {
+               _isInAsyncCall = true;
+             });
+
+             saveJoinUsAPI(mainData.toString()).then((res) async {
+               String msg;
+               setState(() {
+                 _isInAsyncCall = false;
+               });
+               Fluttertoast.showToast(
+                   msg: "Data save successfully",
+                   toastLength: Toast.LENGTH_SHORT,
+                   gravity: ToastGravity.BOTTOM,
+                   timeInSecForIosWeb: 1,
+                   backgroundColor: Colors.black,
+                   textColor: Colors.white,
+                   fontSize: 16.0);
+               Navigator.of(context, rootNavigator: true).pop(context);
+
+             });
+
 
            }
 

@@ -19,12 +19,13 @@ class DonatePaymentPage extends StatefulWidget {
 
   final String orderId;
   final String amount;
+  final String id;
 
-  DonatePaymentPage({Key key,@required this.orderId,@required this.amount}) : super(key: key);
+  DonatePaymentPage({Key key,@required this.orderId,@required this.amount,@required this.id}) : super(key: key);
 
   @override
   DonatePaymentPageState createState() {
-    return DonatePaymentPageState(orderId,amount);
+    return DonatePaymentPageState(orderId,amount,id);
   }
 }
 
@@ -32,9 +33,12 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
   String mid = "TWsple62048587367612", orderId = "", amount = "", txnToken = "";
 
   String user_Token;
-  DonatePaymentPageState(String orderId,String amount){
+
+  String uniqueOrderId;
+  DonatePaymentPageState(String orderId,String amount,String id){
     this.orderId=orderId;
     this.amount=amount;
+    this.uniqueOrderId=id;
 
   }
 
@@ -100,7 +104,7 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
         orientation: Orientation.portrait);
     String res="";
     if(IsPaymentSuccess){
-      res="Payment success";
+      res="You fulfilled you dharma. We hope you will continue to contribute for the mission as promised.\nJai Hind";
     }
     else{
       res="Payment Failed";
@@ -132,9 +136,11 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
                 opacity: 0.01,
                 progressIndicator: CircularProgressIndicator(),
                 child:IsPayment?Container(
+
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child:Column(
+
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -156,16 +162,22 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
                             alignment: Alignment.center,
                           ),
                           SizedBox(height: 20),
-                          Text(
-                            res,
-                            style: GoogleFonts.roboto(
-                              fontSize: ScreenUtil().setSp(22),
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(40,7,40,3),
+                              child:
+                              Text(
+                                res,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.roboto(
+                                  fontSize: ScreenUtil().setSp(16),
 
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
 
-                            ),
-                          ),
+                                ),
+                              ),),
+
+
                           SizedBox(height: 30),
 
 
@@ -240,7 +252,7 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
         });
 
 
-        callOrderUpdateAPI(txnToken,payment_response,orderId,user_Token).then((value) => {
+        callOrderUpdateAPI(txnToken,payment_response,uniqueOrderId,user_Token).then((value) => {
 
 
           print("call_update_api"),

@@ -329,23 +329,35 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Report Video"),
-          content: new Row(
-            children: [
-              new Expanded(
-                  child: new TextField(
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: SizedBox(
+              height: 250,
+              width: 400,
+              child: new TextField(
+                autofocus: false,
+                maxLines: 500,
+                onChanged: (value) {
+                  teamName = value;
+                },
+                decoration: new InputDecoration(
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
 
-                    maxLength: null,
-                    maxLines: null,  // allow user to enter 5 line in textfield
-                    keyboardType: TextInputType.multiline,
-                    autofocus: false,
-                    decoration: new InputDecoration(
-                      labelText: 'Type your reason here ', ),
-                    onChanged: (value) {
-                      teamName = value;
-                    },
-                  ))
-            ],
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  hintText: 'Enter your report reason here',
+                ),
+              ),
+            ),
           ),
+
           actions: [
             FlatButton(
               child: Text('CANCEL'),
@@ -384,7 +396,42 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       },
     );
   }
+  subscribeAPI(){
 
+    subscribeChannelAPI(mContent.channel_id.toString(),"1").then((res) async {
+      String msg;
+      if(isSubscribed){
+        setState(() {
+          isSubscribed = false;
+        });
+
+        msg="Unsubscribe channel successfully";
+      }
+      else{
+        setState(() {
+          isSubscribed = true;
+        });
+        msg="Subscribe channel successfully";
+      }
+
+      if(res.status==1){
+
+        Fluttertoast.showToast(
+            msg: msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+
+      }
+
+    }
+    );
+
+  }
 
   _onShare(BuildContext context,String title,String thumbnail) async {
 
@@ -615,12 +662,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       ])),
 
                               Container(
-                                  margin:  EdgeInsets.fromLTRB(20,15,10,0),
+                                  margin:  EdgeInsets.fromLTRB(10,15,10,0),
                                   child:Row(
 
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
-                                        SizedBox(width: 5,),
+                                        SizedBox(width: 2,),
                                   IconButton(
                                       icon: likeStatus==1? Image(
                                         image: new AssetImage("assets/like_sel.png"),
@@ -669,7 +716,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                         });
 
                                       }),
-                                        SizedBox(width: 17,),
+                                        SizedBox(width: 2,),
                                         IconButton(
                                             icon: likeStatus==2? Image(
                                               image: new AssetImage("assets/dislike_sel.png"),
@@ -721,7 +768,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                               });
 
                                             }),
-                                        SizedBox(width: 17,),
+                                        SizedBox(width: 2,),
                                   IconButton(
                                       icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
 
@@ -758,7 +805,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                         //  submitFavourite("1",tok,MyContentId.toString(),false);
                                       }),
-                                        SizedBox(width: 17,),
+                                        SizedBox(width: 2,),
                                         IconButton(
                                             icon: isBookMarked? Image(
                                               image: new AssetImage("assets/bookmark_sel.png"),
@@ -831,40 +878,51 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                             alignment: Alignment.centerRight,
                                             child: GestureDetector(
     onTap: () {
-      subscribeChannelAPI(mContent.channel_id.toString(),"1").then((res) async {
-       String msg;
-        if(isSubscribed){
-          setState(() {
-            isSubscribed = false;
-          });
 
-          msg="Unsubscribe channel successfully";
-        }
-        else{
-          setState(() {
-            isSubscribed = true;
-          });
-          msg="Subscribe channel successfully";
-        }
+      if(isSubscribed){
+        Widget okButton = FlatButton(
+          child: Text("UNSUBSCRIBE"),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop('dialog');
+            subscribeAPI();
 
-        if(res.status==1){
+          },
+        );
+        Widget CANCELButton = FlatButton(
+          child: Text("CANCEL"),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop('dialog');
 
-          Fluttertoast.showToast(
-          msg: msg,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0);
+          },
+        );
+        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+
+          content: Text("Unsubscribe from "+mContent.channel),
+          actions: [
+            CANCELButton,
+            okButton,
+
+          ],
+        );
+
+        // show the dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+      else{
+        subscribeAPI();
+
+      }
 
 
-        }
-
-      });
 
 
-    },child:isSubscribed?Text("Unsubscribe",
+    },child:isSubscribed?Text("SUBSCRIBED",
                                               textAlign: TextAlign.center,
 
 

@@ -214,4 +214,15 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/abusing-reports",body,token);
     return AddToCartResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchJoinUsSave(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/save-join-us",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<DonateHistoryResponse> fetchJoinUsData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/get-join-us",body,token);
+    return DonateHistoryResponse.fromJson(response);
+  }
+
+
 }

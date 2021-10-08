@@ -297,7 +297,7 @@ class DonateUsPageState extends State<DonateUsPage> {
             Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                 MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return DonatePaymentPage(amount:myControllerAmount.text.trim().toString(),orderId:res.data.orderId.toString());
+                      return DonatePaymentPage(amount:myControllerAmount.text.trim().toString(),orderId:res.data.orderId.toString(),id:res.data.id.toString());
                     }
                 ) );
 
