@@ -51,10 +51,10 @@ class JoinUsPageState extends State<JoinUsPage> {
         });
       }
 
-   /*   var array='["No, I don not have time", "Yes, I can be active on social media.", "Yes, once in a year", ["Satsang or Dharmguru", "Political Party"]]';
+      var array="[\"Not much, but can come for meetings at the district level once or twice a month\", \"No, I can not.\", \"No, I am not financially capable\", \"[Satsang or Dharmguru]\"]";
 
       var lists = json.decode(array);
-      print(lists[3]);
+     // print(lists[3]);
       setState(() {
         _chosenValue1 = lists[0];
        _chosenValue2 = lists[1];
@@ -62,8 +62,9 @@ class JoinUsPageState extends State<JoinUsPage> {
       });
       var lists1 = lists[3];
 
-      for(int i = 0; i < lists1.length; i++){
 
+      for(int i = 0; i < lists1.length; i++){
+         print(lists1[i]);
         if (lists1[i]=="Satsang or Dharmguru") {
           setState(() {
             checkedValue1 = true;
@@ -85,7 +86,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
 
 
-      }*/
+      }
 
 
       return (prefs.getString('token'));
@@ -674,9 +675,9 @@ class JoinUsPageState extends State<JoinUsPage> {
 
            }
            else{
-             mainData.add(_chosenValue1);
-             mainData.add(_chosenValue2);
-             mainData.add(_chosenValue3);
+             mainData.add('"'+_chosenValue1+'"');
+             mainData.add('"'+_chosenValue2+'"');
+             mainData.add('"'+_chosenValue3+'"');
 
              if(checkedValue1){
                checkedMainData.add("Satsang or Dharmguru");
@@ -710,7 +711,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                checkedMainData.add("Others");
              }
 
-             mainData.add(checkedMainData);
+             mainData.add('"'+checkedMainData.toString()+'"');
 
              print(mainData);
 
