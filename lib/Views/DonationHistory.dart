@@ -82,7 +82,7 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
     }
 
     final taskId = await FlutterDownloader.enqueue(
-        url: "http://bankjaal.in/public/api/v1/invoice?order_id="+id,
+        url: "http://bankjaal.in/public/api/v1/user-donation-invoice?order_id="+id,
         headers: {"auth": "test_for_sql_encoding"},
         fileName: "Invoice_"+orderid+".pdf",
         savedDir: _localPath,

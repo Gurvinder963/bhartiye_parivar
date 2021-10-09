@@ -22,6 +22,7 @@ import '../ApiResponses/SearchResponse.dart';
 import '../ApiResponses/DonateOrderSaveResponse.dart';
 import '../ApiResponses/NotificationListResponse.dart';
 import '../ApiResponses/DonateHistoryResponse.dart';
+import '../ApiResponses/JoinUsResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -219,9 +220,9 @@ class MainRepository {
     return AddToCartResponse.fromJson(response);
   }
 
-  Future<DonateHistoryResponse> fetchJoinUsData(var body,String token) async {
+  Future<JoinUsResponse> fetchJoinUsData(var body,String token) async {
     final response = await _provider.getWithToken("public/api/v1/get-join-us",body,token);
-    return DonateHistoryResponse.fromJson(response);
+    return JoinUsResponse.fromJson(response);
   }
 
 

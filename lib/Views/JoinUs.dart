@@ -7,7 +7,7 @@ import '../Utils/AppColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import'../ApiResponses/DonateHistoryResponse.dart';
+import'../ApiResponses/JoinUsResponse.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
@@ -51,42 +51,53 @@ class JoinUsPageState extends State<JoinUsPage> {
         });
       }
 
-      var array="[\"Not much, but can come for meetings at the district level once or twice a month\", \"No, I can not.\", \"No, I am not financially capable\", \"[Satsang or Dharmguru]\"]";
 
-      var lists = json.decode(array);
-     // print(lists[3]);
-      setState(() {
-        _chosenValue1 = lists[0];
-       _chosenValue2 = lists[1];
-       _chosenValue3 = lists[2];
+      getJoinUsDataAPI(user_Token).then((value) => {
+
+        setJoinUsData(value)
+
+
+
       });
-      var lists1 = lists[3];
-
-
-      for(int i = 0; i < lists1.length; i++){
-         print(lists1[i]);
-        if (lists1[i]=="Satsang or Dharmguru") {
-          setState(() {
-            checkedValue1 = true;
-
-          });
-        }
-        if (lists1[i]=="Political Party") {
-          setState(() {
-            checkedValue2 = true;
-
-          });
-        }
-        if (lists1[i]=="Non-Political Movement") {
-          setState(() {
-            checkedValue3 = true;
-
-          });
-        }
 
 
 
-      }
+     //  var array="[\"Not much, but can come for meetings at the district level once or twice a month\", \"No, I can not.\", \"No, I am not financially capable\", \"[Satsang or Dharmguru]\"]";
+     //
+     //  var lists = json.decode(array);
+     // // print(lists[3]);
+     //  setState(() {
+     //    _chosenValue1 = lists[0];
+     //   _chosenValue2 = lists[1];
+     //   _chosenValue3 = lists[2];
+     //  });
+     //  var lists1 = lists[3];
+     //
+     //
+     //  for(int i = 0; i < lists1.length; i++){
+     //     print(lists1[i]);
+     //    if (lists1[i]=="Satsang or Dharmguru") {
+     //      setState(() {
+     //        checkedValue1 = true;
+     //
+     //      });
+     //    }
+     //    if (lists1[i]=="Political Party") {
+     //      setState(() {
+     //        checkedValue2 = true;
+     //
+     //      });
+     //    }
+     //    if (lists1[i]=="Non-Political Movement") {
+     //      setState(() {
+     //        checkedValue3 = true;
+     //
+     //      });
+     //    }
+     //
+     //
+     //
+     //  }
 
 
       return (prefs.getString('token'));
@@ -94,11 +105,91 @@ class JoinUsPageState extends State<JoinUsPage> {
 
   }
 
-  Future<AddToCartResponse> saveJoinUsAPI(message) async {
+  setJoinUsData(value){
+
+    var lists = json.decode(value.data.content);
+    setState(() {
+      _chosenValue1 = lists[0];
+      _chosenValue2 = lists[1];
+      _chosenValue3 = lists[2];
+
+    });
+    var lists1 = json.decode(value.data.contentMultiple);
+     for(int i = 0; i < lists1.length; i++){
+        print(lists1[i]);
+       if (lists1[i]=="Satsang or Dharmguru") {
+         setState(() {
+           checkedValue1 = true;
+
+         });
+       }
+       if (lists1[i]=="Political Party") {
+         setState(() {
+           checkedValue6 = true;
+
+         });
+       }
+       if (lists1[i]=="Non-Political Movement") {
+         setState(() {
+           checkedValue2 = true;
+
+         });
+       }
+        if (lists1[i]=="Ambedkarite Ideology") {
+          setState(() {
+            checkedValue3 = true;
+
+          });
+        }
+        if (lists1[i]=="Rajiv Dixit Ideology") {
+          setState(() {
+            checkedValue4 = true;
+
+          });
+        }
+        if (lists1[i]=="Communist Ideology") {
+          setState(() {
+            checkedValue5 = true;
+
+          });
+        }
+        if (lists1[i]=="Socialist Ideology") {
+          setState(() {
+            checkedValue7 = true;
+
+          });
+        }
+        if (lists1[i]=="RSS Ideology") {
+          setState(() {
+            checkedValue8 = true;
+
+          });
+        }
+        if (lists1[i]=="Gandhian Ideology") {
+          setState(() {
+            checkedValue9 = true;
+
+          });
+        }
+        if (lists1[i]=="Others") {
+          setState(() {
+            checkedValue10 = true;
+
+          });
+        }
+
+
+
+     }
+
+
+  }
+
+  Future<AddToCartResponse> saveJoinUsAPI(message,message1) async {
     //  final String requestBody = json.encoder.convert(order_items);
 
 
-    var body =json.encode({"content":message});
+    var body =json.encode({"content":message,"content_multiple":message1});
     MainRepository repository=new MainRepository();
 
     return repository.fetchJoinUsSave(body,user_Token);
@@ -106,7 +197,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
   }
 
-  Future<DonateHistoryResponse> getJoinUsDataAPI(String user_Token) async {
+  Future<JoinUsResponse> getJoinUsDataAPI(String user_Token) async {
 
     var body ={'lang_code':""};
     MainRepository repository=new MainRepository();
@@ -575,7 +666,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
-                        title:Text("Non-Political Movement",
+                        title:Text("Socialist Ideology",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: ScreenUtil().setSp(14),
@@ -663,7 +754,7 @@ class JoinUsPageState extends State<JoinUsPage> {
             onTap: () {
 
               List mainData = new List();
-              List checkedMainData = new List();
+              List<String> checkedMainData = new List();
 
            if(_chosenValue1=="Select your answer"){
 
@@ -680,38 +771,59 @@ class JoinUsPageState extends State<JoinUsPage> {
              mainData.add('"'+_chosenValue3+'"');
 
              if(checkedValue1){
-               checkedMainData.add("Satsang or Dharmguru");
+
+               var value="Satsang or Dharmguru";
+               checkedMainData.add('"'+value+'"');
 
              }
              if(checkedValue2){
-               checkedMainData.add("Non-Political Movement");
-             }
+               var value="Non-Political Movement";
+               checkedMainData.add('"'+value+'"');
+
+              }
              if(checkedValue3){
-               checkedMainData.add("Ambedkarite Ideology");
+               var value="Ambedkarite Ideology";
+               checkedMainData.add('"'+value+'"');
+
              }
              if(checkedValue4){
-               checkedMainData.add("Rajiv Dixit Ideology");
+
+               var value="Rajiv Dixit Ideology";
+               checkedMainData.add('"'+value+'"');
+
              }
              if(checkedValue5){
-               checkedMainData.add("Communist Ideology");
+
+               var value="Communist Ideology";
+               checkedMainData.add('"'+value+'"');
              }
              if(checkedValue6){
-               checkedMainData.add("Political Party");
+
+               var value="Political Party";
+               checkedMainData.add('"'+value+'"');
              }
              if(checkedValue7){
-               checkedMainData.add("Non-Political Movement");
+
+               var value="Socialist Ideology";
+               checkedMainData.add('"'+value+'"');
              }
              if(checkedValue8){
-               checkedMainData.add("RSS Ideology");
+
+               var value="RSS Ideology";
+               checkedMainData.add('"'+value+'"');
              }
              if(checkedValue9){
-               checkedMainData.add("Gandhian Ideology");
+
+               var value="Gandhian Ideology";
+               checkedMainData.add('"'+value+'"');
              }
              if(checkedValue10){
-               checkedMainData.add("Others");
+
+               var value="Others";
+               checkedMainData.add('"'+value+'"');
              }
 
-             mainData.add('"'+checkedMainData.toString()+'"');
+            /// mainData.add('"'+checkedMainData.toString()+'"');
 
              print(mainData);
 
@@ -719,7 +831,8 @@ class JoinUsPageState extends State<JoinUsPage> {
                _isInAsyncCall = true;
              });
 
-             saveJoinUsAPI(mainData.toString()).then((res) async {
+
+             saveJoinUsAPI(mainData.toString(),checkedMainData.toString()).then((res) async {
                String msg;
                setState(() {
                  _isInAsyncCall = false;
