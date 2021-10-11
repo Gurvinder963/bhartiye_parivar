@@ -29,6 +29,7 @@ import '../Utils/fab_bottom_app_bar.dart';
 import 'HomeChild.dart';
 import 'Books.dart';
 import 'NewsMain.dart';
+import 'Share.dart';
 import 'Quick.dart';
 import 'Chat.dart';
 import 'ContentLanguage.dart';
@@ -671,7 +672,7 @@ class navigationDrawer extends StatelessWidget {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return VideoApp();
+                          return YoutubeApp();
                         }
                     ) )
 
@@ -761,7 +762,16 @@ class navigationDrawer extends StatelessWidget {
               text: Languages
                   .of(context)
                   .shareApp,
-              onTap: () =>{}
+              onTap: () =>{
+
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return SharePage();
+                        }
+                    ) )
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
 

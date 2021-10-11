@@ -97,6 +97,7 @@ if(value.data.length>0){
           setState(()
       {
         isBookMarked = mainData[0].bookmark;
+        likeStatus=mainData[0].is_like;
       })
       }
       });

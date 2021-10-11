@@ -37,8 +37,11 @@ class NewsDetailPage extends StatefulWidget {
 
 class NewsDetailPageState extends State<NewsDetailPage> {
   NewsData mContent;
+  String mId;
   NewsDetailPageState(NewsData content){
     mContent=content;
+    mId=mContent.id.toString();
+
   }
 
   PageController controller=PageController();
@@ -46,7 +49,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   int selectedRadioTile = 0;
   int _curr=0;
 
-  String mId;
+
   bool isBookMarked=false;
   bool _isInAsyncCall = false;
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
@@ -75,6 +78,84 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   bool isLoading = false;
  // int mposition=0;
   String user_Token;
+
+  Future<AddToCartResponse> addPollAnsersAPI(String NewsId,String answer) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"news_id":NewsId,"answer":answer});
+    MainRepository repository=new MainRepository();
+
+
+
+    return repository.savePollAnswers(body,user_Token);
+
+
+  }
+  Widget _buildPollList(BuildContext context,String newsId,List<Answers> answers) {
+
+    return ListView.builder(
+      padding: EdgeInsets.all(0.0),
+      itemCount: answers.length , // Add one more item for progress indicator
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        /* if (index == mainData.length) {
+          return _buildProgressIndicator();
+        } else {*/
+        return GestureDetector(
+          onTap: () =>
+          {
+
+
+          },
+          child:  Container(
+
+              margin:  EdgeInsets.fromLTRB(0,10,0,0),
+              child:Stack(
+
+                  children:<Widget>[
+
+                    LinearPercentIndicator(
+                      leading: new Text(""),
+                      trailing: new Text(""),
+                      lineHeight: 50.0,
+                      linearStrokeCap: LinearStrokeCap.butt,
+                      percent: 0.5,
+                      backgroundColor: Colors.grey,
+                      progressColor: Colors.lightGreen,
+                    ),
+
+                    RadioListTile(
+                      value: index+1,
+                      groupValue: selectedRadioTile,
+                      title: Text(answers[index].url),
+
+                      onChanged: (val) {
+                        print("Radio Tile pressed $val");
+                        setSelectedRadioTile(val);
+                        print(answers[index].url);
+
+                        // List answerList = new List();
+                        // answerList.add(answers[index].id);
+
+                        addPollAnsersAPI(newsId,answers[index].id.toString());
+
+                      },
+                      activeColor: Colors.black,
+                      secondary:  Text("55%"),
+
+                      selected: false,
+                    )])),);
+
+
+
+      }
+      // }
+      ,
+
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -152,7 +233,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 Expanded(child:Container(
 
                     child:
-                    mContent.newsType==1?  MultipleImagesPage(newsData: mContent,embedUrls:mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):Container()
+                    mContent.newsType==1?  MultipleImagesPage(newsData: mContent,embedUrls:mContent.embedUrls):mContent.newsType==2?_buildBoxVideo(context,mContent,mContent.embedUrls):mContent.newsType==3?_buildBoxTweet(context,mContent.embedUrls):mContent.newsType==5?_buildBoxPotraitImage(context,mContent.embedUrls):mContent.newsType==6?_buildBoxPoll(context,mContent):Container()
 
 
 
@@ -277,7 +358,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
       selectedRadioTile = val;
     });
   }
-  Widget _buildBoxPoll(BuildContext context){
+  Widget _buildBoxPoll(BuildContext context,NewsData newsData){
 
 
     String user = "king@mail.com";
@@ -292,76 +373,24 @@ class NewsDetailPageState extends State<NewsDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Padding(
-              padding: EdgeInsets.fromLTRB(15,10,15,0),child: Text("Bharat kya match jeet paega Bharat kya match jeet paega paega Bharat kya match jeet paega ?",style:  GoogleFonts.roboto(
-              fontSize: 16,fontWeight:FontWeight.w500),)),
+              padding: EdgeInsets.fromLTRB(15,20,15,0),child: Text(newsData.title,style:  GoogleFonts.roboto(
+              fontSize: 20,fontWeight:FontWeight.w500),)),
           Padding(
+
               padding: const EdgeInsets.all(8.0),
               child:SizedBox(
                   height: 450,
-                  child:ListView(
-
-                      children:<Widget>[
-
-                        Stack(
-                            children:<Widget>[
-                              LinearPercentIndicator(
-                                leading: new Text(""),
-                                trailing: new Text(""),
-                                lineHeight: 50.0,
-                                linearStrokeCap: LinearStrokeCap.butt,
-                                percent: 0.5,
-                                backgroundColor: Colors.grey,
-                                progressColor: Colors.lightGreen,
-                              ),
-
-                              RadioListTile(
-                                value: 1,
-                                groupValue: selectedRadioTile,
-                                title: Text("Yes"),
-
-                                onChanged: (val) {
-                                  print("Radio Tile pressed $val");
-                                  setSelectedRadioTile(val);
-                                },
-                                activeColor: Colors.black,
-                                secondary:  Text("55%"),
-
-                                selected: true,
-                              )]),
-                        RadioListTile(
-                          value: 2,
-                          groupValue: selectedRadioTile,
-                          title: Text("No"),
-
-                          onChanged: (val) {
-                            print("Radio Tile pressed $val");
-                            setSelectedRadioTile(val);
-                          },
-                          activeColor: Colors.black,
-                          secondary: Text("45%"),
-
-
-                          selected: false,
-                        ),
-                        RadioListTile(
-                          value: 2,
-                          groupValue: selectedRadioTile,
-                          title: Text("May be"),
-
-                          onChanged: (val) {
-                            print("Radio Tile pressed $val");
-                            setSelectedRadioTile(val);
-                          },
-                          activeColor: Colors.black,
-                          secondary: Text("35%"),
-
-
-                          selected: false,
-                        ),
-                      ])))]);
+                  child:_buildPollList(context,newsData.id.toString(), newsData.answers)
+              )
+          )
+        ]);
   }
 
 }
+
+
+
+
 class MultipleImagesPage extends StatefulWidget {
   NewsData newsData;
   List<EmbedUrls> embedUrls;

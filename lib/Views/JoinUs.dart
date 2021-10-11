@@ -12,6 +12,7 @@ import '../Utils/Prefer.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 class JoinUsPage extends StatefulWidget {
   @override
   JoinUsPageState createState() {
@@ -204,7 +205,33 @@ class JoinUsPageState extends State<JoinUsPage> {
     return repository.fetchJoinUsData(body,user_Token);
 
   }
+  showAlertDialogValidation(BuildContext context,String message) {
 
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -757,13 +784,13 @@ class JoinUsPageState extends State<JoinUsPage> {
               List<String> checkedMainData = new List();
 
            if(_chosenValue1=="Select your answer"){
-
+               showAlertDialogValidation(context, "Please select your answer");
            }
            else if(_chosenValue2=="Select your answer"){
-
+             showAlertDialogValidation(context, "Please select your answer");
            }
            else if(_chosenValue3=="Select your answer"){
-
+             showAlertDialogValidation(context, "Please select your answer");
            }
            else{
              mainData.add('"'+_chosenValue1+'"');

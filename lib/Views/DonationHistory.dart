@@ -263,10 +263,10 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
     progressIndicator: CircularProgressIndicator(),
     child: Container(
 
-        child:Expanded(
+
           child: _buildList(),
 
-        )
+
 
     )),
 

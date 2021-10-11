@@ -652,12 +652,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                                                     ]))),
-                                        /*  new Expanded(
-              flex: 1,
 
-              child:Icon(Icons.more_vert)
-          )
-*/
 
                                       ])),
 
@@ -775,7 +770,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       onPressed: () {
                                         _asyncInputDialog(context,mContent.id.toString());
 
-                              //  submitFavourite("1",tok,MyContentId.toString(),false);
+
                               }),
                                   IconButton(
                                       icon:Image(
@@ -799,11 +794,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
 
-
-
                                         });
 
-                                        //  submitFavourite("1",tok,MyContentId.toString(),false);
+
                                       }),
                                         SizedBox(width: 2,),
                                         IconButton(
@@ -865,14 +858,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                               //  submitFavourite("1",tok,MyContentId.toString(),false);
                                             }),
-                                        /*  Image(
-                                image: new AssetImage("assets/bookmark_unsel.png"),
-                                width: 24,
-                                height:  24,
-                                color: null,
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                              ),*/
+
                                         //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
                                         Expanded( child:Align(
                                             alignment: Alignment.centerRight,
