@@ -1,12 +1,16 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import 'ReferHistory.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
-
+import '../ApiResponses/AddToCartResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class SharePage extends StatefulWidget {
   @override
   SharePageState createState() {
@@ -15,8 +19,44 @@ class SharePage extends StatefulWidget {
 }
 
 class SharePageState extends State<SharePage> {
+
+  String user_Token;
+  bool _isInAsyncCall = false;
+  @override
+  void initState() {
+    super.initState();
+
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+
+
+
+
+
+      return (prefs.getString('token'));
+    });
+
+  }
+  Future<AddToCartResponse> saveReferAPI(name,mobile,pincode) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"name":name,"mobile":mobile,"pincode":pincode});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReferSave(body,user_Token);
+
+
+  }
+
   Future _asyncInputDialog(BuildContext context) async {
-    String teamName = '';
+    String teamName1 = '';
+    String teamName2 = '';
+    String teamName3 = '';
     return showDialog(
       context: context,
       barrierDismissible: false, // dialog is dismissible with a tap on the barrier
@@ -33,7 +73,7 @@ class SharePageState extends State<SharePage> {
                     decoration: new InputDecoration(
                       labelText: 'Please Enter Name', ),
                     onChanged: (value) {
-                      teamName = value;
+                      teamName1 = value;
                     },
                   ),
             TextField(
@@ -42,7 +82,7 @@ class SharePageState extends State<SharePage> {
                     decoration: new InputDecoration(
                       labelText: 'Please Enter phone', ),
                     onChanged: (value) {
-                      teamName = value;
+                      teamName2 = value;
                     },
                   ),
               new TextField(
@@ -51,7 +91,7 @@ class SharePageState extends State<SharePage> {
                     decoration: new InputDecoration(
                       labelText: 'Please Enter Pin', ),
                     onChanged: (value) {
-                      teamName = value;
+                      teamName3 = value;
                     },
                   )
             ],
@@ -61,17 +101,39 @@ class SharePageState extends State<SharePage> {
               child: Text('Cancel'),
               onPressed: () {
 
-                Navigator.of(context).pop(teamName);
+                Navigator.of(context).pop();
               },
             ),
 
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                bool isMatched=false;
+                Navigator.of(context).pop();
+                setState(() {
+                  _isInAsyncCall = true;
+                });
+
+                saveReferAPI(teamName1,teamName2,teamName3).then((res) async {
+                  String msg;
+                  setState(() {
+                    _isInAsyncCall = false;
+                  });
+                  if(res.status==1){
+
+                    Fluttertoast.showToast(
+                        msg: "Data save successfully",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
 
 
+                  }
 
+
+                });
 
               },
             ),
@@ -88,7 +150,12 @@ class SharePageState extends State<SharePage> {
         backgroundColor: Color(AppColors.BaseColor),
         title: Text("Share App"),
       ),
-      body: Container(child:
+      body: ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:Container(child:
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -540,7 +607,7 @@ SizedBox(height: 10,),
           ]
       )
 
-      ),
+      )),
 
     );
   }

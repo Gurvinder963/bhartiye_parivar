@@ -23,6 +23,7 @@ import '../ApiResponses/DonateOrderSaveResponse.dart';
 import '../ApiResponses/NotificationListResponse.dart';
 import '../ApiResponses/DonateHistoryResponse.dart';
 import '../ApiResponses/JoinUsResponse.dart';
+import '../ApiResponses/ReferHistoryResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -224,6 +225,12 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/get-join-us",body,token);
     return JoinUsResponse.fromJson(response);
   }
-
-
+  Future<AddToCartResponse> fetchReferSave(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/user-refers",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
+  Future<ReferHistoryResponse> fetchReferData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/user-refers",body,token);
+    return ReferHistoryResponse.fromJson(response);
+  }
 }
