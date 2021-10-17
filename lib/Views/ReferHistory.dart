@@ -16,6 +16,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 class ReferHistoryPage extends StatefulWidget {
   @override
   ReferHistoryPageState createState() {
@@ -31,6 +33,72 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
   bool _isInAsyncCall = false;
   String _localPath;
 
+  showAlertDialogValidationdELETE(BuildContext context,String message,String id,int index) {
+
+    Widget yesButton = FlatButton(
+      child: Text("YES"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        setState(() {
+          _isInAsyncCall = true;
+        });
+        postDeleteReferItem(id.toString(),user_Token)
+            .then((res) async {
+          setState(() {
+            _isInAsyncCall = false;
+          });
+
+
+          if (res.status == 1) {
+
+            Fluttertoast.showToast(
+                msg: "Item has been deleted !",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0);
+            setState(() {
+              mainData.removeAt(index);
+
+            });
+
+
+
+          }
+          else {
+           // showAlertDialogValidation(context,"Some error occured!");
+          }
+        });
+
+      },
+    );
+    Widget noButton = FlatButton(
+      child: Text("NO"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        yesButton,
+        noButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
 
 
@@ -76,7 +144,14 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
     return repository.fetchReferData(body,user_Token);
 
   }
+  Future<AddToCartResponse> postDeleteReferItem(String id,String token) async {
 
+    //  print('my_token'+token);
+    var body =json.encode({"id":id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchDeleteReferData(body,token);
+
+  }
   Widget _buildList() {
 
 
@@ -108,7 +183,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                       child:    Text(mainData[index].name,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.roboto(
-                                            fontSize:15.0,
+                                            fontSize:14.0,
 
                                             color: Color(0xFF000000),
                                             fontWeight: FontWeight.w500,
@@ -120,7 +195,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         textAlign: TextAlign.center,
 
                                         style: GoogleFonts.roboto(
-                                          fontSize:15.0,
+                                          fontSize:14.0,
 
                                           color: Color(0xFF0000ff),
                                           fontWeight: FontWeight.w500,
@@ -132,7 +207,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
 
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.roboto(
-                                          fontSize:15.0,
+                                          fontSize:14.0,
 
                                           color: Color(0xFF000000),
                                           fontWeight: FontWeight.w500,
@@ -144,13 +219,46 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         textAlign: TextAlign.center,
 
                                         style: GoogleFonts.roboto(
-                                          fontSize:15.0,
+                                          fontSize:14.0,
 
                                           color: Color(0xFF000000),
                                           fontWeight: FontWeight.w500,
 
                                         ),)),
+                                  Expanded(
+                                      flex: 1,
+                                      child:
 
+                                      Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            SizedBox(width: 10,),
+                                      Image(
+                                        image: mainData[index].status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
+                                        width: 18,
+                                        height:  18
+                                        ,
+                                        color: null,
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.center,
+                                      ),
+                                            SizedBox(width: 10,),
+                                    GestureDetector(
+                                        onTap: () =>
+                                        {
+
+                                          showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
+                                        },
+                                        child:  Image(
+                                              image: new AssetImage("assets/ic_remove.png"),
+                                              width: 20,
+                                              height:  20,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ))
+                                    ])
+                                    ,),
                                 ]
 
                             ),),
@@ -248,7 +356,18 @@ Container(
                               fontWeight: FontWeight.w500,
 
                             ),)),
+                      Expanded(
+                          flex: 1,
+                          child:Text("Status",
+                            textAlign: TextAlign.center,
 
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFFffffff),
+                              fontWeight: FontWeight.w500,
+
+                            ),))
                     ]
 
                 )),

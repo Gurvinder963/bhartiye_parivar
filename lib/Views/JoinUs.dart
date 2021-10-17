@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +13,23 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+
+class DayObject {
+  String title;
+  bool isSelected;
+
+  DayObject({
+    this.title,
+    this.isSelected,
+  });
+}
+
+String amount="";
+String selectedDonateType="";
+String selectedDate="";
 class JoinUsPage extends StatefulWidget {
+
+
   @override
   JoinUsPageState createState() {
     return JoinUsPageState();
@@ -25,6 +41,7 @@ class JoinUsPageState extends State<JoinUsPage> {
   String _chosenValue1="Select your answer";
   String _chosenValue2="Select your answer";
   String _chosenValue3="Select your answer";
+
   bool checkedValue1=false;
   bool checkedValue2=false;
   bool checkedValue3=false;
@@ -190,7 +207,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     //  final String requestBody = json.encoder.convert(order_items);
 
 
-    var body =json.encode({"content":message,"content_multiple":message1});
+    var body =json.encode({"content":message,"content_multiple":message1,"amount":amount,"remainder_date":selectedDate,"remainder_type":selectedDonateType});
     MainRepository repository=new MainRepository();
 
     return repository.fetchJoinUsSave(body,user_Token);
@@ -232,6 +249,430 @@ class JoinUsPageState extends State<JoinUsPage> {
       },
     );
   }
+
+
+
+  Future _asyncInputDialog(BuildContext context) async {
+    String teamName1 = '';
+    String teamName2 = '';
+    String teamName3 = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        int selectedRadio = -1;
+        String selectedDay = "";
+        List mainData = new List();
+
+        for(int i = 1; i < 32; i++){
+
+          mainData.add(DayObject(title: i.toString(), isSelected: false,));
+        }
+
+
+        return AlertDialog(
+            content:  SizedBox(
+            height: 430,child:StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return SizedBox(
+              height: 500 ,child:Column(
+            children: <Widget>[
+              Text("How much amount you want to donate monthly",
+
+                  style: GoogleFonts.roboto(
+                    fontSize:16.0,
+
+                    color: Color(0xFF000000),
+                    fontWeight: FontWeight.w500,
+
+                  )),
+
+            SizedBox(height: 20,),
+            new Row(
+
+              children: <Widget>[
+                SizedBox(width: 5,),
+                new Radio(
+                  value: 100,
+                  activeColor: Colors.orange,
+                  groupValue: selectedRadio,
+                  onChanged: (int value) {
+                    setState(() => selectedRadio = value);
+                  },
+                ),
+                new Text(
+                  '100',
+
+                  style: new TextStyle(fontSize: 14.0),
+                ),
+                SizedBox(width: 10,),
+                new Radio(
+                  value: 200,
+                  activeColor: Colors.orange,
+                  groupValue: selectedRadio,
+                  onChanged: (int value) {
+                    setState(() => selectedRadio = value);
+                  },
+                ),
+                new Text(
+                  '200',
+                  style: new TextStyle(
+                    fontSize: 14.0,
+                  ),
+                ),
+                SizedBox(width: 10,),
+                new Radio(
+                  value: 300,
+                  activeColor: Colors.orange,
+
+                  groupValue: selectedRadio,
+                  onChanged: (int value) {
+                    setState(() => selectedRadio = value);
+                  },
+                ),
+                new Text(
+                  '300',
+                  style: new TextStyle(fontSize: 14.0),
+                ),
+              ],
+            ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Radio(
+                    value: 1000,
+                    activeColor: Colors.orange,
+                    groupValue: selectedRadio,
+                    onChanged: (int value) {
+                      setState(() => selectedRadio = value);
+                    },
+                  ),
+                  new Text(
+                    '1000',
+                    style: new TextStyle(fontSize: 14.0),
+                  ),
+                  new Radio(
+                    value: 2000,
+                    activeColor: Colors.orange,
+                    groupValue: selectedRadio,
+                    onChanged: (int value) {
+                      setState(() => selectedRadio = value);
+                    },
+                  ),
+                  new Text(
+                    '2000',
+                    style: new TextStyle(
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  new Radio(
+                    value: 5000,
+                    activeColor: Colors.orange,
+                    groupValue: selectedRadio,
+                    onChanged: (int value) {
+                      setState(() => selectedRadio = value);
+                    },
+                  ),
+                  new Text(
+                    '5000',
+                    style: new TextStyle(fontSize: 14.0),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10,),
+
+              Divider(
+                thickness: 1.5,
+                color:Colors.orange,
+              ),
+              SizedBox(height: 10,),
+              Text("Please select your monthly date of donation",
+
+                  style: GoogleFonts.roboto(
+                    fontSize:13.0,
+
+                    color: Color(0xFF000000),
+                    fontWeight: FontWeight.w500,
+
+                  )),
+              SizedBox(height: 20,),
+              Expanded(child:SizedBox(
+                  height: 200,width:300,
+
+                  child:
+              GridView.builder(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                itemCount: mainData.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 7,
+                    crossAxisSpacing: 15.0,
+                    childAspectRatio: (1 / 1),
+                    mainAxisSpacing: 15.0
+                ),
+                itemBuilder: (BuildContext context, int index){
+
+                  return GestureDetector(
+                      onTap: () =>
+                      {
+
+                      for(int i = 0; i < mainData.length; i++){
+
+                     mainData[i].isSelected=false
+                  },
+
+                        setState(() {
+                        }),
+                        mainData[index].isSelected=true,
+                        setState(() {
+                          selectedDay=mainData[index].title;
+                        }),
+                      },
+                      child:    Container(
+                          padding: const EdgeInsets.fromLTRB(2.0,2.0,2.0,2.0),
+                          decoration: BoxDecoration(
+                            color: mainData[index].isSelected?Colors.orange:Colors.white,
+                            border: Border.all(color: Colors.orange),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(1.0) //                 <--- border radius here
+                            ),
+
+                          ),
+                          child:Center(child:Text(mainData[index].title,   overflow: TextOverflow.ellipsis,
+                       style: GoogleFonts.roboto(
+                          fontSize:12.0,
+                          color: mainData[index].isSelected?Colors.white:Color(0xFF333333),
+
+                        ),))));
+                },
+              )))
+            ]
+          ));
+        },
+        )), actions: [
+          FlatButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              setState(() {
+                selectedDay="";
+                selectedRadio=-1;
+              });
+
+
+              Navigator.of(context).pop();
+            },
+          ),
+
+          FlatButton(
+            child: Text('Submit'),
+            onPressed: () {
+
+              if(selectedRadio==-1){
+                showAlertDialogValidation(context, "Please select amount");
+              }else if(selectedDay==""){
+                showAlertDialogValidation(context, "Please select month date");
+              }
+              else {
+                final DateTime now = DateTime.now();
+                final DateFormat formatter = DateFormat('yyyy/MM/dd');
+                final String formatted = formatter.format(now);
+                var arr=formatted.split('/');
+
+                amount=selectedRadio.toString();
+                selectedDonateType="1";
+                selectedDate=arr[0]+"/"+arr[1]+"/"+selectedDay;
+                print(selectedRadio);
+                print(selectedDate);
+
+                Navigator.of(context).pop();
+              }
+
+
+            },
+          ),
+        ],
+
+
+
+        );
+      },
+    );
+  }
+
+  Future _asyncInputDialogYearly(BuildContext context) async {
+    String teamName1 = '';
+    String teamName2 = '';
+    String teamName3 = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        int selectedRadio = -1;
+
+
+
+        return AlertDialog(
+          content:  SizedBox(
+              height: 200,child:StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SizedBox(
+                  height: 200 ,child:Column(
+                  children: <Widget>[
+                    Text("How much amount you want to donate yearly",
+
+                        style: GoogleFonts.roboto(
+                          fontSize:16.0,
+
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+
+                        )),
+
+                    SizedBox(height: 20,),
+                    new Row(
+
+                      children: <Widget>[
+
+                        new Radio(
+                          value: 1100,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '1100',
+
+                          style: new TextStyle(fontSize: 14.0),
+                        ),
+                        SizedBox(width: 8,),
+                        new Radio(
+                          value: 2100,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '2100',
+                          style: new TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        SizedBox(width: 8,),
+                        new Radio(
+                          value: 5100,
+                          activeColor: Colors.orange,
+
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '5100',
+                          style: new TextStyle(fontSize: 14.0),
+                        ),
+                      ],
+                    ),
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Radio(
+                          value: 11000,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '11000',
+                          style: new TextStyle(fontSize: 13.0),
+                        ),
+                        new Radio(
+                          value: 21000,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '21000',
+                          style: new TextStyle(
+                            fontSize: 13.0,
+                          ),
+                        ),
+                        new Radio(
+                          value: 51000,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '51000',
+                          style: new TextStyle(fontSize: 13.0),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+
+
+
+
+                  ]
+              ));
+            },
+          )), actions: [
+          FlatButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              setState(() {
+
+                selectedRadio=-1;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+
+          FlatButton(
+            child: Text('Submit'),
+            onPressed: () {
+
+              if(selectedRadio==-1){
+                showAlertDialogValidation(context, "Please select amount");
+              }
+              else {
+                final DateTime now = DateTime.now();
+                final DateFormat formatter = DateFormat('yyyy/MM/dd');
+                final String formatted = formatter.format(now);
+
+                amount=selectedRadio.toString();
+                selectedDonateType="2";
+                selectedDate=formatted;
+                Navigator.of(context).pop();
+
+                print(selectedRadio);
+
+              }
+
+
+            },
+          ),
+        ],
+
+
+
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -521,6 +962,17 @@ class JoinUsPageState extends State<JoinUsPage> {
                                     setState(() {
                                       _chosenValue3 = value;
                                     });
+
+                                    if(value=='Yes, every Month'){
+                                      _asyncInputDialog(context);
+
+                                    }else if(value=='Yes, once in a year'){
+                                      _asyncInputDialogYearly(context);
+
+                                    }
+
+
+
                                   },
                                 ), // Your Dropdown Code Here,
                               )),

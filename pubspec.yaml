@@ -108,6 +108,7 @@ flutter:
     - assets/advertise.png
     - assets/contactus.png
     - assets/green_tick_pay.png
+    - assets/ic_failure.png
     - assets/collage.png
     - assets/languages.png
     - assets/ic_terms.png
@@ -137,6 +138,13 @@ flutter:
     - assets/dummy5.jpg
     - assets/ic_new.png
     - assets/ic_not_bell.png
+    - assets/ic_calendar.png
+    - assets/bg_reminder.png
+    - assets/facebook.png
+    - assets/email.png
+    - assets/telegram.png
+    - assets/ic_remove.png
+    - assets/twitter.png
     - assets/BankonKaMayajaal/Bankjaal.html
     - assets/privacy.html
     - assets/terms.html

@@ -168,29 +168,37 @@ class PushNotificationsManager {
               // _showBigPictureNotification(random(1,5), message['notification']['title'], message['notification']['body'], "");
               String type=message['data']['type'];
              String msg;
+             String title;
               if(type=='1'){
                 msg="New Video Added";
+                title=message['notification']['title'];
               }
 
               else if(type=='2'){
                 msg="New News Added";
+                title=message['notification']['title'];
               }
               else if(type=='3'){
                 msg="New Book Added";
+                title=message['notification']['title'];
+              }
+              else{
+                msg=message['notification']['title'];
+                title=message['data']['body'];
               }
 
               if(big_image_url!=null && !big_image_url.toString().isEmpty){
                 print("in-big_image-url");
                 _showBigPictureNotification(
                     random(1, 5), msg,
-                    message['notification']['title'], type,big_image_url,small_image_url);
+                    title, type,big_image_url,small_image_url);
               }
               else {
                 print("in-only-notififaction");
 
                 _showBigTextNotification(
                     random(1, 5), msg,
-                    message['notification']['title'], type);
+                    title, type);
               }
 
               return (prefs.getString('token'));

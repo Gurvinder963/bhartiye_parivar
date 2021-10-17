@@ -1,6 +1,6 @@
 
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +46,7 @@ import '../Interfaces/OnDeepLinkContent.dart';
 import '../Views/BookmarkList.dart';
 import '../Views/SearchScreen.dart';
 import '../Views/NotificationList.dart';
+import '../Views/DonationReminder.dart';
 import 'VideoDetailNew.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
@@ -252,6 +253,27 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           cartCount=res.data.cartCount.toString();
           isNewNotification=res.data.notification;
         });
+
+        String remainder_date=res.data.remainder_date;
+         final DateTime now = DateTime.now();
+         final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        final String formatted = formatter.format(now);
+        print("formateed--"+formatted);
+        if(remainder_date==formatted){
+
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            Navigator.of(context, rootNavigator: true)
+                .push( // ensures fullscreen
+                MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return DonationReminderPage();
+                    }
+                ));
+
+          });
+
+        }
+
 
       }
     });
@@ -639,7 +661,10 @@ class navigationDrawer extends StatelessWidget {
               text: Languages
                   .of(context)
                   .joinUs,
-              onTap: () =>{ Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+              onTap: () =>{
+
+                Navigator.of(context).pop(),
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
               return JoinUsPage();
@@ -653,6 +678,7 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .donateUs,
               onTap: () =>{
+                Navigator.of(context).pop(),
                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -669,10 +695,11 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .contactUs,
               onTap: () =>{
+                Navigator.of(context).pop(),
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return YoutubeApp();
+                          return DonationReminderPage();
                         }
                     ) )
 
@@ -754,7 +781,16 @@ class navigationDrawer extends StatelessWidget {
               text: Languages
                   .of(context)
                   .faq,
-              onTap: () =>{}
+              onTap: () =>{
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return DonationReminderPage();
+                        }
+                    ) )
+
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(

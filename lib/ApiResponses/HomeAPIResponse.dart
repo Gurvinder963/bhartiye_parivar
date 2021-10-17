@@ -21,6 +21,7 @@ class HomeAPIResponse {
 
 class HomeData {
   String message;
+  String remainder_date;
   int cartCount;
   bool notification;
 
@@ -28,6 +29,7 @@ class HomeData {
 
   HomeData.fromJson(Map<String, dynamic> json) {
     message = json['message'];
+    remainder_date = json['remainder_date'];
     cartCount = json['cart-count'];
     notification = json['notification'];
   }
@@ -35,6 +37,7 @@ class HomeData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
+    data['remainder_date'] = this.remainder_date;
     data['cart-count'] = this.cartCount;
     data['notification'] = this.notification;
     return data;

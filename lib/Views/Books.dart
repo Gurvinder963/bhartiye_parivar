@@ -366,19 +366,7 @@ class BooksPageState extends State<BooksPage> {
             )).then((_) {
 
 
-          // This block runs when you have returned back to the 1st Page from 2nd.
-     /*     setState(() {
-        mainData.clear();
-          });
-        getBooksList(user_Token).then((value) => {
 
-          setState(() {
-            isLoading = false;
-            mainData.addAll(value.data);
-
-          })
-
-        });*/
           })
       },
                       child: _buildBoxBook(context, mainData[index].is_read_book,mainData[index].id, mainData[index].title,

@@ -11,6 +11,13 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:share/share.dart';
+import 'dart:async';
+import 'dart:io';
+import '../Utils/AppStrings.dart';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 class SharePage extends StatefulWidget {
   @override
   SharePageState createState() {
@@ -142,7 +149,35 @@ class SharePageState extends State<SharePage> {
       },
     );
   }
+  Future<ShortDynamicLink> getShortLink() async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?invite=me'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
 
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
+  _onShare(BuildContext context,String title,String thumbnail) async {
+
+
+
+      await Share.share(title,
+
+      );
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,6 +196,87 @@ class SharePageState extends State<SharePage> {
 
           children: <Widget>[
             SizedBox(height: 10,),
+    GestureDetector(
+    onTap: () {
+      getShortLink().then((res) {
+        setState(() {
+          _isInAsyncCall = false;
+        });
+        var url = res.shortUrl.toString();
+
+        _onShare(context,"Hey! Download "+AppStrings.AppName +" app from"
+            ' ' +
+            url,"");
+
+
+
+      });
+    },child:
+    Container(
+                padding: const EdgeInsets.fromLTRB(5.0,10.0,5.0,10.0),
+                child:
+            Row(
+
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/share.png"),
+                    width: 25,
+                    height:  25,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/email.png"),
+                    width: 28,
+                    height:  28,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/facebook.png"),
+                    width: 28,
+                    height:  28,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/twitter.png"),
+                    width: 28,
+                    height:  28,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/whatsapp.png"),
+                    width: 28,
+                    height:  28,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                  Image(
+                    image: new AssetImage("assets/telegram.png"),
+                    width: 28,
+                    height:  28,
+                    color: null,
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                  ),
+                  SizedBox(width: 20,),
+                ]))),
+            SizedBox(height: 20,),
             Center(child:Text("Sharing report of ankit yadav",
 
               overflow: TextOverflow.ellipsis,
@@ -172,7 +288,7 @@ class SharePageState extends State<SharePage> {
                 fontWeight: FontWeight.w500,
 
               ),)),
-SizedBox(height: 10,),
+SizedBox(height: 20,),
             Row(
                 children: <Widget>[
                   Expanded(

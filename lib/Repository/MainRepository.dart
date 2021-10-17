@@ -233,4 +233,8 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/user-refers",body,token);
     return ReferHistoryResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchDeleteReferData(String id,String token) async {
+    final response = await _provider.deleteWithToken("public/api/v1/user-refers/"+id,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }
