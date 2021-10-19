@@ -254,27 +254,29 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           isNewNotification=res.data.notification;
         });
 
+
+        String Amount=res.data.Amount;
+       if(Amount!=null && Amount.isNotEmpty) {
+         Prefs.setDonationAmount(_prefs, (Amount).toString());
+       }
         String remainder_date=res.data.remainder_date;
-         final DateTime now = DateTime.now();
-         final DateFormat formatter = DateFormat('yyyy-MM-dd');
-        final String formatted = formatter.format(now);
-        print("formateed--"+formatted);
-        if(remainder_date==formatted){
-
-          Future.delayed(const Duration(milliseconds: 1000), () {
-            Navigator.of(context, rootNavigator: true)
-                .push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return DonationReminderPage();
-                    }
-                ));
-
-          });
-
+        if(remainder_date!=null && !remainder_date.isEmpty) {
+          final DateTime now = DateTime.now();
+          final DateFormat formatter = DateFormat('yyyy-MM-dd');
+          final String formatted = formatter.format(now);
+          print("formateed--" + formatted);
+          if (remainder_date == formatted) {
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              Navigator.of(context, rootNavigator: true)
+                  .push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return DonationReminderPage();
+                      }
+                  ));
+            });
+          }
         }
-
-
       }
     });
   }

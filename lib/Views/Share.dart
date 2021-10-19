@@ -8,6 +8,7 @@ import '../Utils/AppColors.dart';
 import 'ReferHistory.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/ReferDetailResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +29,32 @@ class SharePage extends StatefulWidget {
 class SharePageState extends State<SharePage> {
 
   String user_Token;
+  String USER_NAME="";
   bool _isInAsyncCall = false;
+
+  int todayReferred=0;
+  int todayInstalled=0;
+  int todayPending=0;
+
+  int yesterdayReferred=0;
+  int yesterdayInstalled=0;
+  int yesterdayPending=0;
+
+
+  int sevenDaysReferred=0;
+  int sevenDaysInstalled=0;
+  int sevenDaysPending=0;
+
+  int twentyDaysReferred=0;
+  int twentyDaysInstalled=0;
+  int twentyDaysPending=0;
+
+  int totalDaysReferred=0;
+  int totalDaysInstalled=0;
+  int totalDaysPending=0;
+
+
+
   @override
   void initState() {
     super.initState();
@@ -38,14 +64,60 @@ class SharePageState extends State<SharePage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_NAME=prefs.getString(Prefs.USER_NAME);
 
 
+      getReferDetail(user_Token).then((value) => {
 
+        setState(() {
+
+          _isInAsyncCall = false;
+          todayReferred=value.data.todayReferred;
+          todayInstalled=value.data.todayInstall;
+          if(todayReferred-todayInstalled>0){
+          todayPending=todayReferred-todayInstalled;
+          }
+
+          yesterdayInstalled=value.data.yesterdayInstall;
+          yesterdayReferred=value.data.yesterdayReferred;
+          if(yesterdayReferred-yesterdayInstalled>0){
+            yesterdayPending=yesterdayReferred-yesterdayInstalled;
+          }
+
+          sevenDaysInstalled=value.data.weekInstall;
+          sevenDaysReferred=value.data.weekReferred;
+          if(sevenDaysReferred-sevenDaysInstalled>0){
+            sevenDaysPending=sevenDaysReferred-sevenDaysInstalled;
+          }
+
+
+          twentyDaysInstalled=value.data.monthInstall;
+          twentyDaysReferred=value.data.monthReferred;
+          if(twentyDaysReferred-twentyDaysInstalled>0){
+            twentyDaysPending=twentyDaysReferred-twentyDaysInstalled;
+          }
+
+          totalDaysInstalled=value.data.totalInstall;
+          totalDaysReferred=value.data.totalReferred;
+          if(totalDaysReferred-totalDaysInstalled>0){
+            totalDaysPending=totalDaysReferred-totalDaysInstalled;
+          }
+
+        })
+
+      });
 
 
 
       return (prefs.getString('token'));
     });
+
+  }
+  Future<ReferDetailResponse> getReferDetail(String user_Token) async {
+
+    var body ={'lang_code':""};
+    MainRepository repository=new MainRepository();
+    return repository.fetchReferDetailData(body,user_Token);
 
   }
   Future<AddToCartResponse> saveReferAPI(name,mobile,pincode) async {
@@ -277,7 +349,7 @@ class SharePageState extends State<SharePage> {
                   SizedBox(width: 20,),
                 ]))),
             SizedBox(height: 20,),
-            Center(child:Text("Sharing report of ankit yadav",
+            Center(child:Text("Sharing report of "+USER_NAME,
 
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -358,7 +430,7 @@ SizedBox(height: 20,),
                       ))),
                   Expanded(
                       flex: 1,
-                      child:Text("10",
+                      child:Text(todayReferred.toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -370,7 +442,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("20",
+                      child:Text(todayInstalled.toString(),
 
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
@@ -382,7 +454,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("30",
+                      child:Text((todayPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -420,7 +492,7 @@ SizedBox(height: 20,),
                           ))),
                   Expanded(
                       flex: 1,
-                      child:Text("10",
+                      child:Text(yesterdayReferred.toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -432,7 +504,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("20",
+                      child:Text(yesterdayInstalled.toString(),
 
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
@@ -444,7 +516,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("30",
+                      child:Text((yesterdayPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -482,7 +554,7 @@ SizedBox(height: 20,),
                           ))),
                   Expanded(
                       flex: 1,
-                      child:Text("10",
+                      child:Text(sevenDaysReferred.toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -494,7 +566,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("20",
+                      child:Text(sevenDaysInstalled.toString(),
 
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
@@ -506,7 +578,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("30",
+                      child:Text((sevenDaysPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -544,7 +616,7 @@ SizedBox(height: 20,),
                           ))),
                   Expanded(
                       flex: 1,
-                      child:Text("10",
+                      child:Text(twentyDaysReferred.toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -556,7 +628,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("20",
+                      child:Text(twentyDaysInstalled.toString(),
 
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
@@ -568,7 +640,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("30",
+                      child:Text((twentyDaysPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -606,7 +678,7 @@ SizedBox(height: 20,),
                           ))),
                   Expanded(
                       flex: 1,
-                      child:Text("10",
+                      child:Text(totalDaysReferred.toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -618,7 +690,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("20",
+                      child:Text(totalDaysInstalled.toString(),
 
                         textAlign: TextAlign.center,
                         style: GoogleFonts.roboto(
@@ -630,7 +702,7 @@ SizedBox(height: 20,),
                         ),)),
                   Expanded(
                       flex: 1,
-                      child:Text("30",
+                      child:Text((totalDaysPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(

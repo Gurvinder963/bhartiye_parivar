@@ -147,9 +147,10 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
   Future<AddToCartResponse> postDeleteReferItem(String id,String token) async {
 
     //  print('my_token'+token);
-    var body =json.encode({"id":id});
+  //  var body =json.encode({"id":id});
+    print(id);
     MainRepository repository=new MainRepository();
-    return repository.fetchDeleteReferData(body,token);
+    return repository.fetchDeleteReferData(id,token);
 
   }
   Widget _buildList() {
@@ -234,7 +235,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                           children: <Widget>[
                                             SizedBox(width: 10,),
                                       Image(
-                                        image: mainData[index].status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
+                                        image: mainData[index].refer_status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
                                         width: 18,
                                         height:  18
                                         ,

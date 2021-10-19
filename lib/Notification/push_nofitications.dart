@@ -183,7 +183,7 @@ class PushNotificationsManager {
                 title=message['notification']['title'];
               }
               else{
-                msg=message['notification']['title'];
+                msg="Donation Reminder";
                 title=message['data']['body'];
               }
 

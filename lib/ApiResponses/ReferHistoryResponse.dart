@@ -37,6 +37,7 @@ class Data {
   String mobile;
   String pincode;
   bool status;
+  bool refer_status;
   String createdAt;
   String createdBy;
   String updatedAt;
@@ -48,6 +49,7 @@ class Data {
         this.mobile,
         this.pincode,
         this.status,
+        this.refer_status,
         this.createdAt,
         this.createdBy,
         this.updatedAt,
@@ -59,6 +61,7 @@ class Data {
     mobile = json['mobile'];
     pincode = json['pincode'];
     status = json['status'];
+    refer_status = json['refer_status'];
     createdAt = json['created_at'];
     createdBy = json['created_by'];
     updatedAt = json['updated_at'];
@@ -72,6 +75,7 @@ class Data {
     data['mobile'] = this.mobile;
     data['pincode'] = this.pincode;
     data['status'] = this.status;
+    data['refer_status'] = this.refer_status;
     data['created_at'] = this.createdAt;
     data['created_by'] = this.createdBy;
     data['updated_at'] = this.updatedAt;

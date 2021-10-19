@@ -24,6 +24,7 @@ import '../ApiResponses/NotificationListResponse.dart';
 import '../ApiResponses/DonateHistoryResponse.dart';
 import '../ApiResponses/JoinUsResponse.dart';
 import '../ApiResponses/ReferHistoryResponse.dart';
+import '../ApiResponses/ReferDetailResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -236,5 +237,9 @@ class MainRepository {
   Future<AddToCartResponse> fetchDeleteReferData(String id,String token) async {
     final response = await _provider.deleteWithToken("public/api/v1/user-refers/"+id,token);
     return AddToCartResponse.fromJson(response);
+  }
+  Future<ReferDetailResponse> fetchReferDetailData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/user-refer-details",body,token);
+    return ReferDetailResponse.fromJson(response);
   }
 }

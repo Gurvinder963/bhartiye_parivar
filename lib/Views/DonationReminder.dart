@@ -8,6 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class DonationReminderPage extends StatefulWidget {
   @override
   DonationReminderPageState createState() {
@@ -16,7 +19,28 @@ class DonationReminderPage extends StatefulWidget {
 }
 
 class DonationReminderPageState extends State<DonationReminderPage> {
+  String amount='0';
+  @override
+  void initState() {
+    super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
 
+      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      amount=prefs.getString(Prefs.DONATION_AMOUNT);
+
+
+      setState(() {
+        amount = amount;
+      });
+
+
+      return (prefs.getString('token'));
+    });
+
+
+  }
   Future<void> scheduleNotification(int count) async {
     tz.initializeDatabase([]);
     var scheduledNotificationDateTime =
@@ -51,7 +75,7 @@ class DonationReminderPageState extends State<DonationReminderPage> {
     NotificationDetails(android: androidPlatformChannelSpecifics);
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     await flutterLocalNotificationsPlugin.show(
-        0, 'Donation Reminder', 'You have to pay 5000 as you promised', platformChannelSpecifics,
+        0, 'Donation Reminder', 'You have to pay '+ amount +' as you promised', platformChannelSpecifics,
         payload: 'item x');
 
 

@@ -6,6 +6,7 @@ class Prefs {
   static const String USER_NAME = 'USER_NAME';
   static const String USER_ID = 'USER_ID';
   static const String CART_COUNT = 'CART_COUNT';
+  static const String DONATION_AMOUNT = 'Donation_Amount';
 
 
   /*1 = Applicant
@@ -29,4 +30,9 @@ class Prefs {
 
     return prefs.setString(CART_COUNT, count);
   }
+  static setDonationAmount(SharedPreferences prefs, String count) async {
+
+    return prefs.setString(DONATION_AMOUNT, count);
+  }
+
 }
