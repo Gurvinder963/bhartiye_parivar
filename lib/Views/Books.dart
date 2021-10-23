@@ -26,6 +26,14 @@ class BooksPageState extends State<BooksPage> {
   bool isLoading = false;
   bool _isInAsyncCall = false;
   String user_Token;
+  int page = 1;
+  ScrollController _sc = new ScrollController();
+  @override
+  void dispose() {
+
+    _sc.dispose();
+    super.dispose();
+  }
   @override
   void initState() {
     super.initState();
@@ -34,39 +42,57 @@ class BooksPageState extends State<BooksPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
        user_Token=prefs.getString(Prefs.KEY_TOKEN);
-      if (!isLoading) {
-        setState(() {
-          isLoading = true;
-        });}
-       getLocaleContentLang().then((locale) {
+       apiCall();
 
-         if(locale==null){
-           locale="";
-         }
 
-         setState(() {
-           _isInAsyncCall = true;
-         });
+      return (prefs.getString('token'));
+    });
+    _sc.addListener(() {
+      if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        apiCall();
+      }
+    });
+
+  }
+
+  void apiCall(){
+
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });}
+
+    getLocaleContentLang().then((locale) {
+
+      if(locale==null){
+        locale="";
+      }
+     if(page==1) {
+       setState(() {
+         _isInAsyncCall = true;
+       });
+     }
       getBooksList(user_Token,locale).then((value) => {
 
         setState(() {
           isLoading = false;
           _isInAsyncCall = false;
           mainData.addAll(value.data);
-
+          if (!mainData.isEmpty) {
+            page++;
+          }
         })
 
       });
-       });
-
-      return (prefs.getString('token'));
     });
 
   }
 
   Future<BookListResponse> getBooksList(String user_Token,String locale) async {
-
-    var body ={'lang_code':locale};
+    String pageIndex = page.toString();
+    String perPage = "10";
+    var body ={'lang_code':locale, 'page': pageIndex,
+      'per_page': perPage,};
     MainRepository repository=new MainRepository();
     return repository.fetchBooksData(body,user_Token);
 
@@ -168,6 +194,164 @@ class BooksPageState extends State<BooksPage> {
       ),
     );
   }
+
+  Widget centerText(){
+    return   Padding(
+        padding: EdgeInsets.fromLTRB(10,10,10,10),
+        child:
+        Text("All Books",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(20), color: Colors.black,fontWeight: FontWeight.w500),)
+    );
+
+  }
+
+  Widget bottomView(){
+    return
+      Padding(
+          padding: EdgeInsets.fromLTRB(8,0,8,0),
+
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            itemCount: mainData.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12.0,
+                childAspectRatio: (2 / 3.7),
+                mainAxisSpacing: 4.0
+            ),
+            itemBuilder: (BuildContext context, int index){
+
+              return GestureDetector(
+                  onTap: () =>
+                  {
+
+                    setState(() {
+                      mainData[index].is_read_book=true;
+                    }),
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return BooksDetailPage(content: mainData[index]);
+                            }
+                        )).then((_) {
+
+
+
+                    })
+                  },
+                  child: _buildBoxBook(context, mainData[index].is_read_book,mainData[index].id, mainData[index].title,
+                      mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased,mainData[index].book_type_id)
+
+
+              );}
+            ,
+          )
+      );
+
+  }
+
+
+  Widget topHeader(){
+    return Container(
+        height: MediaQuery.of(context).size.height*0.23,
+        child:
+        Row(
+
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(width: 8),
+              Expanded(
+                child:   GestureDetector(
+                    onTap: () {
+
+                      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                          MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return MyBooksTabPage();
+                              }
+                          ) );
+
+                    },
+
+                    child:Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Opacity(
+                              opacity: 0.7,
+                              child:  Container(
+                                margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+
+                                alignment: Alignment.center,
+                                // height: ScreenUtil().setHeight(175),
+
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new AssetImage("assets/ic_new_my_books.png"),
+
+                                    alignment: Alignment.center,
+                                  ),
+
+                                ),
+
+                              ))
+
+
+
+
+                        ])),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                          MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return BookGroupListPage();
+                              }
+                          ) );
+                    },
+
+                    child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Opacity(
+                              opacity: 0.7,
+                              child:
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+
+                                alignment: Alignment.center,
+                                // height: ScreenUtil().setHeight(175),
+
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new AssetImage("assets/ic_by_lang.png"),
+
+                                    alignment: Alignment.center,
+                                  ),
+
+                                ),
+
+                              ))
+
+
+                        ])),
+              ),
+              SizedBox(width: 8),
+
+            ]
+
+        ));
+
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -189,193 +373,26 @@ class BooksPageState extends State<BooksPage> {
     child:Container(
           margin: EdgeInsets.fromLTRB(0,0,0,0),
           padding:  EdgeInsets.fromLTRB(1,8,1,0),
-        child: ListView(
-       // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-
-
-        Container(
-          height: MediaQuery.of(context).size.height*0.23,
         child:
-          Row(
-
-             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(width: 8),
-                Expanded(
-                  child:   GestureDetector(
-                  onTap: () {
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return MyBooksTabPage();
-                            }
-                        ) );
-
-                  },
-
-    child:Stack(
-                      alignment: Alignment.center,
-        children: <Widget>[
-        Opacity(
-        opacity: 0.7,
-        child:  Container(
-            margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-            alignment: Alignment.center,
-            // height: ScreenUtil().setHeight(175),
-
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.fill,
-                image: new AssetImage("assets/ic_new_my_books.png"),
-
-                alignment: Alignment.center,
-              ),
-
-            ),
-
-          ))
-    /*    Opacity(
-        opacity: 0.8,
-        child: Image(
-                    image: new AssetImage("assets/ic_new_my_books.png"),
+    ListView.builder(
+    itemCount: 3 , // Add one more item for progress indicator
+        controller: _sc,
+    itemBuilder: (BuildContext context, int index) {
 
 
+      if(index==0){
+        return topHeader();
+      }
+      else if(index==1){
+        return centerText();
+      }
+      else if(index==2){
+        return bottomView();
+      }
 
-                    fit: BoxFit.fill,
-
-                  )),*/
-
-        /*  Container(
-
-            padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
-              decoration: BoxDecoration(
-                  color:Colors.black.withOpacity(0.6) ,
-
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child:Text("MY BOOKS"
-                ,style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
-          ),*/
-
-        ])),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child:  GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return BookGroupListPage();
-                          }
-                      ) );
-                },
-
-                child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                    Opacity(
-                    opacity: 0.7,
-                    child:
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-                          alignment: Alignment.center,
-                          // height: ScreenUtil().setHeight(175),
-
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new AssetImage("assets/ic_by_lang.png"),
-
-                              alignment: Alignment.center,
-                            ),
-
-                          ),
-
-                        ))
-               /*         Opacity(
-                            opacity: 0.8,
-                            child:  Image(
-                              image: new AssetImage("assets/ic_by_lang.png"),
+    })
 
 
-
-                              fit: BoxFit.fill,
-
-                            ),
-                        )
-
-,*/
-                    /*   Container(
-                          padding:  EdgeInsets.symmetric(vertical: 7,horizontal: 8),
-                          decoration: BoxDecoration(
-                              color:Colors.black.withOpacity(0.6) ,
-
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          child:Text("BY LANGUAGE",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(17), color: Colors.white,fontWeight: FontWeight.w500),),
-                        ),*/
-
-                      ])),
-                ),
-                SizedBox(width: 8),
-
-              ]
-
-          )),
-    Padding(
-    padding: EdgeInsets.fromLTRB(10,10,10,10),
-          child:
-          Text("All Books",style: GoogleFonts.poppins(fontSize: ScreenUtil().setSp(20), color: Colors.black,fontWeight: FontWeight.w500),)
-    )
-,
-
-            Padding(
-                    padding: EdgeInsets.fromLTRB(8,0,8,0),
-
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: ScrollPhysics(),
-                    itemCount: mainData.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 12.0,
-                        childAspectRatio: (2 / 3.7),
-                        mainAxisSpacing: 4.0
-                    ),
-                    itemBuilder: (BuildContext context, int index){
-
-      return GestureDetector(
-          onTap: () =>
-      {
-
-          setState(() {
-            mainData[index].is_read_book=true;
-          }),
-        Navigator.of(context, rootNavigator: true)
-            .push( // ensures fullscreen
-            MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return BooksDetailPage(content: mainData[index]);
-                }
-            )).then((_) {
-
-
-
-          })
-      },
-                      child: _buildBoxBook(context, mainData[index].is_read_book,mainData[index].id, mainData[index].title,
-          mainData[index].thumbImage, mainData[index].publisher,mainData[index].ebook_cost,mainData[index].is_ebook_purchased,mainData[index].is_printed_purchased,mainData[index].book_type_id));
-    },
-                  ))
-
-
-        ])
 
 
         )),

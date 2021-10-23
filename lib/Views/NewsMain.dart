@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import '../localization/locale_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,6 +44,7 @@ class NewsMainPageState extends State<NewsMainPage> {
   bool isBookMarked=false;
   int mPagePosition=0;
   var likeStatus=0;
+  int page = 1;
   int _curr=0;
  // int mposition=0;
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
@@ -63,8 +64,10 @@ class NewsMainPageState extends State<NewsMainPage> {
   }
 
   Future<NewsResponse> getNewsList(String user_Token) async {
-
-    var body ={'lang_code':''};
+    String pageIndex = page.toString();
+    String perPage = "10";
+    var body ={'lang_code':'','page': pageIndex,
+      'per_page': perPage,};
     MainRepository repository=new MainRepository();
     return repository.fetchNewsData(body,user_Token);
 
@@ -81,32 +84,59 @@ class NewsMainPageState extends State<NewsMainPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      apiCall();
+
+      return (prefs.getString('token'));
+    });
+
+  }
+
+
+  void apiCall(){
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });}
+    getLocaleContentLang().then((locale) {
+
+      if(locale==null){
+        locale="";
+      }
+
       if (!isLoading) {
         setState(() {
           isLoading = true;
         });}
 
       getNewsList(user_Token).then((value) => {
-
+        if(value.data.length>0 && page==1){
+          setState(()
+          {
+            isBookMarked = value.data[0].bookmark;
+            likeStatus=value.data[0].is_like;
+          })
+        },
         setState(() {
           isLoading = false;
           mainData.addAll(value.data);
+          if (!mainData.isEmpty) {
+            page++;
+          }
 
         }),
-if(value.data.length>0){
-          setState(()
-      {
-        isBookMarked = mainData[0].bookmark;
-        likeStatus=mainData[0].is_like;
-      })
-      }
+
+
+
       });
 
 
-      return (prefs.getString('token'));
+
     });
 
   }
+
+
+
   Widget _buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),
@@ -374,8 +404,19 @@ if(value.data.length>0){
             Expanded(child:Container(
 
                 child:new PreloadPageView.builder(
+                  onPageChanged: (position) {
+                    mPagePosition=position;
+                    setState(() {
+                      isBookMarked = mainData[position].bookmark;
+                      likeStatus = mainData[position].is_like;
+                    });
+
+                    if (position == mainData.length - 1) {
+                    apiCall();
+                    }
+                  },
                   scrollDirection: Axis.vertical,
-                    itemCount:mainData.length+1,
+                    itemCount:mainData.length,
                     itemBuilder: (BuildContext context, int position)
                         {
                         if (position == mainData.length) {
@@ -405,16 +446,6 @@ if(value.data.length>0){
 
                           return wid;
                         }},
-                    onPageChanged: (int position) {
-
-                      mPagePosition=position;
-                      setState(() {
-                        isBookMarked = mainData[position].bookmark;
-                        likeStatus = mainData[position].is_like;
-                      });
-
-
-                    },
 
                     preloadPagesCount: 3,
                     controller: PreloadPageController(),
