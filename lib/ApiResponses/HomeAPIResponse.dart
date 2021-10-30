@@ -22,11 +22,11 @@ class HomeAPIResponse {
 class HomeData {
   String message;
   String remainder_date;
-  String Amount;
+  int Amount;
   int cartCount;
   bool notification;
 
-  HomeData({this.message, this.cartCount,this.notification});
+  HomeData({this.message,this.remainder_date,this.Amount, this.cartCount,this.notification});
 
   HomeData.fromJson(Map<String, dynamic> json) {
     message = json['message'];

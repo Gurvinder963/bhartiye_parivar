@@ -7,7 +7,8 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:youtube_plyr_iframe/youtube_plyr_iframe.dart';
+
 
 import '../widgets/meta_data_section.dart';
 import '../widgets/play_pause_button_bar.dart';
@@ -48,7 +49,12 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
 
   @override
   void initState() {
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.initState();
     _controller = YoutubePlayerController(
       initialVideoId: 'iP8cX5hA_Gk',
@@ -58,29 +64,37 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
 
 
         ],
-
+        autoPlay: true,
         showControls: true,
         showFullscreenButton: true,
         desktopMode: false,
         privacyEnhanced: true,
 
       ),
-    );
+    )..listen((value) {
+    print(_controller.value.position);
+    if (value.isReady && !value.hasPlayed) {
+    _controller
+    ..hidePauseOverlay()
+    ..play()
+    ..hideTopMenu();
+    }
+    if (value.hasPlayed) {
+   // _controller.hideEndScreen();
+    }
+    });
     _controller.onEnterFullscreen = () {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        _controller.play();
+      });
+      // SystemChrome.setPreferredOrientations([
+      //   DeviceOrientation.landscapeLeft,
+      //   DeviceOrientation.landscapeRight,
+      // ]);
       log('Entered Fullscreen');
     };
     _controller.onExitFullscreen = () {
-      log('Exited Fullscreen');
-      Future.delayed(const Duration(milliseconds: 1000), () {
-
-// Here you can write your code
-        _controller.play();
-
-      });
+      Navigator.of(context).pop();
 
     };
   }
@@ -108,18 +122,7 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
                 ],
               );
             }
-            return ListView(
-              children: [
-                Stack(
-                  children: [
-
-                    player,
-
-                  ],
-                ),
-               // const Controls(),
-              ],
-            );
+            return Container(height: 450, width: 750, child: player);
           },
         ),
       ),

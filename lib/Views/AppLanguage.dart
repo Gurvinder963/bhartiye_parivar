@@ -300,9 +300,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
         if(mFrom=='sign-up'){
 
-          if(myLang =='hi'){
-            myLang='hn';
-          }
+
 
        StringBuffer sb = new StringBuffer();
 
@@ -311,9 +309,9 @@ class AppLanguagePageState extends State<AppLanguagePage> {
              sb.write('en');
              sb.write(',');
            }
-       if(myLang!='hn')
+       if(myLang!='hi')
        {
-         sb.write('hn');
+         sb.write('hi');
          sb.write(',');
        }
 

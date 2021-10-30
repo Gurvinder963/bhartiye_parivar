@@ -255,10 +255,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         });
 
 
-        String Amount=res.data.Amount;
-       if(Amount!=null && Amount.isNotEmpty) {
+        int Amount=res.data.Amount;
+       //if(Amount!=null) {
          Prefs.setDonationAmount(_prefs, (Amount).toString());
-       }
+       //}
         String remainder_date=res.data.remainder_date;
         if(remainder_date!=null && !remainder_date.isEmpty) {
           final DateTime now = DateTime.now();
@@ -787,7 +787,7 @@ class navigationDrawer extends StatelessWidget {
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return DonationReminderPage();
+                          return YoutubeApp();
                         }
                     ) )
 

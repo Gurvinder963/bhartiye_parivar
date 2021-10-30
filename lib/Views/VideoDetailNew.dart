@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoListResponse.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../Repository/MainRepository.dart';
@@ -24,6 +25,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../localization/locale_constant.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -90,7 +93,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   bool isBookMarked = false;
   bool isSubscribed= false;
   var likeStatus=0;
-
+  int page = 1;
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
@@ -221,16 +224,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       });
 
 
-      getVideosList(user_Token,videoCategory,mContent.id.toString()).then((value) => {
-
-        setState(() {
-          isLoading = false;
-          mainData.addAll(value.data);
-
-        })
-
-      });
-
+    apiCall();
 
       return (prefs.getString('token'));
     });
@@ -303,6 +297,36 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return repository.fetchVideoDetailData(id,body,user_Token);
 
   }
+
+
+  void apiCall(){
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });}
+    getLocaleContentLang().then((locale) {
+
+      if(locale==null){
+        locale="";
+      }
+
+      getVideosList(user_Token,videoCategory,mContent.id.toString()).then((value) => {
+
+        setState(() {
+          isLoading = false;
+          mainData.addAll(value.data);
+
+        })
+
+      });
+
+
+
+    });
+
+  }
+
+
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory,String videoId) async {
 
     var body ={'video_category':videoCategory,"video_id":videoId};
@@ -454,103 +478,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       );
     }
   }
-  @override
-  Widget build(BuildContext context) {
-    var publisher=mContent.publisher==null?"My Channel":mContent.publisher;
-    ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
-        designSize: Size(360, 690),
-        orientation: Orientation.portrait);
-    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-    if(!isPortrait){
-
-      marginPixel=0;
-     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-
-
-    }
-    else{
-      marginPixel=0;
-      //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-
-    }
-
+  Widget mainWidget(Widget player){
     var channel=mContent.channel==null?"My Channel":mContent.channel;
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
-    return YoutubePlayerBuilder(
 
-      onEnterFullScreen: (){
-        print("on full screen");
-        Future.delayed(const Duration(milliseconds: 2000), () {
-
-// Here you can write your code
-
-          _controller.play();
-
-        });
-
-      },
-        onExitFullScreen: () {
-      // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
-      // SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-      if (_controller.value.isFullScreen) {
-        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-            .then((_) {
-          Navigator.pop(context);
-        });
-      }
-    },
-    player: YoutubePlayer(
-    controller: _controller,
-      aspectRatio: 16 / 9,
-    showVideoProgressIndicator: false,
-
-    progressIndicatorColor: Colors.blueAccent,
-    topActions: <Widget>[
-    const SizedBox(width: 8.0),
-    Expanded(
-    child: _controller != null
-    ? Text(
-    _controller.metadata.title,
-    style: const TextStyle(
-    color: Colors.white,
-    fontSize: 18.0,
-    ),
-    overflow: TextOverflow.ellipsis,
-    maxLines: 1,
-    )
-        : Container(),
-    ),
-    IconButton(
-    icon: const Icon(
-    Icons.settings,
-    color: Colors.white,
-    size: 25.0,
-    ),
-    onPressed: () {
-
-    },
-    ),
-    ],
-    onReady: () {
-    _isPlayerReady = true;
-
-
-    },
-    onEnded: (data) {
-    /*   _controller
-              .load(_ids[(_ids.indexOf(data.videoId) + 1) % _ids.length]);
-          _showSnackBar('Next Video Started!');*/
-    },
-    ),
-    builder: (context, player) => Scaffold(
-      appBar: AppBar(
+    return Scaffold(
+      appBar:isPortrait?AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         leading: IconButton(
@@ -559,7 +497,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
               Navigator.of(context, rootNavigator: true).pop(context),
         ),
         title: Text(AppStrings.PlayingVideo),
-      ),
+      ):null,
 
       body: ModalProgressHUD(
           inAsyncCall: _isInAsyncCall,
@@ -573,7 +511,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                   children: <Widget>[
-              mContent.videoSourceType=='facebook'?
+                    mContent.videoSourceType=='facebook'?
                     _buildBoxVideo(context,mContent):player,
                     Expanded(
                         child:
@@ -586,14 +524,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
 
-                                        new Image(
-                                          image: new AssetImage("assets/avatar.png"),
-                                          width: 42,
-                                          height:  42,
-                                          color: null,
-                                          fit: BoxFit.scaleDown,
-                                          alignment: Alignment.center,
-                                        ),
+                                        new Container(
+                                            width: 44.0,
+                                            height: 44.0,
+                                            decoration: new BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: new DecorationImage(
+                                                    fit: BoxFit.fill,
+                                                    image: new NetworkImage(
+                                                        mContent.channel_image)
+                                                )
+                                            )),
                                         SizedBox(height: 5,width: 8,),
 
                                         new Expanded(
@@ -663,54 +604,54 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: <Widget>[
                                         SizedBox(width: 2,),
-                                  IconButton(
-                                      icon: likeStatus==1? Image(
-                                        image: new AssetImage("assets/like_sel.png"),
-                                        width: 24,
-                                        height:  24,
-                                        color: null,
-                                        fit: BoxFit.scaleDown,
-                                        alignment: Alignment.center,
-                                      ) :Image(
-                                          image: new AssetImage("assets/like_unsel.png"),
-                                          width: 24,
-                                          height:  24,
-                                          color: null,
-                                          fit: BoxFit.scaleDown,
-                                          alignment: Alignment.center,
-                                        ),
-                                      onPressed: () {
-                                        setState(() {
-                                          if(likeStatus==1){
-                                            likeStatus = 0;
-                                          }
-                                          else{
-                                            likeStatus = 1;
-                                          }
+                                        IconButton(
+                                            icon: likeStatus==1? Image(
+                                              image: new AssetImage("assets/like_sel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ) :Image(
+                                              image: new AssetImage("assets/like_unsel.png"),
+                                              width: 24,
+                                              height:  24,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if(likeStatus==1){
+                                                  likeStatus = 0;
+                                                }
+                                                else{
+                                                  likeStatus = 1;
+                                                }
 
-                                        });
+                                              });
 
-                                        postAddLike("1",user_Token,mContent.id.toString())
-                                            .then((res) async {
-                                          String msg="";
-                                              if(likeStatus==1){
-                                                msg="Added to liked videos";
-                                          }
-                                          else{
-                                                msg="Removed from liked videos";
-                                          }
-                                          Fluttertoast.showToast(
-                                              msg: msg,
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.black,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
+                                              postAddLike("1",user_Token,mContent.id.toString())
+                                                  .then((res) async {
+                                                String msg="";
+                                                if(likeStatus==1){
+                                                  msg="Added to liked videos";
+                                                }
+                                                else{
+                                                  msg="Removed from liked videos";
+                                                }
+                                                Fluttertoast.showToast(
+                                                    msg: msg,
+                                                    toastLength: Toast.LENGTH_SHORT,
+                                                    gravity: ToastGravity.BOTTOM,
+                                                    timeInSecForIosWeb: 1,
+                                                    backgroundColor: Colors.black,
+                                                    textColor: Colors.white,
+                                                    fontSize: 16.0);
 
-                                        });
+                                              });
 
-                                      }),
+                                            }),
                                         SizedBox(width: 2,),
                                         IconButton(
                                             icon: likeStatus==2? Image(
@@ -764,40 +705,40 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                             }),
                                         SizedBox(width: 2,),
-                                  IconButton(
-                                      icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
+                                        IconButton(
+                                            icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
 
-                                      onPressed: () {
-                                        _asyncInputDialog(context,mContent.id.toString());
-
-
-                              }),
-                                  IconButton(
-                                      icon:Image(
-                                          image: new AssetImage("assets/share.png"),
-                                          width: 23,
-                                          height:  23,
-                                          color:Colors.black,
-                                          fit: BoxFit.scaleDown,
-                                          alignment: Alignment.center,
-                                        ),
-                                      onPressed: () {
-                                        getShortLink().then((res) {
-                                          setState(() {
-                                            _isInAsyncCall = false;
-                                          });
-                                          var url = res.shortUrl.toString();
-
-                                          _onShare(context,mContent.title +
-                                              ' ' +
-                                              url,mContent.videoImage);
+                                            onPressed: () {
+                                              _asyncInputDialog(context,mContent.id.toString());
 
 
+                                            }),
+                                        IconButton(
+                                            icon:Image(
+                                              image: new AssetImage("assets/share.png"),
+                                              width: 23,
+                                              height:  23,
+                                              color:Colors.black,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ),
+                                            onPressed: () {
+                                              getShortLink().then((res) {
+                                                setState(() {
+                                                  _isInAsyncCall = false;
+                                                });
+                                                var url = res.shortUrl.toString();
 
-                                        });
+                                                _onShare(context,mContent.title +
+                                                    ' ' +
+                                                    url,mContent.videoImage);
 
 
-                                      }),
+
+                                              });
+
+
+                                            }),
                                         SizedBox(width: 2,),
                                         IconButton(
                                             icon: isBookMarked? Image(
@@ -863,52 +804,52 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                         Expanded( child:Align(
                                             alignment: Alignment.centerRight,
                                             child: GestureDetector(
-    onTap: () {
+                                                onTap: () {
 
-      if(isSubscribed){
-        Widget okButton = FlatButton(
-          child: Text("UNSUBSCRIBE"),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop('dialog');
-            subscribeAPI();
+                                                  if(isSubscribed){
+                                                    Widget okButton = FlatButton(
+                                                      child: Text("UNSUBSCRIBE"),
+                                                      onPressed: () {
+                                                        Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                        subscribeAPI();
 
-          },
-        );
-        Widget CANCELButton = FlatButton(
-          child: Text("CANCEL"),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                      },
+                                                    );
+                                                    Widget CANCELButton = FlatButton(
+                                                      child: Text("CANCEL"),
+                                                      onPressed: () {
+                                                        Navigator.of(context, rootNavigator: true).pop('dialog');
 
-          },
-        );
-        // set up the AlertDialog
-        AlertDialog alert = AlertDialog(
+                                                      },
+                                                    );
+                                                    // set up the AlertDialog
+                                                    AlertDialog alert = AlertDialog(
 
-          content: Text("Unsubscribe from "+mContent.channel),
-          actions: [
-            CANCELButton,
-            okButton,
+                                                      content: Text("Unsubscribe from "+mContent.channel),
+                                                      actions: [
+                                                        CANCELButton,
+                                                        okButton,
 
-          ],
-        );
+                                                      ],
+                                                    );
 
-        // show the dialog
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
-      }
-      else{
-        subscribeAPI();
+                                                    // show the dialog
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return alert;
+                                                      },
+                                                    );
+                                                  }
+                                                  else{
+                                                    subscribeAPI();
 
-      }
-
-
+                                                  }
 
 
-    },child:isSubscribed?Text("SUBSCRIBED",
+
+
+                                                },child:isSubscribed?Text("SUBSCRIBED",
                                               textAlign: TextAlign.center,
 
 
@@ -966,9 +907,104 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
           )),
 
-    ));
+    );
   }
-  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String publisher,String duration,String videoUrl,String videoSourceType){
+
+  @override
+  Widget build(BuildContext context) {
+    var publisher=mContent.publisher==null?"My Channel":mContent.publisher;
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: Size(360, 690),
+        orientation: Orientation.portrait);
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    if(!isPortrait){
+
+      marginPixel=0;
+     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
+
+    }
+    else{
+      marginPixel=0;
+      //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
+    }
+
+    var channel=mContent.channel==null?"My Channel":mContent.channel;
+
+    final height = MediaQuery.of(context).size.height;
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
+
+    if(mContent.videoSourceType=='facebook'){
+
+      return mainWidget(null);
+
+    }
+    else {
+      return YoutubePlayerBuilder(
+
+          onEnterFullScreen: () {
+            Future.delayed(const Duration(milliseconds: 2000), () {
+              _controller.play();
+            });
+          },
+          onExitFullScreen: () {
+            if (_controller.value.isFullScreen) {
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp])
+                  .then((_) {
+                Navigator.pop(context);
+              });
+            }
+          },
+          player: YoutubePlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            showVideoProgressIndicator: false,
+
+            progressIndicatorColor: Colors.blueAccent,
+            topActions: <Widget>[
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: _controller != null
+                    ? Text(
+                  _controller.metadata.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                )
+                    : Container(),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 25.0,
+                ),
+                onPressed: () {
+
+                },
+              ),
+            ],
+            onReady: () {
+              _isPlayerReady = true;
+            },
+            onEnded: (data) {
+
+            },
+          ),
+          builder: (context, player) => mainWidget(player));
+    }
+  }
+  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
 
 
 
@@ -1001,7 +1037,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
 
-    publisher=publisher==null?"My Channel":publisher;
+    channel=channel==null?"My Channel":channel;
     duration=duration==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
@@ -1094,16 +1130,18 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
 
-                        new Image(
-                          image: new AssetImage("assets/avatar.png"),
-                          width: 42,
-                          height:  42,
-                          color: null,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
+                        new Container(
+                            width: 44.0,
+                            height: 44.0,
+                            decoration: new BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new NetworkImage(
+                                        channel_image)
+                                )
+                            )),
                         SizedBox(height: 5,width: 8,),
-
                         new Expanded(
                             flex: 7,
                             child:Container(
@@ -1129,7 +1167,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(publisher,   overflow: TextOverflow.ellipsis,
+                                                Text(channel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
@@ -1229,6 +1267,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                   mainData[index].lang,
                   mainData[index].createdAt,
                   mainData[index].channel,
+                  mainData[index].channel_image,
                   mainData[index].video_duration,
                   mainData[index].videoUrl,
                   mainData[index].videoSourceType
@@ -1328,9 +1367,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     else if(content.videoSourceType=='facebook'){
       html = '''
-          <div class="videoWrapper"><iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;" width="100%" height="100%"
+          <div class="videoWrapper"><iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;position: relative;padding: 30px;height: 0; overflow: hidden;" width="100%" height="100%"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            allowfullscreen=false&autoplay=true&href=${content.videoUrl}" </iframe></div>
+            allowfullscreen=true&autoplay=true&href=${content.videoUrl}" </iframe></div>
      ''';
 
 

@@ -19,9 +19,10 @@ import '../Views/privacyScreen.dart';
 import '../Utils/AppStrings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:device_info/device_info.dart';
-
+import 'package:dart_ipify/dart_ipify.dart';
 import '../Utils/AppColors.dart';
 import '../ApiResponses/OTPResponse.dart';
+import '../ApiResponses/OTPCountResponse.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import '../Views/terms.dart';
 
@@ -183,6 +184,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
     myControllerContryCode.text="+91";
 
+    getLocalIpAddress().then((res) {
+      print(res);
+      ipAddress=res;
+    });
 
 
   }
@@ -229,7 +234,12 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       },
     );
   }
+  Future<OTPCountResponse> getOTPCountResponse(String mobile) async {
+    var body =json.encode({"mobile":mobile,"ip_address":ipAddress});
+    MainRepository repository=new MainRepository();
+    return repository.fetchOTPCountData(body);
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -491,6 +501,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   }
 
 
+  static Future<String> getLocalIpAddress() async {
+    final ipv4 = await Ipify.ipv4();
+    return ipv4;
+  }
+
   Widget _submitButton() {
     return InkWell(
       onTap: () {
@@ -547,16 +562,52 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           });
         }
         else{*/
-          Navigator.of(context, rootNavigator: true)
-              .push( // ensures fullscreen
-              MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return VerifyOTPPage(c_code: s2,
-                        mobile: myControllerPhone.text,
-                        otpCode: "",
-                        otpSendDate:null);
-                  }
-              ));
+     setState(() {
+       _isInAsyncCall = true;
+     });
+
+     var arr = myControllerPhone.text.split(" ");
+     String newStringMob = arr[0] + arr[1];
+
+     getOTPCountResponse(newStringMob)
+         .then((res) async {
+       setState(() {
+         _isInAsyncCall = false;
+       });
+
+
+       if (res.status == 1) {
+
+         if(res.data.data.count<4) {
+           Navigator.of(context, rootNavigator: true)
+               .push( // ensures fullscreen
+               MaterialPageRoute(
+                   builder: (BuildContext context) {
+                     return VerifyOTPPage(c_code: s2,
+                         mobile: myControllerPhone.text,
+                         otpCode: "",
+                         otpSendDate: null);
+                   }
+               ));
+         }
+         else{
+           showAlertDialogValidation(context,"OTP limit exceed for authentication!");
+
+         }
+
+
+       }
+       else{
+
+         showAlertDialogValidation(context,"Some error!");
+
+
+       }
+
+
+     });
+
+
       //  }
 
 

@@ -25,6 +25,7 @@ import '../ApiResponses/DonateHistoryResponse.dart';
 import '../ApiResponses/JoinUsResponse.dart';
 import '../ApiResponses/ReferHistoryResponse.dart';
 import '../ApiResponses/ReferDetailResponse.dart';
+import '../ApiResponses/OTPCountResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -242,4 +243,10 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/user-refer-details",body,token);
     return ReferDetailResponse.fromJson(response);
   }
+  Future<OTPCountResponse> fetchOTPCountData(var body) async {
+    final response = await _provider.post("public/api/v1/auth/opt-count",body);
+    return OTPCountResponse.fromJson(response);
+  }
+
+
 }
