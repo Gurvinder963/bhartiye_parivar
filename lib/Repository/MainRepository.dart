@@ -26,6 +26,7 @@ import '../ApiResponses/JoinUsResponse.dart';
 import '../ApiResponses/ReferHistoryResponse.dart';
 import '../ApiResponses/ReferDetailResponse.dart';
 import '../ApiResponses/OTPCountResponse.dart';
+import '../ApiResponses/LangResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -251,5 +252,13 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/auth/app-launch-count",body,token);
     return AddToCartResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchSaveUserLang(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/auth/save-user-lang",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 
+  Future<LangResponse> fetchLangData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/auth/get-user-lang",body,token);
+    return LangResponse.fromJson(response);
+  }
 }

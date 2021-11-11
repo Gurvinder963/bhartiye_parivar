@@ -274,8 +274,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       },
     );
   }
-  Future<OTPCountResponse> getOTPCountResponse(String mobile) async {
-    var body =json.encode({"mobile":mobile,"ip_address":ipAddress});
+  Future<OTPCountResponse> getOTPCountResponse(String mobile,String c_code) async {
+    var body =json.encode({"mobile":mobile,"ip_address":ipAddress,"mobile_no":mobile,"country_code":c_code,"full_number":c_code+mobile ,"ip":ipAddress,"app_name_english":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer,"app_unique_code":Constants.AppCode});
     MainRepository repository=new MainRepository();
     return repository.fetchOTPCountData(body);
 
@@ -609,7 +609,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
      var arr = myControllerPhone.text.split(" ");
      String newStringMob = arr[0] + arr[1];
 
-     getOTPCountResponse(newStringMob)
+     getOTPCountResponse(newStringMob,s2)
          .then((res) async {
        setState(() {
          _isInAsyncCall = false;

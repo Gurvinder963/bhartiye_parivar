@@ -88,14 +88,6 @@ class SearchScreenPageState extends State<SearchScreenPage> {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
       USER_ID=prefs.getString(Prefs.USER_ID);
-     /* if (!isLoading) {
-        setState(() {
-          isLoading = true;
-        });}
-      setState(() {
-        _isInAsyncCall = true;
-      });*/
-
 
 
       return (prefs.getString('token'));

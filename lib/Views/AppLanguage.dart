@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Utils/AppColors.dart';
@@ -9,6 +9,11 @@ import 'Home.dart';
 import '../Utils/AppStrings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../localization/locale_constant.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/LangResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class AppLanguagePage extends StatefulWidget {
 
   final String from;
@@ -24,7 +29,7 @@ class AppLanguagePage extends StatefulWidget {
 
 class AppLanguagePageState extends State<AppLanguagePage> {
    String mFrom;
-
+   String user_Token;
   AppLanguagePageState(String from){
     mFrom=from;
   }
@@ -46,10 +51,40 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
 
   ];
+   Future<LangResponse> getLangAPI(String user_Token) async {
+
+     var body ={'app_unique_code':Constants.AppCode};
+     MainRepository repository=new MainRepository();
+     return repository.fetchLangData(body,user_Token);
+
+   }
+   Future<AddToCartResponse> saveLangAPI(applang) async {
+     //  final String requestBody = json.encoder.convert(order_items);
+
+
+     var body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"app_language":applang});
+     MainRepository repository=new MainRepository();
+
+     return repository.fetchReferSave(body,user_Token);
+
+
+   }
+
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+
+      return (prefs.getString('token'));
+    });
 
     getLocale().then((locale) {
       setState(() {
@@ -78,7 +113,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     ));
     return  MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: AppStrings.AppName,
+        title: Constants.AppName,
         theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(
         Theme.of(context).textTheme,
@@ -297,51 +332,51 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
         }
 
+        StringBuffer sb = new StringBuffer();
 
-        if(mFrom=='sign-up'){
+        // if(myLang!='en')
+        // {
+        //   sb.write('en');
+        //   sb.write(',');
+        // }
+        // if(myLang!='hi')
+        // {
+        //   sb.write('hi');
+        //   sb.write(',');
+        // }
+
+        sb.write(myLang);
 
 
 
-       StringBuffer sb = new StringBuffer();
+        saveLangAPI(sb.toString()).then((res) async {
+          String msg;
+          // setState(() {
+          //   _isInAsyncCall = false;
+          // });
+          if(res.status==1){
 
-         if(myLang!='en')
-           {
-             sb.write('en');
-             sb.write(',');
-           }
-       if(myLang!='hi')
-       {
-         sb.write('hi');
-         sb.write(',');
-       }
 
-         sb.write(myLang);
-       print("String builder value"+sb.toString());
-       print("myLang"+myLang);
-          changeLanguageContent(context,sb.toString());
-        Navigator.pushAndRemoveUntil(context,
+
+            changeLanguageContent(context,sb.toString());
+            if(mFrom=='sign-up'){
+
+              Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder:
                       (context) =>
                       HomePage()
                   ), ModalRoute.withName("/Home")
               );
 
-        }
-        else{
-          Navigator.of(context, rootNavigator: true).pop(context);
-        }
+            }
+            else{
+              Navigator.of(context, rootNavigator: true).pop(context);
+            }
+
+          }
+        });
 
 
-
-
-
-
-      /*  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-            MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return HomePage();
-                }
-            ) );*/
 
       },
 

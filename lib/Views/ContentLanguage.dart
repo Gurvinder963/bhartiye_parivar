@@ -1,5 +1,8 @@
 import 'dart:convert';
-
+import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/LangResponse.dart';
+import '../Repository/MainRepository.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Utils/AppColors.dart';
@@ -8,6 +11,8 @@ import '../Utils/AppColors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../localization/locale_constant.dart';
 import '../localization/localizations_delegate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 class ContentLanguagePage extends StatefulWidget {
   @override
   ContentLanguagePageState createState() {
@@ -16,10 +21,45 @@ class ContentLanguagePage extends StatefulWidget {
 }
 
 class ContentLanguagePageState extends State<ContentLanguagePage> {
+  String user_Token;
+
+  Future<LangResponse> getLangAPI(String user_Token) async {
+
+    var body ={'app_unique_code':Constants.AppCode};
+    MainRepository repository=new MainRepository();
+    return repository.fetchLangData(body,user_Token);
+
+  }
+  Future<AddToCartResponse> saveLangAPI(applang) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"content_langauges":applang});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReferSave(body,user_Token);
+
+
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+
+
+      return (prefs.getString('token'));
+    });
+
+
+
 
     getLocaleContentLang().then((locale) {
 
@@ -177,16 +217,24 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
           }
 
         }
-        print(sb.toString());
-        changeLanguage(context,sb.toString());
-        Navigator.of(context, rootNavigator: true).pop(context);
-      /*  Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder:
-                (context) =>
-                VerifyOTPPage()
-            ), ModalRoute.withName("/VerifyOTP")
-        );
-*/
+
+        saveLangAPI(sb.toString()).then((res) async {
+          String msg;
+          // setState(() {
+          //   _isInAsyncCall = false;
+          // });
+          if(res.status==1){
+
+
+
+            changeLanguage(context,sb.toString());
+            Navigator.of(context, rootNavigator: true).pop(context);
+
+          }
+        });
+
+
+
 
       },
 
