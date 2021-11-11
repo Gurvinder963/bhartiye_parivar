@@ -28,6 +28,7 @@ import '../ApiResponses/LoginResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 
 
@@ -50,6 +51,9 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   String mInvitedBy="";
   String mMobile;
   String mC_code;
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  Map<String, dynamic> _deviceData = <String, dynamic>{};
   String mAddress='';
   String _chosenValue="Select";
   bool checkedValue=false;
@@ -267,7 +271,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
       print(prefs.getString('token'));
       fcm_token=prefs.getString('fcm_token');
       print("fcm_token"+fcm_token);
-
+      initPlatformState();
 
 
       return (prefs.getString('fcm_token'));
@@ -277,6 +281,37 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
   }
 
+  Future<void> initPlatformState() async {
+    Map<String, dynamic> deviceData = <String, dynamic>{};
+
+    try {
+      if (Platform.isAndroid) {
+        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+        print('Running on ${deviceData}');
+      }
+    } on PlatformException {
+      deviceData = <String, dynamic>{
+        'Error:': 'Failed to get platform version.'
+      };
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _deviceData = deviceData;
+    });
+  }
+
+
+
+  _readAndroidBuildData(AndroidDeviceInfo build) {
+
+    baseOs=build.version.release;
+    manufacturer=build.manufacturer;
+    model= build.model;
+
+
+  }
 
 
 
@@ -540,7 +575,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     else{
       varMobile=mobile;
     }
-    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token});
+    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer});
     MainRepository repository=new MainRepository();
     return repository.fetchProfileData(body);
 

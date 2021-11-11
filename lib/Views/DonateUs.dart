@@ -31,6 +31,11 @@ class DonateUsPageState extends State<DonateUsPage> {
   String user_Token;
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.portraitUp,
+
+    ]);
     super.initState();
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;

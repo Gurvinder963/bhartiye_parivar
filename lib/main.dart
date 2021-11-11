@@ -45,7 +45,10 @@ Future<void> main() async {
     runApp(new MyApp());
   });
 }
-
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
+}
 class MyApp extends StatefulWidget  {
 
   static void setLocale(BuildContext context, Locale newLocale) {
@@ -113,6 +116,7 @@ class _MyAppState extends State<MyApp> {
       statusBarColor: Colors.white, //or set color with: Color(0xFF0000FF)
     ));
     return MaterialApp(
+      navigatorKey: NavigationService.navigatorKey,
       title: Constants.AppName,
       theme: ThemeData(
           textTheme: GoogleFonts.montserratTextTheme(

@@ -40,6 +40,7 @@ import '../Views/MyCart.dart';
 import 'package:badges/badges.dart';
 import '../Repository/MainRepository.dart';
 import '../ApiResponses/HomeAPIResponse.dart';
+import '../ApiResponses/AddToCartResponse.dart';
 import '../Interfaces/OnCartCount.dart';
 import '../Interfaces/OnNewsBack.dart';
 import '../Interfaces/OnDeepLinkContent.dart';
@@ -180,7 +181,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
 
 
-
+      getAppLauchCountAPI(user_Token);
       homeAPICall();
 
       return (prefs.getString('token'));
@@ -241,6 +242,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     return repository.fetchVideoDetailData(id,body,user_Token);
 
   }
+
+
+
   void homeAPICall(){
     getHOMEAPI(user_Token).then((res) async {
 
@@ -289,7 +293,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   }
 
+  Future<AddToCartResponse> getAppLauchCountAPI(String user_Token) async {
 
+    var body ={'none':'none'};
+    MainRepository repository=new MainRepository();
+    return repository.fetchAppLauchCount(body,user_Token);
+
+  }
 
   void onItemTapped(int index) {
 

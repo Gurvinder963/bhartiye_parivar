@@ -142,11 +142,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       _seekToController.dispose();
       super.dispose();
     }
-    SystemChrome.setPreferredOrientations([
 
-      DeviceOrientation.portraitUp,
-
-    ]);
     super.dispose();
   }
   Future<ShortDynamicLink> getShortLink() async {
@@ -191,12 +187,16 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   }
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+
+
+    print("video init call");
     super.initState();
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
@@ -487,14 +487,32 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () {
+
+
+          SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitUp])
+              .then((_) {
+            Navigator.of(context, rootNavigator: true).pop(context);
+          });
+
+
+      return Future.value(false);
+    },
+    child:Scaffold(
       appBar:isPortrait?AppBar(
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              Navigator.of(context, rootNavigator: true).pop(context),
+          onPressed: () => {
+          SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp])
+              .then((_) {
+          Navigator.of(context, rootNavigator: true).pop(context);
+          })
+             }
         ),
         title: Text(AppStrings.PlayingVideo),
       ):null,
@@ -907,7 +925,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
           )),
 
-    );
+    ));
   }
 
   @override
@@ -923,13 +941,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     if(!isPortrait){
 
-      marginPixel=0;
-     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+     // marginPixel=0;
+      //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
 
     }
     else{
-      marginPixel=0;
+      //marginPixel=0;
       //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
     }
@@ -1353,7 +1371,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final width = MediaQuery.of(context).size.width;
 
     String html;
-
+   // content.videoUrl="https://www.facebook.com/facebook/videos/10153231379946729/";
 
     //<iframe src="http://instagram.com/p/a1wDZKopa2/embed" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
 
@@ -1367,7 +1385,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     else if(content.videoSourceType=='facebook'){
       html = '''
-          <div class="videoWrapper"><iframe style="border-left: ${marginPixel}px solid black;border-right: ${marginPixel}px solid black;position: relative;padding: 30px;height: 0; overflow: hidden;" width="100%" height="100%"
+          <div class="videoWrapper"><iframe style="border-top: ${marginPixel}px solid black;border-bottom: ${marginPixel}px solid black;position: relative;padding: 0px;height: 0; overflow: hidden;" width="100%" height="100%"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
             allowfullscreen=true&autoplay=true&href=${content.videoUrl}" </iframe></div>
      ''';

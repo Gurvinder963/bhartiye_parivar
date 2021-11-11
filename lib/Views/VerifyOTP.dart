@@ -29,7 +29,7 @@ import '../Views/Home.dart';
 //import 'package:device_info/device_info.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import '../ApiResponses/OTPResponse.dart';
-
+import 'package:device_info_plus/device_info_plus.dart';
 
 
 
@@ -40,15 +40,16 @@ class VerifyOTPPage extends StatefulWidget {
   final String mobile;
   final String c_code;
   final String otpCode;
+  final int requestCount;
   final DateTime otpSendDate;
 
-  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode,@required this.otpSendDate}) : super(key: key);
+  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode,@required this.otpSendDate,@required this.requestCount}) : super(key: key);
 
 
 
 
   @override
-  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode,otpSendDate);
+  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode,otpSendDate,requestCount);
 }
 
 class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserver{
@@ -58,6 +59,9 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool isVerifyMissCallBtnTapped=false;
   bool isCallAvailable=false;
   String mC_code;
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  Map<String, dynamic> _deviceData = <String, dynamic>{};
 
   bool isCallVerified=false;
   String mInvitedBy="";
@@ -65,11 +69,13 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool _isInAsyncCall = false;
   bool _isHidden = true;
   String mOTPCode;
-  VerifyOTPPageState(String mobile,String c_code,String otpCode,DateTime otpSendDate){
+  int mRequestCount;
+  VerifyOTPPageState(String mobile,String c_code,String otpCode,DateTime otpSendDate,int requestCount){
     mMobile=mobile;
     mC_code=c_code;
     mOTPCode=otpCode;
     mOTPSendDate=otpSendDate;
+    mRequestCount=requestCount;
   }
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
@@ -116,6 +122,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     WidgetsBinding.instance.addObserver(this);
     // TODO: implement initState
     super.initState();
+    initPlatformState();
+
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
@@ -153,16 +161,50 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
           " is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
 
 
-      getOTPData(mobile, msg).then((value) =>
-      {
-
-
-
-      });
+      if(mRequestCount<4) {
+        getOTPData(mobile, msg).then((value) =>
+        {
+        });
+      }
     }
 
 
   }
+  Future<void> initPlatformState() async {
+    Map<String, dynamic> deviceData = <String, dynamic>{};
+
+    try {
+      if (Platform.isAndroid) {
+        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+        print('Running on ${deviceData}');
+      }
+    } on PlatformException {
+      deviceData = <String, dynamic>{
+        'Error:': 'Failed to get platform version.'
+      };
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _deviceData = deviceData;
+    });
+  }
+
+
+
+  _readAndroidBuildData(AndroidDeviceInfo build) {
+
+    baseOs=build.version.release;
+    manufacturer=build.manufacturer;
+    model= build.model;
+    print(baseOs);
+    print(manufacturer);
+    print(model);
+
+
+  }
+
   int nextIntOfDigits(int digitCount) {
     Random rnd = new Random();
     assert(1 <= digitCount && digitCount <= 9);
@@ -630,7 +672,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     ));
   }
   Future<LoginResponse> getLoginResponse(String contry_code,String mobile) async {
-    var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token});
+    var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer});
     MainRepository repository=new MainRepository();
     return repository.fetchLoginData(body);
 

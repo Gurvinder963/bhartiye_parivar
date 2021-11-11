@@ -57,6 +57,11 @@ class JoinUsPageState extends State<JoinUsPage> {
   bool isLoading = false;
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.portraitUp,
+
+    ]);
     super.initState();
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;

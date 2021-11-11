@@ -25,6 +25,7 @@ import '../ApiResponses/OTPResponse.dart';
 import '../ApiResponses/OTPCountResponse.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import '../Views/terms.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 
 
@@ -44,6 +45,10 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   int MyContentId;
   String mContentType;
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  Map<String, dynamic> _deviceData = <String, dynamic>{};
+
   String mInvitedBy="";
   bool checkedValue=false;
   bool _isInAsyncCall = false;
@@ -183,7 +188,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     super.initState();
 
     myControllerContryCode.text="+91";
-
+    initPlatformState();
     getLocalIpAddress().then((res) {
       print(res);
       ipAddress=res;
@@ -194,6 +199,41 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 
 
+
+  Future<void> initPlatformState() async {
+    Map<String, dynamic> deviceData = <String, dynamic>{};
+
+    try {
+      if (Platform.isAndroid) {
+        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+        print('Running on ${deviceData}');
+      }
+    } on PlatformException {
+      deviceData = <String, dynamic>{
+        'Error:': 'Failed to get platform version.'
+      };
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _deviceData = deviceData;
+    });
+  }
+
+
+
+  _readAndroidBuildData(AndroidDeviceInfo build) {
+
+    baseOs=build.version.release;
+    manufacturer=build.manufacturer;
+    model= build.model;
+    print(baseOs);
+    print(manufacturer);
+    print(model);
+
+
+  }
 
 
   @override
@@ -578,7 +618,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
        if (res.status == 1) {
 
-         if(res.data.data.count<4) {
+         //if(res.data.data.count<4) {
            Navigator.of(context, rootNavigator: true)
                .push( // ensures fullscreen
                MaterialPageRoute(
@@ -586,20 +626,22 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                      return VerifyOTPPage(c_code: s2,
                          mobile: myControllerPhone.text,
                          otpCode: "",
-                         otpSendDate: null);
+                         otpSendDate: null,
+                         requestCount:res.data.data.count
+                     );
                    }
                ));
-         }
-         else{
-           showAlertDialogValidation(context,"OTP limit exceed for authentication!");
-
-         }
+        // }
+         // else{
+         //   showAlertDialogValidation(context,"Verification limit exceeds for today. try next time  !");
+         //
+         // }
 
 
        }
        else{
 
-         showAlertDialogValidation(context,"Some error!");
+         showAlertDialogValidation(context,"Server error!");
 
 
        }

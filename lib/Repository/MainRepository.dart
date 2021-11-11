@@ -247,6 +247,9 @@ class MainRepository {
     final response = await _provider.post("public/api/v1/auth/opt-count",body);
     return OTPCountResponse.fromJson(response);
   }
-
+  Future<AddToCartResponse> fetchAppLauchCount(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/auth/app-launch-count",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 
 }

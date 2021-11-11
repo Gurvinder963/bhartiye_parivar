@@ -4,9 +4,13 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 import '../Networking/CustomException.dart';
+import 'package:flutter/material.dart';
+import '../main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ApiProvider {
+  bool isDialogShowing=false;
   final String _baseUrl = "http://bankjaal.in/";
   final String _SMSbaseUrl = "smppsmshub.in";
   final String _baseUrlWithoutHTTP = "bankjaal.in";
@@ -156,14 +160,18 @@ class ApiProvider {
       case 200:
         var responseJson = json.decode(response.body.toString());
         print(responseJson);
+        print("---print context:${NavigationService.navigatorKey.currentContext}");
         return responseJson;
       case 201:
         var responseJson = json.decode(response.body.toString());
         print(responseJson);
+        isDialogShowing=false;
+        print("---print context:${NavigationService.navigatorKey.currentContext}");
         return responseJson;
       case 204:
         var responseJson = json.decode(response.body.toString());
         print(responseJson);
+        isDialogShowing=false;
         return responseJson;
       case 422:
         var responseJson = json.decode(response.body.toString());
@@ -175,6 +183,10 @@ class ApiProvider {
       case 401:
 
       case 403:
+        if(!isDialogShowing){
+          isDialogShowing=true;
+        showAlertDialogValidation();
+        }
         throw UnauthorisedException(response.body.toString());
       case 500:
         var responseJson = json.decode(response.body.toString());
@@ -185,4 +197,46 @@ class ApiProvider {
             'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
     }
   }
+  removeFromSF(var context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Navigator.pop(context, true);
+    exit(0);
+  }
+
+  showAlertDialogValidation() {
+
+    var context=NavigationService.navigatorKey.currentContext;
+
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+        removeFromSF(context);
+
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Oops!"),
+      content: Text("Looks like you are logged-in with different location or another variant of bhartiya pariwar app."),
+      actions: [
+        okButton,
+      ],
+    );
+
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }
