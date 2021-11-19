@@ -271,7 +271,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                 }),
 
                 if(value.status==1){
-                  loginAPICall()
+                  loginAPICall("misscall")
                 }
                 else{
 
@@ -302,7 +302,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   }
 
 
-  void loginAPICall(){
+  void loginAPICall(String verified_by){
     setState(() {
       _isInAsyncCall = true;
     });
@@ -320,7 +320,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
 
-    getLoginResponse(mC_code,varMobile)
+    getLoginResponse(mC_code,varMobile,verified_by)
         .then((res) async {
       setState(() {
         _isInAsyncCall = false;
@@ -367,6 +367,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
     });
+
 
 
 
@@ -588,7 +589,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                 print("mcode"+mC_code);
 
 
-                                loginAPICall();
+                                loginAPICall("otp");
 
                       /*     getLoginResponse(mC_code,varMobile)
                               .then((res) async {
@@ -671,8 +672,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       ),
     ));
   }
-  Future<LoginResponse> getLoginResponse(String contry_code,String mobile) async {
-    var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer});
+  Future<LoginResponse> getLoginResponse(String contry_code,String mobile,String verified_by) async {
+    var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer,"app_unique_code":Constants.AppCode,"verified_by":verified_by});
     MainRepository repository=new MainRepository();
     return repository.fetchLoginData(body);
 

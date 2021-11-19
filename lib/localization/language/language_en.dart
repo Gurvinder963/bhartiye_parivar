@@ -6,7 +6,7 @@ class LanguageEn extends Languages {
   String get langCode => "en";
 
   @override
-  String get appName => "Bhartiya Parivar";
+  String get appName => "Nav Nirman";
 
   @override
   String get labelWelcome => "Welcome";

@@ -13,6 +13,7 @@ import '../localization/locale_constant.dart';
 import '../localization/localizations_delegate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 class ContentLanguagePage extends StatefulWidget {
   @override
   ContentLanguagePageState createState() {
@@ -22,6 +23,7 @@ class ContentLanguagePage extends StatefulWidget {
 
 class ContentLanguagePageState extends State<ContentLanguagePage> {
   String user_Token;
+  bool _isInAsyncCall=false;
 
   Future<LangResponse> getLangAPI(String user_Token) async {
 
@@ -37,7 +39,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
     var body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"content_langauges":applang});
     MainRepository repository=new MainRepository();
 
-    return repository.fetchReferSave(body,user_Token);
+    return repository.fetchSaveUserLang(body,user_Token);
 
 
   }
@@ -53,7 +55,25 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      getLangAPI(user_Token).then((value) => {
 
+      setState(() {
+      var mainArray = value.data.contentLangauges.split(',');
+
+      for (int z = 0; z < mainArray.length; z++) {
+      var item = mainArray[z];
+      print("my_item" + item);
+
+      for (int i = 0; i < choices.length; i++) {
+      if (item == choices[i].lnCode) {
+      choices[i].isSelected = true;
+      break;
+      }
+      }
+      }
+      })
+
+      });
 
       return (prefs.getString('token'));
     });
@@ -61,27 +81,27 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
 
 
 
-    getLocaleContentLang().then((locale) {
-
-      if(locale!=null) {
-        setState(() {
-          var mainArray = locale.split(',');
-
-          for (int z = 0; z < mainArray.length; z++) {
-            var item = mainArray[z];
-            print("my_item" + item);
-
-            for (int i = 0; i < choices.length; i++) {
-              if (item == choices[i].lnCode) {
-                choices[i].isSelected = true;
-                break;
-              }
-            }
-          }
-        });
-      }
-
-    });
+    // getLocaleContentLang().then((locale) {
+    //
+    //   if(locale!=null) {
+    //     setState(() {
+    //       var mainArray = locale.split(',');
+    //
+    //       for (int z = 0; z < mainArray.length; z++) {
+    //         var item = mainArray[z];
+    //         print("my_item" + item);
+    //
+    //         for (int i = 0; i < choices.length; i++) {
+    //           if (item == choices[i].lnCode) {
+    //             choices[i].isSelected = true;
+    //             break;
+    //           }
+    //         }
+    //       }
+    //     });
+    //   }
+    //
+    // });
 
   }
 
@@ -95,7 +115,12 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
           backgroundColor: Color(AppColors.BaseColor),
           title: Text('Content Language'),
         ),
-      body:
+      body: ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:
 
       Container(
           width: double.infinity ,
@@ -193,7 +218,7 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
               }
               ))),
           _submitButton()
-              ]))
+              ])))
 
     );
   }
@@ -217,12 +242,14 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
           }
 
         }
-
+ setState(() {
+           _isInAsyncCall = true;
+         });
         saveLangAPI(sb.toString()).then((res) async {
           String msg;
-          // setState(() {
-          //   _isInAsyncCall = false;
-          // });
+           setState(() {
+             _isInAsyncCall = false;
+           });
           if(res.status==1){
 
 

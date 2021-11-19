@@ -261,4 +261,8 @@ class MainRepository {
     final response = await _provider.getWithToken("public/api/v1/auth/get-user-lang",body,token);
     return LangResponse.fromJson(response);
   }
+  Future<AddToCartResponse> fetchSaveVideoInput(var body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/video-record",body,token);
+    return AddToCartResponse.fromJson(response);
+  }
 }

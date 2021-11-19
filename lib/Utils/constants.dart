@@ -3,7 +3,7 @@ class Constants{
   static const double padding =5;
   static const double avatarRadius =45;
 
-  static const String AppCode="APP_002";
+  static const String AppCode="app_0002";
   static const String AppName="Nav Nirman";
   //static const String AppName="Bhartiya Parivar";
 static const String BaseUrl="https://staging2.studyshot.in/";

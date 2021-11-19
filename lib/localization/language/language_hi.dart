@@ -6,7 +6,7 @@ class LanguageHi extends Languages {
   String get langCode => "hi";
 
   @override
-  String get appName => "भारतीय परिवार";
+  String get appName => "नव निर्माण";
 
   @override
   String get labelWelcome => "स्वागत हे";

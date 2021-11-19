@@ -222,6 +222,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         })
 
       });
+      postSaveVideoInput(user_Token,"1","","",mContent.id.toString())
+          .then((res) async {});
 
 
     apiCall();
@@ -248,10 +250,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   }
   void listener() {
-    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+    if (_isPlayerReady && mounted) {
       setState(() {
         _playerState = _controller.value.playerState;
         _videoMetaData = _controller.metadata;
+        print(_controller.value);
+
       });
     }
   }
@@ -259,10 +263,24 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   void deactivate() {
     // Pauses video while navigating to next page.
   _controller.pause();
+
+
+  Duration position=_controller.value.position;
+  int sec=position.inSeconds;
+
+  postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.id.toString())
+      .then((res) async {});
     super.deactivate();
   }
 
 
+  Future<AddToCartResponse> postSaveVideoInput(String token,String clickedStatus,String videoPlayTime,String share,String content_id) async {
+
+    var body =json.encode({"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchSaveVideoInput(body,token);
+
+  }
 
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
@@ -741,20 +759,26 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                               alignment: Alignment.center,
                                             ),
                                             onPressed: () {
-                                              getShortLink().then((res) {
-                                                setState(() {
-                                                  _isInAsyncCall = false;
+
+                                              postSaveVideoInput(user_Token,"","","1",mContent.id.toString())
+                                                  .then((res) async {
+
+
+                                                getShortLink().then((res) {
+                                                  setState(() {
+                                                    _isInAsyncCall = false;
+                                                  });
+                                                  var url = res.shortUrl
+                                                      .toString();
+
+                                                  _onShare(
+                                                      context, mContent.title +
+                                                      ' ' +
+                                                      url, mContent.videoImage);
                                                 });
-                                                var url = res.shortUrl.toString();
-
-                                                _onShare(context,mContent.title +
-                                                    ' ' +
-                                                    url,mContent.videoImage);
-
 
 
                                               });
-
 
                                             }),
                                         SizedBox(width: 2,),

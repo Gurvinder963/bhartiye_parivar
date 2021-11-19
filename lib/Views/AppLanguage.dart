@@ -14,6 +14,7 @@ import '../ApiResponses/LangResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 class AppLanguagePage extends StatefulWidget {
 
   final String from;
@@ -30,6 +31,7 @@ class AppLanguagePage extends StatefulWidget {
 class AppLanguagePageState extends State<AppLanguagePage> {
    String mFrom;
    String user_Token;
+   bool _isInAsyncCall=false;
   AppLanguagePageState(String from){
     mFrom=from;
   }
@@ -65,7 +67,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
      var body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"app_language":applang});
      MainRepository repository=new MainRepository();
 
-     return repository.fetchReferSave(body,user_Token);
+     return repository.fetchSaveUserLang(body,user_Token);
 
 
    }
@@ -81,27 +83,31 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      getLangAPI(user_Token).then((value) => {
 
+      getLocale().then((locale) {
+      setState(() {
+      _locale = locale;
+
+      for(int i = 0; i < choices.length; i++){
+
+      if (choices[i].lnCode == value.data.appLanguage) {
+      // selectedClassId=mainData[i].id;
+      choices[i].isSelected=true;
+      } else {                               //the condition to change the highlighted item
+      choices[i].isSelected=false;
+      }
+
+      }
+      });
+      })
+
+      });
 
       return (prefs.getString('token'));
     });
 
-    getLocale().then((locale) {
-      setState(() {
-        _locale = locale;
 
-        for(int i = 0; i < choices.length; i++){
-
-          if (choices[i].lnCode == locale.languageCode) {
-            // selectedClassId=mainData[i].id;
-            choices[i].isSelected=true;
-          } else {                               //the condition to change the highlighted item
-            choices[i].isSelected=false;
-          }
-
-        }
-      });
-    });
 
   }
   @override
@@ -123,7 +129,12 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     home:SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView (
+        body:  ModalProgressHUD(
+    inAsyncCall: _isInAsyncCall,
+    // demo of some additional parameters
+    opacity: 0.01,
+    progressIndicator: CircularProgressIndicator(),
+    child:SingleChildScrollView (
             child:
             Stack(
               alignment: Alignment.topCenter,
@@ -306,7 +317,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                   ],
                 ),
               ],
-            )),
+            ))),
       ),
     ));
   }
@@ -347,13 +358,15 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
         sb.write(myLang);
 
-
+         setState(() {
+           _isInAsyncCall = true;
+         });
 
         saveLangAPI(sb.toString()).then((res) async {
           String msg;
-          // setState(() {
-          //   _isInAsyncCall = false;
-          // });
+           setState(() {
+             _isInAsyncCall = false;
+           });
           if(res.status==1){
 
 
