@@ -128,4 +128,8 @@ class LanguageEn extends Languages {
   @override
   // TODO: implement News
   String get News => 'News';
+
+  @override
+  // TODO: implement News
+  String get logout => 'Logout';
 }

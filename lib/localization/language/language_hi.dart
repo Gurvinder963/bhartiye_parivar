@@ -128,4 +128,8 @@ class LanguageHi extends Languages {
   @override
   // TODO: implement News
   String get News => 'समाचार';
+
+  @override
+  // TODO: implement News
+  String get logout => 'लॉग आउट';
 }

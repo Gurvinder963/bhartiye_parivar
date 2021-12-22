@@ -26,25 +26,27 @@ import '../ApiResponses/OTPCountResponse.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import '../Views/terms.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
+import '../Interfaces/OnNumberChange.dart';
 
 
 class LoginPage extends StatefulWidget {
   final int myContentId;
   final String contentType;
   final String invitedBy;
-  LoginPage({Key key,@required this.myContentId,@required this.contentType,@required this.invitedBy}) : super(key: key);
+  final String from;
+  LoginPage({Key key,@required this.myContentId,@required this.contentType,@required this.invitedBy,@required this.from}) : super(key: key);
 
 
 
 
   @override
-  LoginPageState createState() => LoginPageState(myContentId,contentType,invitedBy);
+  LoginPageState createState() => LoginPageState(myContentId,contentType,invitedBy,from);
 }
 
 class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   int MyContentId;
   String mContentType;
+  String from;
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   Map<String, dynamic> _deviceData = <String, dynamic>{};
@@ -53,10 +55,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   bool checkedValue=false;
   bool _isInAsyncCall = false;
   bool _isHidden = true;
-  LoginPageState(int contentId,String contentType,String invitedBy){
+  LoginPageState(int contentId,String contentType,String invitedBy,String from){
     MyContentId=contentId;
     mContentType=contentType;
     mInvitedBy=invitedBy;
+    this.from=from;
 
   }
 
@@ -193,7 +196,15 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       print(res);
       ipAddress=res;
     });
+    eventBusNC.on<OnNumberChange>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+      // print("my_cart_count"+event.count);
+      Future.delayed(const Duration(milliseconds: 300), ()
+      {
+        Navigator.of(context, rootNavigator: true).pop(context);
+      });
 
+    });
 
   }
 
@@ -348,7 +359,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
               children: [
                 SizedBox(height: 20),
               SizedBox(
-                    height: (MediaQuery.of(context).size.height)*0.17,
+                    height: (MediaQuery.of(context).size.height)*0.15,
                     child:new Image(
                       image: new AssetImage("assets/splash.png"),
                       width: 140,
@@ -496,7 +507,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                                       Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                                           MaterialPageRoute(
                                               builder: (BuildContext context) {
-                                                return PrivacyScreen();
+                                                return TermScreen();
                                               }
                                           ) )
 
@@ -596,7 +607,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       return VerifyOTPPage(c_code: s2,
                           mobile: myControllerPhone.text,
                           otpCode: pin.toString(),
-                          otpSendDate: date1);
+                          otpSendDate: date1,
+                             requestCount:0,
+                             from:from
+                          );
                     }
                 ))
           });
@@ -606,8 +620,15 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
        _isInAsyncCall = true;
      });
 
-     var arr = myControllerPhone.text.split(" ");
-     String newStringMob = arr[0] + arr[1];
+     String newStringMob;
+     if(s2=='91') {
+       var arr = myControllerPhone.text.split(" ");
+        newStringMob = arr[0] + arr[1];
+
+     }
+     else{
+       newStringMob=myControllerPhone.text;
+     }
 
      getOTPCountResponse(newStringMob,s2)
          .then((res) async {
@@ -616,10 +637,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
        });
 
-
        if (res.status == 1) {
 
-         //if(res.data.data.count<4) {
            Navigator.of(context, rootNavigator: true)
                .push( // ensures fullscreen
                MaterialPageRoute(
@@ -628,15 +647,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                          mobile: myControllerPhone.text,
                          otpCode: "",
                          otpSendDate: null,
-                         requestCount:res.data.data.count
+                         requestCount:0,
+                           from:from
                      );
                    }
                ));
-        // }
-         // else{
-         //   showAlertDialogValidation(context,"Verification limit exceeds for today. try next time  !");
-         //
-         // }
 
 
        }
@@ -649,10 +664,6 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
 
      });
-
-
-      //  }
-
 
 
         }

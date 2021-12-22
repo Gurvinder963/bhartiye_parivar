@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:intl/intl.dart';
 import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
@@ -7,15 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'NotificationSetting.dart';
 import 'VerifyOTP.dart';
 import '../Utils/AppColors.dart';
+import '../Views/Login.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:event_bus/event_bus.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
-
+import '../Views/CreateProfile.dart';
 import 'package:flutter/services.dart';
 import 'DonatedSuccessfuly.dart';
 
@@ -27,6 +30,7 @@ import 'DonateUs.dart';
 import '../Utils/fab_bottom_app_bar.dart';
 
 import 'HomeChild.dart';
+import '../ApiResponses/OTPResponse.dart';
 import 'Books.dart';
 import 'NewsMain.dart';
 import 'Share.dart';
@@ -34,7 +38,7 @@ import 'Quick.dart';
 import 'Chat.dart';
 import 'ContentLanguage.dart';
 import 'VideoApp.dart';
-import 'AppLanguage.dart';
+import 'AppLanguageInner.dart';
 import '../localization/language/languages.dart';
 import '../Views/MyCart.dart';
 import 'package:badges/badges.dart';
@@ -55,6 +59,9 @@ import '../Views/JoinUs.dart';
 import '../ApiResponses/NewsDetailResponse.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
 import 'NewsDetail.dart';
+import '../Views/Faq.dart';
+
+
 class HomePage extends StatefulWidget {
   final int myContentId;
   final String contentType;
@@ -81,6 +88,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   bool _isHidden = true;
 
   String user_Token;
+  String mC_code;
+  String mMobile;
+  String USER_ID;
   HomePageState(int contentId,String contentType,String invitedBy){
     MyContentId=contentId;
     mContentType=contentType;
@@ -122,10 +132,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
       var user_Token=prefs.getString(Prefs.KEY_TOKEN);
       cartCount=prefs.getString(Prefs.CART_COUNT);
+
+
+      print("----babu---------");
+      print(mC_code);
+      print(mMobile);
+
+
       setState(() {});
 
         setState(() {
           cartCount = cartCount;
+
         });
 
 
@@ -179,8 +197,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
+      mC_code=prefs.getString(Prefs.USER_C_CODE);
 
-
+      USER_ID= prefs.getString(Prefs.USER_ID);
+      mMobile=prefs.getString(Prefs.USER_MOBILE);
+      getNationalProfile(prefs.getString(Prefs.USER_ID));
       getAppLauchCountAPI(user_Token);
       homeAPICall();
 
@@ -224,6 +245,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     });
 
 
+
+  }
+
+  Future<AddToCartResponse> getNationalProfile(String id) async {
+
+    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+    MainRepository repository=new MainRepository();
+    return repository.fetchActiveUsers(body);
 
   }
   Future<NewsDetailResponse> getNewsDetail(String id,String user_Token) async {
@@ -524,7 +553,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ],
 
         ),
-        drawer: navigationDrawer(),
+        drawer: navigationDrawer(mMobile,mC_code,user_Token,USER_ID),
         body: _children[selectedIndex],
         bottomNavigationBar: selectedIndex==1?null:FABBottomAppBar(
           backgroundColor: Color(AppColors.BaseColor),
@@ -653,6 +682,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
 class navigationDrawer extends StatelessWidget {
+
+  String mobile;
+  String cCode;
+  String token;
+  String userid;
+
+  navigationDrawer(String mMobile,String mC_code,String token,String userid){
+    mobile=mMobile;
+    cCode=mC_code;
+    this.token=token;
+    this.userid=userid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -732,7 +774,24 @@ class navigationDrawer extends StatelessWidget {
             text: Languages
                 .of(context)
                 .profile,
-            onTap: () =>{}
+            onTap: () =>{
+
+              print("hiii"),
+              print(cCode),
+              print(mobile),
+
+              Navigator.of(context).pop(),
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return EditProfilePage();
+                      }
+                  ) )
+
+
+
+
+          }
                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
 
@@ -748,7 +807,7 @@ class navigationDrawer extends StatelessWidget {
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return AppLanguagePage(from:"Home");
+                          return AppLanguageInnerPage(from:"Home");
                         }
                     ) )
 
@@ -777,7 +836,18 @@ class navigationDrawer extends StatelessWidget {
               text: Languages
                   .of(context)
                   .notifications,
-              onTap: () =>{}
+              onTap: () =>{
+
+                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return NotificationSettingPage();
+                        }
+                    ) )
+
+
+
+              }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
           createDrawerBodyItem(
@@ -797,7 +867,7 @@ class navigationDrawer extends StatelessWidget {
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
-                          return YoutubeApp();
+                          return FaqPage();
                         }
                     ) )
 
@@ -839,15 +909,112 @@ class navigationDrawer extends StatelessWidget {
             onTap: () =>{}
                 //Navigator.pushReplacementNamed(context, pageRoutes.notification),
           ),
-        
+          Padding(
+              padding: EdgeInsets.fromLTRB(15,0,15,0),
+              child:
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
+          createDrawerBodyItem(
+              icon: Image(image: AssetImage('assets/ic_logout.png'), width: 20,height: 20,),
+              text: Languages
+                  .of(context)
+                  .logout,
+              onTap: () =>{
+
+
+                showAlertDialogValidation(context,"Are you sure you want to logout from this app",userid,token),
+
+                }
+            //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+          ),
         ],
       ),
     );
   }
 }
+
+Future<AddToCartResponse> callLogoutAPI(String userid,String token) async {
+
+  var body =json.encode({'logouttype':'allapp','userid':userid,"appcode":Constants.AppCode,"token":token,});
+
+  //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
+  MainRepository repository=new MainRepository();
+  return repository.fetchLogoutJava(body);
+
+}
+
+removeFromSF(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.clear();
+
+
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage(from: "splash")),
+      ModalRoute.withName("/Login"));
+}
+
+showAlertDialogValidation(BuildContext context,String message,String userId,String token) {
+
+  print(userId);
+
+  Widget SingleButton = FlatButton(
+    child: Text("This App"),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+      removeFromSF(context);
+    },
+  );
+
+  Widget CancelButton = FlatButton(
+    child: Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+
+    },
+  );
+
+
+  Widget BothButton = FlatButton(
+    child: Text("All Apps"),
+    onPressed: () {
+     // Navigator.of(context, rootNavigator: true).pop('dialog');
+      callLogoutAPI(userId,token).then((value) async {
+         if(value.status==1){
+          Navigator.of(context, rootNavigator: true).pop('dialog');
+          removeFromSF(context);
+         }
+
+      });
+
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(Constants.AppName),
+    content: Text(message),
+    actions: [
+      SingleButton,
+      BothButton,
+      CancelButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap}) {
   bool isSwitchShow=false;
-  if(text=='Dark Mode'){
+  if(text=='Dark Mode' || text=='डार्क मोड'){
     isSwitchShow=true;
   }
 

@@ -11,8 +11,17 @@ import 'VideoDetailNew.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'BooksDetail.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../localization/locale_constant.dart';
+import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/BookMarkSaveResponse.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 String videoCategory="main";
 
 class MainPage extends StatefulWidget {
@@ -30,8 +39,9 @@ class MainPageState extends State<MainPage> {
   bool isLoading = false;
 
   String user_Token;
-
-
+  //bool isBookMarked = false;
+ // bool isSubscribed= false;
+  bool _isInAsyncCall = false;
   @override
   void dispose() {
 
@@ -94,6 +104,158 @@ class MainPageState extends State<MainPage> {
     });
 
   }
+  Future<ShortDynamicLink> getShortLink(String id) async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?contentId=' +
+            id.toString() +
+            '&contentType=videos'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
+
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
+  Future _asyncInputDialog(BuildContext context,String id) async {
+    String teamName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Report Video"),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: SizedBox(
+              height: 250,
+              width: 400,
+              child: new TextField(
+                autofocus: false,
+                maxLines: 500,
+                onChanged: (value) {
+                  teamName = value;
+                },
+                decoration: new InputDecoration(
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
+                  hintText: 'Enter your report reason here',
+                ),
+              ),
+            ),
+          ),
+
+          actions: [
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+
+                Navigator.of(context).pop(teamName);
+              },
+            ),
+
+            FlatButton(
+              child: Text('REPORT'),
+              onPressed: () {
+                setState(() {
+                  _isInAsyncCall = true;
+                });
+                Navigator.of(context).pop(teamName);
+                saveReportAPI(id,teamName).then((res) async {
+                  String msg;
+                  setState(() {
+                    _isInAsyncCall = false;
+                  });
+                  Fluttertoast.showToast(
+                      msg: "Report save successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<AddToCartResponse> saveReportAPI(String id,message) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+
+
+    var body =json.encode({"content_id":id.toString(),"content_type":"1","message":message});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchReportSave(body,user_Token);
+
+
+  }
+
+  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,bool is_subscribed) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+    String status = "0";
+    if (is_subscribed) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
+
+    var body =json.encode({"channel_id":channelId,"is_subscribed":status});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchSubscribeChannel(body,user_Token);
+
+
+  }
+  Future<AddToCartResponse> postSaveVideoInput(String token,String clickedStatus,String videoPlayTime,String share,String content_id) async {
+
+    var body =json.encode({"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
+    MainRepository repository=new MainRepository();
+    return repository.fetchSaveVideoInput(body,token);
+
+  }
+
+
+  Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id, bool isBookMarked) async {
+    String status = "0";
+    if (isBookMarked) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
+    print('my_token'+token);
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddBookMark(body,token);
+
+  }
+
 
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
 
@@ -135,8 +297,62 @@ class MainPageState extends State<MainPage> {
 
     );
   }
+  subscribeAPI(String channel_id,bool is_subscribed,int index){
 
-  Widget _buildBoxVideo(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
+    subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
+      String msg;
+      if(is_subscribed){
+
+        mainData[index].is_subscribed=false;
+        msg="Unsubscribe channel successfully";
+      }
+      else{
+        mainData[index].is_subscribed=true;
+        msg="Subscribe channel successfully";
+      }
+
+      if(res.status==1){
+
+        Fluttertoast.showToast(
+            msg: msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+
+      }
+
+    }
+    );
+
+  }
+
+
+  _onShare(BuildContext context,String title,String thumbnail) async {
+
+    var url = thumbnail;
+    var response = await get(url);
+    final documentDirectory = (await getExternalStorageDirectory()).path;
+    File imgFile = new File('$documentDirectory/flutter.png');
+    imgFile.writeAsBytesSync(response.bodyBytes);
+    List<String> imagePaths = [];
+    imagePaths.add('$documentDirectory/flutter.png');
+
+    if (imagePaths.isNotEmpty) {
+      await Share.shareFiles(imagePaths,
+        text: title,
+
+      );
+    } else {
+      await Share.share(title,
+
+      );
+    }
+  }
+  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String lang,String createdAt,int channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,bool is_subscribed,bool bookmark){
 
     String url="";
     if(videoSourceType=='facebook'){
@@ -332,6 +548,127 @@ class MainPageState extends State<MainPage> {
 
                             child:PopupMenuButton(
                                 icon: Icon(Icons.more_vert),
+                                onSelected: (newValue) { // add this property
+
+                                  if(newValue==1){
+
+                                    postSaveVideoInput(user_Token,"","","1",id.toString())
+                                        .then((res) async {
+
+
+                                      getShortLink(id.toString()).then((res) {
+                                        setState(() {
+                                          _isInAsyncCall = false;
+                                        });
+                                        var url = res.shortUrl
+                                            .toString();
+
+                                        _onShare(
+                                            context, title +
+                                            ' ' +
+                                            url, thumbnail);
+                                      });
+
+
+                                    });
+
+
+                                  }
+
+                                  else if(newValue==2){
+
+                                    _asyncInputDialog(context,id.toString());
+
+                                  }
+                                  else if(newValue==3){
+
+                                    setState(() {
+                                      _isInAsyncCall = true;
+                                    });
+
+                                    postAddBookMark("1",user_Token,id.toString(),bookmark)
+                                        .then((res) async {
+                                      setState(() {
+                                        _isInAsyncCall = false;
+                                      });
+
+
+                                      String mmsg="";
+                                      if (res.bookmarkType == 1) {
+
+                                        mmsg="Bookmark added!";
+                                        mainData[index].bookmark=true;
+
+
+
+                                      }
+                                      else {
+                                        mmsg="Bookmark removed!";
+                                        mainData[index].bookmark=false;
+
+                                      }
+
+
+                                      Fluttertoast.showToast(
+                                          msg: mmsg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+
+                                    });
+
+                                  }
+                                  else if(newValue==4){
+
+                                    if(is_subscribed){
+                                      Widget okButton = FlatButton(
+                                        child: Text("UNSUBSCRIBE"),
+                                        onPressed: () {
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                          subscribeAPI(channel_id.toString(),is_subscribed, index);
+
+
+                                        },
+                                      );
+                                      Widget CANCELButton = FlatButton(
+                                        child: Text("CANCEL"),
+                                        onPressed: () {
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                        },
+                                      );
+                                      // set up the AlertDialog
+                                      AlertDialog alert = AlertDialog(
+
+                                        content: Text("Unsubscribe from "+channel),
+                                        actions: [
+                                          CANCELButton,
+                                          okButton,
+
+                                        ],
+                                      );
+
+                                      // show the dialog
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return alert;
+                                        },
+                                      );
+                                    }
+                                    else{
+
+                                      subscribeAPI(channel_id.toString(),is_subscribed,index);
+
+                                    }
+
+                                  }
+
+                                },
                                 itemBuilder: (context) => [
                                   PopupMenuItem(
                                     child: Text("Share"),
@@ -410,16 +747,21 @@ class MainPageState extends State<MainPage> {
                   child:
                   _buildBoxVideo(
                       context,
+                      index,
                       mainData[index].id,
                       mainData[index].title,
                       mainData[index].videoImage,
                       mainData[index].lang,
                       mainData[index].createdAt,
+                      mainData[index].channel_id,
                       mainData[index].channel,
                       mainData[index].channel_image,
                       mainData[index].video_duration,
                       mainData[index].videoUrl,
-                      mainData[index].videoSourceType
+                      mainData[index].videoSourceType,
+                      mainData[index].is_subscribed,
+                      mainData[index].bookmark,
+
 
                   )
 

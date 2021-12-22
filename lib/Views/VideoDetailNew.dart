@@ -6,7 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoListResponse.dart';
-
+import '../Views/JoinUs.dart';
+import 'DonateUs.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../Repository/MainRepository.dart';
@@ -547,7 +548,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                   children: <Widget>[
-                    mContent.videoSourceType=='facebook'?
+                    mContent.videoSourceType=='facebook' || mContent.videoSourceType=='brighteon'?
                     _buildBoxVideo(context,mContent):player,
                     Expanded(
                         child:
@@ -966,13 +967,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     if(!isPortrait){
 
      // marginPixel=0;
-      //SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-
+     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIOverlays([]);
 
     }
     else{
       //marginPixel=0;
-      //SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
     }
 
@@ -982,7 +983,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
 
-    if(mContent.videoSourceType=='facebook'){
+    if(mContent.videoSourceType=='facebook' || mContent.videoSourceType=='brighteon'){
 
       return mainWidget(null);
 
@@ -1328,7 +1329,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   Widget _joinButton() {
     return InkWell(
       onTap: () {
-
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return JoinUsPage();
+                }
+            ) );
       },
 
       child: Container(
@@ -1361,7 +1367,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   Widget _DonateButton() {
     return InkWell(
       onTap: () {
-
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return DonateUsPage();
+                }
+            ) );
       },
 
       child: Container(
@@ -1409,9 +1420,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     else if(content.videoSourceType=='facebook'){
       html = '''
-          <div class="videoWrapper"><iframe style="border-top: ${marginPixel}px solid black;border-bottom: ${marginPixel}px solid black;position: relative;padding: 0px;height: 0; overflow: hidden;" width="100%" height="100%"
+          <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            allowfullscreen=true&autoplay=true&href=${content.videoUrl}" </iframe></div>
+            &autoplay=false&href=${content.videoUrl}" </iframe></div>
      ''';
 
 
@@ -1424,6 +1435,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       html = '''
            <iframe src='${content.videoUrl}?quality=240&info=0&logo=0' allowFullScreen></iframe>
+
+     ''';
+
+
+    }
+
+    else if(content.videoSourceType=='brighteon'){
+
+
+      html = '''
+           <iframe width="600" height="337" src='${content.videoUrl}' frameborder="0" allow="autoplay; encrypted-media"></iframe>
 
      ''';
 

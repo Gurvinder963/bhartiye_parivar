@@ -306,13 +306,14 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
    Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'pn'),
    Choice(id:4,title: 'ଓଡ଼ିଆ', letter:'ଅ',isSelected:false,lnCode:'od'),
    Choice(id:5,title: 'ગુજરાતી', letter:'ખ',isSelected:false,lnCode:'gu'),
-   Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'mr'),
+   Choice(id:6,title: 'मराठी', letter:'अ',isSelected:false,lnCode:'mr'),
    Choice(id:7,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'ba'),
    Choice(id:8,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'te'),
    Choice(id:9,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
    Choice(id:10,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
    Choice(id:11,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
-
+   Choice(id:12,title: 'অসমীয়া', letter:'অ',isSelected:false,lnCode:'as'),
+   Choice(id:13,title: 'মণিপুরী', letter:'অ',isSelected:false,lnCode:'mp'),
 
 ];
 

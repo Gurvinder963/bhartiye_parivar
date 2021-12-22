@@ -15,10 +15,14 @@ class ApiProvider {
   final String _SMSbaseUrl = "smppsmshub.in";
   final String _baseUrlWithoutHTTP = "bankjaal.in";
 
+  final String _baseUrlJAVA = "sabkiapp.com:8080";
 
+  final String _baseUrlJAVA_WITH_HTTP = "http://sabkiapp.com:8080/";
   Future<dynamic> get(String url,var queryParameters) async {
     Map<String, String> headerParams = {
-      "Content-Type": 'application/json'
+      "Accept": 'application/json',
+      "Content-Type": "application/x-www-form-urlencoded",
+
     };
     var uri =
     Uri.http(_baseUrlWithoutHTTP, url, queryParameters);
@@ -32,7 +36,22 @@ class ApiProvider {
     }
     return responseJson;
   }
+  Future<dynamic> getSMSJAVA(String url,var queryParameters) async {
+    Map<String, String> headerParams = {
+      "Content-Type": 'application/json'
+    };
+    var uri =
+    Uri.http(_baseUrlJAVA, url, queryParameters);
 
+    var responseJson;
+    try {
+      final response = await http.get(uri,headers: headerParams);
+      responseJson = _response(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
   Future<dynamic> getSMS(String url,var queryParameters) async {
     Map<String, String> headerParams = {
       "Content-Type": 'application/json'
@@ -75,7 +94,25 @@ class ApiProvider {
     }
     return responseJson;
   }
-
+  Future<dynamic> postJAVA(String url, String body) async {
+  print(_baseUrlJAVA_WITH_HTTP + url);
+  print(body);
+String a=_baseUrlJAVA_WITH_HTTP + url;
+    Map<String, String> headerParams = {
+      "Content-Type": 'application/json',
+      'Accept': 'application/json',
+    };
+    var responseJson;
+    try {
+      final response = await http.post(a,
+          headers: headerParams,
+          body:body);
+      responseJson = _response(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
   Future<dynamic> post(String url, String body) async {
 
     Map<String, String> headerParams = {
@@ -183,10 +220,10 @@ class ApiProvider {
       case 401:
 
       case 403:
-        if(!isDialogShowing){
-          isDialogShowing=true;
-        showAlertDialogValidation();
-        }
+         if(!isDialogShowing){
+           isDialogShowing=true;
+         showAlertDialogValidation();
+         }
         throw UnauthorisedException(response.body.toString());
       case 500:
         var responseJson = json.decode(response.body.toString());
@@ -223,7 +260,7 @@ class ApiProvider {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Oops!"),
-      content: Text("Looks like you are logged-in with different location or another variant of bhartiya pariwar app."),
+      content: Text("Session has been expired!"),
       actions: [
         okButton,
       ],

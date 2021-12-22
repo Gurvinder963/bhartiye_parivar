@@ -18,7 +18,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 class AppLanguagePage extends StatefulWidget {
 
   final String from;
-
+ // String langData;
   AppLanguagePage({Key key,@required this.from}) : super(key: key);
 
 
@@ -43,12 +43,14 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     Choice(id:3,title: 'ਪੰਜਾਬੀ', letter:'ਓ',isSelected:false,lnCode:'pn'),
     Choice(id:4,title: 'ଓଡ଼ିଆ', letter:'ଅ',isSelected:false,lnCode:'od'),
     Choice(id:5,title: 'ગુજરાતી', letter:'ખ',isSelected:false,lnCode:'gu'),
-    Choice(id:6,title: 'मराठी', letter:'ळ',isSelected:false,lnCode:'mr'),
+    Choice(id:6,title: 'मराठी', letter:'अ',isSelected:false,lnCode:'mr'),
     Choice(id:7,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'ba'),
     Choice(id:8,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'te'),
     Choice(id:9,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
     Choice(id:10,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
     Choice(id:11,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
+    Choice(id:12,title: 'অসমীয়া', letter:'অ',isSelected:false,lnCode:'as'),
+    Choice(id:13,title: 'মণিপুরী', letter:'অ',isSelected:false,lnCode:'mp'),
 
 
 
@@ -60,11 +62,17 @@ class AppLanguagePageState extends State<AppLanguagePage> {
      return repository.fetchLangData(body,user_Token);
 
    }
-   Future<AddToCartResponse> saveLangAPI(applang) async {
+   Future<AddToCartResponse> saveLangAPI(applang,cnt_lang) async {
      //  final String requestBody = json.encoder.convert(order_items);
+     var body ;
+     if(cnt_lang.isEmpty){
+        body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"app_language":applang});
+     }
+     else{
+        body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"app_language":applang,"content_langauges":cnt_lang.toString()});
+     }
 
 
-     var body =json.encode({"unique_id":"","app_unique_code":Constants.AppCode,"app_language":applang});
      MainRepository repository=new MainRepository();
 
      return repository.fetchSaveUserLang(body,user_Token);
@@ -83,15 +91,26 @@ class AppLanguagePageState extends State<AppLanguagePage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+    String langData;
       getLangAPI(user_Token).then((value) => {
+        print("---data----"),
+        print(value),
 
-      getLocale().then((locale) {
+       if(value.data==null){
+         langData="hi"
+       }else{
+         langData=value.data.appLanguage,
+       },
+
+
+
+        getLocale().then((locale) {
       setState(() {
       _locale = locale;
 
       for(int i = 0; i < choices.length; i++){
 
-      if (choices[i].lnCode == value.data.appLanguage) {
+      if (choices[i].lnCode == langData) {
       // selectedClassId=mainData[i].id;
       choices[i].isSelected=true;
       } else {                               //the condition to change the highlighted item
@@ -101,6 +120,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
       }
       });
       })
+
 
       });
 
@@ -168,7 +188,7 @@ class AppLanguagePageState extends State<AppLanguagePage> {
                   children: [
                     SizedBox(height: 20),
                     SizedBox(
-                        height: (MediaQuery.of(context).size.height)*0.18,
+                        height: (MediaQuery.of(context).size.height)*0.15,
                         child:new Image(
                           image: new AssetImage("assets/splash.png"),
                           width: 140,
@@ -345,24 +365,36 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
         StringBuffer sb = new StringBuffer();
 
-        // if(myLang!='en')
-        // {
-        //   sb.write('en');
-        //   sb.write(',');
-        // }
-        // if(myLang!='hi')
-        // {
-        //   sb.write('hi');
-        //   sb.write(',');
-        // }
+
 
         sb.write(myLang);
+
+
+        StringBuffer sb1 = new StringBuffer();
+
+         if(myLang!='en')
+         {
+           sb1.write('en');
+           sb1.write(',');
+         }
+         if(myLang!='hi')
+         {
+           sb1.write('hi');
+           sb1.write(',');
+         }
+
+        sb1.write(myLang);
+
+        String aa=sb1.toString();
+        if(mFrom!='sign-up'){
+          aa="";
+        }
 
          setState(() {
            _isInAsyncCall = true;
          });
 
-        saveLangAPI(sb.toString()).then((res) async {
+        saveLangAPI(sb.toString(),aa).then((res) async {
           String msg;
            setState(() {
              _isInAsyncCall = false;
@@ -371,9 +403,9 @@ class AppLanguagePageState extends State<AppLanguagePage> {
 
 
 
-            changeLanguageContent(context,sb.toString());
-            if(mFrom=='sign-up'){
 
+            if(mFrom=='sign-up'){
+              changeLanguageContent(context,aa);
               Navigator.pushAndRemoveUntil(context,
                   MaterialPageRoute(builder:
                       (context) =>

@@ -1,5 +1,6 @@
 class LoginResponse {
   int status;
+
   Data data;
 
   LoginResponse({this.status, this.data});
@@ -50,13 +51,11 @@ class User {
 
   String mobileNo;
   int age;
+  int country_code;
   String profession;
 
 
   String address;
-
-
-
 
 
 
@@ -68,6 +67,7 @@ class User {
   User(
       {this.id,
         this.uuid,
+        this.country_code,
 
         this.mobileNo,
         this.age,
@@ -83,6 +83,7 @@ class User {
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     uuid = json['uuid'];
+    country_code = json['country_code'];
 
     mobileNo = json['mobile_no'];
     age = json['age'];
@@ -102,6 +103,7 @@ class User {
     data['uuid'] = this.uuid;
 
     data['mobile_no'] = this.mobileNo;
+    data['country_code'] = this.country_code;
     data['age'] = this.age;
     data['profession'] = this.profession;
 

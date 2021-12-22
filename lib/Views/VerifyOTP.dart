@@ -12,7 +12,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter/services.dart';
-
+import '../Interfaces/OnNumberChange.dart';
 import 'package:flutter/services.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_text_field.dart';
@@ -23,6 +23,7 @@ import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/LoginResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/VerifyMissCallResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import '../Views/Home.dart';
@@ -30,7 +31,7 @@ import '../Views/Home.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import '../ApiResponses/OTPResponse.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
+import '../Notification/push_nofitications.dart';
 
 
 
@@ -40,16 +41,17 @@ class VerifyOTPPage extends StatefulWidget {
   final String mobile;
   final String c_code;
   final String otpCode;
+  final String from;
   final int requestCount;
   final DateTime otpSendDate;
 
-  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode,@required this.otpSendDate,@required this.requestCount}) : super(key: key);
+  VerifyOTPPage({Key key,@required this.c_code,@required this.mobile,@required this.otpCode,@required this.otpSendDate,@required this.requestCount,@required this.from}) : super(key: key);
 
 
 
 
   @override
-  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode,otpSendDate,requestCount);
+  VerifyOTPPageState createState() => VerifyOTPPageState(mobile,c_code,otpCode,otpSendDate,requestCount,from);
 }
 
 class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserver{
@@ -69,13 +71,15 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
   bool _isInAsyncCall = false;
   bool _isHidden = true;
   String mOTPCode;
+  String from;
   int mRequestCount;
-  VerifyOTPPageState(String mobile,String c_code,String otpCode,DateTime otpSendDate,int requestCount){
+  VerifyOTPPageState(String mobile,String c_code,String otpCode,DateTime otpSendDate,int requestCount,String from){
     mMobile=mobile;
     mC_code=c_code;
     mOTPCode=otpCode;
     mOTPSendDate=otpSendDate;
     mRequestCount=requestCount;
+    this.from=from;
   }
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
@@ -102,8 +106,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
   _callNumber() async{
-   // var number = "+918929897587";
-     var number = "+917941050748";
+    var number = "+918929897587";
+   //  var number = "+917941050748";
     //set the number here
      await FlutterPhoneDirectCaller.callNumber(number).then((value) => {
       print("suucessfully called"),
@@ -129,7 +133,26 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     token = _prefs.then((SharedPreferences prefs) {
       print(prefs.getString('token'));
       fcm_token=prefs.getString('fcm_token');
-      print("fcm_token"+fcm_token);
+
+      if(fcm_token==null){
+        print("in null");
+        PushNotificationsManager pfg =new PushNotificationsManager();
+        pfg.init(context);
+        Future.delayed(const Duration(milliseconds: 1000), () {
+
+          Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+          Future<String> token;
+          token = _prefs.then((SharedPreferences prefs) {
+            print(prefs.getString('token'));
+            fcm_token=prefs.getString('fcm_token');
+            return (prefs.getString('fcm_token'));
+          });
+        });
+
+
+      }
+
+
 
 
 
@@ -144,7 +167,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       var arr = mMobile.split(" ");
       String newStringMob = arr[0] + arr[1];
 
-      mobile = s2 + newStringMob;
+     // mobile = s2 + newStringMob;
+      mobile = newStringMob;
     }
     else{
       mobile=s2+mMobile;
@@ -156,17 +180,17 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     var date1 = DateTime.now();
     mOTPCode = pin.toString();
     mOTPSendDate=date1;
-    if(s2=='91') {
-      String msg = pin.toString() +
-          " is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
+    // if(s2=='91') {
+    //   String msg = pin.toString() +
+    //       " is your one-time password (OTP) for login into App. Valid for 5 minutes. Ignore if sent by Mistake.";
 
 
-      if(mRequestCount<4) {
-        getOTPData(mobile, msg).then((value) =>
-        {
-        });
-      }
-    }
+      getOTPDataJAVA(mobile).then((value) =>
+      {
+      });
+
+
+  //  }
 
 
   }
@@ -220,6 +244,16 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
   }
 
+  Future<AddToCartResponse> getOTPDataJAVA(String mobileNo) async {
+
+    var body ={'number':mobileNo,'otp':mOTPCode,"appcode":Constants.AppCode,"password":"kranti2024","countrycode":mC_code};
+    MainRepository repository=new MainRepository();
+    return repository.fetchOTPDataJAVA(body);
+
+  }
+
+
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -255,42 +289,74 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
 
         print("onresume--innner_call---");
-
+        int countm = 0;
 
         Timer(Duration(seconds: 2),
                 ()=>{
 
 
-                  getVerifyMissCallAPI(code).then((value) => {
+                  getVerifyMissCallAPINEW(code,mC_code).then((value) => {
 
-                setState(() {
-                 // isVerifyMissCallBtnTapped=false;
-                _isInAsyncCall = false;
-              //  isCallAvailable=false;
+                  setState(() {
 
-                }),
+                  _isInAsyncCall = false;
 
-                if(value.status==1){
-                  loginAPICall("misscall")
-                }
-                else{
+                  }),
 
-                 // showAlertDialogValidation(context,"Enter Mobile no. not valid")
-
-                Fluttertoast.showToast(
-                msg: "Caller not verified !",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.black,
-                textColor: Colors.white,
-                fontSize: 16.0)
-
-                }
+                  if(value.data.verifyStatus==1){
 
 
+                    loginAPICall("misscall")
 
-                })
+
+                  }
+                  else{
+
+                  Fluttertoast.showToast(
+                  msg: "Caller not verified !",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.black,
+                  textColor: Colors.white,
+                  fontSize: 16.0)
+
+                  }
+
+
+
+                  })
+
+
+
+
+                //   getVerifyMissCallAPI(code).then((value) => {
+                //
+                // setState(() {
+                //
+                // _isInAsyncCall = false;
+                //
+                // }),
+                //
+                // if(value.status==1){
+                //   loginAPICall("misscall")
+                // }
+                // else{
+                //
+                // Fluttertoast.showToast(
+                // msg: "Caller not verified !",
+                // toastLength: Toast.LENGTH_SHORT,
+                // gravity: ToastGravity.BOTTOM,
+                // timeInSecForIosWeb: 1,
+                // backgroundColor: Colors.black,
+                // textColor: Colors.white,
+                // fontSize: 16.0)
+                //
+                // }
+                //
+                //
+                //
+                // })
 
 
         }
@@ -301,7 +367,13 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     }
   }
 
+  Future<AddToCartResponse> getNationalProfile(String id,String user_Token) async {
 
+    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+    MainRepository repository=new MainRepository();
+    return repository.fetchCreateProfileNational(body);
+
+  }
   void loginAPICall(String verified_by){
     setState(() {
       _isInAsyncCall = true;
@@ -327,44 +399,51 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       });
 
 
-      if (res.status == 1) {
+      if(from=='Edit'){
+        eventBusNC.fire(OnNumberChange(varMobile,mC_code));
 
-        SharedPreferences _prefs =await SharedPreferences.getInstance();
-
-
-        Prefs.setUserLoginId(_prefs,(res.data.user.id).toString());
-        Prefs.setUserLoginToken(_prefs,(res.data.token).toString());
-        Prefs.setUserLoginName(_prefs,(res.data.user.fullName).toString());
-
-
-        Timer(Duration(seconds: 1),
-                ()=>Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder:
-                    (context) =>
-                    HomePage()
-                ), ModalRoute.withName("/Home")
-            )
-        );
-
-
-
-
+        Navigator.of(context, rootNavigator: true).pop(context);
       }
-      else{
-
-        Timer(Duration(seconds: 1),
-                ()=>Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder:
-                    (context) =>
-                    CreateProfilePage(c_code:mC_code,mobile:mMobile)
-                ), ModalRoute.withName("/Profile")
-            )
-        );
+      else {
+        if (res.status == 1) {
+          getNationalProfile((res.data.user.id).toString(),(res.data.token).toString());
+          SharedPreferences _prefs = await SharedPreferences.getInstance();
 
 
+          Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
+          Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
+          Prefs.setUserLoginName(_prefs, (res.data.user.fullName).toString());
+          Prefs.setUserAge(_prefs, (res.data.user.age).toString());
+          Prefs.setUserProfession(
+              _prefs, (res.data.user.profession).toString());
+          Prefs.setUserPostal(_prefs, (res.data.user.address).toString());
 
+          Prefs.setUserMobile(_prefs, (res.data.user.mobileNo).toString());
+          Prefs.setUserCCode(_prefs, (res.data.user.country_code).toString());
+
+
+          Timer(Duration(seconds: 1),
+                  () =>
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder:
+                          (context) =>
+                          HomePage()
+                      ), ModalRoute.withName("/Home")
+                  )
+          );
+        }
+        else {
+          Timer(Duration(seconds: 1),
+                  () =>
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder:
+                          (context) =>
+                          CreateProfilePage(c_code: mC_code, mobile: mMobile)
+                      ), ModalRoute.withName("/Profile")
+                  )
+          );
+        }
       }
-
 
     });
 
@@ -476,7 +555,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                   children: [
                     SizedBox(height: 20),
                     SizedBox(
-                        height: (MediaQuery.of(context).size.height)*0.17,
+                        height: (MediaQuery.of(context).size.height)*0.15,
                         child:new Image(
                           image: new AssetImage("assets/splash.png"),
                           width: 140,
@@ -589,7 +668,8 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
                                 print("mcode"+mC_code);
 
 
-                                loginAPICall("otp");
+      loginAPICall("otp");
+
 
                       /*     getLoginResponse(mC_code,varMobile)
                               .then((res) async {
@@ -673,6 +753,10 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     ));
   }
   Future<LoginResponse> getLoginResponse(String contry_code,String mobile,String verified_by) async {
+
+    print("verifeied_by--------");
+    print(verified_by);
+
     var body =json.encode({"mobile_no":mobile,"country_code":contry_code,"fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer,"app_unique_code":Constants.AppCode,"verified_by":verified_by});
     MainRepository repository=new MainRepository();
     return repository.fetchLoginData(body);
@@ -686,6 +770,17 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
     return repository.fetchVerifyMissCall(body);
 
   }
+
+  Future<VerifyMissCallResponse> getVerifyMissCallAPINEW(String mobileNo,String cCode) async {
+
+    var body =json.encode({'mobile_no':mobileNo,'country_code':cCode,'app_unique_code':Constants.AppCode});
+
+   // var body ={'mobile_no':mobileNo,'country_code':cCode,'app_unique_code':Constants.AppCode};
+    MainRepository repository=new MainRepository();
+    return repository.fetchLoginVerifyMissCall(body);
+
+  }
+
   Widget _submitButton() {
     return InkWell(
       onTap: () {

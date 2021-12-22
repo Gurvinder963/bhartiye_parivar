@@ -27,6 +27,9 @@ import '../ApiResponses/ReferHistoryResponse.dart';
 import '../ApiResponses/ReferDetailResponse.dart';
 import '../ApiResponses/OTPCountResponse.dart';
 import '../ApiResponses/LangResponse.dart';
+import '../ApiResponses/AppChannelResponse.dart';
+import '../ApiResponses/VerifyMissCallResponse.dart';
+import '../ApiResponses/GetProfileResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -34,6 +37,36 @@ class MainRepository {
   Future<OTPResponse> fetchOTPData(var body) async {
     final response = await _provider.getSMS("api/mt/SendSMS",body);
     return OTPResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchOTPDataJAVA(var body) async {
+    final response = await _provider.getSMSJAVA("api/loginotp",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchCreateProfileNational(var body) async {
+    final response = await _provider.getSMSJAVA("api/createprofile",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchUpdateProfileJava(var body) async {
+    final response = await _provider.getSMSJAVA("api/changenumber",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchReferSaveJava(var body) async {
+    final response = await _provider.postJAVA("api/referapp",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchLogoutJava(var body) async {
+    final response = await _provider.postJAVA("api/logout",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchActiveUsers(var body) async {
+    final response = await _provider.getSMSJAVA("app/activeusers",body);
+    return AddToCartResponse.fromJson(response);
   }
 
 
@@ -264,5 +297,24 @@ class MainRepository {
   Future<AddToCartResponse> fetchSaveVideoInput(var body,String token) async {
     final response = await _provider.postWithToken("public/api/v1/video-record",body,token);
     return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AppChannelResponse> fetchAppChannel(var body) async {
+    final response = await _provider.get("public/api/v1/channels",body);
+    return AppChannelResponse.fromJson(response);
+  }
+  Future<LoginResponse> fetchUpdateProfileData(String body,String token) async {
+    final response = await _provider.postWithToken("public/api/v1/auth/update",body,token);
+    return LoginResponse.fromJson(response);
+  }
+
+  Future<VerifyMissCallResponse> fetchLoginVerifyMissCall(var body) async {
+    final response = await _provider.post("public/api/v1/auth/login-verify-misscall",body);
+    return VerifyMissCallResponse.fromJson(response);
+  }
+
+  Future<GetProfileResponse> fetchUserProfileData(var body,String token) async {
+    final response = await _provider.getWithToken("public/api/v1/auth/me",body,token);
+    return GetProfileResponse.fromJson(response);
   }
 }

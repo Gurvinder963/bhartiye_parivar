@@ -6,7 +6,7 @@ import 'package:country_list_pick/country_list_pick.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'VerifyOTP.dart';
-
+import '../ApiResponses/OTPResponse.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -26,6 +26,7 @@ import '../Utils/AppStrings.dart';
 import '../Utils/Prefer.dart';
 import '../ApiResponses/LoginResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
+import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -72,6 +73,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
   final myControllerPinCode= TextEditingController();
 
   String fcm_token;
+  String user_Token;
+  String USER_NAME=null;
 
   String baseOs;
 
@@ -227,6 +230,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
         children: <Widget>[
 
           TextField(
+            inputFormatters: [new WhitelistingTextInputFormatter(RegExp("[ ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz]"))],
             textCapitalization: TextCapitalization.sentences,
             controller: myControllerName,
             obscureText: false,
@@ -270,7 +274,19 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     token = _prefs.then((SharedPreferences prefs) {
       print(prefs.getString('token'));
       fcm_token=prefs.getString('fcm_token');
-      print("fcm_token"+fcm_token);
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+       USER_NAME=prefs.getString(Prefs.USER_NAME);
+      if(USER_NAME!=null && USER_NAME.isNotEmpty) {
+        print(USER_NAME);
+        myControllerName.text = USER_NAME;
+        String USER_AGE = prefs.getString(Prefs.USER_AGE);
+        myControllerAge.text = USER_AGE;
+        String USER_PROFESSION = prefs.getString(Prefs.USER_PROFESSION);
+        String USER_POSTAL = prefs.getString(Prefs.USER_POSTAL);
+        myControllerPinCode.text = USER_POSTAL;
+        _chosenValue = USER_PROFESSION;
+        print("fcm_token" + mMobile);
+      }
       initPlatformState();
 
 
@@ -418,7 +434,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                   children: [
                     SizedBox(height: 20),
                     SizedBox(
-                      height: (MediaQuery.of(context).size.height)*0.17,
+                      height: (MediaQuery.of(context).size.height)*0.15,
                     child:new Image(
                       image: new AssetImage("assets/splash.png"),
                       width: 140,
@@ -519,7 +535,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
                                       );
                                     }).toList(),
                                     hint:Text(
-                                      "Please choose a langauage",
+                                      "Please choose a Profession",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: ScreenUtil().setSp(14),
@@ -575,71 +591,173 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
     else{
       varMobile=mobile;
     }
-    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer});
+    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer,"app_unique_code":Constants.AppCode});
     MainRepository repository=new MainRepository();
     return repository.fetchProfileData(body);
+
+  }
+
+  Future<LoginResponse> getProfileUpdateResponse(String name,String age,String profession,String pincode,String mobile,String cCode) async {
+
+
+    String varMobile="";
+    // if(cCode=='91' && USER_NAME==null) {
+    //   var arr = mobile.split(" ");
+    //   String newStringMob = arr[0] + arr[1];
+    //
+    //   varMobile = newStringMob;
+    // }
+    // else{
+      varMobile=mobile;
+    //}
+    var body =json.encode({"full_name":name,"age":age,"address":pincode,"profession":profession,"country_code":cCode,"mobile_no":varMobile,"email":"","fcm_token":fcm_token,"app_name":Constants.AppName,"app_version":"1.1","device_version":baseOs,"device_model":model,"device_type":"Android","device_name":manufacturer});
+    MainRepository repository=new MainRepository();
+    return repository.fetchUpdateProfileData(body,user_Token);
+
+  }
+
+
+
+  Future<AddToCartResponse> getNationalProfile(String id) async {
+
+    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+    MainRepository repository=new MainRepository();
+    return repository.fetchCreateProfileNational(body);
 
   }
   Widget _submitButton() {
     return InkWell(
       onTap: () {
 
+        var age=0;
+        if(myControllerAge.text.isNotEmpty){
+          String userage=myControllerAge.text.toString();
+          age=int.parse(userage);
+        }
+
+
+
         if(myControllerName.text.isEmpty){
           showAlertDialogValidation(context, "Please enter name!");
         }
+        else if(myControllerName.text.length<3){
+          showAlertDialogValidation(context, "Name length at least 3 character!");
+        }
+
         else if(myControllerAge.text.isEmpty){
           showAlertDialogValidation(context, "Please enter age!");
         }
+        else if(age<18 || age>125){
+          showAlertDialogValidation(context, "your age not satisfy the Terms & policy requirements!");
+        }
+
         else if(_chosenValue=='Select'){
           showAlertDialogValidation(context, "Please select profession!");
         }
         else if(mC_code=='91' && myControllerPinCode.text.isEmpty){
           showAlertDialogValidation(context, "Please enter pincode!");
         }
+        else if(mC_code=='91' && myControllerPinCode.text.length<6){
+          showAlertDialogValidation(context, "Pincode not valid!");
+        }
         else {
           setState(() {
             _isInAsyncCall = true;
           });
 
-          String postal="000000";
+          String postal="999999";
           if(mC_code=='91'){
             postal=myControllerPinCode.text;
           }
+          if(USER_NAME!=null){
+            print("update profile");
+            getProfileUpdateResponse(myControllerName.text, myControllerAge.text,
+                _chosenValue, postal, mMobile, mC_code)
+                .then((res) async {
+              setState(() {
+                _isInAsyncCall = false;
+              });
 
 
+              if (res.status == 1) {
 
-          getProfileResponse(myControllerName.text, myControllerAge.text,
-              _chosenValue, postal,mMobile,mC_code)
-              .then((res) async {
-            setState(() {
-              _isInAsyncCall = false;
+                SharedPreferences _prefs = await SharedPreferences
+                    .getInstance();
+
+
+                Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
+                //Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
+                Prefs.setUserLoginName(
+                    _prefs, (res.data.user.fullName).toString());
+                Prefs.setUserAge(_prefs, (res.data.user.age).toString());
+                Prefs.setUserProfession(
+                    _prefs, (res.data.user.profession).toString());
+                Prefs.setUserPostal(_prefs, (res.data.user.address).toString());
+
+                Prefs.setUserMobile(
+                    _prefs, (res.data.user.mobileNo).toString());
+                Prefs.setUserCCode(
+                    _prefs, (res.data.user.country_code).toString());
+
+                Navigator.of(context, rootNavigator: true).pop(context);
+
+              }
+              else {
+
+              }
             });
 
+          }
 
-            if (res.status == 1) {
-              SharedPreferences _prefs = await SharedPreferences.getInstance();
+          else {
+            getProfileResponse(myControllerName.text, myControllerAge.text,
+                _chosenValue, postal, mMobile, mC_code)
+                .then((res) async {
+              setState(() {
+                _isInAsyncCall = false;
+              });
 
 
-              Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
-              Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
-              Prefs.setUserLoginName(
-                  _prefs, (res.data.user.fullName).toString());
+              if (res.status == 1) {
+                getNationalProfile(res.data.user.id.toString()).then((value) =>
+                {
+                });
 
 
-              Timer(Duration(seconds: 1),
-                      ()=>Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder:
-                          (context) =>
-                              AppLanguagePage(from:"sign-up")
-                      ), ModalRoute.withName("/AppLanguage")
-                  )
-              );
+                SharedPreferences _prefs = await SharedPreferences
+                    .getInstance();
 
-            }
-            else {
 
-            }
-          });
+                Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
+                Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
+                Prefs.setUserLoginName(
+                    _prefs, (res.data.user.fullName).toString());
+                Prefs.setUserAge(_prefs, (res.data.user.age).toString());
+                Prefs.setUserProfession(
+                    _prefs, (res.data.user.profession).toString());
+                Prefs.setUserPostal(_prefs, (res.data.user.address).toString());
+
+                Prefs.setUserMobile(
+                    _prefs, (res.data.user.mobileNo).toString());
+                Prefs.setUserCCode(
+                    _prefs, (res.data.user.country_code).toString());
+
+
+                Timer(Duration(seconds: 1),
+                        () =>
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder:
+                                (context) =>
+                                AppLanguagePage(from: "sign-up")
+                            ), ModalRoute.withName("/AppLanguage")
+                        )
+                );
+              }
+              else {
+
+              }
+            });
+          }
         }
         /*  Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder:

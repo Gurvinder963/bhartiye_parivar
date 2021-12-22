@@ -139,7 +139,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
 
   Future<ReferHistoryResponse> getReferList(String user_Token) async {
 
-    var body ={'lang_code':""};
+    var body ={'app_code':Constants.AppCode};
     MainRepository repository=new MainRepository();
     return repository.fetchReferData(body,user_Token);
 
@@ -181,7 +181,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                 children: <Widget>[
                                   Expanded(
                                       flex: 1,
-                                      child:    Text(mainData[index].name,
+                                      child:Text(mainData[index].name,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.roboto(
                                             fontSize:14.0,
@@ -244,14 +244,14 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         alignment: Alignment.center,
                                       ),
                                             SizedBox(width: 10,),
-                                    GestureDetector(
+                                           GestureDetector(
                                         onTap: () =>
                                         {
 
                                           showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
                                         },
                                         child:  Image(
-                                              image: new AssetImage("assets/ic_remove.png"),
+                                              image:  mainData[index].refer_status?null:new AssetImage("assets/ic_remove.png"),
                                               width: 20,
                                               height:  20,
                                               color: null,
@@ -288,6 +288,13 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    DataTableSource _data = MyData(mainData,context,user_Token);
+    double width=MediaQuery.of(context).size.width;
+    double wid=(width/5)-65;
+    print("---widht---");
+    print(width);
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
@@ -372,8 +379,71 @@ Container(
                     ]
 
                 )),
-          Expanded(child:
-                _buildList()),
+          // Expanded(child:
+          //       _buildList()),
+
+              Expanded(child:   PaginatedDataTable(
+                  source: _data,
+                  headingRowHeight: 0,
+                  header: Text("",
+                    style: TextStyle(fontSize: 0),),
+                  columns: [
+                    DataColumn(label: Text("Name",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.roboto(
+                          fontSize:15.0,
+
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+
+                        ))),
+                    DataColumn(label: Text("Mobile",
+                      textAlign: TextAlign.center,
+
+                      style: GoogleFonts.roboto(
+                        fontSize:15.0,
+
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w500,
+
+                      ),)),
+                    DataColumn(label: Text("Pin",
+
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.roboto(
+                        fontSize:15.0,
+
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w500,
+
+                      ),)),
+                    DataColumn(label: Text("Ref. Date",
+                      textAlign: TextAlign.center,
+
+                      style: GoogleFonts.roboto(
+                        fontSize:15.0,
+
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w500,
+
+                      ),)),
+                    DataColumn(label: Text("Status",
+                      textAlign: TextAlign.center,
+
+                      style: GoogleFonts.roboto(
+                        fontSize:15.0,
+
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.w500,
+
+                      ),)),
+                  ],
+                  columnSpacing: wid,
+                  horizontalMargin: 2,
+                  rowsPerPage: 10,
+
+                  showCheckboxColumn: false,
+                )),
 
               ],
 
@@ -388,4 +458,176 @@ Container(
   }
 
 
+}
+class MyData extends DataTableSource {
+  // Generate some made-up data
+  List mainData;
+  String user_token;
+  BuildContext context;
+
+  MyData(List mainData, BuildContext context,String user_token){
+    this.mainData=mainData;
+    this.user_token=user_token;
+    this.context=context;
+
+  }
+
+  bool get isRowCountApproximate => false;
+  int get rowCount => mainData.length;
+  int get selectedRowCount => 0;
+  Future<AddToCartResponse> postDeleteReferItem(String id,String token) async {
+
+    //  print('my_token'+token);
+    //  var body =json.encode({"id":id});
+    print(id);
+    MainRepository repository=new MainRepository();
+    return repository.fetchDeleteReferData(id,token);
+
+  }
+
+
+
+
+
+
+  DataRow getRow(int index) {
+    var dte= mainData[index].createdAt.toString().split(" ");
+    return DataRow(cells: [
+      DataCell(Text(mainData[index].name,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.roboto(
+            fontSize:14.0,
+
+            color: Color(0xFF000000),
+            fontWeight: FontWeight.w500,
+
+          ))),
+      DataCell(Text(mainData[index].mobile,
+        textAlign: TextAlign.center,
+
+        style: GoogleFonts.roboto(
+          fontSize:14.0,
+
+          color: Color(0xFF0000ff),
+          fontWeight: FontWeight.w500,
+
+        ),)),
+      DataCell(Text(mainData[index].pincode,
+
+        textAlign: TextAlign.center,
+        style: GoogleFonts.roboto(
+          fontSize:14.0,
+
+          color: Color(0xFF000000),
+          fontWeight: FontWeight.w500,
+
+        ),)),
+      DataCell(Text(dte[0],
+        textAlign: TextAlign.center,
+
+        style: GoogleFonts.roboto(
+          fontSize:14.0,
+
+          color: Color(0xFF000000),
+          fontWeight: FontWeight.w500,
+
+        ),)),
+      DataCell(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(width: 10,),
+            Image(
+              image: mainData[index].refer_status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
+              width: 18,
+              height:  18
+              ,
+              color: null,
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+            ),
+            SizedBox(width: 10,),
+            mainData[index].refer_status?Container():GestureDetector(
+                onTap: () =>
+                {
+                //  mainData.removeAt(index),
+                //notifyListeners(),
+                  showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index,user_token)
+                },
+                child:  Image(
+                  image: new AssetImage("assets/ic_remove.png"),
+                  width: 20,
+                  height:  20,
+                  color: null,
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.center,
+                ))
+          ])),
+    ]);
+  }
+  showAlertDialogValidationdELETE(BuildContext context,String message,String id,int index,String user_Token) {
+
+    Widget yesButton = FlatButton(
+      child: Text("YES"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        // setState(() {
+        //   _isInAsyncCall = true;
+        // });
+        postDeleteReferItem(id.toString(),user_Token)
+            .then((res) async {
+          // setState(() {
+          //   _isInAsyncCall = false;
+          // });
+
+
+          if (res.status == 1) {
+
+            Fluttertoast.showToast(
+                msg: "Item has been deleted !",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0);
+           // setState(() {
+              mainData.removeAt(index);
+              notifyListeners();
+            //});
+
+
+
+          }
+          else {
+            // showAlertDialogValidation(context,"Some error occured!");
+          }
+        });
+
+      },
+    );
+    Widget noButton = FlatButton(
+      child: Text("NO"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        yesButton,
+        noButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }

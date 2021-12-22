@@ -146,6 +146,9 @@ class HistoryPageState extends State<HistoryPage> {
     else if(videoSourceType=='facebook'){
 
     }
+    else if(videoSourceType=='brighteon'){
+
+    }
     else if(videoSourceType=='dailymotion'){
       String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
       url="https://www.dailymotion.com/thumbnail/video/"+videoId;

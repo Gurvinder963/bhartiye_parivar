@@ -129,7 +129,6 @@ class _MyAppState extends State<MyApp> {
       home: MyHomePage(),
       supportedLocales: [
         Locale('en', ''),
-        Locale('ar', ''),
         Locale('hi', '')
       ],
       localizationsDelegates: [
@@ -198,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ()=>Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder:
                     (context) =>
-                        LoginPage()
+                        LoginPage(from: "splash")
                 ), ModalRoute.withName("/Login")
             )
         );

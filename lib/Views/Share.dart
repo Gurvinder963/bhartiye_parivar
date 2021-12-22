@@ -17,6 +17,7 @@ import 'package:share/share.dart';
 import 'dart:async';
 import 'dart:io';
 import '../Utils/AppStrings.dart';
+import'../ApiResponses/ReferHistoryResponse.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 class SharePage extends StatefulWidget {
@@ -27,9 +28,10 @@ class SharePage extends StatefulWidget {
 }
 
 class SharePageState extends State<SharePage> {
-
+  List mainData = new List();
   String user_Token;
   String USER_NAME="";
+  String USER_ID="";
   bool _isInAsyncCall = false;
 
   int todayReferred=0;
@@ -65,70 +67,123 @@ class SharePageState extends State<SharePage> {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
       USER_NAME=prefs.getString(Prefs.USER_NAME);
+      USER_ID=prefs.getString(Prefs.USER_ID);
 
-
-      getReferDetail(user_Token).then((value) => {
-
-        setState(() {
-
-          _isInAsyncCall = false;
-          todayReferred=value.data.todayReferred;
-          todayInstalled=value.data.todayInstall;
-          if(todayReferred-todayInstalled>0){
-          todayPending=todayReferred-todayInstalled;
-          }
-
-          yesterdayInstalled=value.data.yesterdayInstall;
-          yesterdayReferred=value.data.yesterdayReferred;
-          if(yesterdayReferred-yesterdayInstalled>0){
-            yesterdayPending=yesterdayReferred-yesterdayInstalled;
-          }
-
-          sevenDaysInstalled=value.data.weekInstall;
-          sevenDaysReferred=value.data.weekReferred;
-          if(sevenDaysReferred-sevenDaysInstalled>0){
-            sevenDaysPending=sevenDaysReferred-sevenDaysInstalled;
-          }
-
-
-          twentyDaysInstalled=value.data.monthInstall;
-          twentyDaysReferred=value.data.monthReferred;
-          if(twentyDaysReferred-twentyDaysInstalled>0){
-            twentyDaysPending=twentyDaysReferred-twentyDaysInstalled;
-          }
-
-          totalDaysInstalled=value.data.totalInstall;
-          totalDaysReferred=value.data.totalReferred;
-          if(totalDaysReferred-totalDaysInstalled>0){
-            totalDaysPending=totalDaysReferred-totalDaysInstalled;
-          }
-
-        })
-
-      });
-
-
+      refreshPage();
 
       return (prefs.getString('token'));
     });
 
   }
+
+  void refreshPage(){
+
+    getReferDetail(user_Token).then((value) => {
+
+      setState(() {
+
+        _isInAsyncCall = false;
+        todayReferred=value.data.todayReferred;
+        todayInstalled=value.data.todayInstall;
+        if(todayReferred-todayInstalled>0){
+          todayPending=todayReferred-todayInstalled;
+        }
+
+        yesterdayInstalled=value.data.yesterdayInstall;
+        yesterdayReferred=value.data.yesterdayReferred;
+        if(yesterdayReferred-yesterdayInstalled>0){
+          yesterdayPending=yesterdayReferred-yesterdayInstalled;
+        }
+
+        sevenDaysInstalled=value.data.weekInstall;
+        sevenDaysReferred=value.data.weekReferred;
+        if(sevenDaysReferred-sevenDaysInstalled>0){
+          sevenDaysPending=sevenDaysReferred-sevenDaysInstalled;
+        }
+
+
+        twentyDaysInstalled=value.data.monthInstall;
+        twentyDaysReferred=value.data.monthReferred;
+        if(twentyDaysReferred-twentyDaysInstalled>0){
+          twentyDaysPending=twentyDaysReferred-twentyDaysInstalled;
+        }
+
+        totalDaysInstalled=value.data.totalInstall;
+        totalDaysReferred=value.data.totalReferred;
+        if(totalDaysReferred-totalDaysInstalled>0){
+          totalDaysPending=totalDaysReferred-totalDaysInstalled;
+        }
+
+      })
+
+    });
+
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    getReferList(user_Token).then((value) => {
+
+      callMethod(value)
+    });
+
+  }
+
+  callMethod(value){
+    int lenght=3;
+    if(value.data.length<3){
+      lenght=value.data.length;
+    }
+
+    for (int i = 0; i < lenght; i++) {
+      print("===in looooopp");
+      mainData.add(value.data[i]);
+    }
+    setState(() {
+
+      _isInAsyncCall = false;
+
+
+
+
+
+
+    });
+  }
+
+  Future<ReferHistoryResponse> getReferList(String user_Token) async {
+
+    var body ={'app_code':Constants.AppCode};
+    MainRepository repository=new MainRepository();
+    return repository.fetchReferData(body,user_Token);
+
+  }
   Future<ReferDetailResponse> getReferDetail(String user_Token) async {
 
-    var body ={'lang_code':""};
+    var body ={'app_code':Constants.AppCode};
     MainRepository repository=new MainRepository();
     return repository.fetchReferDetailData(body,user_Token);
 
+
   }
-  Future<AddToCartResponse> saveReferAPI(name,mobile,pincode) async {
-    //  final String requestBody = json.encoder.convert(order_items);
+  // Future<AddToCartResponse> saveReferAPI(name,mobile,pincode) async {
+  //   //  final String requestBody = json.encoder.convert(order_items);
+  //
+  //
+  //   var body =json.encode({"name":name,"mobile":mobile,"pincode":pincode,'app_code':Constants.AppCode});
+  //   MainRepository repository=new MainRepository();
+  //
+  //   return repository.fetchReferSave(body,user_Token);
+  //
+  //
+  // }
 
+  Future<AddToCartResponse> saveReferAPIJAVA(name,mobile,pincode) async {
 
-    var body =json.encode({"name":name,"mobile":mobile,"pincode":pincode});
+    var body =json.encode({'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode});
+
+    //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
     MainRepository repository=new MainRepository();
-
-    return repository.fetchReferSave(body,user_Token);
-
+    return repository.fetchReferSaveJava(body);
 
   }
 
@@ -156,6 +211,9 @@ class SharePageState extends State<SharePage> {
                     },
                   ),
             TextField(
+              inputFormatters: [
+                new LengthLimitingTextInputFormatter(10),
+              ],
                     keyboardType: TextInputType.number,
                     autofocus: false,
                     decoration: new InputDecoration(
@@ -165,6 +223,9 @@ class SharePageState extends State<SharePage> {
                     },
                   ),
               new TextField(
+                inputFormatters: [
+                  new LengthLimitingTextInputFormatter(6),
+                ],
                     keyboardType: TextInputType.number,
                     autofocus: false,
                     decoration: new InputDecoration(
@@ -191,13 +252,42 @@ class SharePageState extends State<SharePage> {
                 setState(() {
                   _isInAsyncCall = true;
                 });
+                if(teamName1.isEmpty){
+                  showAlertDialogValidation(context, "Please enter name!");
+                }
+                else if(teamName1.length<3){
+                  showAlertDialogValidation(context, "Name length at least 3 character!");
+                }
 
-                saveReferAPI(teamName1,teamName2,teamName3).then((res) async {
+               else if(teamName2.isEmpty){
+                  showAlertDialogValidation(context, "Please enter mobile!");
+                }
+
+                else if(teamName2.length<10){
+                  showAlertDialogValidation(context, "Please enter valid mobile no.!");
+                }
+
+
+                else if(teamName1.length<3){
+                  showAlertDialogValidation(context, "Name length at least 3 character!");
+                }
+
+                else if(teamName3.isEmpty){
+                showAlertDialogValidation(context, "Please enter pincode!");
+                }
+                else if(teamName3.length<6){
+                showAlertDialogValidation(context, "Pincode not valid!");
+                }
+
+                saveReferAPIJAVA(teamName1,teamName2,teamName3).then((res) async {
                   String msg;
                   setState(() {
                     _isInAsyncCall = false;
                   });
                   if(res.status==1){
+
+                    mainData.clear();
+                    refreshPage();
 
                     Fluttertoast.showToast(
                         msg: "Data save successfully",
@@ -216,6 +306,34 @@ class SharePageState extends State<SharePage> {
             ),
           ],
         );
+      },
+    );
+  }
+  showAlertDialogValidation(BuildContext context,String message) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
       },
     );
   }
@@ -250,6 +368,10 @@ class SharePageState extends State<SharePage> {
   }
   @override
   Widget build(BuildContext context) {
+
+    double width=MediaQuery.of(context).size.width;
+    double wid=(width/6)-5;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
@@ -290,7 +412,10 @@ class SharePageState extends State<SharePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
 
-                  SizedBox(width: 20,),
+
+                  Container(
+                      width: wid,
+                      child:
                   Image(
                     image: new AssetImage("assets/share.png"),
                     width: 25,
@@ -298,52 +423,62 @@ class SharePageState extends State<SharePage> {
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
-                  SizedBox(width: 20,),
-                  Image(
+                  )),
+
+        Container(
+            width: wid,
+            child: Image(
                     image: new AssetImage("assets/email.png"),
                     width: 28,
                     height:  28,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
-                  SizedBox(width: 20,),
-                  Image(
+                  )),
+
+        Container(
+            width: wid,
+            child: Image(
                     image: new AssetImage("assets/facebook.png"),
                     width: 28,
                     height:  28,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
-                  SizedBox(width: 20,),
-                  Image(
+                  )),
+
+        Container(
+            width: wid,
+            child: Image(
                     image: new AssetImage("assets/twitter.png"),
                     width: 28,
                     height:  28,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
-                  SizedBox(width: 20,),
-                  Image(
+                  )),
+
+        Container(
+            width: wid,
+            child:  Image(
                     image: new AssetImage("assets/whatsapp.png"),
                     width: 28,
                     height:  28,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
-                  SizedBox(width: 20,),
-                  Image(
+                  )),
+
+        Container(
+            width: wid,
+            child:  Image(
                     image: new AssetImage("assets/telegram.png"),
                     width: 28,
                     height:  28,
                     color: null,
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                  ),
+                  )),
                   SizedBox(width: 20,),
                 ]))),
             SizedBox(height: 20,),
@@ -352,7 +487,7 @@ class SharePageState extends State<SharePage> {
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: GoogleFonts.roboto(
-                fontSize:15.0,
+                fontSize:20.0,
 
                 color: Color(0xFF000000),
                 fontWeight: FontWeight.w500,
@@ -741,22 +876,22 @@ SizedBox(height: 20,),
                                 ))
                           },
                           child: Container(
-                          margin: const EdgeInsets.all(15.0),
-                          padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black38),
-                            color: Color(0xFFcccccc)
+                              margin: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black38),
+                                  color: Color(0xFFcccccc)
 
-                          ),
-                          child: Text("Refer History",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.roboto(
-                            fontSize:15.0,
+                              ),
+                              child: Text("Refer History",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.roboto(
+                                    fontSize:15.0,
 
-                            color: Color(0xFF000000),
-                            fontWeight: FontWeight.w500,
+                                    color: Color(0xFF000000),
+                                    fontWeight: FontWeight.w500,
 
-                          ))))),
+                                  ))))),
                   Spacer(),
                   Expanded(
                       flex: 3,
@@ -768,28 +903,102 @@ SizedBox(height: 20,),
                           },
                           child:Container(
 
-                          margin: const EdgeInsets.all(15.0),
-                          padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black38),
-                              color: Color(0xFFcccccc)
-                          ),
-                          child:Text("Add Refer Details",
-                        textAlign: TextAlign.center,
+                              margin: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black38),
+                                  color: Color(0xFFcccccc)
+                              ),
+                              child:Text("Add Refer Details",
+                                textAlign: TextAlign.center,
 
-                        style: GoogleFonts.roboto(
-                          fontSize:15.0,
+                                style: GoogleFonts.roboto(
+                                  fontSize:15.0,
 
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
+                                  color: Color(0xFF000000),
+                                  fontWeight: FontWeight.w500,
 
-                        ),)))),
+                                ),)))),
 
 
 
                 ]
 
             ),
+            SizedBox(height: 20,),
+            Container(
+                color: Colors.black54,
+                padding: const EdgeInsets.fromLTRB(0.0,8.0,0.0,8.0),
+                child:
+                Row(
+
+                    children: <Widget>[
+                      Expanded(
+                          flex: 1,
+                          child:    Text("Name",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.roboto(
+                                fontSize:15.0,
+
+                                color: Color(0xFFffffff),
+                                fontWeight: FontWeight.w500,
+
+                              ))),
+                      Expanded(
+                          flex: 1,
+                          child:Text("Mobile",
+                            textAlign: TextAlign.center,
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFFffffff),
+                              fontWeight: FontWeight.w500,
+
+                            ),)),
+                      Expanded(
+                          flex: 1,
+                          child:Text("Pin",
+
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFFffffff),
+                              fontWeight: FontWeight.w500,
+
+                            ),)),
+                      Expanded(
+                          flex: 1,
+                          child:Text("Ref. Date",
+                            textAlign: TextAlign.center,
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFFffffff),
+                              fontWeight: FontWeight.w500,
+
+                            ),)),
+                      Expanded(
+                          flex: 1,
+                          child:Text("Status",
+                            textAlign: TextAlign.center,
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFFffffff),
+                              fontWeight: FontWeight.w500,
+
+                            ),))
+                    ]
+
+                )),
+            Expanded(child:
+            _buildList()),
+
+
           ]
       )
 
@@ -797,6 +1006,209 @@ SizedBox(height: 20,),
 
     );
   }
+  Widget _buildList() {
 
 
+    return
+
+      ListView.builder(
+        itemCount: mainData.length , // Add one more item for progress indicator
+
+        itemBuilder: (BuildContext context, int index) {
+          var dte= mainData[index].createdAt.toString().split(" ");
+          return GestureDetector(
+              onTap: () =>
+              {
+
+
+              },
+              child:Container(
+                  child:Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.fromLTRB(10,10,10,10),
+
+                          child:
+                          Row(
+                              children: <Widget>[
+                                Expanded(
+                                    flex: 1,
+                                    child:    Text(mainData[index].name,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.roboto(
+                                          fontSize:14.0,
+
+                                          color: Color(0xFF000000),
+                                          fontWeight: FontWeight.w500,
+
+                                        ))),
+                                Expanded(
+                                    flex: 1,
+                                    child:Text(mainData[index].mobile,
+                                      textAlign: TextAlign.center,
+
+                                      style: GoogleFonts.roboto(
+                                        fontSize:14.0,
+
+                                        color: Color(0xFF0000ff),
+                                        fontWeight: FontWeight.w500,
+
+                                      ),)),
+                                Expanded(
+                                    flex: 1,
+                                    child:Text(mainData[index].pincode,
+
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.roboto(
+                                        fontSize:14.0,
+
+                                        color: Color(0xFF000000),
+                                        fontWeight: FontWeight.w500,
+
+                                      ),)),
+                                Expanded(
+                                    flex: 1,
+                                    child:Text(dte[0],
+                                      textAlign: TextAlign.center,
+
+                                      style: GoogleFonts.roboto(
+                                        fontSize:14.0,
+
+                                        color: Color(0xFF000000),
+                                        fontWeight: FontWeight.w500,
+
+                                      ),)),
+                                Expanded(
+                                  flex: 1,
+                                  child:
+
+                                  Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(width: 10,),
+                                        Image(
+                                          image: mainData[index].refer_status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
+                                          width: 18,
+                                          height:  18
+                                          ,
+                                          color: null,
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(width: 10,),
+                                        mainData[index].refer_status?Container(): GestureDetector(
+                                            onTap: () =>
+                                            {
+
+                                              showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
+                                            },
+                                            child:  Image(
+                                              image: new AssetImage("assets/ic_remove.png"),
+                                              width: 20,
+                                              height:  20,
+                                              color: null,
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.center,
+                                            ))
+                                      ])
+                                  ,),
+                              ]
+
+                          ),),
+
+                        Divider(
+                          color: Colors.grey,
+                        ),
+                      ])
+
+
+              )
+
+
+
+          );
+
+        },
+
+
+
+      );
+  }
+
+  Future<AddToCartResponse> postDeleteReferItem(String id,String token) async {
+
+    //  print('my_token'+token);
+    //  var body =json.encode({"id":id});
+    print(id);
+    MainRepository repository=new MainRepository();
+    return repository.fetchDeleteReferData(id,token);
+
+  }
+  showAlertDialogValidationdELETE(BuildContext context,String message,String id,int index) {
+
+    Widget yesButton = FlatButton(
+      child: Text("YES"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        setState(() {
+          _isInAsyncCall = true;
+        });
+        postDeleteReferItem(id.toString(),user_Token)
+            .then((res) async {
+          setState(() {
+            _isInAsyncCall = false;
+          });
+
+
+          if (res.status == 1) {
+
+            Fluttertoast.showToast(
+                msg: "Item has been deleted !",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0);
+            setState(() {
+              mainData.removeAt(index);
+
+            });
+
+
+
+          }
+          else {
+            // showAlertDialogValidation(context,"Some error occured!");
+          }
+        });
+
+      },
+    );
+    Widget noButton = FlatButton(
+      child: Text("NO"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(Constants.AppName),
+      content: Text(message),
+      actions: [
+        yesButton,
+        noButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
