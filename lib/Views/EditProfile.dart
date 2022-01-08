@@ -55,6 +55,12 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
   String mMobile;
   String mC_code;
   String USER_ID;
+
+  String oldPostal;
+  String oldProfession;
+
+
+
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   Map<String, dynamic> _deviceData = <String, dynamic>{};
@@ -293,6 +299,8 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
       myControllerContryCode.text="+"+mC_code;
       _chosenValue = value.profession.toString();
 
+      oldProfession=value.profession.toString();
+      oldPostal=value.address.toString();
      setState(() {
 
      });
@@ -330,14 +338,55 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
             mMobile = event.mobile;
             mC_code=event.code;
           });
-          Fluttertoast.showToast(
-              msg: "New Mobile number verified successfully, now you can update.",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.black,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          setState(() {
+            _isInAsyncCall = true;
+          });
+
+          getProfileUpdateResponse(myControllerName.text, myControllerAge.text,
+              oldProfession, oldPostal, event.mobile, event.code)
+              .then((res) async {
+            setState(() {
+              _isInAsyncCall = false;
+            });
+
+
+            if (res.status == 1) {
+             // getUpdateProfileJAVA();
+              SharedPreferences _prefs = await SharedPreferences
+                  .getInstance();
+
+
+              Prefs.setUserLoginId(_prefs, (res.data.user.id).toString());
+              //Prefs.setUserLoginToken(_prefs, (res.data.token).toString());
+              Prefs.setUserLoginName(
+                  _prefs, (res.data.user.fullName).toString());
+              Prefs.setUserAge(_prefs, (res.data.user.age).toString());
+              Prefs.setUserProfession(
+                  _prefs, (res.data.user.profession).toString());
+              Prefs.setUserPostal(_prefs, (res.data.user.address).toString());
+
+              Prefs.setUserMobile(
+                  _prefs, (res.data.user.mobileNo).toString());
+              Prefs.setUserCCode(
+                  _prefs, (res.data.user.country_code).toString());
+
+              Fluttertoast.showToast(
+                  msg: "Mobile no. Updated Successfully",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.black,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+
+
+
+            }
+            else {
+              showAlertDialogValidation(context, "Oops! This mobile is using by another user!");
+            }
+          });
+
 
         });
 
@@ -794,7 +843,10 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
 
   Future<AddToCartResponse> getUpdateProfileJAVA() async {
 
-    var body ={'id':USER_ID,"appcode":Constants.AppCode,"password":user_Token};
+    var body =json.encode({'id':USER_ID,"appcode":Constants.AppCode,"password":user_Token});
+
+
+    //var body ={'id':USER_ID,"appcode":Constants.AppCode,"password":user_Token};
     MainRepository repository=new MainRepository();
     return repository.fetchUpdateProfileJava(body);
 
@@ -837,7 +889,7 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
 
 
               if (res.status == 1) {
-
+                getUpdateProfileJAVA();
                 SharedPreferences _prefs = await SharedPreferences
                     .getInstance();
 
@@ -865,7 +917,7 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
                     textColor: Colors.white,
                     fontSize: 16.0);
 
-                getUpdateProfileJAVA();
+
 
                 Navigator.of(context, rootNavigator: true).pop(context);
 

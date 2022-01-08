@@ -29,6 +29,7 @@ import 'BooksDetail.dart';
 import '../ApiResponses/BookmarkResponse.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/NewsData.dart';
+import '../localization/language/languages.dart';
 
 class ItemData {
 
@@ -156,7 +157,9 @@ class NotificationListPageState extends State<NotificationListPage> {
         appBar: AppBar(
             toolbarHeight: 50,
             backgroundColor: Color(AppColors.BaseColor),
-            title: Text('Notifications', style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+            title: Text(Languages
+                .of(context)
+                .notificationsSetting, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
 
 
         ),

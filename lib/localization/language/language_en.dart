@@ -54,6 +54,10 @@ class LanguageEn extends Languages {
   String get notifications => 'Notifications';
 
   @override
+  // TODO: implement notifications
+  String get notificationsSetting => 'Notifications Settings';
+
+  @override
   // TODO: implement profile
   String get profile => 'Profile';
 
@@ -80,6 +84,11 @@ class LanguageEn extends Languages {
   @override
   // TODO: implement Health
   String get Health => 'Health';
+
+  @override
+  // TODO: implement Health
+  String get LiveTag => 'Live';
+
 
   @override
   // TODO: implement History

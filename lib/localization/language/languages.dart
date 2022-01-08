@@ -18,6 +18,7 @@ abstract class Languages {
   String get appLanguage;
   String get contentLanguage;
   String get notifications;
+  String get notificationsSetting;
   String get darkMode;
   String get faq;
   String get shareApp;
@@ -25,6 +26,7 @@ abstract class Languages {
   String get main;
   String get Trending;
   String get Health;
+  String get LiveTag;
   String get Series;
   String get Spiritual;
   String get History;

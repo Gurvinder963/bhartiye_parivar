@@ -85,34 +85,34 @@ class SharePageState extends State<SharePage> {
         _isInAsyncCall = false;
         todayReferred=value.data.todayReferred;
         todayInstalled=value.data.todayInstall;
-        if(todayReferred-todayInstalled>0){
+       // if(todayReferred-todayInstalled>0){
           todayPending=todayReferred-todayInstalled;
-        }
+        //}
 
         yesterdayInstalled=value.data.yesterdayInstall;
         yesterdayReferred=value.data.yesterdayReferred;
-        if(yesterdayReferred-yesterdayInstalled>0){
+        //if(yesterdayReferred-yesterdayInstalled>0){
           yesterdayPending=yesterdayReferred-yesterdayInstalled;
-        }
+        //}
 
         sevenDaysInstalled=value.data.weekInstall;
         sevenDaysReferred=value.data.weekReferred;
-        if(sevenDaysReferred-sevenDaysInstalled>0){
+        //if(sevenDaysReferred-sevenDaysInstalled>0){
           sevenDaysPending=sevenDaysReferred-sevenDaysInstalled;
-        }
+        //}
 
 
         twentyDaysInstalled=value.data.monthInstall;
         twentyDaysReferred=value.data.monthReferred;
-        if(twentyDaysReferred-twentyDaysInstalled>0){
+        //if(twentyDaysReferred-twentyDaysInstalled>0){
           twentyDaysPending=twentyDaysReferred-twentyDaysInstalled;
-        }
+        //}
 
         totalDaysInstalled=value.data.totalInstall;
         totalDaysReferred=value.data.totalReferred;
-        if(totalDaysReferred-totalDaysInstalled>0){
+        //if(totalDaysReferred-totalDaysInstalled>0){
           totalDaysPending=totalDaysReferred-totalDaysInstalled;
-        }
+        //}
 
       })
 
@@ -248,10 +248,8 @@ class SharePageState extends State<SharePage> {
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  _isInAsyncCall = true;
-                });
+               // Navigator.of(context).pop();
+
                 if(teamName1.isEmpty){
                   showAlertDialogValidation(context, "Please enter name!");
                 }
@@ -267,41 +265,38 @@ class SharePageState extends State<SharePage> {
                   showAlertDialogValidation(context, "Please enter valid mobile no.!");
                 }
 
-
-                else if(teamName1.length<3){
-                  showAlertDialogValidation(context, "Name length at least 3 character!");
-                }
-
                 else if(teamName3.isEmpty){
                 showAlertDialogValidation(context, "Please enter pincode!");
                 }
                 else if(teamName3.length<6){
                 showAlertDialogValidation(context, "Pincode not valid!");
                 }
-
-                saveReferAPIJAVA(teamName1,teamName2,teamName3).then((res) async {
-                  String msg;
+                else {
+                  Navigator.of(context).pop();
                   setState(() {
-                    _isInAsyncCall = false;
+                    _isInAsyncCall = true;
                   });
-                  if(res.status==1){
+                  saveReferAPIJAVA(teamName1, teamName2, teamName3).then((
+                      res) async {
+                    String msg;
+                    setState(() {
+                      _isInAsyncCall = false;
+                    });
+                    if (res.status == 1) {
+                      mainData.clear();
+                      refreshPage();
 
-                    mainData.clear();
-                    refreshPage();
-
-                    Fluttertoast.showToast(
-                        msg: "Data save successfully",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-
-
-                  }
-                });
-
+                      Fluttertoast.showToast(
+                          msg: "Data save successfully",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+                  });
+                }
               },
             ),
           ],
@@ -315,8 +310,8 @@ class SharePageState extends State<SharePage> {
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context, rootNavigator: true).pop('dialog');
-
+      //  Navigator.of(context, rootNavigator: true).pop('dialog');
+        Navigator.of(context).pop();
       },
     );
 
@@ -873,7 +868,12 @@ SizedBox(height: 20,),
                                     builder: (BuildContext context) {
                                       return ReferHistoryPage();
                                     }
-                                ))
+                                )).then((_) {
+                                print("on back called");
+                                mainData.clear();
+                                refreshPage();
+
+                            })
                           },
                           child: Container(
                               margin: const EdgeInsets.all(15.0),
@@ -1049,7 +1049,7 @@ SizedBox(height: 20,),
                                       textAlign: TextAlign.center,
 
                                       style: GoogleFonts.roboto(
-                                        fontSize:14.0,
+                                        fontSize:13.0,
 
                                         color: Color(0xFF0000ff),
                                         fontWeight: FontWeight.w500,
@@ -1172,10 +1172,11 @@ SizedBox(height: 20,),
                 textColor: Colors.white,
                 fontSize: 16.0);
             setState(() {
-              mainData.removeAt(index);
+              mainData.clear();
+
 
             });
-
+            refreshPage();
 
 
           }

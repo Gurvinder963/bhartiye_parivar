@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,8 +23,22 @@ import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import '../Utils/AppColors.dart';
+import '../Utils/AppStrings.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 String videoCategory="main";
+YoutubePlayerController _controller;
+TextEditingController _idController;
+TextEditingController _seekToController;
 
+PlayerState _playerState;
+YoutubeMetaData _videoMetaData;
+
+final List<String> _ids = [
+
+];
 class MainPage extends StatefulWidget {
   @override
   MainPageState createState() {
@@ -34,6 +49,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   ScrollController _sc = new ScrollController();
   List mainData = new List();
+  Live liveData;
   int page = 1;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   bool isLoading = false;
@@ -42,6 +58,8 @@ class MainPageState extends State<MainPage> {
   //bool isBookMarked = false;
  // bool isSubscribed= false;
   bool _isInAsyncCall = false;
+  bool _isPlayerReady = false;
+  String USER_ID;
   @override
   void dispose() {
 
@@ -52,11 +70,26 @@ class MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    // liveData=new Live();
+    // liveData.liveTitle="chaldi kudi";
+    // liveData.liveChannelImage="xyx";
+    // liveData.liveVideoSourceType="youtube";
+    // liveData.liveChannel="BP";
+    // liveData.liveStatus="1";
+    // liveData.liveVideoImage="1";
+
+
+
+
+
+
+
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
 
 
 
@@ -70,13 +103,27 @@ class MainPageState extends State<MainPage> {
       return (prefs.getString('token'));
     });
     _sc.addListener(() {
+
+      print(_sc.position.pixels);
+      print(_sc.position.maxScrollExtent);
+
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+        print("on more load");
         apiCall();
       }
     });
 
   }
+  void listener() {
+    if (_isPlayerReady && mounted) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+        print(_controller.value);
 
+      });
+    }
+  }
   void apiCall(){
     if (!isLoading) {
       setState(() {
@@ -88,15 +135,23 @@ class MainPageState extends State<MainPage> {
         locale="";
       }
 
-      getVideosList(user_Token,videoCategory,locale).then((value) => {
+      getVideosList(user_Token,videoCategory,locale).then((
+          value) async {
 
         setState(() {
           isLoading = false;
           mainData.addAll(value.data);
+
+
+          if(liveData==null && value.live.liveStatus!="0") {
+            liveData = value.live;
+          }
           if (!mainData.isEmpty) {
             page++;
           }
-        })
+        });
+
+
 
       });
 
@@ -259,44 +314,445 @@ class MainPageState extends State<MainPage> {
 
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
 
-    String pageIndex = page.toString();
-    String perPage = "10";
-    print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
-      'per_page': perPage,};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoData(body,user_Token);
+    // String pageIndex = page.toString();
+    // String perPage = "10";
+    // print(locale.toString());
+    // var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
+    //   'per_page': perPage,};
+    // MainRepository repository=new MainRepository();
+    // return repository.fetchVideoData(body,user_Token);
+
+ String pageIndex = page.toString();
+ var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex});
+ MainRepository repository=new MainRepository();
+     return repository.fetchVideoListJAVA(body);
+
+
+    // var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
+    //   'per_page': perPage,};
+    // MainRepository repository=new MainRepository();
+    // return repository.fetchVideoData(body,user_Token);
+
+
+
 
   }
   @override
   Widget build(BuildContext context) {
-    var height=MediaQuery.of(context).size.height;
-    print("device_height"+height.toString());
-
     ScreenUtil.init(
         BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
+            maxWidth: MediaQuery
+                .of(context)
+                .size
+                .width,
+            maxHeight: MediaQuery
+                .of(context)
+                .size
+                .height),
         designSize: Size(360, 690),
+
         orientation: Orientation.portrait);
-    return Scaffold(
+    var isPortrait = MediaQuery
+        .of(context)
+        .orientation == Orientation.portrait;
 
-        body:   Container(
-          height: (MediaQuery.of(context).size.height),
+    if (!isPortrait) {
+      // marginPixel=0;
+      // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIOverlays([]);
+    }
+    else {
+      //marginPixel=0;
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    }
+
+    print("live data");
+    if (liveData != null) {
+      print(liveData.liveStatus);
+      var videoIdd;
+      try {
+        videoIdd = YoutubePlayer.convertUrlToId(liveData.liveVideoUrl);
+      } on Exception catch (exception) {
+        // only executed if error is of type Exception
+        print('exception');
+      } catch (error) {
+        // executed for errors of all types other than Exception
+        print('catch error');
+        //  videoIdd="error";
+
+      }
 
 
-          child:Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: _buildList(),
+      _controller = YoutubePlayerController(
+        initialVideoId: videoIdd,
+        flags: const YoutubePlayerFlags(
+          mute: false,
+          autoPlay: true,
+          controlsVisibleAtStart: true,
+          disableDragSeek: false,
+          hideControls: false,
+          loop: false,
+          isLive: true,
+          forceHD: false,
+          enableCaption: true,
+        ),
+      )
+        ..addListener(listener);
+      _idController = TextEditingController();
+      _seekToController = TextEditingController();
+      _videoMetaData = const YoutubeMetaData();
+      _playerState = PlayerState.unknown;
+    }
+    // return Scaffold(
+    //
+    //   body: Center(child:Text('Series Page')),
+    //
+    // );
 
+    if (liveData != null) {
+      return YoutubePlayerBuilder(
+
+          onEnterFullScreen: () {
+            Future.delayed(const Duration(milliseconds: 2000), () {
+              _controller.play();
+            });
+          },
+          onExitFullScreen: () {
+            if (_controller.value.isFullScreen) {
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp])
+                  .then((_) {
+                Navigator.pop(context);
+              });
+            }
+          },
+          player: YoutubePlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            showVideoProgressIndicator: false,
+
+            progressIndicatorColor: Colors.blueAccent,
+            topActions: <Widget>[
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: _controller != null
+                    ? Text(
+                  _controller.metadata.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 )
+                    : Container(),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 25.0,
+                ),
+                onPressed: () {
 
-              ]) ,)
+                },
+              ),
+            ],
+            onReady: () {
+              _isPlayerReady = true;
+            },
+            onEnded: (data) {
+
+            },
+          ),
+          builder: (context, player) => mainWidget(player));
+    }
+
+    else if (mainData.length > 0) {
+
+      return Scaffold(
+
+        body: _buildList(),
+
+      );
+
+
+    }
+    else {
+      return Scaffold(
+
+        body: Center(child: Text('Loading data...')),
+
+      );
+      //mainWidget(null);
+    }
+
+  }
+
+
+  Widget mainWidget(Widget player){
+
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    final height = MediaQuery.of(context).size.height;
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    //final String formatted = formatter.format(DateTime.parse(liveData.));
+
+    return WillPopScope(
+        onWillPop: () {
+
+
+          SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitUp])
+              .then((_) {
+            Navigator.of(context, rootNavigator: true).pop(context);
+          });
+
+
+          return Future.value(false);
+        },
+        child:Scaffold(
+
+
+          body: ModalProgressHUD(
+              inAsyncCall: _isInAsyncCall,
+              // demo of some additional parameters
+              opacity: 0.01,
+              progressIndicator: CircularProgressIndicator(),
+              child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+
+                      children: <Widget>[
+                        // liveData.liveVideoSourceType=='facebook' ?
+                        // _buildBoxVideo(context,mContent):
+
+
+
+                        liveData!=null?(
+
+                        liveData.liveStatus=="1"? player:
+                       Container(width: 0,height: 0,)
+                        ):Container(width: 0.0, height: 0.0),
+
+
+                    Expanded(
+                        child:
+                        ListView(
+                            controller: _sc,
+                          // parent ListView
+                            children: <Widget>[
+
+                              liveData!=null?(
+                        liveData.liveStatus=="2"?
+                              AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child:   Container(
+                                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+
+                                    alignment: Alignment.center,
+                                    // height: ScreenUtil().setHeight(175),
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: NetworkImage(liveData.liveVideoImage),
+                                      ),
+                                    ),
+
+                                  )
+                              ):
+                        Container(width: 0,height: 0,)
+                              ):Container(width: 0.0, height: 0.0),
+
+
+                            liveData!=null?
+                              Container(
+                                  margin:  EdgeInsets.fromLTRB(10,10,10,0),
+                                  child:Row(
+
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+
+                                        new Container(
+                                            width: 44.0,
+                                            height: 44.0,
+                                            decoration: new BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: new DecorationImage(
+                                                    fit: BoxFit.fill,
+                                                    image: new NetworkImage(
+                                                        liveData.liveChannelImage)
+                                                )
+                                            )),
+                                        SizedBox(height: 5,width: 8,),
+
+                                        new Expanded(
+                                            flex: 7,
+                                            child:Container(
+
+                                                child:Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      SizedBox(height: 5),
+                                                      Text(liveData.liveTitle,
+
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 2,
+                                                        style: GoogleFonts.roboto(
+                                                          fontSize:15.0,
+
+                                                          color: Color(0xFF000000),
+                                                          fontWeight: FontWeight.w500,
+
+                                                        ),),
+                                                      Container(
+                                                          margin:  EdgeInsets.fromLTRB(0,5,10,0),
+                                                          child:Row(
+
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: <Widget>[
+                                                                Text(liveData.liveChannel,   overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1, style: GoogleFonts.roboto(
+                                                                    fontSize:12.0,
+                                                                    color: Color(0xFF5a5a5a),
+
+                                                                  ),),
+
+
+
+                                                                SizedBox(width: 10),
+                                                              ])),
+
+
+
+                                                    ]))),
+                                        new Expanded(
+                                            flex: 1,
+
+                                            child:PopupMenuButton(
+                                                icon:Icon(Icons.circle_notifications),
+                                                onSelected: (newValue) { // add this property
+
+                                                 if(newValue==1){
+                                                   scheduleNotification(1,liveData.liveTitle);
+                                                 }
+
+                                                },
+                                                itemBuilder: (context) => [
+                                                  PopupMenuItem(
+                                                    child: Text("Notification"),
+                                                    value: 1,
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: Text("None"),
+                                                    value: 2,
+                                                  ),
+
+                                                ]
+                                            )
+                                        )
+
+                                      ])):Container(width: 0.0, height: 0.0),
+
+                           liveData!=null && liveData.liveStatus=="2"?Padding(
+                                  padding: EdgeInsets.fromLTRB(15,10,15,10),
+                                  child:
+                                  Divider(
+                                    height: 1,
+                                    thickness: 1,
+
+                                  )):Container(width: 0.0, height: 0.0),
+                              liveData!=null && liveData.liveStatus=="2"?Center(child:Text(liveData.liveScheduledAt,
+
+                                overflow: TextOverflow.ellipsis,
+
+                                style: GoogleFonts.roboto(
+                                  fontSize:15.0,
+
+                                  color: Color(0xFFff0000),
+                                  fontWeight: FontWeight.w500,
+
+                                ),)):Container(width: 0.0, height: 0.0),
+                              liveData!=null && liveData.liveStatus=="2"?Padding(
+                                  padding: EdgeInsets.fromLTRB(15,10,15,10),
+                                  child:
+                                  Divider(
+                                    height: 1,
+                                    thickness: 1,
+
+                                  )):Container(width: 0.0, height: 0.0),
+
+                              SizedBox(height: 10,),
+                              _buildList()
+                              ]
+                        )
+                    )
+
+                                 // _buildList(),
+
+
+
+                              ]
+
+              )),
+
+        ));
+  }
+
+  Future<void> scheduleNotification(int count,String title) async {
+    tz.initializeDatabase([]);
+    var scheduledNotificationDateTime =
+    DateTime(2021,10,11,1,17,0); //Here you can set your custom Date&Time
+
+
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(now);
+    print("formateed--"+formatted);
+    BigTextStyleInformation bigTextStyleInformation =
+    BigTextStyleInformation(
+      'scheduled body',
+      htmlFormatBigText: true,
+      contentTitle: 'scheduled title',
+      htmlFormatContentTitle: true,
 
     );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+
+
+    DateTime newDate = new DateTime(now.year, now.month, now.day,now.hour,now.minute+2);
+
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('big text channel id',
+        'big text channel name', 'big text channel description', importance: Importance.max,
+        priority: Priority.high,
+        when: newDate.millisecondsSinceEpoch);
+    final NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Live Video Reminder', title+' Video is Live now', platformChannelSpecifics,
+        payload: 'item x');
+
+
+
+    Fluttertoast.showToast(
+        msg: "Live video Reminder set successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0);
+
+
   }
+
+
+
   subscribeAPI(String channel_id,bool is_subscribed,int index){
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
@@ -352,16 +808,19 @@ class MainPageState extends State<MainPage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String lang,String createdAt,int channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,bool is_subscribed,bool bookmark){
+  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,bool is_subscribed,bool bookmark){
 
     String url="";
-    if(videoSourceType=='facebook'){
+    if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
 
     }
     else if(videoSourceType=='dailymotion'){
       String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
       url="https://www.dailymotion.com/thumbnail/video/"+videoId;
     }
+
+
+
     else {
       var videoIdd;
       try {
@@ -727,7 +1186,8 @@ class MainPageState extends State<MainPage> {
         child:
         ListView.builder(
           itemCount: mainData.length+ 1 , // Add one more item for progress indicator
-
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             if (index == mainData.length) {
               return _buildProgressIndicator();
@@ -751,8 +1211,8 @@ class MainPageState extends State<MainPage> {
                       mainData[index].id,
                       mainData[index].title,
                       mainData[index].videoImage,
-                      mainData[index].lang,
-                      mainData[index].createdAt,
+
+                      mainData[index].created_at,
                       mainData[index].channel_id,
                       mainData[index].channel,
                       mainData[index].channel_image,
@@ -769,7 +1229,7 @@ class MainPageState extends State<MainPage> {
               );
             }
           },
-          controller: _sc,
+          controller: liveData==null?_sc:null,
         ),
         onRefresh: _getData,
       );

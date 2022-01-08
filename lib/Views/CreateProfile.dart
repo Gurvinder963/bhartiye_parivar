@@ -620,7 +620,8 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
   Future<AddToCartResponse> getNationalProfile(String id) async {
 
-    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+    var body =json.encode({'unique_id':id,"appcode":Constants.AppCode,"password":user_Token});
+
     MainRepository repository=new MainRepository();
     return repository.fetchCreateProfileNational(body);
 

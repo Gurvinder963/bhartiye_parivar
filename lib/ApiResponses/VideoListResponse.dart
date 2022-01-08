@@ -1,10 +1,9 @@
 import '../ApiResponses/VideoData.dart';
 class VideoListResponse {
   List<VideoData> data;
-  Links links;
-  Meta meta;
+  Live live;
 
-  VideoListResponse({this.data, this.links, this.meta});
+  VideoListResponse({this.data, this.live});
 
   VideoListResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
@@ -13,8 +12,7 @@ class VideoListResponse {
         data.add(new VideoData.fromJson(v));
       });
     }
-    links = json['links'] != null ? new Links.fromJson(json['links']) : null;
-    meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
+    live = json['live'] != null ? new Live.fromJson(json['live']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,11 +20,8 @@ class VideoListResponse {
     if (this.data != null) {
       data['data'] = this.data.map((v) => v.toJson()).toList();
     }
-    if (this.links != null) {
-      data['links'] = this.links.toJson();
-    }
-    if (this.meta != null) {
-      data['meta'] = this.meta.toJson();
+    if (this.live != null) {
+      data['live'] = this.live.toJson();
     }
     return data;
   }
@@ -34,68 +29,55 @@ class VideoListResponse {
 
 
 
-class Links {
-  String first;
-  String last;
-  String prev;
-  String next;
+class Live {
+  String liveStatus;
+  int liveId;
+  String liveTitle;
+  String liveVideoUrl;
+  String liveVideoSourceType;
+  String liveVideoImage;
+  String liveChannelId;
+  String liveChannel;
+  String liveChannelImage;
+  String liveScheduledAt;
 
-  Links({this.first, this.last, this.prev, this.next});
+  Live(
+      {this.liveStatus,
+        this.liveId,
+        this.liveTitle,
+        this.liveVideoUrl,
+        this.liveVideoSourceType,
+        this.liveVideoImage,
+        this.liveChannelId,
+        this.liveChannel,
+        this.liveChannelImage,
+        this.liveScheduledAt});
 
-  Links.fromJson(Map<String, dynamic> json) {
-    first = json['first'];
-    last = json['last'];
-    prev = json['prev'];
-    next = json['next'];
+  Live.fromJson(Map<String, dynamic> json) {
+    liveStatus = json['live_status'];
+    liveId = json['live_id'];
+    liveTitle = json['live_title'];
+    liveVideoUrl = json['live_video_url'];
+    liveVideoSourceType = json['live_video_source_type'];
+    liveVideoImage = json['live_video_Image'];
+    liveChannelId = json['live_channel_id'];
+    liveChannel = json['live_channel'];
+    liveChannelImage = json['live_channel_image'];
+    liveScheduledAt = json['live_scheduled_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['first'] = this.first;
-    data['last'] = this.last;
-    data['prev'] = this.prev;
-    data['next'] = this.next;
-    return data;
-  }
-}
-
-class Meta {
-  int currentPage;
-  int from;
-  int lastPage;
-  String path;
-  int perPage;
-  int to;
-  int total;
-
-  Meta(
-      {this.currentPage,
-        this.from,
-        this.lastPage,
-        this.path,
-        this.perPage,
-        this.to,
-        this.total});
-
-  Meta.fromJson(Map<String, dynamic> json) {
-    currentPage = json['current_page'];
-    from = json['from'];
-    lastPage = json['last_page'];
-    path = json['path'];
-    perPage = json['per_page'];
-    to = json['to'];
-    total = json['total'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['current_page'] = this.currentPage;
-    data['from'] = this.from;
-    data['last_page'] = this.lastPage;
-    data['path'] = this.path;
-    data['per_page'] = this.perPage;
-    data['to'] = this.to;
-    data['total'] = this.total;
+    data['live_status'] = this.liveStatus;
+    data['live_id'] = this.liveId;
+    data['live_title'] = this.liveTitle;
+    data['live_video_url'] = this.liveVideoUrl;
+    data['live_video_source_type'] = this.liveVideoSourceType;
+    data['live_video_Image'] = this.liveVideoImage;
+    data['live_channel_id'] = this.liveChannelId;
+    data['live_channel'] = this.liveChannel;
+    data['live_channel_image'] = this.liveChannelImage;
+    data['live_scheduled_at'] = this.liveScheduledAt;
     return data;
   }
 }

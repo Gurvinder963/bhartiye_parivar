@@ -23,16 +23,16 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
-String videoCategory="culture";
+String videoCategory="live";
 
-class CulturePage extends StatefulWidget {
+class LivePage extends StatefulWidget {
   @override
-  CulturePageState createState() {
-    return CulturePageState();
+  LivePageState createState() {
+    return LivePageState();
   }
 }
 
-class CulturePageState extends State<CulturePage> {
+class LivePageState extends State<LivePage> {
   ScrollController _sc = new ScrollController();
   List mainData = new List();
   int page = 1;
@@ -271,7 +271,7 @@ class CulturePageState extends State<CulturePage> {
     String pageIndex = page.toString();
     var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex});
     MainRepository repository=new MainRepository();
-    return repository.fetchVideoListOthersJAVA(body);
+    return repository.fetchVideoListLiveJAVA(body);
 
   }
   @override

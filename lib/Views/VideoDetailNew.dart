@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
-import '../ApiResponses/VideoListResponse.dart';
+import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../Views/JoinUs.dart';
 import 'DonateUs.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -28,6 +28,7 @@ import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../localization/locale_constant.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -37,7 +38,7 @@ class VideoDetailNewPage extends StatefulWidget {
   @override
   VideoDetailNewPageState createState() {
 
-    videoCategory=content.videoCategory;
+    videoCategory="main";
     return VideoDetailNewPageState(content);
   }
 }
@@ -47,46 +48,13 @@ class ReportList {
   ReportList({this.name, this.index});
 }
 class VideoDetailNewPageState extends State<VideoDetailNewPage> {
-
+  ScrollController _sc = new ScrollController();
   String radioItem = '';
 
   // Group Value for Radio Button.
   int radioid = -1;
 
-  List<ReportList> fList = [
-    ReportList(
-      index: 1,
-      name: "Sexual Content",
-    ),
-    ReportList(
-      index: 2,
-      name: "Violent or repulsive content",
-    ),
-    ReportList(
-      index: 3,
-      name: "Hateful or abusive content",
-    ),
-    ReportList(
-      index: 4,
-      name: "Harassment or bullying",
-    ),
-    ReportList(
-      index: 5,
-      name: "Harmful or dangerous acts",
-    ),
-    ReportList(
-      index: 6,
-      name: "Child abuse",
-    ),
-    ReportList(
-      index: 7,
-      name: "Promotes terrorism",
-    ),
-    ReportList(
-      index: 8,
-      name: "Spam or misleading",
-    ),
-  ];
+
   bool _isInAsyncCall = false;
   var marginPixel=0;
   List mainData = new List();
@@ -111,6 +79,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   ];
 
   String user_Token;
+  String USER_ID;
   VideoDetailNewPageState(VideoData content){
     mContent=content;
     var videoIdd="nPt8bK2gbaU";
@@ -138,6 +107,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         Navigator.pop(context);
       });
     } else {
+      _sc.dispose();
       _controller.dispose();
       _idController.dispose();
       _seekToController.dispose();
@@ -204,6 +174,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
 
       if (!isLoading) {
         setState(() {
@@ -249,13 +220,25 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     _videoMetaData = const YoutubeMetaData();
     _playerState = PlayerState.unknown;
 
+
+
+      _sc.addListener(() {
+
+
+
+        if (_sc.position.pixels == _sc.position.maxScrollExtent) {
+
+          apiCall();
+        }
+      });
+
   }
   void listener() {
     if (_isPlayerReady && mounted) {
       setState(() {
         _playerState = _controller.value.playerState;
         _videoMetaData = _controller.metadata;
-        print(_controller.value);
+
 
       });
     }
@@ -293,7 +276,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
       status = "1";
     }
-    print('my_token'+token);
+
     var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
     return repository.fetchAddBookMark(body,token);
@@ -302,7 +285,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   Future<AddToCartResponse> postAddLike(String content_type,String token,String content_id) async {
 
-    print('my_token'+token);
+
     var body =json.encode({"content_type": content_type, "content_id": content_id,"like_status": likeStatus});
     MainRepository repository=new MainRepository();
     return repository.fetchSaveLikeStatus(body,token);
@@ -329,12 +312,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         locale="";
       }
 
-      getVideosList(user_Token,videoCategory,mContent.id.toString()).then((value) => {
+      getVideosListSuggestion(user_Token,videoCategory,mContent.id.toString()).then((value) => {
 
         setState(() {
           isLoading = false;
           mainData.addAll(value.data);
 
+          if (!mainData.isEmpty) {
+            page++;
+          }
         })
 
       });
@@ -345,14 +331,35 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   }
 
-
+/*
   Future<VideoListResponse> getVideosList(String user_Token,String videoCategory,String videoId) async {
 
     var body ={'video_category':videoCategory,"video_id":videoId};
     MainRepository repository=new MainRepository();
     return repository.fetchVideoData(body,user_Token);
 
+  }*/
+
+
+  Future<VideoTrendingListResponse> getVideosListSuggestion(String user_Token,String videoCategory,String videoId) async {
+    MainRepository repository=new MainRepository();
+    String pageIndex = page.toString();
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex,"video_id":videoId});
+
+    if(videoCategory=='main'){
+      return repository.fetchVideoListHomeSuggestJAVA(body);
+    }
+    else if(videoCategory=='trending'){
+      return repository.fetchVideoListTrendingSuggestJAVA(body);
+    }
+    else{
+      return repository.fetchVideoListCategorySuggestJAVA(body);
+    }
+
+
   }
+
+
   Future<AddToCartResponse> saveReportAPI(message) async {
     //  final String requestBody = json.encoder.convert(order_items);
 
@@ -504,7 +511,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
+    final String formatted = formatter.format(DateTime.parse(mContent.created_at));
 
     return WillPopScope(
         onWillPop: () {
@@ -552,7 +559,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                     _buildBoxVideo(context,mContent):player,
                     Expanded(
                         child:
-                        ListView( // parent ListView
+                        ListView(
+                            controller: _sc,
                             children: <Widget>[
                               Container(
                                   margin:  EdgeInsets.fromLTRB(10,10,10,0),
@@ -955,12 +963,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var publisher=mContent.publisher==null?"My Channel":mContent.publisher;
+
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(360, 690),
+
         orientation: Orientation.portrait);
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -981,7 +990,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     final height = MediaQuery.of(context).size.height;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(DateTime.parse(mContent.createdAt));
+    final String formatted = formatter.format(DateTime.parse(mContent.created_at));
 
     if(mContent.videoSourceType=='facebook' || mContent.videoSourceType=='brighteon'){
 
@@ -1047,13 +1056,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           builder: (context, player) => mainWidget(player));
     }
   }
-  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String lang,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
+  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
 
 
 
 
     String url="";
-    if(videoSourceType=='facebook'){
+    if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
 
     }
     else if(videoSourceType=='dailymotion'){
@@ -1284,6 +1293,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return ListView.builder(
       itemCount: mainData.length+ 1 , // Add one more item for progress indicator
       shrinkWrap: true,
+
       physics: ScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         if (index == mainData.length) {
@@ -1307,8 +1317,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                   mainData[index].id,
                   mainData[index].title,
                   mainData[index].videoImage,
-                  mainData[index].lang,
-                  mainData[index].createdAt,
+
+                  mainData[index].created_at,
                   mainData[index].channel,
                   mainData[index].channel_image,
                   mainData[index].video_duration,

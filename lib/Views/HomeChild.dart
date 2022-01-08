@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/Views/LivePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MainPage.dart';
@@ -45,7 +46,7 @@ class HomeChildPageState extends State<HomeChildPage> {
 
 
         child: DefaultTabController(
-          length: 13,
+          length: 14,
           child: Scaffold(
             appBar: AppBar(
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
@@ -68,6 +69,9 @@ class HomeChildPageState extends State<HomeChildPage> {
                   Tab(child: Text(Languages
                       .of(context)
                       .Health,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .LiveTag,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
                       .Series,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
@@ -107,6 +111,7 @@ class HomeChildPageState extends State<HomeChildPage> {
                 new MainPage(),
                 new TrendingPage(),
                 new HealthPage(),
+                new LivePage(),
                 new SeriesPage(),
                 new SpiritualPage(),
                 new HistoryPage(),

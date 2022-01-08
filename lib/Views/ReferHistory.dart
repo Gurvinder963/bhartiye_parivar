@@ -18,6 +18,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ReferHistoryPage extends StatefulWidget {
   @override
   ReferHistoryPageState createState() {
@@ -31,8 +32,11 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
   List mainData = new List();
   bool isLoading = false;
   bool _isInAsyncCall = false;
-  String _localPath;
+  String page = "1";
 
+  String _localPath;
+  final myControllerName = TextEditingController();
+  final myControllerPageNo = TextEditingController();
   showAlertDialogValidationdELETE(BuildContext context,String message,String id,int index) {
 
     Widget yesButton = FlatButton(
@@ -120,7 +124,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
       setState(() {
         _isInAsyncCall = true;
       });
-      getReferList(user_Token).then((value) => {
+      getReferList(user_Token,"").then((value) => {
 
         setState(() {
 
@@ -137,9 +141,10 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
 
   }
 
-  Future<ReferHistoryResponse> getReferList(String user_Token) async {
+  Future<ReferHistoryResponse> getReferList(String user_Token,String keyword) async {
 
-    var body ={'app_code':Constants.AppCode};
+    var body ={'app_code':Constants.AppCode,'page': page.toString(),
+       'per_page': "10",'keyword':keyword};
     MainRepository repository=new MainRepository();
     return repository.fetchReferData(body,user_Token);
 
@@ -196,7 +201,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         textAlign: TextAlign.center,
 
                                         style: GoogleFonts.roboto(
-                                          fontSize:14.0,
+                                          fontSize:13.0,
 
                                           color: Color(0xFF0000ff),
                                           fontWeight: FontWeight.w500,
@@ -305,7 +310,8 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
           // demo of some additional parameters
           opacity: 0.01,
           progressIndicator: CircularProgressIndicator(),
-          child: Container(child:
+          child:SingleChildScrollView(
+    child: Container(child:
             Column (
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget> [
@@ -379,81 +385,219 @@ Container(
                     ]
 
                 )),
-          // Expanded(child:
-          //       _buildList()),
+          Container(height: (MediaQuery.of(context).size.height) * 0.68, child:
 
-              Expanded(child:   PaginatedDataTable(
-                  source: _data,
-                  headingRowHeight: 0,
-                  header: Text("",
-                    style: TextStyle(fontSize: 0),),
-                  columns: [
-                    DataColumn(label: Text("Name",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.roboto(
-                          fontSize:15.0,
+                 _buildList()),
 
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
 
-                        ))),
-                    DataColumn(label: Text("Mobile",
-                      textAlign: TextAlign.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
 
-                      style: GoogleFonts.roboto(
-                        fontSize:15.0,
 
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w500,
+              Container(width: (MediaQuery.of(context).size.width) * 0.6, child:
+                TextField(
 
-                      ),)),
-                    DataColumn(label: Text("Pin",
+                  textCapitalization: TextCapitalization.sentences,
+                  controller: myControllerName,
+                  obscureText: false,
+                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
 
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.roboto(
-                        fontSize:15.0,
+                  decoration: InputDecoration(
+                    labelText:"Search by name,phone,pincode",
 
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w500,
+                    labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700),
+                    hintStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.black,fontWeight: FontWeight.w700),
 
-                      ),)),
-                    DataColumn(label: Text("Ref. Date",
-                      textAlign: TextAlign.center,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    ),
 
-                      style: GoogleFonts.roboto(
-                        fontSize:15.0,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    ),
 
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w500,
-
-                      ),)),
-                    DataColumn(label: Text("Status",
-                      textAlign: TextAlign.center,
-
-                      style: GoogleFonts.roboto(
-                        fontSize:15.0,
-
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.w500,
-
-                      ),)),
-                  ],
-                  columnSpacing: wid,
-                  horizontalMargin: 2,
-                  rowsPerPage: 10,
-
-                  showCheckboxColumn: false,
+                    contentPadding: EdgeInsets.all(7),
+                  ),
                 )),
+
+
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                      width: (MediaQuery.of(context).size.width) * 0.2, child:
+
+
+                  TextField(
+
+                    keyboardType: TextInputType.number,
+                    controller: myControllerPageNo,
+                    obscureText: false,
+                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
+
+                    decoration: InputDecoration(
+                      labelText:"Page No.",
+
+                      labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700),
+                      hintStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.black,fontWeight: FontWeight.w700),
+
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+
+                      contentPadding: EdgeInsets.all(7),
+                    ),
+                  ),
+
+                    //_goButton()
+
+
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                    width: (MediaQuery.of(context).size.width) * 0.1, child:
+
+                    _goButton()
+
+
+                  )
+
+
+
+
+
+
+
+                ]
+              )
+                ,
+            Center(child: _searchButton())
+
+
 
               ],
 
             )
 
 
-
-
           )),
 
+    ));
+  }
+
+  Widget _searchButton() {
+    return InkWell(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        setState(() {
+          mainData.clear();
+          _isInAsyncCall = true;
+
+        });
+
+
+        getReferList(user_Token,myControllerName.text.toString()).then((value) => {
+
+          setState(() {
+
+            _isInAsyncCall = false;
+            mainData.addAll(value.data);
+
+          })
+
+        });
+      },
+      child: Container(
+        width: 140,
+        height: ScreenUtil().setWidth(36),
+        margin: EdgeInsets.fromLTRB(0,20, 0, 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(AppColors.BaseColor),
+                  Color(AppColors.BaseColor)
+                ])),
+        child: Text(
+          'Search',
+          style: GoogleFonts.poppins(
+            fontSize: ScreenUtil().setSp(16),
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _goButton() {
+    return InkWell(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        setState(() {
+          mainData.clear();
+          _isInAsyncCall = true;
+          page=myControllerPageNo.text.toString();
+        });
+        getReferList(user_Token,"").then((value) => {
+
+          setState(() {
+
+            _isInAsyncCall = false;
+            mainData.addAll(value.data);
+
+          })
+
+        });
+      },
+      child: Container(
+        width: 20,
+        height: ScreenUtil().setWidth(42),
+        margin: EdgeInsets.fromLTRB(1,0, 0, 0),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(AppColors.BaseColor),
+                  Color(AppColors.BaseColor)
+                ])),
+        child: Text(
+          'Go',
+          style: GoogleFonts.poppins(
+            fontSize: ScreenUtil().setSp(16),
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 

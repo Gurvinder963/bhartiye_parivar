@@ -171,7 +171,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       mobile = newStringMob;
     }
     else{
-      mobile=s2+mMobile;
+      mobile=mMobile;
     }
     print(mobile);
     var pin=nextIntOfDigits(4);
@@ -246,7 +246,10 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
   Future<AddToCartResponse> getOTPDataJAVA(String mobileNo) async {
 
-    var body ={'number':mobileNo,'otp':mOTPCode,"appcode":Constants.AppCode,"password":"kranti2024","countrycode":mC_code};
+    var body =json.encode({'number':mobileNo,'otp':mOTPCode,"appcode":Constants.AppCode,"password":"kranti2024","countrycode":mC_code});
+
+
+   // var body ={'number':mobileNo,'otp':mOTPCode,"appcode":Constants.AppCode,"password":"kranti2024","countrycode":mC_code};
     MainRepository repository=new MainRepository();
     return repository.fetchOTPDataJAVA(body);
 
@@ -284,7 +287,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
           code=newStringMob;
         }
         else{
-          code=mC_code+newStringMob;
+          code=newStringMob;
         }
 
 
@@ -369,7 +372,12 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
   Future<AddToCartResponse> getNationalProfile(String id,String user_Token) async {
 
-    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+
+   // var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+
+    var body =json.encode({'unique_id':id,"appcode":Constants.AppCode,"password":user_Token});
+
+
     MainRepository repository=new MainRepository();
     return repository.fetchCreateProfileNational(body);
 

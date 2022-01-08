@@ -1,6 +1,9 @@
 
 import 'dart:io';
+import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
+import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
+import 'package:bhartiye_parivar/Views/terms.dart';
 import 'package:intl/intl.dart';
 import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
@@ -57,9 +60,11 @@ import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../Views/JoinUs.dart';
 import '../ApiResponses/NewsDetailResponse.dart';
+import '../ApiResponses/LogoutResponse.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
 import 'NewsDetail.dart';
 import '../Views/Faq.dart';
+import '../Views/MyDrawer.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -91,6 +96,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   String mC_code;
   String mMobile;
   String USER_ID;
+  String logoutMessage="";
+  String sideBarOTP="No OTP";
   HomePageState(int contentId,String contentType,String invitedBy){
     MyContentId=contentId;
     mContentType=contentType;
@@ -202,8 +209,35 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       USER_ID= prefs.getString(Prefs.USER_ID);
       mMobile=prefs.getString(Prefs.USER_MOBILE);
       getNationalProfile(prefs.getString(Prefs.USER_ID));
-      getAppLauchCountAPI(user_Token);
+      //getAppLauchCountAPI(user_Token);
       homeAPICall();
+   /*   callLogoutAPI("check",USER_ID,user_Token).then((value) async {
+        if(value.status==1){
+
+
+        setState(() {
+          logoutMessage=value.msg;
+        });
+
+
+        }
+
+      });
+
+      callSideBarAPI(USER_ID,user_Token).then((value) async {
+        if(value.status==1){
+
+
+          setState(() {
+            sideBarOTP=value.sideBarOTP;
+          });
+
+
+        }
+
+      });
+*/
+
 
       return (prefs.getString('token'));
     });
@@ -249,8 +283,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
   Future<AddToCartResponse> getNationalProfile(String id) async {
+    var body =json.encode({'userid':id,"appcode":Constants.AppCode,"token":user_Token});
 
-    var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+ //   var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
     MainRepository repository=new MainRepository();
     return repository.fetchActiveUsers(body);
 
@@ -553,7 +588,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ],
 
         ),
-        drawer: navigationDrawer(mMobile,mC_code,user_Token,USER_ID),
+        drawer: MyDrawerPage(),
         body: _children[selectedIndex],
         bottomNavigationBar: selectedIndex==1?null:FABBottomAppBar(
           backgroundColor: Color(AppColors.BaseColor),
@@ -687,21 +722,29 @@ class navigationDrawer extends StatelessWidget {
   String cCode;
   String token;
   String userid;
+  String logoutMessage;
+  String sideBarOTP;
 
-  navigationDrawer(String mMobile,String mC_code,String token,String userid){
+  navigationDrawer(String mMobile,String mC_code,String token,String userid,String logoutMessage,String sideBarOTP){
     mobile=mMobile;
     cCode=mC_code;
     this.token=token;
     this.userid=userid;
+    this.logoutMessage=logoutMessage;
+    this.sideBarOTP=sideBarOTP;
   }
 
   @override
   Widget build(BuildContext context) {
+
+    print("logout message");
+    print(logoutMessage);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          createDrawerHeader(context),
+          createDrawerHeader(context,sideBarOTP),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,color: Colors.black,),
               text: Languages
@@ -717,7 +760,7 @@ class navigationDrawer extends StatelessWidget {
                   .joinUs,
               onTap: () =>{
 
-                Navigator.of(context).pop(),
+
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
               MaterialPageRoute(
               builder: (BuildContext context) {
@@ -732,7 +775,7 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .donateUs,
               onTap: () =>{
-                Navigator.of(context).pop(),
+
                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -749,7 +792,7 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .contactUs,
               onTap: () =>{
-                Navigator.of(context).pop(),
+
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -780,7 +823,7 @@ class navigationDrawer extends StatelessWidget {
               print(cCode),
               print(mobile),
 
-              Navigator.of(context).pop(),
+
               Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                   MaterialPageRoute(
                       builder: (BuildContext context) {
@@ -803,7 +846,7 @@ class navigationDrawer extends StatelessWidget {
                   .of(context)
                   .appLanguage,
               onTap: () =>{
-              Navigator.of(context).pop(),
+
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                     MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -835,7 +878,7 @@ class navigationDrawer extends StatelessWidget {
               icon: Image(image: AssetImage('assets/notifications.png'), width: 20,height: 20,),
               text: Languages
                   .of(context)
-                  .notifications,
+                  .notificationsSetting,
               onTap: () =>{
 
                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
@@ -850,14 +893,14 @@ class navigationDrawer extends StatelessWidget {
               }
             // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           ),
-          createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .darkMode,
-              onTap: () =>{}
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+          // createDrawerBodyItem(
+          //     icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
+          //     text: Languages
+          //         .of(context)
+          //         .darkMode,
+          //     onTap: () =>{}
+          //   // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          // ),
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/faq.png'), width: 20,height: 20,),
               text: Languages
@@ -906,17 +949,21 @@ class navigationDrawer extends StatelessWidget {
             text: Languages
                 .of(context)
                 .termsndPrivacy,
-            onTap: () =>{}
+            onTap: () =>{
+              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return TermScreen();
+                      }
+                  ) )
+
+            }
                 //Navigator.pushReplacementNamed(context, pageRoutes.notification),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(15,0,15,0),
+              padding: EdgeInsets.fromLTRB(0,0,15,0),
               child:
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: Colors.orange,
-              )),
+
           createDrawerBodyItem(
               icon: Image(image: AssetImage('assets/ic_logout.png'), width: 20,height: 20,),
               text: Languages
@@ -924,21 +971,46 @@ class navigationDrawer extends StatelessWidget {
                   .logout,
               onTap: () =>{
 
-
-                showAlertDialogValidation(context,"Are you sure you want to logout from this app",userid,token),
-
+                if(logoutMessage=="multiple app"){
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                      MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return LogoutMultiplePage( logoutMessage: logoutMessage,);
+                          }
+                      ) )
+                }
+                else
+                  {
+                    showAlertDialogValidation(context,
+                        "Are you sure you want to logout from this device?",
+                        userid, token, logoutMessage),
+                  }
                 }
             //Navigator.pushReplacementNamed(context, pageRoutes.notification),
-          ),
+          ) ),
         ],
       ),
     );
   }
 }
 
-Future<AddToCartResponse> callLogoutAPI(String userid,String token) async {
 
-  var body =json.encode({'logouttype':'allapp','userid':userid,"appcode":Constants.AppCode,"token":token,});
+
+Future<SideBarApiResponse> callSideBarAPI(String userid,String token) async {
+
+  var body =json.encode({'userid':userid,"appcode":Constants.AppCode,"token":token,});
+
+  //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
+  MainRepository repository=new MainRepository();
+  return repository.fetchSidebarApI(body);
+
+}
+
+
+
+Future<LogoutResponse> callLogoutAPI(String type,String userid,String token) async {
+
+  var body =json.encode({'logouttype':type,'userid':userid,"appcode":Constants.AppCode,"token":token,});
 
   //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
   MainRepository repository=new MainRepository();
@@ -957,41 +1029,117 @@ removeFromSF(BuildContext context) async {
       ModalRoute.withName("/Login"));
 }
 
-showAlertDialogValidation(BuildContext context,String message,String userId,String token) {
+showAlertDialogValidation(BuildContext context,String message,String userId,String token,String logoutmessage) {
 
   print(userId);
 
-  Widget SingleButton = FlatButton(
-    child: Text("This App"),
-    onPressed: () {
-      Navigator.of(context, rootNavigator: true).pop('dialog');
-      removeFromSF(context);
-    },
-  );
-
-  Widget CancelButton = FlatButton(
-    child: Text("Cancel"),
-    onPressed: () {
-      Navigator.of(context, rootNavigator: true).pop('dialog');
-
-    },
-  );
-
-
-  Widget BothButton = FlatButton(
-    child: Text("All Apps"),
-    onPressed: () {
-     // Navigator.of(context, rootNavigator: true).pop('dialog');
-      callLogoutAPI(userId,token).then((value) async {
-         if(value.status==1){
+  Widget SingleButton =  InkWell(
+    onTap: () {
+      callLogoutAPI("thisapp",userId,token).then((value) async {
+        if(value.status==1){
           Navigator.of(context, rootNavigator: true).pop('dialog');
           removeFromSF(context);
-         }
+        }
 
       });
-
     },
+
+    child: Container(
+      width: 100,
+      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.shade200,
+                offset: Offset(1, 1),
+                blurRadius: 0,
+                spreadRadius: 0)
+          ],
+          gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(0xFFD8D8D8),
+                Color(0xFFD8D8D8)
+              ])),
+      child: Text(
+        'Yes',
+        style: GoogleFonts.poppins(
+
+            color: Colors.white,
+            fontWeight: FontWeight.bold),
+      ),
+    ),
   );
+
+
+  // Widget SingleButton = FlatButton(
+  //   child: Text("This App"),
+  //   onPressed: () {
+  //     callLogoutAPI("thisapp",userId,token).then((value) async {
+  //       if(value.status==1){
+  //         Navigator.of(context, rootNavigator: true).pop('dialog');
+  //         removeFromSF(context);
+  //       }
+  //
+  //     });
+  //   },
+  // );
+
+  Widget CancelButton =  InkWell(
+    onTap: () {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+    },
+
+    child: Container(
+      width: 100,
+      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.shade200,
+                offset: Offset(1, 1),
+                blurRadius: 0,
+                spreadRadius: 0)
+          ],
+          gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(AppColors.BaseColor),
+                Color(AppColors.BaseColor)
+              ])),
+      child: Text(
+        'No',
+        style: GoogleFonts.poppins(
+
+            color: Colors.white,
+            fontWeight: FontWeight.bold),
+      ),
+    ),
+  );
+
+
+  // Widget BothButton = FlatButton(
+  //   child: Text("All Apps"),
+  //   onPressed: () {
+  //    // Navigator.of(context, rootNavigator: true).pop('dialog');
+  //     callLogoutAPI("allapp",userId,token).then((value) async {
+  //        if(value.status==1){
+  //         Navigator.of(context, rootNavigator: true).pop('dialog');
+  //         removeFromSF(context);
+  //        }
+  //
+  //     });
+  //
+  //   },
+  // );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
@@ -999,7 +1147,7 @@ showAlertDialogValidation(BuildContext context,String message,String userId,Stri
     content: Text(message),
     actions: [
       SingleButton,
-      BothButton,
+      //logoutmessage=="multiple app"?BothButton:null,
       CancelButton,
     ],
   );
@@ -1046,7 +1194,7 @@ Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap})
     onTap: onTap,
   );
 }
-Widget createDrawerHeader(BuildContext context) {
+Widget createDrawerHeader(BuildContext context,String sideBarOTP) {
   return DrawerHeader(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
@@ -1065,10 +1213,7 @@ Widget createDrawerHeader(BuildContext context) {
               alignment: Alignment.center,
             ),
             SizedBox(height: 5),
-           Text(
-             Languages
-                 .of(context)
-                 .appName,
+           Text(sideBarOTP=='No OTP'?Languages.of(context).appName:sideBarOTP,
                 style: TextStyle(
                   fontSize: 20.0,
 

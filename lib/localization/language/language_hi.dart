@@ -51,7 +51,12 @@ class LanguageHi extends Languages {
 
   @override
   // TODO: implement notifications
-  String get notifications => 'सूचनाएं';
+  String get notifications => 'नोटिफिकेशन्स ';
+
+  @override
+  // TODO: implement notifications
+  String get notificationsSetting => 'नोटिफिकेशन्स सेटिंग्स';
+
 
   @override
   // TODO: implement profile
@@ -80,6 +85,12 @@ class LanguageHi extends Languages {
   @override
   // TODO: implement Health
   String get Health => 'स्वास्थ्य';
+
+
+  @override
+  // TODO: implement Health
+  String get LiveTag => 'लाइव';
+
 
   @override
   // TODO: implement History

@@ -30,6 +30,9 @@ import '../ApiResponses/LangResponse.dart';
 import '../ApiResponses/AppChannelResponse.dart';
 import '../ApiResponses/VerifyMissCallResponse.dart';
 import '../ApiResponses/GetProfileResponse.dart';
+import '../ApiResponses/SideBarApiResponse.dart';
+import '../ApiResponses/LogoutResponse.dart';
+import '../ApiResponses/VideoTrendingListResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -40,17 +43,17 @@ class MainRepository {
   }
 
   Future<AddToCartResponse> fetchOTPDataJAVA(var body) async {
-    final response = await _provider.getSMSJAVA("api/loginotp",body);
+    final response = await _provider.postJAVA("api/loginotp",body);
     return AddToCartResponse.fromJson(response);
   }
 
   Future<AddToCartResponse> fetchCreateProfileNational(var body) async {
-    final response = await _provider.getSMSJAVA("api/createprofile",body);
+    final response = await _provider.postJAVA("api/createprofile",body);
     return AddToCartResponse.fromJson(response);
   }
 
   Future<AddToCartResponse> fetchUpdateProfileJava(var body) async {
-    final response = await _provider.getSMSJAVA("api/changenumber",body);
+    final response = await _provider.postJAVA("api/changenumber",body);
     return AddToCartResponse.fromJson(response);
   }
 
@@ -59,14 +62,59 @@ class MainRepository {
     return AddToCartResponse.fromJson(response);
   }
 
-  Future<AddToCartResponse> fetchLogoutJava(var body) async {
+  Future<LogoutResponse> fetchLogoutJava(var body) async {
     final response = await _provider.postJAVA("api/logout",body);
-    return AddToCartResponse.fromJson(response);
+    return LogoutResponse.fromJson(response);
   }
 
   Future<AddToCartResponse> fetchActiveUsers(var body) async {
-    final response = await _provider.getSMSJAVA("app/activeusers",body);
+    final response = await _provider.postJAVA("api/activeuser",body);
     return AddToCartResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchNotificationSettingButton(var body) async {
+    final response = await _provider.postJAVA("api/notificationbutton",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+  Future<SideBarApiResponse> fetchSidebarApI(var body) async {
+    final response = await _provider.postJAVA("api/sidebar",body);
+    return SideBarApiResponse.fromJson(response);
+  }
+
+  Future<VideoListResponse> fetchVideoListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/homeVideoMain",body);
+    return VideoListResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoListTrendingJAVA(var body) async {
+    final response = await _provider.postJAVA("api/homeVideoTrending",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoListLiveJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeLiveNow",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+
+  Future<VideoTrendingListResponse> fetchVideoListOthersJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeVideoCategory",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+  Future<VideoTrendingListResponse> fetchVideoListHomeSuggestJAVA(var body) async {
+    final response = await _provider.postJAVA("api/homeVideoMainSuggestion",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoListTrendingSuggestJAVA(var body) async {
+    final response = await _provider.postJAVA("api/homeVideoTrendingSuggestion",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoListCategorySuggestJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeVideoCategorySuggestion",body);
+    return VideoTrendingListResponse.fromJson(response);
   }
 
 
@@ -225,7 +273,8 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/read-notification",body,token);
     return AddToCartResponse.fromJson(response);
   }
-  Future<AddToCartResponse> fetchSubscribeChannel(var body,String token) async {
+  Future<AddToCartResponse>
+  fetchSubscribeChannel(var body,String token) async {
     final response = await _provider.postWithToken("public/api/v1/subscriptions",body,token);
     return AddToCartResponse.fromJson(response);
   }
