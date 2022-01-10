@@ -3,9 +3,11 @@ import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import '../ApiResponses/AppChannelResponse.dart';
+import '../ApiResponses/FaqDataResponse.dart';
 import '../Repository/MainRepository.dart';
 import '../Utils/AppColors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
 
 class FaqPage extends StatefulWidget {
   @override
@@ -17,20 +19,75 @@ class FaqPage extends StatefulWidget {
 class FaqPageState extends State<FaqPage> {
   // WebViewController _controller;
   List list_product;
+
+  String user_Token;
+  //bool isBookMarked = false;
+  // bool isSubscribed= false;
+  bool _isInAsyncCall = false;
+  bool _isPlayerReady = false;
+  String USER_ID;
+
+  Future<FaqDataResponse> getFaqList(String user_Token) async {
+
+
+   // String pageIndex = page.toString();
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page":"1"});
+    MainRepository repository=new MainRepository();
+    return repository.fetchFaqsListJAVA(body);
+
+
+
+
+  }
+
+
+
   @override
   void initState() {
     super.initState();
     list_product=new List();
-    for(var k=1;k<=6;k++)
-    {
-      Map map=Map();
-      map.putIfAbsent(getMonth(k), ()=>getWeeks());
-      list_product.add(map);
 
-    }
-    list_product.map((s){
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
 
-    }).map((list)=>list).toList();
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
+
+      getFaqList(user_Token).then((
+          value) async {
+
+        setState(() {
+         // isLoading = false;
+         // mainData.addAll(value.faqs);
+
+
+          for(var k=0;k<value.faqs.length;k++)
+          {
+            Map map=Map();
+            map.putIfAbsent(value.faqs[k].question, ()=>getWeeks(value.faqs[k].answer));
+            list_product.add(map);
+
+          }
+          list_product.map((s){
+
+          }).map((list)=>list).toList();
+
+
+
+        });
+
+
+
+      });
+
+
+
+
+      return (prefs.getString('token'));
+    });
+
+
 
   }
 
@@ -77,10 +134,12 @@ class FaqPageState extends State<FaqPage> {
     }
   }
 
-  List getWeeks()
+  List getWeeks(String answer)
   {
+    List listItems=new List();
+    listItems.add(answer);
 
-    return ["In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."].toList();
+    return listItems;
   }
 }
 class ListItem extends StatefulWidget{

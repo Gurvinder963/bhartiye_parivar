@@ -16,7 +16,7 @@ class VideoData {
 
 
   bool bookmark;
-  bool is_subscribed;
+  int is_subscribed;
 
 
   VideoData({this.id,

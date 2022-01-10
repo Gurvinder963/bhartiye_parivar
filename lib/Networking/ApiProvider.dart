@@ -195,23 +195,23 @@ String a=_baseUrlJAVA_WITH_HTTP + url;
   dynamic _response(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        var responseJson = json.decode(response.body.toString());
+        var responseJson = json.decode(utf8.decode(response.bodyBytes));
         print(responseJson);
         print("---print context:${NavigationService.navigatorKey.currentContext}");
         return responseJson;
       case 201:
-        var responseJson = json.decode(response.body.toString());
+        var responseJson = json.decode(utf8.decode(response.bodyBytes));
         print(responseJson);
         isDialogShowing=false;
         print("---print context:${NavigationService.navigatorKey.currentContext}");
         return responseJson;
       case 204:
-        var responseJson = json.decode(response.body.toString());
+        var responseJson = json.decode(utf8.decode(response.bodyBytes));
         print(responseJson);
         isDialogShowing=false;
         return responseJson;
       case 422:
-        var responseJson = json.decode(response.body.toString());
+        var responseJson = json.decode(utf8.decode(response.bodyBytes));
         print(responseJson);
         return responseJson;
 

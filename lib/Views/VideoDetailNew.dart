@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoTrendingListResponse.dart';
+import '../ApiResponses/VideoDetailJAVAResponse.dart';
 import '../Views/JoinUs.dart';
 import 'DonateUs.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -38,7 +39,7 @@ class VideoDetailNewPage extends StatefulWidget {
   @override
   VideoDetailNewPageState createState() {
 
-    videoCategory="main";
+    videoCategory=content.videoCategory;
     return VideoDetailNewPageState(content);
   }
 }
@@ -184,9 +185,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       getVideoDetail(user_Token,mContent.id.toString()).then((value) => {
 
         setState(() {
-          mContent=value.data;
+          mContent=value.data[0];
           isBookMarked=mContent.bookmark;
-          isSubscribed=mContent.is_subscribed;
+          isSubscribed=mContent.is_subscribed==1?true:false;
           likeStatus=mContent.is_like;
           //   isLoading = false;
           // mainData.addAll(value.data);
@@ -292,12 +293,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   }
 
-  Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
+  Future<VideoDetailJAVAResponse> getVideoDetail(String user_Token,String id) async {
 
-    var body ={'lang_code':''};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoDetailData(id,body,user_Token);
+    // var body ={'lang_code':''};
+    // MainRepository repository=new MainRepository();
+    // return repository.fetchVideoDetailData(id,body,user_Token);
 
+    var body =json.encode({"userid": USER_ID, "video_category": videoCategory,"video_id": id,"appcode":Constants.AppCode,"token":user_Token});
+     MainRepository repository=new MainRepository();
+     return repository.fetchVideoDetailDataJAVA(body);
   }
 
 

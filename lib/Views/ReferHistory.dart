@@ -249,14 +249,14 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         alignment: Alignment.center,
                                       ),
                                             SizedBox(width: 10,),
-                                           GestureDetector(
+                                            mainData[index].refer_status?Container():GestureDetector(
                                         onTap: () =>
                                         {
 
                                           showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
                                         },
-                                        child:  Image(
-                                              image:  mainData[index].refer_status?null:new AssetImage("assets/ic_remove.png"),
+                                        child:Image(
+                                              image:new AssetImage("assets/ic_remove.png"),
                                               width: 20,
                                               height:  20,
                                               color: null,

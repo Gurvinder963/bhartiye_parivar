@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import '../Utils/AppColors.dart';
+import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,6 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../localization/locale_constant.dart';
 import '../ApiResponses/AddToCartResponse.dart';
-import '../ApiResponses/LiveDataResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
@@ -24,16 +24,21 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
-String videoCategory="live";
+String videoCategory="series";
 
-class LivePage extends StatefulWidget {
+class SeriesChildListPage extends StatefulWidget {
+
+  final String series_id;
+  final String seriesTitle;
+
+  SeriesChildListPage({Key key,@required this.series_id,@required this.seriesTitle}) : super(key: key);
   @override
-  LivePageState createState() {
-    return LivePageState();
+  SeriesChildListPageState createState() {
+    return SeriesChildListPageState(series_id,seriesTitle);
   }
 }
 
-class LivePageState extends State<LivePage> {
+class SeriesChildListPageState extends State<SeriesChildListPage> {
   ScrollController _sc = new ScrollController();
   List mainData = new List();
   int page = 1;
@@ -41,9 +46,16 @@ class LivePageState extends State<LivePage> {
   bool isLoading = false;
   String USER_ID;
   String user_Token;
+  String series_id;
+  String seriesTitle;
   //bool isBookMarked = false;
   // bool isSubscribed= false;
   bool _isInAsyncCall = false;
+
+  SeriesChildListPageState(series_id,seriesTitle){
+    this.series_id=series_id;
+    this.seriesTitle=seriesTitle;
+  }
   @override
   void dispose() {
 
@@ -90,11 +102,11 @@ class LivePageState extends State<LivePage> {
         locale="";
       }
 
-      getVideosList(user_Token,videoCategory,locale).then((value) => {
+      getVideosList(user_Token,series_id,locale).then((value) => {
 
         setState(() {
           isLoading = false;
-          mainData.addAll(value.live);
+          mainData.addAll(value.series);
           if (!mainData.isEmpty) {
             page++;
           }
@@ -259,20 +271,14 @@ class LivePageState extends State<LivePage> {
   }
 
 
-  Future<LiveDataResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
+  Future<SeriesListResponse> getVideosList(String user_Token,String series_id, String locale) async {
 
-    /*String pageIndex = page.toString();
-    String perPage = "10";
-    print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
-      'per_page': perPage,};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoData(body,user_Token);*/
+
 
     String pageIndex = page.toString();
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex});
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"series_id":series_id,"page":pageIndex});
     MainRepository repository=new MainRepository();
-    return repository.fetchVideoListLiveJAVA(body);
+    return repository.fetchSeriesListJAVA(body);
 
   }
   @override
@@ -287,7 +293,10 @@ class LivePageState extends State<LivePage> {
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     return Scaffold(
-
+        appBar: AppBar(
+          backgroundColor: Color(AppColors.BaseColor),
+          title: Text(seriesTitle),
+        ),
         body:   Container(
           height: (MediaQuery.of(context).size.height),
 
@@ -359,20 +368,20 @@ class LivePageState extends State<LivePage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,Live liveData){
+  Widget _buildBoxVideo(BuildContext context,int index,Series seriesData){
 
     String url="";
-    if(liveData.liveVideoSourceType=='facebook' || liveData.liveVideoSourceType=='brighteon'){
+    if(seriesData.videoSourceType=='facebook' || seriesData.videoSourceType=='brighteon'){
 
     }
-    else if(liveData.liveVideoSourceType=='dailymotion'){
-      String videoId=liveData.liveVideoUrl.substring(liveData.liveVideoUrl.lastIndexOf("/") + 1);
+    else if(seriesData.videoSourceType=='dailymotion'){
+      String videoId=seriesData.videoUrl.substring(seriesData.videoUrl.lastIndexOf("/") + 1);
       url="https://www.dailymotion.com/thumbnail/video/"+videoId;
     }
     else {
       var videoIdd;
       try {
-        videoIdd = YoutubePlayer.convertUrlToId(liveData.liveVideoUrl);
+        videoIdd = YoutubePlayer.convertUrlToId(seriesData.videoUrl);
         print('this is ' + videoIdd);
       } on Exception catch (exception) {
         // only executed if error is of type Exception
@@ -386,10 +395,10 @@ class LivePageState extends State<LivePage> {
       // mqdefault
       url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
     }
-  //  final DateFormat formatter = DateFormat('dd-MM-yyyy');
-   // final String formatted = formatter.format(DateTime.parse(liveData.liv));
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(DateTime.parse(seriesData.createdAt));
 
-  //  channel=channel==null?"My Channel":channel;
+   // channel=channel==null?"My Channel":channel;
     // duration=channel==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
@@ -456,23 +465,23 @@ class LivePageState extends State<LivePage> {
 
 
                       )),*/
-                  // Positioned.fill(
-                  //     child:Align(
-                  //         alignment: Alignment.bottomRight,
-                  //         child: Container(
-                  //             padding: EdgeInsets.fromLTRB(10,3,10,5),
-                  //             margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                  //             color:  Color(0xFF5a5a5a),
-                  //             child: Text(duration,  style: GoogleFonts.roboto(
-                  //               fontSize:14.0,
-                  //
-                  //               color: Colors.white,
-                  //               fontWeight: FontWeight.w500,
-                  //
-                  //             ),))
-                  //
-                  //
-                  //     )),
+                  Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                              padding: EdgeInsets.fromLTRB(10,3,10,5),
+                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                              color:  Color(0xFF5a5a5a),
+                              child: Text(seriesData.videoDuration,  style: GoogleFonts.roboto(
+                                fontSize:14.0,
+
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+
+                              ),))
+
+
+                      )),
                 ],
               ),
 
@@ -491,7 +500,7 @@ class LivePageState extends State<LivePage> {
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(
-                                        liveData.liveChannelImage)
+                                        seriesData.channelImage)
                                 )
                             )),
                         SizedBox(height: 5,width: 8,),
@@ -504,7 +513,7 @@ class LivePageState extends State<LivePage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       SizedBox(height: 5),
-                                      Text(liveData.liveTitle,
+                                      Text(seriesData.seriesName,
 
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
@@ -521,7 +530,7 @@ class LivePageState extends State<LivePage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(liveData.liveChannel,   overflow: TextOverflow.ellipsis,
+                                                Text(seriesData.channel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
@@ -529,21 +538,173 @@ class LivePageState extends State<LivePage> {
                                                   ),),
                                                 SizedBox(width: 10),
 
-                                                // Container(
-                                                //   width: 8,
-                                                //   height: 8,
-                                                //
-                                                //   decoration: BoxDecoration(
-                                                //       shape: BoxShape.circle,
-                                                //       color: Color(0xFF5a5a5a)),
-                                                // ),
+                                                Container(
+                                                  width: 8,
+                                                  height: 8,
 
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color(0xFF5a5a5a)),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(formatted,   overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1, style: GoogleFonts.roboto(
+                                                    fontSize:12.0,
+                                                    color: Color(0xFF5a5a5a),
+
+                                                  ),),
+                                                SizedBox(width: 10),
                                               ])),
 
 
 
                                     ]))),
+                        new Expanded(
+                            flex: 1,
 
+                            child:PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                onSelected: (newValue) { // add this property
+
+                                  if(newValue==1){
+
+                                    postSaveVideoInput(user_Token,"","","1",seriesData.seriesId.toString())
+                                        .then((res) async {
+
+
+                                      getShortLink(seriesData.seriesId.toString()).then((res) {
+                                        setState(() {
+                                          _isInAsyncCall = false;
+                                        });
+                                        var url = res.shortUrl
+                                            .toString();
+
+                                        _onShare(
+                                            context, seriesData.seriesName +
+                                            ' ' +
+                                            url, seriesData.videoImage);
+                                      });
+
+
+                                    });
+
+
+                                  }
+
+                                  else if(newValue==2){
+
+                                    _asyncInputDialog(context,seriesData.seriesId.toString());
+
+                                  }
+                                  else if(newValue==3){
+
+                                    setState(() {
+                                      _isInAsyncCall = true;
+                                    });
+
+                                    postAddBookMark("1",user_Token,seriesData.seriesId.toString(),seriesData.bookmark)
+                                        .then((res) async {
+                                      setState(() {
+                                        _isInAsyncCall = false;
+                                      });
+
+
+                                      String mmsg="";
+                                      if (res.bookmarkType == 1) {
+
+                                        mmsg="Bookmark added!";
+                                        mainData[index].bookmark=true;
+
+
+
+                                      }
+                                      else {
+                                        mmsg="Bookmark removed!";
+                                        mainData[index].bookmark=false;
+
+                                      }
+
+
+                                      Fluttertoast.showToast(
+                                          msg: mmsg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+
+                                    });
+
+                                  }
+                                  else if(newValue==4){
+
+                                    if(seriesData.isSubscribed){
+                                      Widget okButton = FlatButton(
+                                        child: Text("UNSUBSCRIBE"),
+                                        onPressed: () {
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                          subscribeAPI(seriesData.channelId.toString(),seriesData.isSubscribed, index);
+
+
+                                        },
+                                      );
+                                      Widget CANCELButton = FlatButton(
+                                        child: Text("CANCEL"),
+                                        onPressed: () {
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                        },
+                                      );
+                                      // set up the AlertDialog
+                                      AlertDialog alert = AlertDialog(
+
+                                        content: Text("Unsubscribe from "+seriesData.channel),
+                                        actions: [
+                                          CANCELButton,
+                                          okButton,
+
+                                        ],
+                                      );
+
+                                      // show the dialog
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return alert;
+                                        },
+                                      );
+                                    }
+                                    else{
+
+                                      subscribeAPI(seriesData.channelId.toString(),seriesData.isSubscribed,index);
+
+                                    }
+
+                                  }
+
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text("Share"),
+                                    value: 1,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Report"),
+                                    value: 2,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Bookmark"),
+                                    value: 3,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text("Subscribe Notifications"),
+                                    value: 4,
+                                  )
+                                ]
+                            )
+                        )
 
 
                       ]))
@@ -604,7 +765,6 @@ class LivePageState extends State<LivePage> {
                     context,
                     index,
                     mainData[index],
-
 
 
                   )

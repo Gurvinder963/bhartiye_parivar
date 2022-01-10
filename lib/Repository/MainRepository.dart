@@ -1,3 +1,7 @@
+import 'package:bhartiye_parivar/ApiResponses/LiveDataResponse.dart';
+import 'package:bhartiye_parivar/ApiResponses/SeriesHomeListResponse.dart';
+import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
+
 import '../Networking/ApiProvider.dart';
 import 'dart:async';
 import '../ApiResponses/LoginResponse.dart';
@@ -33,6 +37,8 @@ import '../ApiResponses/GetProfileResponse.dart';
 import '../ApiResponses/SideBarApiResponse.dart';
 import '../ApiResponses/LogoutResponse.dart';
 import '../ApiResponses/VideoTrendingListResponse.dart';
+import '../ApiResponses/VideoDetailJAVAResponse.dart';
+import '../ApiResponses/FaqDataResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -92,9 +98,9 @@ class MainRepository {
     return VideoTrendingListResponse.fromJson(response);
   }
 
-  Future<VideoTrendingListResponse> fetchVideoListLiveJAVA(var body) async {
+  Future<LiveDataResponse> fetchVideoListLiveJAVA(var body) async {
     final response = await _provider.postJAVA("api/HomeLiveNow",body);
-    return VideoTrendingListResponse.fromJson(response);
+    return LiveDataResponse.fromJson(response);
   }
 
 
@@ -117,6 +123,30 @@ class MainRepository {
     return VideoTrendingListResponse.fromJson(response);
   }
 
+  Future<VideoDetailJAVAResponse> fetchVideoDetailDataJAVA(var body) async {
+    final response = await _provider.postJAVA("api/VideoDetails",body);
+    return VideoDetailJAVAResponse.fromJson(response);
+  }
+
+  Future<LiveDataResponse> fetchLiveVideoListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeLiveNow",body);
+    return LiveDataResponse.fromJson(response);
+  }
+
+  Future<FaqDataResponse> fetchFaqsListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/faqs",body);
+    return FaqDataResponse.fromJson(response);
+  }
+
+  Future<SeriesHomeListResponse> fetchSeriesHomeJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeSeries",body);
+    return SeriesHomeListResponse.fromJson(response);
+  }
+
+  Future<SeriesListResponse> fetchSeriesListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeSeriesVideo",body);
+    return SeriesListResponse.fromJson(response);
+  }
 
   Future<LoginResponse> fetchLoginData(String body) async {
     final response = await _provider.post("public/api/v1/auth/login",body);

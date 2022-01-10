@@ -68,13 +68,16 @@ class HomeChildPageState extends State<HomeChildPage> {
                       .Trending,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Health,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                      .Series,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
                       .LiveTag,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+
+
                   Tab(child: Text(Languages
                       .of(context)
-                      .Series,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                      .Health,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+
                   Tab(child: Text(Languages
                       .of(context)
                       .Spiritual,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
@@ -110,9 +113,9 @@ class HomeChildPageState extends State<HomeChildPage> {
 
                 new MainPage(),
                 new TrendingPage(),
-                new HealthPage(),
-                new LivePage(),
                 new SeriesPage(),
+                new LivePage(),
+                new HealthPage(),
                 new SpiritualPage(),
                 new HistoryPage(),
                 new CulturePage(),
