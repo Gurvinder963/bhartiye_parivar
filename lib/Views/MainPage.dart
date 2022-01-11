@@ -268,10 +268,10 @@ class MainPageState extends State<MainPage> {
 
   }
 
-  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,bool is_subscribed) async {
+  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
     String status = "0";
-    if (is_subscribed) {
+    if (is_subscribed==1) {
       status = "0";
 
     } else {
@@ -753,11 +753,11 @@ class MainPageState extends State<MainPage> {
 
 
 
-  subscribeAPI(String channel_id,bool is_subscribed,int index){
+  subscribeAPI(String channel_id,int is_subscribed,int index){
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      if(is_subscribed){
+      if(is_subscribed==1){
 
         mainData[index].is_subscribed=false;
         msg="Unsubscribe channel successfully";
@@ -808,7 +808,7 @@ class MainPageState extends State<MainPage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,bool is_subscribed,bool bookmark){
+  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark){
 
     String url="";
     if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
@@ -1082,7 +1082,7 @@ class MainPageState extends State<MainPage> {
                                   }
                                   else if(newValue==4){
 
-                                    if(is_subscribed){
+                                    if(is_subscribed==1){
                                       Widget okButton = FlatButton(
                                         child: Text("UNSUBSCRIBE"),
                                         onPressed: () {

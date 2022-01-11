@@ -124,6 +124,12 @@ class LanguageHi extends Languages {
   // TODO: implement Whatsapp
   String get Whatsapp => 'व्हाट्सप्प';
 
+
+  @override
+  // TODO: implement Whatsapp
+  String get Chat => 'बातचीत';
+
+
   @override
   // TODO: implement main
   String get main => 'मुख्य';

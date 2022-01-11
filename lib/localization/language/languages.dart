@@ -37,6 +37,7 @@ abstract class Languages {
   String get Instagram;
   String get Telegram;
   String get Whatsapp;
+  String get Chat;
   String get Home;
   String get News;
   String get Books;

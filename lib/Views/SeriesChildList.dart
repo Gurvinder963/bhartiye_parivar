@@ -9,6 +9,7 @@ import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'VideoDetailNew.dart';
+import 'SeriesDetail.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'BooksDetail.dart';
 import 'package:intl/intl.dart';
@@ -756,7 +757,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                         .push( // ensures fullscreen
                         MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return VideoDetailNewPage(content: mainData[index]);
+                              return SeriesDetailPage(content: mainData[index]);
                             }
                         ))
                   },

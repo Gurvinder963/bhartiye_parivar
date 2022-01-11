@@ -39,6 +39,7 @@ import '../ApiResponses/LogoutResponse.dart';
 import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../ApiResponses/VideoDetailJAVAResponse.dart';
 import '../ApiResponses/FaqDataResponse.dart';
+import '../ApiResponses/ChatGroupResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -133,6 +134,11 @@ class MainRepository {
     return LiveDataResponse.fromJson(response);
   }
 
+  Future<LiveDataResponse> fetchLiveVideoSuggestListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeLiveNowSuggestion",body);
+    return LiveDataResponse.fromJson(response);
+  }
+
   Future<FaqDataResponse> fetchFaqsListJAVA(var body) async {
     final response = await _provider.postJAVA("api/faqs",body);
     return FaqDataResponse.fromJson(response);
@@ -146,6 +152,17 @@ class MainRepository {
   Future<SeriesListResponse> fetchSeriesListJAVA(var body) async {
     final response = await _provider.postJAVA("api/HomeSeriesVideo",body);
     return SeriesListResponse.fromJson(response);
+  }
+
+  Future<SeriesListResponse> fetchSeriesSuggestListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeSeriesVideoSuggestion",body);
+    return SeriesListResponse.fromJson(response);
+  }
+
+
+  Future<ChatGroupResponse> fetchChatListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/HomeChatGroup",body);
+    return ChatGroupResponse.fromJson(response);
   }
 
   Future<LoginResponse> fetchLoginData(String body) async {

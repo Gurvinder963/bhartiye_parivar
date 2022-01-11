@@ -123,6 +123,10 @@ class LanguageEn extends Languages {
   String get Whatsapp => 'Whatsapp';
 
   @override
+  // TODO: implement Whatsapp
+  String get Chat => 'Chat';
+
+  @override
   // TODO: implement main
   String get main => 'Main';
 

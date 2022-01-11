@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/Views/LiveVideoDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -595,7 +596,7 @@ class LivePageState extends State<LivePage> {
                         .push( // ensures fullscreen
                         MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return VideoDetailNewPage(content: mainData[index]);
+                              return LiveVideoDetailPage(content: mainData[index]);
                             }
                         ))
                   },

@@ -13,6 +13,7 @@ import 'Health.dart';
 import 'Trending.dart';
 import 'Series.dart';
 import 'Culture.dart';
+import 'Chat.dart';
 import 'Twitter.dart';
 import 'History.dart';
 import 'Instagram.dart';
@@ -46,7 +47,7 @@ class HomeChildPageState extends State<HomeChildPage> {
 
 
         child: DefaultTabController(
-          length: 14,
+          length: 15,
           child: Scaffold(
             appBar: AppBar(
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
@@ -105,6 +106,10 @@ class HomeChildPageState extends State<HomeChildPage> {
                   Tab(child: Text(Languages
                       .of(context)
                       .Whatsapp,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+
+                  Tab(child: Text(Languages
+                      .of(context)
+                      .Chat,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                 ],
               ),
             ),
@@ -125,6 +130,7 @@ class HomeChildPageState extends State<HomeChildPage> {
                 new InstagramPage(),
                 new TelegramPage(),
                 new WhatsappPage(),
+                new ChatPage(),
                 //  new SettingsScreen(),
               ],
             ),
