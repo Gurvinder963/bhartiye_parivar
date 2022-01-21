@@ -6,13 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import 'ReferHistory.dart';
+import 'QRcodeScan.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import '../ApiResponses/ReferDetailResponse.dart';
+import '../ApiResponses/PinCodeResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+
 import 'package:share/share.dart';
 import 'dart:async';
 import 'dart:io';
@@ -186,7 +189,13 @@ class SharePageState extends State<SharePage> {
     return repository.fetchReferSaveJava(body);
 
   }
+  Future<PinCodeResponse> getPinAddressAPI(String pin) async {
 
+    var body ={'pin_code':pin};
+    MainRepository repository=new MainRepository();
+    return repository.fetchPinAddress(body);
+
+  }
   Future _asyncInputDialog(BuildContext context) async {
     String teamName1 = '';
     String teamName2 = '';
@@ -195,11 +204,14 @@ class SharePageState extends State<SharePage> {
       context: context,
       barrierDismissible: false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
+        String mAddress;
+        return StatefulBuilder(builder: (context, setState) {
         return AlertDialog(
           title: Text(Constants.AppName),
           content: SizedBox(
               height: 200,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
             children: [
                TextField(
 
@@ -232,8 +244,46 @@ class SharePageState extends State<SharePage> {
                       labelText: 'Please Enter Pin', ),
                     onChanged: (value) {
                       teamName3 = value;
+                      if(value.length>5){
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        getPinAddressAPI(value).then((value) => {
+
+                          if(value.status==1){
+                            setState(() {
+                              if(value.data.address!=null) {
+                                mAddress = value.data.address.postOffice + ", " +
+                                    value.data.address.district + ", " +
+                                    value.data.address.region;
+                              }
+                              else{
+                                mAddress="Address not found!";
+                              }
+
+
+                            }),
+                          }
+                          else{
+                            showAlertDialogValidation(context,"pin not valid")
+                          }
+
+
+
+                        });
+
+                      }
+                      else{
+                        setState(() {
+                          mAddress="";
+                        });
+                      }
                     },
+                  ),
+              mAddress!=null && !mAddress.isEmpty?
+              Padding(
+                  padding: EdgeInsets.fromLTRB(0,1,0,0),
+                  child: Text(mAddress, style: GoogleFonts.poppins(fontSize: 12, color: Colors.red,fontWeight: FontWeight.bold)
                   )
+              ):Container(),
             ],
           )),
           actions: [
@@ -273,15 +323,15 @@ class SharePageState extends State<SharePage> {
                 }
                 else {
                   Navigator.of(context).pop();
-                  setState(() {
-                    _isInAsyncCall = true;
-                  });
+                  // setState(() {
+                  //   _isInAsyncCall = true;
+                  // });
                   saveReferAPIJAVA(teamName1, teamName2, teamName3).then((
                       res) async {
                     String msg;
-                    setState(() {
-                      _isInAsyncCall = false;
-                    });
+                    // setState(() {
+                    //   _isInAsyncCall = false;
+                    // });
                     if (res.status == 1) {
                       mainData.clear();
                       refreshPage();
@@ -301,6 +351,8 @@ class SharePageState extends State<SharePage> {
             ),
           ],
         );
+      });
+
       },
     );
   }
@@ -371,6 +423,30 @@ class SharePageState extends State<SharePage> {
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
         title: Text("Share App"),
+
+          actions: <Widget>[
+
+
+      GestureDetector(
+          onTap: () {
+
+    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+    MaterialPageRoute(
+    builder: (BuildContext context) {
+    return QRcodeScanPage();
+    }
+    ) );
+
+    },child: new Image(
+        image: new AssetImage("assets/ic_qr_code.png"),
+        width: 30,
+        height: 30,
+        color: null,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.center,
+      )),
+          SizedBox(width: 15,)
+          ]
       ),
       body: ModalProgressHUD(
     inAsyncCall: _isInAsyncCall,
@@ -385,19 +461,27 @@ class SharePageState extends State<SharePage> {
             SizedBox(height: 10,),
     GestureDetector(
     onTap: () {
-      getShortLink().then((res) {
-        setState(() {
-          _isInAsyncCall = false;
-        });
-        var url = res.shortUrl.toString();
 
-        _onShare(context,"Hey! Download "+AppStrings.AppName +" app from"
-            ' ' +
-            url,"");
+     String url= 'https://sabkiapp.com:8443/web/scanqr.jsp?id='+USER_ID+'&app_code='+Constants.AppCode;
 
 
+      _onShare(context,"You must download this amazing "+ AppStrings.AppName +" from "+
+                 ' ' +
+                 url,"");
 
-      });
+      // getShortLink().then((res) {
+      //   setState(() {
+      //     _isInAsyncCall = false;
+      //   });
+      //   var url = res.shortUrl.toString();
+      //
+      //   _onShare(context,"Hey! Download "+AppStrings.AppName +" app from"
+      //       ' ' +
+      //       url,"");
+      //
+      //
+      //
+      // });
     },child:
     Container(
                 padding: const EdgeInsets.fromLTRB(5.0,10.0,5.0,10.0),

@@ -632,7 +632,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.pop(context, true);
+                              if (Platform.isAndroid) {
+                                SystemNavigator.pop();
+                              } else if (Platform.isIOS) {
+                                exit(0);
+                              }
 
                             },
 

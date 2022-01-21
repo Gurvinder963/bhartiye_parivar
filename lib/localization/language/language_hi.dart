@@ -6,7 +6,7 @@ class LanguageHi extends Languages {
   String get langCode => "hi";
 
   @override
-  String get appName => "नव निर्माण";
+  String get appName => "भारतीय परिवार";
 
   @override
   String get labelWelcome => "स्वागत हे";
@@ -124,6 +124,9 @@ class LanguageHi extends Languages {
   // TODO: implement Whatsapp
   String get Whatsapp => 'व्हाट्सप्प';
 
+  @override
+  // TODO: implement Whatsapp
+  String get SocialMedia => 'सामाजिक मीडिया';
 
   @override
   // TODO: implement Whatsapp

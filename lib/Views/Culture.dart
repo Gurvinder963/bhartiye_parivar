@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import '../Interfaces/OnLangChange.dart';
 String videoCategory="culture";
 
 class CulturePage extends StatefulWidget {
@@ -53,6 +54,17 @@ class CulturePageState extends State<CulturePage> {
   @override
   void initState() {
     super.initState();
+    eventBusLC.on<OnLangChange>().listen((event) {
+      setState(() {
+        isLoading = false;
+
+        mainData.clear();
+        page = 1;
+
+      });
+
+      apiCall();
+    });
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {

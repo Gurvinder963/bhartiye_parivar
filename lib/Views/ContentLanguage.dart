@@ -13,6 +13,7 @@ import '../localization/locale_constant.dart';
 import '../localization/localizations_delegate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
+import '../Interfaces/OnLangChange.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 class ContentLanguagePage extends StatefulWidget {
   @override
@@ -254,7 +255,9 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
 
 
 
+
             changeLanguage(context,sb.toString());
+            eventBusLC.fire(OnLangChange("FIND"));
             Navigator.of(context, rootNavigator: true).pop(context);
 
           }
@@ -308,8 +311,8 @@ class ContentLanguagePageState extends State<ContentLanguagePage> {
    Choice(id:5,title: 'ગુજરાતી', letter:'ખ',isSelected:false,lnCode:'gu'),
    Choice(id:6,title: 'मराठी', letter:'अ',isSelected:false,lnCode:'mr'),
    Choice(id:7,title: 'বাংলা', letter:'অ',isSelected:false,lnCode:'ba'),
-   Choice(id:8,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'te'),
-   Choice(id:9,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'ta'),
+   Choice(id:8,title: 'தமிழ்', letter:'அ',isSelected:false,lnCode:'ta'),
+   Choice(id:9,title: 'తెలుగు', letter:'అ',isSelected:false,lnCode:'te'),
    Choice(id:10,title: 'ಕನ್ನಡ', letter:'ಅ',isSelected:false,lnCode:'ka'),
    Choice(id:11,title: 'മലയാളം', letter:'അ',isSelected:false,lnCode:'ml'),
    Choice(id:12,title: 'অসমীয়া', letter:'অ',isSelected:false,lnCode:'as'),

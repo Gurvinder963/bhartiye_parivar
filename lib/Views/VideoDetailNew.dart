@@ -30,6 +30,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../localization/locale_constant.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import '../Interfaces/OnAnyDrawerItemOpen.dart';
 String videoCategory;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
@@ -232,6 +233,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           apiCall();
         }
       });
+
+
 
   }
   void listener() {
@@ -812,16 +815,16 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                               alignment: Alignment.center,
                                             ),
                                             onPressed: () {
-                                              setState(() {
+                                            /*  setState(() {
                                                 _isInAsyncCall = true;
-                                              });
+                                              });*/
 
                                               postAddBookMark("1",user_Token,mContent.id.toString())
                                                   .then((res) async {
-                                                setState(() {
+                                               /* setState(() {
                                                   _isInAsyncCall = false;
                                                 });
-
+*/
 
                                                 String mmsg="";
                                                 if (res.bookmarkType == 1) {
@@ -1343,6 +1346,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   Widget _joinButton() {
     return InkWell(
       onTap: () {
+
+        _controller.pause();
+
+
+        Duration position=_controller.value.position;
+        int sec=position.inSeconds;
+
+        postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.id.toString())
+            .then((res) async {});
+
+
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
@@ -1381,6 +1395,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   Widget _DonateButton() {
     return InkWell(
       onTap: () {
+        _controller.pause();
+
+
+        Duration position=_controller.value.position;
+        int sec=position.inSeconds;
+
+        postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.id.toString())
+            .then((res) async {});
+
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {

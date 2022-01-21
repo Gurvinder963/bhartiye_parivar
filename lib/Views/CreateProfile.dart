@@ -618,9 +618,9 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
 
-  Future<AddToCartResponse> getNationalProfile(String id) async {
+  Future<AddToCartResponse> getNationalProfile(String id,String token) async {
 
-    var body =json.encode({'unique_id':id,"appcode":Constants.AppCode,"password":user_Token});
+    var body =json.encode({'userid':id,"appcode":Constants.AppCode,"token":token});
 
     MainRepository repository=new MainRepository();
     return repository.fetchCreateProfileNational(body);
@@ -720,7 +720,7 @@ class CreateProfilePageState extends State<CreateProfilePage> with WidgetsBindin
 
 
               if (res.status == 1) {
-                getNationalProfile(res.data.user.id.toString()).then((value) =>
+                getNationalProfile(res.data.user.id.toString(),res.data.token.toString()).then((value) =>
                 {
                 });
 

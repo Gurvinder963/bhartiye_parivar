@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bhartiye_parivar/Views/LivePage.dart';
+import 'package:bhartiye_parivar/Views/SocialMedia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'MainPage.dart';
@@ -47,7 +48,7 @@ class HomeChildPageState extends State<HomeChildPage> {
 
 
         child: DefaultTabController(
-          length: 15,
+          length: 11,
           child: Scaffold(
             appBar: AppBar(
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
@@ -93,19 +94,19 @@ class HomeChildPageState extends State<HomeChildPage> {
                       .Conspiracy,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
                   Tab(child: Text(Languages
                       .of(context)
-                      .Twitter,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
-                  Tab(child: Text(Languages
-                      .of(context)
-                      .Facebook,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
-                  Tab(child: Text(Languages
-                      .of(context)
-                      .Instagram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
-                  Tab(child: Text(Languages
-                      .of(context)
-                      .Telegram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
-                  Tab(child: Text(Languages
-                      .of(context)
-                      .Whatsapp,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                      .SocialMedia,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                  // Tab(child: Text(Languages
+                  //     .of(context)
+                  //     .Facebook,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                  // Tab(child: Text(Languages
+                  //     .of(context)
+                  //     .Instagram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                  // Tab(child: Text(Languages
+                  //     .of(context)
+                  //     .Telegram,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
+                  // Tab(child: Text(Languages
+                  //     .of(context)
+                  //     .Whatsapp,style:GoogleFonts.roboto(fontSize: 17,fontWeight: FontWeight.w600),)),
 
                   Tab(child: Text(Languages
                       .of(context)
@@ -118,6 +119,7 @@ class HomeChildPageState extends State<HomeChildPage> {
 
                 new MainPage(),
                 new TrendingPage(),
+
                 new SeriesPage(),
                 new LivePage(),
                 new HealthPage(),
@@ -125,11 +127,7 @@ class HomeChildPageState extends State<HomeChildPage> {
                 new HistoryPage(),
                 new CulturePage(),
                 new ConspiracyPage(),
-                new TwitterPage(),
-                new FacebookPage(),
-                new InstagramPage(),
-                new TelegramPage(),
-                new WhatsappPage(),
+                new SocialMediaPage(),
                 new ChatPage(),
                 //  new SettingsScreen(),
               ],

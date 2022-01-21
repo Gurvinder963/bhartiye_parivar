@@ -1,6 +1,7 @@
 import 'package:bhartiye_parivar/ApiResponses/LiveDataResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesHomeListResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
+import 'package:bhartiye_parivar/ApiResponses/SocialMediaResponse.dart';
 
 import '../Networking/ApiProvider.dart';
 import 'dart:async';
@@ -89,6 +90,12 @@ class MainRepository {
     return SideBarApiResponse.fromJson(response);
   }
 
+  Future<AddToCartResponse> fetchChangeNumberJAVA(var body) async {
+    final response = await _provider.postJAVA("api/changenumber",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+
   Future<VideoListResponse> fetchVideoListJAVA(var body) async {
     final response = await _provider.postJAVA("api/homeVideoMain",body);
     return VideoListResponse.fromJson(response);
@@ -163,6 +170,11 @@ class MainRepository {
   Future<ChatGroupResponse> fetchChatListJAVA(var body) async {
     final response = await _provider.postJAVA("api/HomeChatGroup",body);
     return ChatGroupResponse.fromJson(response);
+  }
+
+  Future<SocialMediaResponse> fetchSocialMediaJAVA(var body) async {
+    final response = await _provider.postJAVA("api/SocialMedia",body);
+    return SocialMediaResponse.fromJson(response);
   }
 
   Future<LoginResponse> fetchLoginData(String body) async {
@@ -320,8 +332,7 @@ class MainRepository {
     final response = await _provider.postWithToken("public/api/v1/read-notification",body,token);
     return AddToCartResponse.fromJson(response);
   }
-  Future<AddToCartResponse>
-  fetchSubscribeChannel(var body,String token) async {
+  Future<AddToCartResponse> fetchSubscribeChannel(var body,String token) async {
     final response = await _provider.postWithToken("public/api/v1/subscriptions",body,token);
     return AddToCartResponse.fromJson(response);
   }

@@ -13,6 +13,10 @@ class Prefs {
   static const String USER_AGE = 'USER_AGE';
   static const String USER_PROFESSION = 'USER_PROFESSION';
   static const String USER_POSTAL = 'USER_POSTAL';
+
+  static const String SOUND = 'SOUND';
+
+
   /*1 = Applicant
   * 2= Officer
   * 3 = Admin
@@ -61,5 +65,9 @@ class Prefs {
     return prefs.setString(USER_C_CODE, Name);
   }
 
+  static setSound(SharedPreferences prefs, bool Name) async {
+
+    return prefs.setBool(SOUND, Name);
+  }
 
 }

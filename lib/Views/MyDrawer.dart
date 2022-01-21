@@ -62,8 +62,10 @@ import '../Views/JoinUs.dart';
 import '../ApiResponses/NewsDetailResponse.dart';
 import '../ApiResponses/LogoutResponse.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
+import '../Interfaces/OnAnyDrawerItemOpen.dart';
 import 'NewsDetail.dart';
 import '../Views/Faq.dart';
+
 
 
 class MyDrawerPage extends StatefulWidget {
@@ -147,11 +149,14 @@ class MyDrawerPageState extends State<MyDrawerPage> {
             children: <Widget>[
               createDrawerHeader(context,sideBarOTP),
               createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,color: Colors.black,),
+                  icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
                   text: Languages
                       .of(context)
                       .aboutUs,
-                  onTap: () =>{}
+                  onTap: () =>{
+                  eventBusDO.fire(OnAnyDrawerItemOpen("FIND")),
+
+                  }
                 // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
               createDrawerBodyItem(
@@ -161,7 +166,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
                       .joinUs,
                   onTap: () =>{
 
-
+                  eventBusDO.fire(OnAnyDrawerItemOpen("FIND")),
                     Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                         MaterialPageRoute(
                             builder: (BuildContext context) {

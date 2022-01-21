@@ -6,7 +6,7 @@ class LanguageEn extends Languages {
   String get langCode => "en";
 
   @override
-  String get appName => "Nav Nirman";
+  String get appName => "Bhartiya Parivar";
 
   @override
   String get labelWelcome => "Welcome";
@@ -125,6 +125,10 @@ class LanguageEn extends Languages {
   @override
   // TODO: implement Whatsapp
   String get Chat => 'Chat';
+
+  @override
+  // TODO: implement Whatsapp
+  String get SocialMedia => 'Social Media';
 
   @override
   // TODO: implement main

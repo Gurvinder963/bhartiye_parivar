@@ -58,6 +58,7 @@ class NotificationSettingPageState extends State<NotificationSettingPage> {
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
       USER_NAME=prefs.getString(Prefs.USER_NAME);
       USER_ID=prefs.getString(Prefs.USER_ID);
+      isSound=prefs.getBool(Prefs.SOUND)?? false;
       callSideBarAPI(USER_ID,user_Token).then((value) async {
         if(value.status==1){
 
@@ -72,6 +73,13 @@ class NotificationSettingPageState extends State<NotificationSettingPage> {
       return (prefs.getString('token'));
     });
 
+  }
+
+  setSound(bool value) async{
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+
+    Prefs.setSound(_prefs, value);
   }
 
   @override
@@ -166,6 +174,7 @@ child:ListView(
                     isSound = value;
                   });
 
+                  setSound(value);
 
                 },
                 activeTrackColor: Colors.grey,

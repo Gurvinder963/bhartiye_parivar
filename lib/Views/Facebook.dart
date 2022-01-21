@@ -5,11 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../ApiResponses/AppChannelResponse.dart';
 import '../Repository/MainRepository.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../Utils/AppColors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FacebookPage extends StatefulWidget {
+  String link;
+  String name;
+  FacebookPage({Key key,@required this.link,@required this.name}) : super(key: key);
+
+
   @override
   FacebookPageState createState() {
-    return FacebookPageState();
+    return FacebookPageState(link,name);
   }
 }
 
@@ -17,34 +25,36 @@ class FacebookPageState extends State<FacebookPage> {
   // WebViewController _controller;
   String fileUrl="";
   // InAppWebViewController webView;
-  String url = "";
+ // String url = "";
   double progress = 0;
+  String link;
+  String name;
 
-  Future<AppChannelResponse> getAppChannelAPI() async {
-
-    var body ={'app_code':Constants.AppCode};
-    MainRepository repository=new MainRepository();
-    return repository.fetchAppChannel(body);
-
+  FacebookPageState(String link,String name){
+    this.link=link;
+    this.name=name;
   }
+
+
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getAppChannelAPI().then((value) => {
-
-      if(value.data!=null && value.data.length>0){
-        setState(() {
-          url= value.data[0].facebookPageLink;
-
-        })
-
-      }
-
-
-
-    });
+    // getAppChannelAPI().then((value) => {
+    //
+    //   if(value.data!=null && value.data.length>0){
+    //     setState(() {
+    //       url= value.data[0].facebookPageLink;
+    //
+    //     })
+    //
+    //   }
+    //
+    //
+    //
+    // });
 
 
 
@@ -53,9 +63,22 @@ class FacebookPageState extends State<FacebookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: url.isNotEmpty?InAppWebView(
-        initialUrl: url,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        toolbarHeight: 50,
+        backgroundColor: Color(AppColors.BaseColor),
+        title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
+          actions: <Widget>[
+            Center(child:GestureDetector( onTap: () {
+              launch(
+                  link,
+                  forceSafariVC: false);
+    }, child:Text("Open App", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 16,color: Color(0xFFFFFFFF))))),
+            SizedBox(width:15,),
+          ]
+      ),
+      body: link.isNotEmpty?InAppWebView(
+        initialUrl: link,
         initialHeaders: {},
         initialOptions: InAppWebViewGroupOptions(
             crossPlatform: InAppWebViewOptions(
@@ -67,12 +90,12 @@ class FacebookPageState extends State<FacebookPage> {
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
-            this.url = url;
+            this.link = url;
           });
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
           setState(() {
-            this.url = url;
+            this.link = url;
           });
         },
         onProgressChanged: (InAppWebViewController controller, int progress) {

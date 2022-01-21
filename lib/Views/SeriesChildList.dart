@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+
 import '../Utils/AppColors.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
 import 'package:flutter/material.dart';
@@ -295,6 +297,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
         orientation: Orientation.portrait);
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
           title: Text(seriesTitle),
         ),
@@ -305,6 +308,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                SizedBox(height: 5,),
                 Expanded(
                   child: _buildList(),
 

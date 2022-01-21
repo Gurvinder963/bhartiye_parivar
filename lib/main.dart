@@ -361,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 image: new AssetImage("assets/splash.png"),
 
                 color: null,
-                fit: BoxFit.scaleDown,
+                fit: BoxFit.contain,
                 alignment: Alignment.center,
               ),
 

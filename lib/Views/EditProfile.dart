@@ -379,7 +379,8 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
                   textColor: Colors.white,
                   fontSize: 16.0);
 
-
+              profileUpdateJAVA().then((res) async {
+              });
 
             }
             else {
@@ -398,7 +399,15 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
 
 
   }
+  Future<AddToCartResponse> profileUpdateJAVA() async {
 
+    var body =json.encode({'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,});
+
+    //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
+    MainRepository repository=new MainRepository();
+    return repository.fetchChangeNumberJAVA(body);
+
+  }
   void setData(GetProfileResponse value) async{
 
     SharedPreferences _prefs = await SharedPreferences.getInstance();

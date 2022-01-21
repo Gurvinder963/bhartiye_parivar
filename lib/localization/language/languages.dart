@@ -33,6 +33,7 @@ abstract class Languages {
   String get Culture;
   String get Conspiracy;
   String get Twitter;
+  String get SocialMedia;
   String get Facebook;
   String get Instagram;
   String get Telegram;

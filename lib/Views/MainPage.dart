@@ -28,6 +28,9 @@ import '../Utils/AppStrings.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import '../Interfaces/OnAnyDrawerItemOpen.dart';
+import '../Interfaces/OnLangChange.dart';
 String videoCategory="main";
 YoutubePlayerController _controller;
 TextEditingController _idController;
@@ -52,6 +55,7 @@ class MainPageState extends State<MainPage> {
   Live liveData;
   int page = 1;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
+ // var refreshLiveKey = GlobalKey<RefreshIndicatorState>();
   bool isLoading = false;
 
   String user_Token;
@@ -80,9 +84,26 @@ class MainPageState extends State<MainPage> {
 
 
 
+    eventBusDO.on<OnAnyDrawerItemOpen>().listen((event) {
+      // All events are of type UserLoggedInEvent (or subtypes of it).
+      // print("my_cart_count"+event.count);
 
+     print("-------on pause call-------");
 
+      _controller.pause();
+    });
 
+    eventBusLC.on<OnLangChange>().listen((event) {
+      setState(() {
+        isLoading = false;
+        liveData=null;
+        mainData.clear();
+        page = 1;
+
+      });
+
+      apiCall();
+    });
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
@@ -270,14 +291,14 @@ class MainPageState extends State<MainPage> {
 
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
-    String status = "0";
-    if (is_subscribed==1) {
+    String status = "1";
+  /*  if (is_subscribed==1) {
       status = "0";
 
     } else {
 
       status = "1";
-    }
+    }*/
 
     var body =json.encode({"channel_id":channelId,"is_subscribed":status});
     MainRepository repository=new MainRepository();
@@ -296,14 +317,14 @@ class MainPageState extends State<MainPage> {
 
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id, bool isBookMarked) async {
-    String status = "0";
-    if (isBookMarked) {
+    String status = "1";
+  /*  if (isBookMarked) {
       status = "0";
 
     } else {
 
       status = "1";
-    }
+    }*/
     print('my_token'+token);
     var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
@@ -367,7 +388,7 @@ class MainPageState extends State<MainPage> {
     }
 
     print("live data");
-    if (liveData != null) {
+    if (liveData != null && liveData.liveVideoSourceType=='youtube') {
       print(liveData.liveStatus);
       var videoIdd;
       try {
@@ -403,13 +424,9 @@ class MainPageState extends State<MainPage> {
       _videoMetaData = const YoutubeMetaData();
       _playerState = PlayerState.unknown;
     }
-    // return Scaffold(
-    //
-    //   body: Center(child:Text('Series Page')),
-    //
-    // );
 
-    if (liveData != null) {
+
+    if (liveData != null && liveData.liveVideoSourceType=='youtube') {
       return YoutubePlayerBuilder(
 
           onEnterFullScreen: () {
@@ -467,6 +484,14 @@ class MainPageState extends State<MainPage> {
           ),
           builder: (context, player) => mainWidget(player));
     }
+    else if(liveData != null && liveData.liveVideoSourceType=='facebook'){
+
+      return Scaffold(
+
+        body: mainWidget(null)
+
+      );
+    }
 
     else if (mainData.length > 0) {
 
@@ -498,6 +523,21 @@ class MainPageState extends State<MainPage> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     //final String formatted = formatter.format(DateTime.parse(liveData.));
 
+
+    String html;
+    if(liveData!=null && liveData.liveVideoSourceType=='facebook'){
+      html = '''
+          <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
+            src="https://www.facebook.com/v2.3/plugins/video.php? 
+            &autoplay=false&href=${liveData.liveVideoUrl}" </iframe></div>
+     ''';
+
+
+
+
+    }
+
+
     return WillPopScope(
         onWillPop: () {
 
@@ -525,20 +565,32 @@ class MainPageState extends State<MainPage> {
 
                       children: <Widget>[
                         // liveData.liveVideoSourceType=='facebook' ?
-                        // _buildBoxVideo(context,mContent):
-
 
 
                         liveData!=null?(
 
-                        liveData.liveStatus=="1"? player:
+                        liveData.liveStatus=="1"?
+                        liveData.liveVideoSourceType=='facebook' ?
+                        AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child:
+                            HtmlWidget(
+
+                              html,
+                              webView: true,
+                            )): player:
                        Container(width: 0,height: 0,)
                         ):Container(width: 0.0, height: 0.0),
 
 
                     Expanded(
                         child:
+                    RefreshIndicator(
+                    key: refreshKey,
+                        onRefresh: _getData,
+                    child:
                         ListView(
+
                             controller: _sc,
                           // parent ListView
                             children: <Widget>[
@@ -627,14 +679,20 @@ class MainPageState extends State<MainPage> {
 
 
                                                     ]))),
-                                        new Expanded(
+                                  liveData!=null &&
+                                      liveData.liveStatus=="2"?  new Expanded(
                                             flex: 1,
-
                                             child:PopupMenuButton(
-                                                icon:Icon(Icons.circle_notifications),
+                                                child:new Image(
+                                                  image: new AssetImage("assets/bell_new.png"),
+                                                  width: 44,
+                                                  height: 44,
+                                                  color: null,
+                                                  fit: BoxFit.scaleDown,
+                                                  alignment: Alignment.center,
+                                                ),
                                                 onSelected: (newValue) { // add this property
-
-                                                 if(newValue==1){
+                                                  if(newValue==1){
                                                    scheduleNotification(1,liveData.liveTitle);
                                                  }
 
@@ -651,7 +709,7 @@ class MainPageState extends State<MainPage> {
 
                                                 ]
                                             )
-                                        )
+                                        ):Container(width: 0.0, height: 0.0)
 
                                       ])):Container(width: 0.0, height: 0.0),
 
@@ -686,7 +744,7 @@ class MainPageState extends State<MainPage> {
                               SizedBox(height: 10,),
                               _buildList()
                               ]
-                        )
+                        ))
                     )
 
                                  // _buildList(),
@@ -757,15 +815,15 @@ class MainPageState extends State<MainPage> {
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      if(is_subscribed==1){
-
-        mainData[index].is_subscribed=false;
-        msg="Unsubscribe channel successfully";
-      }
-      else{
-        mainData[index].is_subscribed=true;
+      // if(is_subscribed==1){
+      //
+      //   mainData[index].is_subscribed=false;
+      //   msg="Unsubscribe channel successfully";
+      // }
+      // else{
+        mainData[index].is_subscribed=1;
         msg="Subscribe channel successfully";
-      }
+      //}
 
       if(res.status==1){
 
@@ -1041,15 +1099,15 @@ class MainPageState extends State<MainPage> {
                                   }
                                   else if(newValue==3){
 
-                                    setState(() {
+                                  /*  setState(() {
                                       _isInAsyncCall = true;
-                                    });
+                                    });*/
 
                                     postAddBookMark("1",user_Token,id.toString(),bookmark)
                                         .then((res) async {
-                                      setState(() {
+                                    /*  setState(() {
                                         _isInAsyncCall = false;
-                                      });
+                                      });*/
 
 
                                       String mmsg="";
@@ -1082,48 +1140,7 @@ class MainPageState extends State<MainPage> {
                                   }
                                   else if(newValue==4){
 
-                                    if(is_subscribed==1){
-                                      Widget okButton = FlatButton(
-                                        child: Text("UNSUBSCRIBE"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                          subscribeAPI(channel_id.toString(),is_subscribed, index);
-
-
-                                        },
-                                      );
-                                      Widget CANCELButton = FlatButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                        },
-                                      );
-                                      // set up the AlertDialog
-                                      AlertDialog alert = AlertDialog(
-
-                                        content: Text("Unsubscribe from "+channel),
-                                        actions: [
-                                          CANCELButton,
-                                          okButton,
-
-                                        ],
-                                      );
-
-                                      // show the dialog
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return alert;
-                                        },
-                                      );
-                                    }
-                                    else{
-
                                       subscribeAPI(channel_id.toString(),is_subscribed,index);
-
-                                    }
 
                                   }
 
@@ -1170,6 +1187,7 @@ class MainPageState extends State<MainPage> {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
       isLoading = false;
+      liveData=null;
       mainData.clear();
       page = 1;
 
@@ -1182,7 +1200,7 @@ class MainPageState extends State<MainPage> {
   Widget _buildList() {
     return
       RefreshIndicator(
-        key: refreshKey,
+        key: liveData==null?refreshKey:null,
         child:
         ListView.builder(
           itemCount: mainData.length+ 1 , // Add one more item for progress indicator

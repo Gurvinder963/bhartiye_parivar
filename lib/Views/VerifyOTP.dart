@@ -375,7 +375,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
 
    // var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
 
-    var body =json.encode({'unique_id':id,"appcode":Constants.AppCode,"password":user_Token});
+    var body =json.encode({'userid':id,"appcode":Constants.AppCode,"token":user_Token});
 
 
     MainRepository repository=new MainRepository();
