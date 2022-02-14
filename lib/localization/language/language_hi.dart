@@ -19,6 +19,10 @@ class LanguageHi extends Languages {
 
   @override
   // TODO: implement aboutUs
+  String get adminPanel => 'एडमिन पैनल';
+
+  @override
+  // TODO: implement aboutUs
   String get aboutUs => 'हमारे बारे में';
 
   @override

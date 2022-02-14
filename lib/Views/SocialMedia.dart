@@ -97,9 +97,7 @@ class SocialMediaPageState extends State<SocialMediaPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
 
-      Container(
-    width:MediaQuery.of(context).size.width/2-2,
-        child:  GestureDetector( onTap: () {
+      GestureDetector( onTap: () {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
@@ -107,8 +105,15 @@ class SocialMediaPageState extends State<SocialMediaPage> {
                 }
             ) );
 
-      }, child: Container(width:MediaQuery.of(context).size.width/2, child:
-        Column(
+      }, child:  Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+          width:MediaQuery.of(context).size.width/2-2,
+          child:
+          Column(
           crossAxisAlignment: CrossAxisAlignment.center,
 
           children: <Widget>[
@@ -131,43 +136,51 @@ class SocialMediaPageState extends State<SocialMediaPage> {
                   fontWeight: FontWeight.bold,
 
                 ))
-          ]))),),
+          ]))),
 
-
-
-      Container(
-        width:MediaQuery.of(context).size.width/2-2 ,
-        child:  GestureDetector( onTap: () {
+      GestureDetector( onTap: () {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return FacebookPage(link:socialMediaObject.twitter,name:"Twitter");
+                  return FacebookPage(link:socialMediaObject.instagram,name:"Instagram");
                 }
             ) );
 
-      }, child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(width: 10,),
-            Image(
-              image: new AssetImage("assets/twitter.png"),
-              width: 40,
-              height:  40,
-              color: null,
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.center,
-            ),
-            SizedBox(width: 15,),
-            Text("Twitter",
+      }, child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(color: Colors.grey, width: 1),
+          ),
+        ),
+        width:MediaQuery.of(context).size.width/2-2,
+        child:
+       Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(width: 10,),
+              Image(
+                image: new AssetImage("assets/ic_instagram.png"),
+                width: 40,
+                height:  40,
+                color: null,
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+              ),
+              SizedBox(width: 15,),
+              Text("Instagram",
 
-                style: GoogleFonts.roboto(
-                  fontSize:15.0,
+                  style: GoogleFonts.roboto(
+                    fontSize:15.0,
 
-                  color: Color(0xFF000000),
-                  fontWeight: FontWeight.bold,
+                    color: Color(0xFF000000),
+                    fontWeight: FontWeight.bold,
 
-                ))
-          ])),),
+                  ))
+            ])),
+      )
+
+
+
     ]),
           SizedBox(height: 5,),
           Divider(
@@ -179,73 +192,79 @@ class SocialMediaPageState extends State<SocialMediaPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
 
-          Container(
-          width:MediaQuery.of(context).size.width/2-2,
-          child: GestureDetector( onTap: () {
-            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return FacebookPage(link:socialMediaObject.youtube,name:"Youtube");
-                    }
-                ) );
-
-          }, child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(width: 10,),
-                Image(
-                  image: new AssetImage("assets/ic_youtube.png"),
-                  width: 40,
-                  height:  40,
-                  color: null,
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.center,
-                ),
-                SizedBox(width: 15,),
-                Text("Youtube",
-
-                    style: GoogleFonts.roboto(
-                      fontSize:15.0,
-
-                      color: Color(0xFF000000),
-                      fontWeight: FontWeight.bold,
-
-                    ))
-              ])),
-          ),
-                Container(
-                  width:MediaQuery.of(context).size.width/2-2 ,
-                  child:GestureDetector( onTap: () {
+                GestureDetector( onTap: () {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                       MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.telegram,name:"Telegram");
+                            return FacebookPage(link:socialMediaObject.koo,name:"Koo");
                           }
                       ) );
 
-                }, child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(width: 10,),
-                      Image(
-                        image: new AssetImage("assets/telegram.png"),
-                        width: 37,
-                        height:  37,
-                        color: null,
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.center,
-                      ),
-                      SizedBox(width: 15,),
-                      Text("Telegram",
+                }, child:  Container(
+                  width:MediaQuery.of(context).size.width/2-2,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
 
-                          style: GoogleFonts.roboto(
-                            fontSize:15.0,
+                        Image(
+                          image: new AssetImage("assets/ic_koo.png"),
+                          width: 40,
+                          height:  40,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Koo",
 
-                            color: Color(0xFF000000),
-                            fontWeight: FontWeight.bold,
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
 
-                          ))
-                    ])),)
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
+
+                            ))
+                      ])),
+
+                ),  GestureDetector( onTap: () {
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                      MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return FacebookPage(link:socialMediaObject.twitter,name:"Twitter");
+                          }
+                      ) );
+
+                }, child:Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                  width:MediaQuery.of(context).size.width/2-2 ,
+                  child:   Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Image(
+                          image: new AssetImage("assets/twitter.png"),
+                          width: 40,
+                          height:  40,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Twitter",
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
+
+                            ))
+                      ])),),
+
 
 
 
@@ -265,82 +284,177 @@ class SocialMediaPageState extends State<SocialMediaPage> {
 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-
-          Container(
-          width:MediaQuery.of(context).size.width/2-2,
-          child:  GestureDetector( onTap: () {
-            Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return FacebookPage(link:socialMediaObject.koo,name:"Koo");
-                    }
-                ) );
-
-          }, child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-
-                Image(
-                  image: new AssetImage("assets/ic_koo.png"),
-                  width: 40,
-                  height:  40,
-                  color: null,
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.center,
-                ),
-                SizedBox(width: 15,),
-                Text("Koo",
-
-                    style: GoogleFonts.roboto(
-                      fontSize:15.0,
-
-                      color: Color(0xFF000000),
-                      fontWeight: FontWeight.bold,
-
-                    ))
-              ])),
-
-          ),
-                Container(
-                  width:MediaQuery.of(context).size.width/2-2,
-                  child:
                 GestureDetector( onTap: () {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                       MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.instagram);
+                            return FacebookPage(link:socialMediaObject.youtube,name:"Youtube");
                           }
                       ) );
 
-                }, child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(width: 10,),
-                      Image(
-                        image: new AssetImage("assets/ic_instagram.png"),
-                        width: 40,
-                        height:  40,
-                        color: null,
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.center,
-                      ),
-                      SizedBox(width: 15,),
-                      Text("Instagram",
+                }, child:
+                Container(
+                  width:MediaQuery.of(context).size.width/2-2,
+                  child:  Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Image(
+                          image: new AssetImage("assets/ic_youtube.png"),
+                          width: 40,
+                          height:  40,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Youtube",
 
-                          style: GoogleFonts.roboto(
-                            fontSize:15.0,
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
 
-                            color: Color(0xFF000000),
-                            fontWeight: FontWeight.bold,
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
 
-                          ))
-                    ])),
-                )
+                            ))
+                      ])),
+                ),
+        GestureDetector( onTap: () {
+    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+    MaterialPageRoute(
+    builder: (BuildContext context) {
+    return FacebookPage(link:socialMediaObject.telegram,name:"Telegram");
+    }
+    ) );
+
+    }, child:  Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                  width:MediaQuery.of(context).size.width/2-2 ,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Image(
+                          image: new AssetImage("assets/telegram.png"),
+                          width: 37,
+                          height:  37,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Telegram",
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
+
+                            ))
+                      ])),)
 
 
 
               ])
 
+          ,
+          SizedBox(height: 5,),
+          Divider(
+            color: Colors.grey,
+          ),
+          SizedBox(height: 5,),
+
+          Row(
+
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+
+                GestureDetector( onTap: () {
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                      MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return FacebookPage(link:socialMediaObject.website,name:"Website");
+                          }
+                      ) );
+
+                }, child:  Container(
+                  width:MediaQuery.of(context).size.width/2-2,
+                  child:  Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Image(
+                          image: new AssetImage("assets/ic_website.jpg"),
+                          width: 37,
+                          height:  37,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Website",
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
+
+                            ))
+                      ])),
+                ),
+                GestureDetector( onTap: () {
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                      MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return FacebookPage(link:socialMediaObject.download,name:"Download");
+                          }
+                      ) );
+
+                }, child:  Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                  width:MediaQuery.of(context).size.width/2-2 ,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 10,),
+                        Image(
+                          image: new AssetImage("assets/ic_downloads.jpg"),
+                          width: 37,
+                          height:  37,
+                          color: null,
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Text("Download",
+
+                            style: GoogleFonts.roboto(
+                              fontSize:15.0,
+
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.bold,
+
+                            ))
+                      ])),)
+
+
+
+              ])
+
+          ,SizedBox(height: 5,),
+          Divider(
+            color: Colors.grey,
+          ),
 
 
 

@@ -1,6 +1,7 @@
 
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
+import 'package:bhartiye_parivar/Interfaces/OnHomeTapped.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
 import 'package:bhartiye_parivar/Views/terms.dart';
@@ -31,7 +32,7 @@ import '../Utils/Prefer.dart';
 import '../Views/YoutubeApp.dart';
 import 'DonateUs.dart';
 import '../Utils/fab_bottom_app_bar.dart';
-
+import 'package:launch_review/launch_review.dart';
 import 'HomeChild.dart';
 import '../ApiResponses/OTPResponse.dart';
 import 'Books.dart';
@@ -65,9 +66,11 @@ import '../Interfaces/NewNotificationRecieved.dart';
 import 'NewsDetail.dart';
 import '../Views/Faq.dart';
 import '../Views/MyDrawer.dart';
+import '../Interfaces/OnLandScape.dart';
 
 
 class HomePage extends StatefulWidget {
+
   final int myContentId;
   final String contentType;
   final String invitedBy;
@@ -81,8 +84,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver{
+  static final homeChildPageState = new GlobalKey<HomeChildPageState>();
   int MyContentId;
   int selectedIndex = 0;
+  bool isFullScreen=false;
   String cartCount='0';
   String mContentType;
   String mInvitedBy="";
@@ -165,6 +170,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
     _children = [
       new HomeChildPage(),
+      //new HomeChildPage(key: homeChildPageState,),
       new NewsMainPage(),
       new BooksPage(),
 
@@ -191,6 +197,21 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       // print("my_cart_count"+event.count);
       print("not_home_api_called");
       homeAPICall();
+    });
+
+    eventBusLSP.on<OnLandScape>().listen((event) {
+
+      if(event.count=='Land'){
+        setState(() {
+          isFullScreen=true;
+        });
+      }
+      else{
+        setState(() {
+          isFullScreen=false;
+        });
+      }
+
     });
    // EventBus eventBus = EventBus();
     eventBus.on<OnCartCount>().listen((event) {
@@ -327,6 +348,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
        //if(Amount!=null) {
          Prefs.setDonationAmount(_prefs, (Amount).toString());
        //}
+
+
+         if(res.data.app_version>Constants.Version_Code){
+           showForceUpdate();
+         }
+
+
         String remainder_date=res.data.remainder_date;
         if(remainder_date!=null && !remainder_date.isEmpty) {
           final DateTime now = DateTime.now();
@@ -351,7 +379,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   Future<HomeAPIResponse> getHOMEAPI(String user_Token) async {
 
-    var body ={'none':'none'};
+    var body ={'app_code':Constants.AppCode};
     MainRepository repository=new MainRepository();
     return repository.fetchHomeData(body,user_Token);
 
@@ -366,11 +394,55 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
   void onItemTapped(int index) {
-
+    print("---selected index 56");
+    print(index.toString());
     setState(() {
       selectedIndex = index;
     });
+
+    if(index==0){
+     // homeChildPageState.currentState.tabController.animateTo(0);
+      eventBusHT.fire(OnHomeTapped("FIND"));
+
+    }
+
   }
+
+
+  void showForceUpdate(){
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+
+        LaunchReview.launch();
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+
+      
+      content: Text("New Version of app available. Please update for latest features."),
+      actions: [
+
+        okButton,
+
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+
+
+  }
+
   void showDialogCart(){
     showModalBottomSheet(
         context: context,
@@ -493,8 +565,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     ));
       return  WillPopScope(
         child:Scaffold(
-        appBar:selectedIndex==1?null: AppBar(
+        appBar:selectedIndex==1 || isFullScreen?null: AppBar(
           elevation: 0,
+
           toolbarHeight: 56,
           backgroundColor: Color(AppColors.BaseColor),
           title: Text(tit, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
@@ -590,7 +663,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         ),
         drawer: MyDrawerPage(),
         body: _children[selectedIndex],
-        bottomNavigationBar: selectedIndex==1?null:FABBottomAppBar(
+        bottomNavigationBar: selectedIndex==1 || isFullScreen?null:FABBottomAppBar(
           backgroundColor: Color(AppColors.BaseColor),
           selectedColor:Colors.white,
           onTabSelected: onItemTapped,
@@ -615,7 +688,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           ],
         ),
       ),
-          onWillPop: () => selectedIndex==1? onBackNews():showModalBottomSheet(
+          onWillPop: () => selectedIndex==1 || selectedIndex==2? onBackNews():showModalBottomSheet(
               context: context,
               builder: (context) {
                 return Column(

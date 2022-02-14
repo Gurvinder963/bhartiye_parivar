@@ -21,21 +21,44 @@ import 'Instagram.dart';
 import '../Utils/AppColors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../localization/language/languages.dart';
+import 'package:bhartiye_parivar/Interfaces/OnHomeTapped.dart';
+import 'package:bhartiye_parivar/Interfaces/OnLandScape.dart';
 
 class HomeChildPage extends StatefulWidget {
+  const HomeChildPage({Key key}) : super(key: key);
   @override
   HomeChildPageState createState() {
     return HomeChildPageState();
   }
 }
 
-class HomeChildPageState extends State<HomeChildPage> {
-
+class HomeChildPageState extends State<HomeChildPage> with SingleTickerProviderStateMixin{
+  TabController tabController;
+  bool isFullScreen=false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    tabController = new TabController(vsync: this, length: 11);
 
+    eventBusHT.on<OnHomeTapped>().listen((event) {
+      tabController.animateTo(0);
+    });
+
+    eventBusLSP.on<OnLandScape>().listen((event) {
+
+      if(event.count=='Land'){
+        setState(() {
+          isFullScreen=true;
+        });
+      }
+      else{
+        setState(() {
+          isFullScreen=false;
+        });
+      }
+
+    });
 
   }
 
@@ -50,12 +73,13 @@ class HomeChildPageState extends State<HomeChildPage> {
         child: DefaultTabController(
           length: 11,
           child: Scaffold(
-            appBar: AppBar(
+            appBar: isFullScreen?null:AppBar(
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
               leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
               toolbarHeight: 40,
               flexibleSpace: TabBar(
+                controller: tabController,
                 isScrollable: true,
                 unselectedLabelColor: Color(0xFF5a5a5a),
                 labelColor: Colors.white,
@@ -115,6 +139,7 @@ class HomeChildPageState extends State<HomeChildPage> {
               ),
             ),
             body: TabBarView(
+              controller: tabController,
               children: [
 
                 new MainPage(),

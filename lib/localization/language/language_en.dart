@@ -17,6 +17,11 @@ class LanguageEn extends Languages {
   @override
   String get labelInfo => "This is multi-languages demo application";
 
+
+  @override
+  // TODO: implement aboutUs
+  String get adminPanel => 'Admin Panel';
+
   @override
   // TODO: implement aboutUs
   String get aboutUs => 'About us';

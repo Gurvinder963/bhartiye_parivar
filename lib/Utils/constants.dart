@@ -9,8 +9,8 @@ class Constants{
 static const String BaseUrl="https://staging2.studyshot.in/";
 static const String BaseUrlWithoutHttps="staging2.studyshot.in";
   static String answerType="Answered";
-  static const int Version_Code=18;
-  static const String Version_Name="1.6.5";
+  static const int Version_Code=1;
+  static const String Version_Name="1.0.0";
   static int AnswerId=1;
 //static const String BaseUrl="https://studyshot.in/";
 //static const String BaseUrlWithoutHttps="studyshot.in";

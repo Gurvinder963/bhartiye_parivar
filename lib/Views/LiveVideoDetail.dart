@@ -534,19 +534,6 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
 
                                                         ]))),
 
-
-                                          ])),
-
-                                  Container(
-                                      margin:  EdgeInsets.fromLTRB(10,15,10,0),
-                                      child:Row(
-
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(width: 2,),
-
-
-
                                             IconButton(
                                                 icon:Image(
                                                   image: new AssetImage("assets/share.png"),
@@ -562,95 +549,108 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                                                   //     .then((res) async {
                                                   //
                                                   //
-                                                  //   getShortLink().then((res) {
-                                                  //     setState(() {
-                                                  //       _isInAsyncCall = false;
-                                                  //     });
-                                                  //     var url = res.shortUrl
-                                                  //         .toString();
-                                                  //
-                                                  //     _onShare(
-                                                  //         context, mContent.liveTitle +
-                                                  //         ' ' +
-                                                  //         url, mContent.liveVideoImage);
-                                                  //   });
-                                                  //
-                                                  //
+                                                    getShortLink().then((res) {
+                                                       setState(() {
+                                                         _isInAsyncCall = false;
+                                                      });
+                                                       var url = res.shortUrl
+                                                           .toString();
+
+                                                       _onShare(
+                                                           context, mContent.liveTitle +
+                                                           ' ' +
+                                                           url, mContent.liveVideoImage);
+                                                     });
+
+
                                                   // });
 
                                                 }),
+                                          ])),
+
+                                  Container(
+                                      margin:  EdgeInsets.fromLTRB(10,15,10,0),
+                                      child:Row(
+
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
                                             SizedBox(width: 2,),
 
+
+
+                                            //
+                                            // SizedBox(width: 2,),
+
                                             //  Icon(Icons.bookmark_outline_outlined,size: 28,color: Color(0xFF666666),),
-                                            Expanded( child:Align(
-                                                alignment: Alignment.centerRight,
-                                                child: GestureDetector(
-                                                    onTap: () {
-
-                                                      if(isSubscribed){
-                                                        Widget okButton = FlatButton(
-                                                          child: Text("UNSUBSCRIBE"),
-                                                          onPressed: () {
-                                                            Navigator.of(context, rootNavigator: true).pop('dialog');
-                                                            subscribeAPI();
-
-                                                          },
-                                                        );
-                                                        Widget CANCELButton = FlatButton(
-                                                          child: Text("CANCEL"),
-                                                          onPressed: () {
-                                                            Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                                          },
-                                                        );
-                                                        // set up the AlertDialog
-                                                        AlertDialog alert = AlertDialog(
-
-                                                          content: Text("Unsubscribe from "+mContent.liveChannel),
-                                                          actions: [
-                                                            CANCELButton,
-                                                            okButton,
-
-                                                          ],
-                                                        );
-
-                                                        // show the dialog
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext context) {
-                                                            return alert;
-                                                          },
-                                                        );
-                                                      }
-                                                      else{
-                                                        subscribeAPI();
-
-                                                      }
-
-
-
-
-                                                    },child:isSubscribed?Text("SUBSCRIBED",
-                                                  textAlign: TextAlign.center,
-
-
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize:16.0,
-
-                                                    color: Color(0xFF000000),
-                                                    fontWeight: FontWeight.w600,
-
-                                                  ),):Text("SUBSCRIBE \nNOTIFICATIONS",
-                                                  textAlign: TextAlign.center,
-
-
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize:14.0,
-
-                                                    color: Color(AppColors.BaseColor),
-                                                    fontWeight: FontWeight.w600,
-
-                                                  ),)))),  SizedBox(width: 5,),
+                                            // Expanded( child:Align(
+                                            //     alignment: Alignment.centerRight,
+                                            //     child: GestureDetector(
+                                            //         onTap: () {
+                                            //
+                                            //           if(isSubscribed){
+                                            //             Widget okButton = FlatButton(
+                                            //               child: Text("UNSUBSCRIBE"),
+                                            //               onPressed: () {
+                                            //                 Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            //                 subscribeAPI();
+                                            //
+                                            //               },
+                                            //             );
+                                            //             Widget CANCELButton = FlatButton(
+                                            //               child: Text("CANCEL"),
+                                            //               onPressed: () {
+                                            //                 Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            //
+                                            //               },
+                                            //             );
+                                            //             // set up the AlertDialog
+                                            //             AlertDialog alert = AlertDialog(
+                                            //
+                                            //               content: Text("Unsubscribe from "+mContent.liveChannel),
+                                            //               actions: [
+                                            //                 CANCELButton,
+                                            //                 okButton,
+                                            //
+                                            //               ],
+                                            //             );
+                                            //
+                                            //             // show the dialog
+                                            //             showDialog(
+                                            //               context: context,
+                                            //               builder: (BuildContext context) {
+                                            //                 return alert;
+                                            //               },
+                                            //             );
+                                            //           }
+                                            //           else{
+                                            //             subscribeAPI();
+                                            //
+                                            //           }
+                                            //
+                                            //
+                                            //
+                                            //
+                                            //         },child:isSubscribed?Text("SUBSCRIBED",
+                                            //       textAlign: TextAlign.center,
+                                            //
+                                            //
+                                            //       style: GoogleFonts.roboto(
+                                            //         fontSize:16.0,
+                                            //
+                                            //         color: Color(0xFF000000),
+                                            //         fontWeight: FontWeight.w600,
+                                            //
+                                            //       ),):Text("SUBSCRIBE \nNOTIFICATIONS",
+                                            //       textAlign: TextAlign.center,
+                                            //
+                                            //
+                                            //       style: GoogleFonts.roboto(
+                                            //         fontSize:14.0,
+                                            //
+                                            //         color: Color(AppColors.BaseColor),
+                                            //         fontWeight: FontWeight.w600,
+                                            //
+                                            //       ),)))),  SizedBox(width: 5,),
                                           ]))
                                   ,  Padding(
                                       padding: EdgeInsets.fromLTRB(10,7,10,3),
@@ -786,41 +786,14 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
           builder: (context, player) => mainWidget(player));
     }
   }
-  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
+  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String channel,String channel_image,String videoUrl,String videoSourceType){
 
 
-
-
-    String url="";
-    if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
-
-    }
-    else if(videoSourceType=='dailymotion'){
-      String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
-      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    }
-    else {
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
-
-      }
-      // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    }
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(DateTime.parse(createdAt));
-
-    channel=channel==null?"My Channel":channel;
-    duration=duration==null?"4:50":duration;
+    // final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    // final String formatted = formatter.format(DateTime.parse(createdAt));
+    //
+    // channel=channel==null?"My Channel":channel;
+    // duration=duration==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
@@ -852,7 +825,8 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                       )),
 
 
-                  AspectRatio(
+
+                  thumbnail!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -863,45 +837,13 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(thumbnail),
                           ),
                         ),
 
-                      )),
-                  /*  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,3),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color: Color(0xFF5a5a5a),
-                              child: Text(lang,  style: GoogleFonts.roboto(
-                                fontSize:16.0,
-
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
+                      )):Container(height: 0,width: 0,),
 
 
-                      )),*/
-                  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,5),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color:  Color(0xFF5a5a5a),
-                              child: Text(duration,  style: GoogleFonts.roboto(
-                                fontSize:14.0,
-
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
-
-
-                      )),
                 ],
               ),
 
@@ -912,7 +854,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
 
-                        new Container(
+                        channel_image!=null? new Container(
                             width: 44.0,
                             height: 44.0,
                             decoration: new BoxDecoration(
@@ -922,7 +864,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                                     image: new NetworkImage(
                                         channel_image)
                                 )
-                            )),
+                            )):Container(width: 0,height: 0,),
                         SizedBox(height: 5,width: 8,),
                         new Expanded(
                             flex: 7,
@@ -949,12 +891,12 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(channel,   overflow: TextOverflow.ellipsis,
+                                                channel!=null? Text(channel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
 
-                                                  ),),
+                                                  ),):Container(width: 0,height: 0,),
                                                 SizedBox(width: 10),
 
                                                 Container(
@@ -966,43 +908,38 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                                                       color: Color(0xFF5a5a5a)),
                                                 ),
                                                 SizedBox(width: 10),
-                                                Text(formatted,   overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1, style: GoogleFonts.roboto(
-                                                    fontSize:12.0,
-                                                    color: Color(0xFF5a5a5a),
 
-                                                  ),),
                                                 SizedBox(width: 10),
                                               ])),
 
 
 
                                     ]))),
-                        new Expanded(
-                            flex: 1,
-
-                            child:PopupMenuButton(
-                                icon: Icon(Icons.more_vert),
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    child: Text("Share"),
-                                    value: 1,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Report"),
-                                    value: 2,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Bookmark"),
-                                    value: 3,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Subscribe Notifications"),
-                                    value: 4,
-                                  )
-                                ]
-                            )
-                        )
+                        // new Expanded(
+                        //     flex: 1,
+                        //
+                        //     child:PopupMenuButton(
+                        //         icon: Icon(Icons.more_vert),
+                        //         itemBuilder: (context) => [
+                        //           PopupMenuItem(
+                        //             child: Text("Share"),
+                        //             value: 1,
+                        //           ),
+                        //           PopupMenuItem(
+                        //             child: Text("Report"),
+                        //             value: 2,
+                        //           ),
+                        //           PopupMenuItem(
+                        //             child: Text("Bookmark"),
+                        //             value: 3,
+                        //           ),
+                        //           PopupMenuItem(
+                        //             child: Text("Subscribe Notifications"),
+                        //             value: 4,
+                        //           )
+                        //         ]
+                        //     )
+                        // )
 
 
                       ]))
@@ -1044,16 +981,17 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
               child:
               _buildBoxVideoList(
                   context,
-                  mainData[index].id,
-                  mainData[index].title,
-                  mainData[index].videoImage,
+                  mainData[index].liveId,
 
-                  mainData[index].created_at,
-                  mainData[index].channel,
-                  mainData[index].channel_image,
-                  mainData[index].video_duration,
-                  mainData[index].videoUrl,
-                  mainData[index].videoSourceType
+                  mainData[index].liveTitle,
+                  mainData[index].liveVideoImage,
+
+
+                  mainData[index].liveChannel,
+                  mainData[index].liveChannelImage,
+
+                  mainData[index].liveVideoUrl,
+                  mainData[index].liveVideoSourceType
 
               )
 

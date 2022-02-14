@@ -31,8 +31,9 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../Interfaces/OnAnyDrawerItemOpen.dart';
 import '../Interfaces/OnLangChange.dart';
+import '../Interfaces/OnLandScape.dart';
 String videoCategory="main";
-YoutubePlayerController _controller;
+YoutubePlayerController _controller=null;
 TextEditingController _idController;
 TextEditingController _seekToController;
 
@@ -64,11 +65,38 @@ class MainPageState extends State<MainPage> {
   bool _isInAsyncCall = false;
   bool _isPlayerReady = false;
   String USER_ID;
-  @override
-  void dispose() {
 
-    _sc.dispose();
+  @override
+  dispose(){
+    if (_controller!=null && _controller.value.isFullScreen) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+          .then((_) {
+        Navigator.pop(context);
+      });
+    } else {
+      _sc.dispose();
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      if (_controller!=null){
+        _controller.dispose();
+        _idController.dispose();
+        _seekToController.dispose();
+      }
+
+      super.dispose();
+    }
+
     super.dispose();
+  }
+
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+  if(_controller!=null) {
+    _controller.pause();
+  }
+
+    super.deactivate();
   }
 
   @override
@@ -90,7 +118,9 @@ class MainPageState extends State<MainPage> {
 
      print("-------on pause call-------");
 
-      _controller.pause();
+     if(_controller!=null) {
+       _controller.pause();
+     }
     });
 
     eventBusLC.on<OnLangChange>().listen((event) {
@@ -123,6 +153,8 @@ class MainPageState extends State<MainPage> {
 
       return (prefs.getString('token'));
     });
+
+
     _sc.addListener(() {
 
       print(_sc.position.pixels);
@@ -140,7 +172,7 @@ class MainPageState extends State<MainPage> {
       setState(() {
         _playerState = _controller.value.playerState;
         _videoMetaData = _controller.metadata;
-        print(_controller.value);
+        print(_videoMetaData);
 
       });
     }
@@ -163,10 +195,72 @@ class MainPageState extends State<MainPage> {
           isLoading = false;
           mainData.addAll(value.data);
 
-
           if(liveData==null && value.live.liveStatus!="0") {
             liveData = value.live;
+            if (liveData != null && liveData.liveVideoSourceType=='youtube' && value.live.liveStatus=="1") {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.landscapeRight,
+                DeviceOrientation.landscapeLeft,
+                DeviceOrientation.portraitUp,
+                DeviceOrientation.portraitDown,
+              ]);
+              print(liveData.liveStatus);
+              var videoIdd;
+              try {
+                videoIdd = YoutubePlayer.convertUrlToId(liveData.liveVideoUrl);
+              } on Exception catch (exception) {
+                // only executed if error is of type Exception
+                print('exception');
+              } catch (error) {
+                // executed for errors of all types other than Exception
+                print('catch error');
+                //  videoIdd="error";
+
+              }
+
+
+              _controller = YoutubePlayerController(
+                initialVideoId: videoIdd,
+                flags: const YoutubePlayerFlags(
+                  mute: false,
+                  autoPlay: true,
+                  //  controlsVisibleAtStart: true,
+                  disableDragSeek: false,
+                  //  hideControls: false,
+                  loop: false,
+                  isLive: true,
+                  forceHD: false,
+                  enableCaption: true,
+                ),
+              )
+                ..addListener(listener);
+              _idController = TextEditingController();
+              _seekToController = TextEditingController();
+              _videoMetaData = const YoutubeMetaData();
+              _playerState = PlayerState.unknown;
+            }
+        else if (liveData != null && liveData.liveVideoSourceType=='facebook' && value.live.liveStatus=="1") {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.landscapeRight,
+                DeviceOrientation.landscapeLeft,
+                DeviceOrientation.portraitUp,
+                DeviceOrientation.portraitDown,
+              ]);
+            }
+       else {
+              SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+            }
+
+
+
           }
+
+          else {
+            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+          }
+
+
+
           if (!mainData.isEmpty) {
             page++;
           }
@@ -377,53 +471,22 @@ class MainPageState extends State<MainPage> {
         .of(context)
         .orientation == Orientation.portrait;
 
-    if (!isPortrait) {
-      // marginPixel=0;
-      // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-      SystemChrome.setEnabledSystemUIOverlays([]);
-    }
-    else {
-      //marginPixel=0;
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    }
-
-    print("live data");
-    if (liveData != null && liveData.liveVideoSourceType=='youtube') {
-      print(liveData.liveStatus);
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(liveData.liveVideoUrl);
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
-
+    if(liveData!=null &&
+        liveData.liveStatus=="1") {
+      if (!isPortrait) {
+        // marginPixel=0;
+        // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+        SystemChrome.setEnabledSystemUIOverlays([]);
+        eventBusLSP.fire(OnLandScape("Land"));
       }
+      else {
+        //marginPixel=0;
+        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        eventBusLSP.fire(OnLandScape("Port"));
+      }
+      }
+    print("live data");
 
-
-      _controller = YoutubePlayerController(
-        initialVideoId: videoIdd,
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          controlsVisibleAtStart: true,
-          disableDragSeek: false,
-          hideControls: false,
-          loop: false,
-          isLive: true,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )
-        ..addListener(listener);
-      _idController = TextEditingController();
-      _seekToController = TextEditingController();
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-    }
 
 
     if (liveData != null && liveData.liveVideoSourceType=='youtube') {
@@ -435,13 +498,7 @@ class MainPageState extends State<MainPage> {
             });
           },
           onExitFullScreen: () {
-            if (_controller.value.isFullScreen) {
-              SystemChrome.setPreferredOrientations(
-                  [DeviceOrientation.portraitUp])
-                  .then((_) {
-                Navigator.pop(context);
-              });
-            }
+
           },
           player: YoutubePlayer(
             controller: _controller,
@@ -497,7 +554,9 @@ class MainPageState extends State<MainPage> {
 
       return Scaffold(
 
-        body: _buildList(),
+        body: Container(
+            margin: EdgeInsets.fromLTRB(0.0,2.0,0.0,0.0),
+            child:_buildList()),
 
       );
 
@@ -517,11 +576,9 @@ class MainPageState extends State<MainPage> {
 
   Widget mainWidget(Widget player){
 
-    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-    final height = MediaQuery.of(context).size.height;
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    //final String formatted = formatter.format(DateTime.parse(liveData.));
+
+
 
 
     String html;
@@ -529,7 +586,7 @@ class MainPageState extends State<MainPage> {
       html = '''
           <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            &autoplay=false&href=${liveData.liveVideoUrl}" </iframe></div>
+            &autoplay=false&href=${liveData.liveVideoUrl}" allowfullscreen></iframe></div>
      ''';
 
 
@@ -565,7 +622,7 @@ class MainPageState extends State<MainPage> {
 
                       children: <Widget>[
                         // liveData.liveVideoSourceType=='facebook' ?
-
+                        SizedBox(height: 2,),
 
                         liveData!=null?(
 
@@ -709,8 +766,28 @@ class MainPageState extends State<MainPage> {
 
                                                 ]
                                             )
-                                        ):Container(width: 0.0, height: 0.0)
+                                        ):Container(width: 0.0, height: 0.0),
 
+                                        liveData!=null &&
+                                            liveData.liveStatus=="1"?  new Expanded(
+                                            flex: 3,
+                                            child:Container(
+                                                color:  Color(0xFFff0000),
+                                                padding:EdgeInsets.fromLTRB(5,5,5,5),
+                                                child:
+                                            Center(child:Text(liveData.liveScheduledAt,
+
+
+
+                                              style: GoogleFonts.roboto(
+                                                fontSize:14.0,
+
+
+                                                color: Color(0xFFffffff),
+                                                fontWeight: FontWeight.w500,
+
+                                              )),))
+                                        ):Container(width: 0.0, height: 0.0)
                                       ])):Container(width: 0.0, height: 0.0),
 
                            liveData!=null && liveData.liveStatus=="2"?Padding(
@@ -866,36 +943,11 @@ class MainPageState extends State<MainPage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark){
-
-    String url="";
-    if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
-
-    }
-    else if(videoSourceType=='dailymotion'){
-      String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
-      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    }
 
 
+  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark,int watched_percent){
 
-    else {
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-        print('this is ' + videoIdd);
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
 
-      }
-      // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
 
@@ -932,7 +984,7 @@ class MainPageState extends State<MainPage> {
                       )),
 
 
-                  AspectRatio(
+                  thumbnail!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -943,29 +995,12 @@ class MainPageState extends State<MainPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(thumbnail),
                           ),
                         ),
 
-                      )),
+                      )):Container(height: 0,width: 0,),
 
-                  /*  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,3),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color: Color(0xFF5a5a5a),
-                              child: Text(lang,  style: GoogleFonts.roboto(
-                                fontSize:16.0,
-
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
-
-
-                      )),*/
                   Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomRight,
@@ -981,10 +1016,35 @@ class MainPageState extends State<MainPage> {
 
                               ),))
 
-
                       )),
+
+                  watched_percent>0?Positioned.fill(
+            child:Align(
+              alignment: Alignment.bottomLeft,
+              child:
+                  SliderTheme(
+                    child: Container(
+                        height: 1,
+                        child:Slider(
+                      value: watched_percent.toDouble(),
+
+                      max: 100,
+                      min: 0,
+                      activeColor: Colors.red,
+                      inactiveColor: Colors.grey,
+                      onChanged: (double value) {},
+                    )),
+                    data: SliderTheme.of(context).copyWith(
+                        trackHeight: 1,
+                        trackShape: CustomTrackShape(),
+                        thumbColor: Colors.transparent,
+
+                        thumbShape: SliderComponentShape.noThumb),
+                  ))):Container(height: 0,width: 0,),
+
                 ],
               ),
+
 
               Container(
                   margin:  EdgeInsets.fromLTRB(10,5,10,0),
@@ -1213,7 +1273,9 @@ class MainPageState extends State<MainPage> {
               return GestureDetector(
                   onTap: () =>
                   {
-
+                  if(_controller!=null) {
+                  _controller.pause(),
+                   },
                     Navigator.of(context, rootNavigator: true)
                         .push( // ensures fullscreen
                         MaterialPageRoute(
@@ -1239,6 +1301,7 @@ class MainPageState extends State<MainPage> {
                       mainData[index].videoSourceType,
                       mainData[index].is_subscribed,
                       mainData[index].bookmark,
+                      mainData[index].watched_percent,
 
 
                   )
@@ -1253,4 +1316,19 @@ class MainPageState extends State<MainPage> {
       );
   }
 
+}
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
 }

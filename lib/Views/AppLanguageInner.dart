@@ -15,6 +15,7 @@ import '../Repository/MainRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import '../Interfaces/OnLangChange.dart';
 class AppLanguageInnerPage extends StatefulWidget {
 
   final String from;
@@ -372,7 +373,7 @@ class AppLanguageInnerPageState extends State<AppLanguageInnerPage> {
             changeLanguageContent(context,aa);
 
 
-
+            eventBusLC.fire(OnLangChange("FIND"));
               Navigator.of(context, rootNavigator: true).pop(context);
 
 

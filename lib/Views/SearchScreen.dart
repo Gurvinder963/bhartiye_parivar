@@ -29,6 +29,7 @@ import '../ApiResponses/SearchResponse.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/NewsData.dart';
 import '../ApiResponses/BookData.dart';
+import '../Interfaces/OnAnyDrawerItemOpen.dart';
 
 class ItemData {
 
@@ -75,7 +76,7 @@ class SearchScreenPageState extends State<SearchScreenPage> {
   @override
   void initState() {
     super.initState();
-
+    eventBusDO.fire(OnAnyDrawerItemOpen("FIND"));
     qtyData.add('1');
     qtyData.add('2');
     qtyData.add('3');

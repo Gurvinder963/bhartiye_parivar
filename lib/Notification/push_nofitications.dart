@@ -171,16 +171,16 @@ class PushNotificationsManager {
              String title;
               if(type=='1'){
                 msg="New Video Added";
-                title=message['notification']['title'];
+                title=message['data']['title'];
               }
 
               else if(type=='2'){
                 msg="New News Added";
-                title=message['notification']['title'];
+                title=message['data']['title'];
               }
               else if(type=='3'){
                 msg="New Book Added";
-                title=message['notification']['title'];
+                title=message['data']['title'];
               }
               else{
                 msg="Donation Reminder";
@@ -243,7 +243,7 @@ class PushNotificationsManager {
         htmlFormatSummaryText: true);
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails('big text channel id',
-        'big text channel name', 'big text channel description',
+        'big text channel name', 'big text channel description',playSound: true,
         styleInformation: bigPictureStyleInformation);
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
 
@@ -282,6 +282,9 @@ class PushNotificationsManager {
         'big text channel name', 'big text channel description', importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('bell_in_temple'),
+
         styleInformation: bigTextStyleInformation);
     var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();

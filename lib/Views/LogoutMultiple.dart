@@ -62,7 +62,7 @@ class LogoutMultiplePageState extends State<LogoutMultiplePage> {
         appBar: AppBar(
           toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text("", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
+          title: Text("Logout", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
 
         ),
       body:Container(

@@ -162,7 +162,7 @@ child:ListView(
 
             Padding(
               padding: EdgeInsets.only(left: 15.0),
-              child: Text("Sound"),
+              child: Text("Notification Sound"),
             )
             ,Expanded(child:Align(
               alignment: Alignment.centerRight,

@@ -62,7 +62,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
-  bool isSubscribed= false;
+  int isSubscribed;
   var likeStatus=0;
   int page = 1;
   double _volume = 100;
@@ -118,6 +118,32 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     super.dispose();
   }
+
+
+  Future<ShortDynamicLink> getShortLinksingle(String contentID) async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?contentId=' +
+            contentID.toString() +
+            '&contentType=videos'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
+
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
+
+
   Future<ShortDynamicLink> getShortLink() async {
     setState(() {
       _isInAsyncCall = true;
@@ -140,10 +166,34 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
     return shortDynamicLink;
   }
+
+  Future<AddToCartResponse> subscribeChannelAPISINGLE(String channelId,String is_subscribed) async {
+    //  final String requestBody = json.encoder.convert(order_items);
+    String status = "1";
+    // if (isSubscribed==1) {
+    //   status = "0";
+    //
+    // } else {
+    //
+    //   status = "1";
+    // }
+
+    var body =json.encode({"channel_id":channelId,"is_subscribed":status});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchSubscribeChannel(body,user_Token);
+
+
+  }
+
+
+
+
+
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
     String status = "0";
-    if (isSubscribed) {
+    if (isSubscribed==1) {
       status = "0";
 
     } else {
@@ -188,7 +238,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
         setState(() {
           mContent=value.data[0];
           isBookMarked=mContent.bookmark;
-          isSubscribed=mContent.is_subscribed==1?true:false;
+          isSubscribed=mContent.is_subscribed;
           likeStatus=mContent.is_like;
           //   isLoading = false;
           // mainData.addAll(value.data);
@@ -242,7 +292,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       setState(() {
         _playerState = _controller.value.playerState;
         _videoMetaData = _controller.metadata;
-
+        print(_videoMetaData);
 
       });
     }
@@ -264,9 +314,57 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   Future<AddToCartResponse> postSaveVideoInput(String token,String clickedStatus,String videoPlayTime,String share,String content_id) async {
 
-    var body =json.encode({"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
+    var body =json.encode({"video_duration":convertTime(mContent.video_duration) ,"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
     MainRepository repository=new MainRepository();
     return repository.fetchSaveVideoInput(body,token);
+
+  }
+  int convertTime(String duration) {
+
+    RegExp regex = new RegExp(r'(\d+)');
+    List<String> a = regex.allMatches(duration).map((e) => e.group(0)).toList();
+
+    if (duration.indexOf('M') >= 0 &&
+        duration.indexOf('H') == -1 &&
+        duration.indexOf('S') == -1) {
+      a = ["0", a[0], "0"];
+    }
+
+    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+      a = [a[0], "0", a[1]];
+    }
+    if (duration.indexOf('H') >= 0 &&
+        duration.indexOf('M') == -1 &&
+        duration.indexOf('S') == -1) {
+      a = [a[0], "0", "0"];
+    }
+
+    int seconds = 0;
+
+    if (a.length == 3) {
+      seconds = seconds + int.parse(a[0]) * 3600;
+      seconds = seconds + int.parse(a[1]) * 60;
+      seconds = seconds + int.parse(a[2]);
+    }
+
+    if (a.length == 2) {
+      seconds = seconds + int.parse(a[0]) * 60;
+      seconds = seconds + int.parse(a[1]);
+    }
+
+    if (a.length == 1) {
+      seconds = seconds + int.parse(a[0]);
+    }
+    return seconds;
+  }
+
+
+  Future<BookMarkSaveResponse> postAddBookMarkSINGLE(String content_type,String token,String content_id) async {
+    String status = "1";
+
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddBookMark(body,token);
 
   }
 
@@ -453,20 +551,48 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       },
     );
   }
+
+  subscribeAPISINGLE(String channel_id,int is_subscribed,int index){
+
+    subscribeChannelAPISINGLE(channel_id.toString(),is_subscribed.toString()).then((res) async {
+      String msg;
+
+      mainData[index].is_subscribed=1;
+      msg="Subscribe channel successfully";
+
+      if(res.status==1){
+
+        Fluttertoast.showToast(
+            msg: msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+
+      }
+
+    }
+    );
+
+  }
+
   subscribeAPI(){
 
     subscribeChannelAPI(mContent.channel_id.toString(),"1").then((res) async {
       String msg;
-      if(isSubscribed){
+      if(isSubscribed==1){
         setState(() {
-          isSubscribed = false;
+          isSubscribed = 0;
         });
 
         msg="Unsubscribe channel successfully";
       }
       else{
         setState(() {
-          isSubscribed = true;
+          isSubscribed = 1;
         });
         msg="Subscribe channel successfully";
       }
@@ -864,7 +990,46 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                             child: GestureDetector(
                                                 onTap: () {
 
-                                                  if(isSubscribed){
+                                                  if(isSubscribed==2){
+                                                    Widget okButton = FlatButton(
+                                                      child: Text("OK"),
+                                                      onPressed: () {
+                                                        Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                        subscribeAPI();
+
+                                                      },
+                                                    );
+                                                    Widget CANCELButton = FlatButton(
+                                                      child: Text("CANCEL"),
+                                                      onPressed: () {
+                                                        Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                                      },
+                                                    );
+                                                    // set up the AlertDialog
+                                                    AlertDialog alert = AlertDialog(
+
+                                                      content: Text("Are you sure you want subscribe channel "+mContent.channel),
+                                                      actions: [
+                                                        CANCELButton,
+                                                        okButton,
+
+                                                      ],
+                                                    );
+
+                                                    // show the dialog
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return alert;
+                                                      },
+                                                    );
+
+
+
+                                                  }
+
+                                                  else if(isSubscribed==1){
                                                     Widget okButton = FlatButton(
                                                       child: Text("UNSUBSCRIBE"),
                                                       onPressed: () {
@@ -907,7 +1072,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
 
-                                                },child:isSubscribed?Text("SUBSCRIBED",
+                                                },child:isSubscribed==1?Text("SUBSCRIBED",
                                               textAlign: TextAlign.center,
 
 
@@ -917,7 +1082,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                                                 color: Color(0xFF000000),
                                                 fontWeight: FontWeight.w600,
 
-                                              ),):Text("SUBSCRIBE \nNOTIFICATIONS",
+                                              ),):isSubscribed==2?Text("BLOCKED",
+                                              textAlign: TextAlign.center,
+
+
+                                              style: GoogleFonts.roboto(
+                                                fontSize:16.0,
+
+                                                color: Color(0xFFFF0000),
+                                                fontWeight: FontWeight.w600,
+
+                                              ),):Text("SUBSCRIBE",
                                               textAlign: TextAlign.center,
 
 
@@ -1063,41 +1238,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           builder: (context, player) => mainWidget(player));
     }
   }
-  Widget _buildBoxVideoList(BuildContext context,int id,String title,String thumbnail,String createdAt,String channel,String channel_image,String duration,String videoUrl,String videoSourceType){
-
-
-
-
-    String url="";
-    if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
-
-    }
-    else if(videoSourceType=='dailymotion'){
-      String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
-      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    }
-    else {
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
-
-      }
-      // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    }
+  Widget _buildBoxVideoList(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark,int watched_percent){
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(createdAt));
 
-    channel=channel==null?"My Channel":channel;
-    duration=duration==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
@@ -1129,7 +1273,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                       )),
 
 
-                  AspectRatio(
+
+                  thumbnail!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -1140,28 +1285,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(thumbnail),
                           ),
                         ),
 
-                      )),
-                  /*  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,3),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color: Color(0xFF5a5a5a),
-                              child: Text(lang,  style: GoogleFonts.roboto(
-                                fontSize:16.0,
+                      )):Container(height: 0,width: 0,),
 
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
-
-
-                      )),*/
                   Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomRight,
@@ -1179,6 +1308,30 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
                       )),
+
+                  watched_percent>0? Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomLeft,
+                          child:
+                          SliderTheme(
+                            child: Container(
+                                height: 1,
+                                child:Slider(
+                                  value: watched_percent.toDouble(),
+
+                                  max: 100,
+                                  min: 0,
+                                  activeColor: Colors.red,
+                                  inactiveColor: Colors.grey,
+                                  onChanged: (double value) {},
+                                )),
+                            data: SliderTheme.of(context).copyWith(
+                                trackHeight: 1,
+                                trackShape: CustomTrackShape(),
+                                thumbColor: Colors.transparent,
+                                thumbShape: SliderComponentShape.noThumb),
+                          ))):Container(height: 0,width: 0,),
+
                 ],
               ),
 
@@ -1260,6 +1413,81 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                             child:PopupMenuButton(
                                 icon: Icon(Icons.more_vert),
+                                onSelected: (newValue) { // add this property
+
+                                  if(newValue==1){
+
+                                    postSaveVideoInput(user_Token,"","","1",id.toString())
+                                        .then((res) async {
+
+
+                                      getShortLinksingle(id.toString()).then((res) {
+                                        setState(() {
+                                          _isInAsyncCall = false;
+                                        });
+                                        var url = res.shortUrl
+                                            .toString();
+
+                                        _onShare(
+                                            context, title +
+                                            ' ' +
+                                            url, thumbnail);
+                                      });
+
+
+                                    });
+
+
+                                  }
+
+                                  else if(newValue==2){
+
+                                    _asyncInputDialog(context,id.toString());
+
+                                  }
+                                  else if(newValue==3){
+
+
+
+                                    postAddBookMarkSINGLE("1",user_Token,id.toString())
+                                        .then((res) async {
+
+
+                                      String mmsg="";
+                                      if (res.bookmarkType == 1) {
+
+                                        mmsg="Bookmark added!";
+                                      //  mainData[index].bookmark=true;
+
+
+
+                                      }
+                                      else {
+                                        mmsg="Bookmark removed!";
+                                        //mainData[index].bookmark=false;
+
+                                      }
+
+
+                                      Fluttertoast.showToast(
+                                          msg: mmsg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+
+                                    });
+
+                                  }
+                                  else if(newValue==4){
+
+                                    subscribeAPISINGLE(channel_id.toString(),is_subscribed, index);
+
+                                  }
+
+                                },
                                 itemBuilder: (context) => [
                                   PopupMenuItem(
                                     child: Text("Share"),
@@ -1320,17 +1548,22 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
               },
               child:
               _buildBoxVideoList(
-                  context,
-                  mainData[index].id,
-                  mainData[index].title,
-                  mainData[index].videoImage,
+                context,
+                index,
+                mainData[index].id,
+                mainData[index].title,
+                mainData[index].videoImage,
 
-                  mainData[index].created_at,
-                  mainData[index].channel,
-                  mainData[index].channel_image,
-                  mainData[index].video_duration,
-                  mainData[index].videoUrl,
-                  mainData[index].videoSourceType
+                mainData[index].created_at,
+                mainData[index].channel_id,
+                mainData[index].channel,
+                mainData[index].channel_image,
+                mainData[index].video_duration,
+                mainData[index].videoUrl,
+                mainData[index].videoSourceType,
+                mainData[index].is_subscribed,
+                mainData[index].bookmark,
+                mainData[index].watched_percent,
 
               )
 
@@ -1509,46 +1742,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   frameborder="1"></iframe>
      ''';
 
-   /*   html = """<!DOCTYPE html>
-          <html>
-            <head>
-            <style>
-            body {
-              overflow: hidden; 
-            }
-        .embed-youtube {
-            position: relative;
-            padding-bottom: 56px; 
-            padding-top: 20px;
-            height: 0;
-            overflow: hidden;
-        }
 
-        
-        .embed-youtube iframe {
-            border: 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
- 
-        </style>
-
-        <meta charset="UTF-8">
-         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-          <meta http-equiv="X-UA-Compatible" content="ie=edge">
-           </head>
-          <body bgcolor="#121212">                                    
-        <div class="embed-youtube">
-     <iframe id="ytplayer" type="text/html" style ="padding-bottom: 65px;position: relative; padding-top: 0px;height: 0;
-            overflow: hidden;"; 
-  src="https://www.youtube.com/embed/${videoIdd}?autoplay=1&enablejsapi=1"
-  frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
-          </body>                                    
-        </html>
-  """;*/
     }
 
     return    Container(
@@ -1561,40 +1755,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
                 children: <Widget>[
 
-                  /*  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
 
-                    alignment: Alignment.center,
-                    height: (MediaQuery.of(context).size.height/2)-80,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new AssetImage("assets/thumbnail.png"),
-
-                        alignment: Alignment.center,
-                      ),
-
-                    ),
-
-                  ),
-
-
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                    height: (MediaQuery.of(context).size.height/2)-80,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(content.videoImage),
-                      ),
-                    ),
-
-                  ),
-*/
                   AspectRatio(
           aspectRatio: 16 / 9,
           child:
@@ -1617,4 +1778,19 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
             ]));}
+}
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
 }

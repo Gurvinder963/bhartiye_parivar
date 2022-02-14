@@ -60,16 +60,18 @@ class QRcodeScanPageState extends State<QRcodeScanPage> {
           Padding(
             padding: EdgeInsets.fromLTRB(0,20,0,0),
 
-            child: Text(
-              'Scan any QR code',
+            child: Center(child:Text(
+              'Scan this QR to install \n'+Constants.AppName+' App',
+              textAlign:TextAlign.center ,
               style: TextStyle(
                 fontSize: 16.0,
                 letterSpacing: 1.5,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
 
+
               ),
-            ),
+            ),)
           ),
       ]
       )

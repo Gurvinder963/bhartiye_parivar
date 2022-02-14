@@ -37,7 +37,7 @@ class Series {
   String createdAt;
   int contentType;
   int isLike;
-  bool isSubscribed;
+  int isSubscribed;
   bool bookmark;
   String videoCategory;
 

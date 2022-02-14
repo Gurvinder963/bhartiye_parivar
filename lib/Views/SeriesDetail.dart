@@ -62,7 +62,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   List mainData = new List();
   bool isLoading = false;
   bool isBookMarked = false;
-  bool isSubscribed= false;
+  int isSubscribed= 0;
   var likeStatus=0;
   int page = 1;
   double _volume = 100;
@@ -143,7 +143,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
     String status = "0";
-    if (isSubscribed) {
+    if (isSubscribed==1) {
       status = "0";
 
     } else {
@@ -183,19 +183,19 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
           isLoading = true;
         });}
 
-      // getVideoDetail(user_Token,mContent.id.toString()).then((value) => {
-      //
-      //   setState(() {
-      //     mContent=value.data[0];
-      //     isBookMarked=mContent.bookmark;
-      //     isSubscribed=mContent.is_subscribed==1?true:false;
-      //     likeStatus=mContent.is_like;
-      //     //   isLoading = false;
-      //     // mainData.addAll(value.data);
-      //
-      //   })
-      //
-      // });
+      getVideoDetail(user_Token,mContent.videoId.toString()).then((value) => {
+
+        setState(() {
+        //  mContent=value.data[0];
+          isBookMarked=mContent.bookmark;
+          isSubscribed=mContent.isSubscribed;
+          likeStatus=mContent.isLike;
+          //   isLoading = false;
+          // mainData.addAll(value.data);
+
+        })
+
+      });
       postSaveVideoInput(user_Token,"1","","",mContent.videoId.toString())
           .then((res) async {});
 
@@ -448,16 +448,16 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
     subscribeChannelAPI(mContent.channelId.toString(),"1").then((res) async {
       String msg;
-      if(isSubscribed){
+      if(isSubscribed==1){
         setState(() {
-          isSubscribed = false;
+          isSubscribed = 0;
         });
 
         msg="Unsubscribe channel successfully";
       }
       else{
         setState(() {
-          isSubscribed = true;
+          isSubscribed = 1;
         });
         msg="Subscribe channel successfully";
       }
@@ -806,15 +806,15 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                                   alignment: Alignment.center,
                                                 ),
                                                 onPressed: () {
-                                                  setState(() {
-                                                    _isInAsyncCall = true;
-                                                  });
+                                                  // setState(() {
+                                                  //   _isInAsyncCall = true;
+                                                  // });
 
                                                   postAddBookMark("1",user_Token,mContent.videoId.toString())
                                                       .then((res) async {
-                                                    setState(() {
-                                                      _isInAsyncCall = false;
-                                                    });
+                                                    // setState(() {
+                                                    //   _isInAsyncCall = false;
+                                                    // });
 
 
                                                     String mmsg="";
@@ -855,7 +855,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                                 child: GestureDetector(
                                                     onTap: () {
 
-                                                      if(isSubscribed){
+                                                      if(isSubscribed==1){
                                                         Widget okButton = FlatButton(
                                                           child: Text("UNSUBSCRIBE"),
                                                           onPressed: () {
@@ -898,7 +898,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
 
 
-                                                    },child:isSubscribed?Text("SUBSCRIBED",
+                                                    },child:isSubscribed==1?Text("SUBSCRIBED",
                                                   textAlign: TextAlign.center,
 
 
@@ -1251,6 +1251,79 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
                             child:PopupMenuButton(
                                 icon: Icon(Icons.more_vert),
+                                onSelected: (newValue) { // add this property
+
+                                  if(newValue==1){
+
+                                    postSaveVideoInput(user_Token,"","","1",seriesData.videoId.toString())
+                                        .then((res) async {
+
+
+                                      getShortLinksingle(seriesData.videoId.toString()).then((res) {
+                                        setState(() {
+                                          _isInAsyncCall = false;
+                                        });
+                                        var url = res.shortUrl
+                                            .toString();
+
+                                        _onShare(
+                                            context, seriesData.title +
+                                            ' ' +
+                                            url, seriesData.videoImage);
+                                      });
+
+
+                                    });
+
+
+                                  }
+
+                                  else if(newValue==2){
+
+                                    _asyncInputDialog(context,seriesData.videoId.toString());
+
+                                  }
+                                  else if(newValue==3){
+
+
+
+                                    postAddBookMarkSINGLE("1",user_Token,seriesData.videoId.toString())
+                                        .then((res) async {
+
+
+                                      String mmsg="";
+                                      if (res.bookmarkType == 1) {
+
+                                        mmsg="Bookmark added!";
+
+
+                                      }
+                                      else {
+                                        mmsg="Bookmark removed!";
+                                        //mainData[index].bookmark=false;
+
+                                      }
+
+
+                                      Fluttertoast.showToast(
+                                          msg: mmsg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+
+                                    });
+
+                                  }
+                                  else if(newValue==4){
+
+                                    subscribeAPISINGLE(seriesData.channelId.toString(),1, index);
+
+                                  }
+
+                                },
                                 itemBuilder: (context) => [
                                   PopupMenuItem(
                                     child: Text("Share"),
@@ -1276,6 +1349,81 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                       ]))
 
             ]));}
+
+
+  Future<ShortDynamicLink> getShortLinksingle(String contentID) async {
+    setState(() {
+      _isInAsyncCall = true;
+    });
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://bhartiyeparivar.page.link',
+        link: Uri.parse('https://bhartiyeparivar.page.link/content?contentId=' +
+            contentID.toString() +
+            '&contentType=videos'),
+        //  link: Uri.parse('https://play.google.com/store/apps/details?id=com.nispl.studyshot&invitedby='+referral_code),
+        androidParameters: AndroidParameters(
+          packageName: 'com.bhartiyeparivar',
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
+
+    final ShortDynamicLink shortDynamicLink = await parameters.buildShortLink();
+    return shortDynamicLink;
+  }
+
+
+  Future<BookMarkSaveResponse> postAddBookMarkSINGLE(String content_type,String token,String content_id) async {
+    String status = "1";
+
+
+    var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
+    MainRepository repository=new MainRepository();
+    return repository.fetchAddBookMark(body,token);
+
+  }
+  Future<AddToCartResponse> subscribeChannelAPISINGLE(String channelId,String is_subscribed) async {
+
+    String status = "1";
+
+    var body =json.encode({"channel_id":channelId,"is_subscribed":status});
+    MainRepository repository=new MainRepository();
+
+    return repository.fetchSubscribeChannel(body,user_Token);
+
+
+  }
+
+  subscribeAPISINGLE(String channel_id,int is_subscribed,int index){
+
+    subscribeChannelAPISINGLE(channel_id.toString(),is_subscribed.toString()).then((res) async {
+      String msg;
+
+      mainData[index].is_subscribed=1;
+      msg="Subscribe channel successfully";
+
+      if(res.status==1){
+
+        Fluttertoast.showToast(
+            msg: msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+
+      }
+
+    }
+    );
+
+  }
+
+
   Widget _buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),

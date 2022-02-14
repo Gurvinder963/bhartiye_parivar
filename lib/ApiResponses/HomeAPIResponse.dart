@@ -24,9 +24,10 @@ class HomeData {
   String remainder_date;
   int Amount;
   int cartCount;
+  int app_version;
   bool notification;
 
-  HomeData({this.message,this.remainder_date,this.Amount, this.cartCount,this.notification});
+  HomeData({this.message,this.remainder_date,this.Amount, this.cartCount,this.notification,this.app_version});
 
   HomeData.fromJson(Map<String, dynamic> json) {
     message = json['message'];
@@ -34,6 +35,7 @@ class HomeData {
     remainder_date = json['remainder_date'];
     cartCount = json['cart-count'];
     notification = json['notification'];
+    app_version = json['app_version'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +45,7 @@ class HomeData {
     data['remainder_date'] = this.remainder_date;
     data['cart-count'] = this.cartCount;
     data['notification'] = this.notification;
+    data['app_version'] = this.app_version;
     return data;
   }
 }

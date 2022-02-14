@@ -551,7 +551,7 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
 
 
                             SizedBox(
-                                height: (MediaQuery.of(context).size.height)*0.67,
+
                                 child:Card(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -646,10 +646,51 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
                                                         iconEnabledColor:Colors.orange,
                                                         items: <String>[
                                                           'Select',
-                                                          'Government Employee',
-                                                          'Business-man',
-                                                          'Teacher',
-                                                          'Defence',
+                                                          'Activist / NGO / Politics',
+                                                          'Business Person',
+                                                          'Farmer',
+                                                          'Labourer',
+                                                          'Student / Preparing for Competitive Exams',
+                                                          'News and Media',
+                                                          'Judge / Retired Judge',
+                                                          'Lawyer / Legal Services',
+                                                          'Chartered Accountant/ Accountancy Services',
+                                                          'Doctor / Medical and Health Services',
+                                                          'Civil Services',
+                                                          'Armed Forces',
+                                                          'Police',
+                                                          'Shop Owner/ Working at Shops',
+                                                          'Digital Marketing',
+                                                          'Advertisement Industry',
+                                                          'Banking and Finance Sector',
+                                                          'Self Employed',
+                                                          'Teacher / Professor',
+                                                          'Web Developer / Network Administrator',
+                                                          'Sales Person',
+                                                          'Post Office / Courier Services',
+                                                          'Business Administration',
+                                                          'Management Professional',
+                                                          'Service Sector',
+                                                          'Fashion Industry / Tailor',
+                                                          'Beauty Artist',
+                                                          'Construction Industry',
+                                                          'Anganwadi Worker',
+                                                          'Aviation Industry',
+                                                          'Transportation Industry',
+                                                          'Hotel Industry',
+                                                          'Arts and Entertainment / Film Industry',
+                                                          'Science and Technology',
+                                                          'Engineer',
+                                                          'Merchant Navy',
+                                                          'E-Commerce',
+                                                          'Real Estate',
+                                                          'Tourism',
+                                                          'Sports',
+                                                          'PSU',
+                                                          'Other Private Job',
+                                                          'Other Government Job',
+                                                          'Others',
+                                                          'Unemployed',
 
                                                         ].map<DropdownMenuItem<String>>((String value) {
                                                           return DropdownMenuItem<String>(
@@ -692,7 +733,8 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
                                                 )
                                             ):Container(),
 
-                                          ]),  _submitButton()
+                                          ]),  _submitButton(),
+                                      SizedBox(height: 10,)
                                     ]))),
                           ],
                         ),
@@ -878,6 +920,9 @@ class EditProfilePageState extends State<EditProfilePage> with WidgetsBindingObs
         else if(myControllerPinCode.text.length<6){
           showAlertDialogValidation(context, "Pincode not valid!");
         }
+        else if(mC_code=='91' && mAddress== 'Address not found!'){
+           showAlertDialogValidation(context, "Please enter valid pincode!");
+         }
         else {
           setState(() {
             _isInAsyncCall = true;

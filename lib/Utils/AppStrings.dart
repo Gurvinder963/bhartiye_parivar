@@ -2,7 +2,7 @@ class AppStrings{
   AppStrings._();
   //static const String AppName="Nav Nirman";
   static const String AppName="Bhartiya Parivar";
-  static const String DonatetoBhartiyaParivar="Donate to Bhartiya Parivar";
+  static const String Donate="Donate";
   static const String PlayingVideo="Playing Video";
   static const String Details="Details";
   static const String OnlinePayment="Online Payment";

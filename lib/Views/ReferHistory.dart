@@ -19,6 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../ApiResponses/AddToCartResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 class ReferHistoryPage extends StatefulWidget {
   @override
   ReferHistoryPageState createState() {
@@ -158,6 +159,14 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
     return repository.fetchDeleteReferData(id,token);
 
   }
+  _makingPhoneCall(String phone) async {
+    var url = 'tel:'+phone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
   Widget _buildList() {
 
 
@@ -187,6 +196,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                   Expanded(
                                       flex: 1,
                                       child:Text(mainData[index].name,
+                                          overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.roboto(
                                             fontSize:14.0,
@@ -197,7 +207,12 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                           ))),
                                   Expanded(
                                       flex: 1,
-                                      child:Text(mainData[index].mobile,
+                                      child:GestureDetector(
+                                          onTap: () =>
+                                          {
+                                            _makingPhoneCall(mainData[index].mobile)
+
+                                          },child:Text(mainData[index].mobile,
                                         textAlign: TextAlign.center,
 
                                         style: GoogleFonts.roboto(
@@ -206,7 +221,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                           color: Color(0xFF0000ff),
                                           fontWeight: FontWeight.w500,
 
-                                        ),)),
+                                        ),))),
                                   Expanded(
                                       flex: 1,
                                       child:Text(mainData[index].pincode,
@@ -249,7 +264,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                         alignment: Alignment.center,
                                       ),
                                             SizedBox(width: 10,),
-                                            mainData[index].refer_status?Container():GestureDetector(
+                                            mainData[index].refer_status?Container(width: 20,):GestureDetector(
                                         onTap: () =>
                                         {
 
@@ -463,14 +478,14 @@ Container(
 
                   ),
 
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-                    width: (MediaQuery.of(context).size.width) * 0.1, child:
-
-                    _goButton()
-
-
-                  )
+                  // Container(
+                  //   margin: const EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                  //   width: (MediaQuery.of(context).size.width) * 0.1, child:
+                  //
+                  //   _goButton()
+                  //
+                  //
+                  // )
 
 
 
@@ -499,23 +514,45 @@ Container(
     return InkWell(
       onTap: () {
         FocusScope.of(context).unfocus();
-        setState(() {
-          mainData.clear();
-          _isInAsyncCall = true;
 
-        });
+        if(myControllerName.text.isEmpty && myControllerPageNo.text.isEmpty){
 
+        }
 
-        getReferList(user_Token,myControllerName.text.toString()).then((value) => {
+        else {
+          if (myControllerName.text.isEmpty) {
+            setState(() {
+              mainData.clear();
+              _isInAsyncCall = true;
+              page = myControllerPageNo.text.toString();
+            });
+            getReferList(user_Token, "").then((value) =>
+            {
 
-          setState(() {
+              setState(() {
+                _isInAsyncCall = false;
+                mainData.addAll(value.data);
+              })
+            });
+          }
+          else {
+            setState(() {
+              mainData.clear();
+              _isInAsyncCall = true;
+              page="1";
+            });
 
-            _isInAsyncCall = false;
-            mainData.addAll(value.data);
+            getReferList(user_Token, myControllerName.text.toString()).then((
+                value) =>
+            {
 
-          })
-
-        });
+              setState(() {
+                _isInAsyncCall = false;
+                mainData.addAll(value.data);
+              })
+            });
+          }
+        }
       },
       child: Container(
         width: 140,
@@ -690,7 +727,7 @@ class MyData extends DataTableSource {
               alignment: Alignment.center,
             ),
             SizedBox(width: 10,),
-            mainData[index].refer_status?Container():GestureDetector(
+            mainData[index].refer_status?Container(width: 20,):GestureDetector(
                 onTap: () =>
                 {
                 //  mainData.removeAt(index),

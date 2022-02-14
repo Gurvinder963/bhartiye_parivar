@@ -11,6 +11,7 @@ class VideoData {
   String channel_id;
   int content_type;
   int is_like;
+  int watched_percent;
   String video_duration;
   String created_at;
 
@@ -25,6 +26,7 @@ class VideoData {
     this.videoCategory,
     this.videoSourceType,
     this.videoImage,
+    this.watched_percent,
 
     this.channel,
     this.channel_image,
@@ -47,6 +49,7 @@ class VideoData {
     videoCategory = json['video_category'];
     videoSourceType = json['video_source_type'];
     videoImage = json['video_Image'];
+    watched_percent = json['watched_percent'];
 
     channel = json['channel'];
     channel_image = json['channel_image'];
@@ -72,6 +75,7 @@ class VideoData {
     data['video_Image'] = this.videoImage;
     data['video_duration'] = this.video_duration;
     data['created_at'] = this.created_at;
+    data['watched_percent'] = this.watched_percent;
 
     data['channel'] = this.channel;
     data['channel_image'] = this.channel_image;

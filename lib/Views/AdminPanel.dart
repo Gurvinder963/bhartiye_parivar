@@ -9,28 +9,28 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FacebookPage extends StatefulWidget {
+class AdminPanelPage extends StatefulWidget {
   String link;
   String name;
-  FacebookPage({Key key,@required this.link,@required this.name}) : super(key: key);
+  AdminPanelPage({Key key,@required this.link,@required this.name}) : super(key: key);
 
 
   @override
-  FacebookPageState createState() {
-    return FacebookPageState(link,name);
+  AdminPanelPageState createState() {
+    return AdminPanelPageState(link,name);
   }
 }
 
-class FacebookPageState extends State<FacebookPage> {
+class AdminPanelPageState extends State<AdminPanelPage> {
   // WebViewController _controller;
   String fileUrl="";
   // InAppWebViewController webView;
- // String url = "";
+  // String url = "";
   double progress = 0;
   String link;
   String name;
 
-  FacebookPageState(String link,String name){
+  AdminPanelPageState(String link,String name){
     this.link=link;
     this.name=name;
   }
@@ -43,26 +43,26 @@ class FacebookPageState extends State<FacebookPage> {
     // TODO: implement initState
     super.initState();
 
+    print("my urlll");
+    print(link);
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child:Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 50,
-        backgroundColor: Color(AppColors.BaseColor),
-        title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
-          actions: <Widget>[
-            Center(child:GestureDetector( onTap: () {
-              launch(
-                  link,
-                  forceSafariVC: false);
-    }, child:Text("Open App", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 16,color: Color(0xFFFFFFFF))))),
-            SizedBox(width:15,),
-          ]
-      ),
-      body: link.isNotEmpty?InAppWebView(
+
+      body: link.isNotEmpty? Container(
+          margin: EdgeInsets.fromLTRB(0,33,0,0),
+          child: Stack(
+
+          children: <Widget>[
+
+
+
+
+      InAppWebView(
         initialUrl: link,
         initialHeaders: {},
         initialOptions: InAppWebViewGroupOptions(
@@ -88,9 +88,40 @@ class FacebookPageState extends State<FacebookPage> {
             this.progress = progress / 100;
           });
         },
-      ):Container(),
+      ),
+      Positioned.fill(
+          child:Align(
+              alignment: Alignment.topRight,
+              child:GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).pop(context);
 
-    );
+        },child:
+      Container(
+                  margin: EdgeInsets.fromLTRB(0,4,3,0),
+                height: 35,width: 80,
+                color:  Color(0xFFff0000),
+                padding:EdgeInsets.fromLTRB(5,5,5,5),
+                child:
+                Center(child:Text("Logout",
+
+
+
+                    style: GoogleFonts.roboto(
+                      fontSize:14.0,
+
+
+                      color: Color(0xFFffffff),
+                      fontWeight: FontWeight.w500,
+
+                    )),))))),
+
+        ]))
+
+        :Container(),
+
+    ),
+      onWillPop: () => Future.value(false),);
   }
 
 

@@ -308,6 +308,7 @@ class LivePageState extends State<LivePage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                SizedBox(height: 2,),
                 Expanded(
                   child: _buildList(),
 
@@ -374,31 +375,7 @@ class LivePageState extends State<LivePage> {
   }
   Widget _buildBoxVideo(BuildContext context,int index,Live liveData){
 
-    String url="";
-    if(liveData.liveVideoSourceType=='facebook' || liveData.liveVideoSourceType=='brighteon'){
 
-    }
-    else if(liveData.liveVideoSourceType=='dailymotion'){
-      String videoId=liveData.liveVideoUrl.substring(liveData.liveVideoUrl.lastIndexOf("/") + 1);
-      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    }
-    else {
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(liveData.liveVideoUrl);
-        print('this is ' + videoIdd);
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
-
-      }
-      // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    }
   //  final DateFormat formatter = DateFormat('dd-MM-yyyy');
    // final String formatted = formatter.format(DateTime.parse(liveData.liv));
 
@@ -435,7 +412,7 @@ class LivePageState extends State<LivePage> {
                       )),
 
 
-                  AspectRatio(
+                  liveData.liveVideoImage!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -446,11 +423,11 @@ class LivePageState extends State<LivePage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(liveData.liveVideoImage),
                           ),
                         ),
 
-                      )),
+                      )):Container(width: 0,height: 0,),
 
                   /*  Positioned.fill(
                       child:Align(
@@ -496,7 +473,7 @@ class LivePageState extends State<LivePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
 
-                        new Container(
+                        liveData.liveChannelImage!=null? new Container(
                             width: 44.0,
                             height: 44.0,
                             decoration: new BoxDecoration(
@@ -506,7 +483,7 @@ class LivePageState extends State<LivePage> {
                                     image: new NetworkImage(
                                         liveData.liveChannelImage)
                                 )
-                            )),
+                            )):Container(width: 0,height: 0,),
                         SizedBox(height: 5,width: 8,),
 
                         new Expanded(
@@ -534,12 +511,12 @@ class LivePageState extends State<LivePage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(liveData.liveChannel,   overflow: TextOverflow.ellipsis,
+                                                liveData.liveChannel!=null? Text(liveData.liveChannel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
 
-                                                  ),),
+                                                  ),):Container(width: 0,height: 0,),
                                                 SizedBox(width: 10),
 
                                                 // Container(

@@ -30,6 +30,7 @@ import '../ApiResponses/BookmarkResponse.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/NewsData.dart';
 import '../localization/language/languages.dart';
+import '../Interfaces/OnAnyDrawerItemOpen.dart';
 
 class ItemData {
 
@@ -76,6 +77,7 @@ class NotificationListPageState extends State<NotificationListPage> {
   void initState() {
     super.initState();
 
+    eventBusDO.fire(OnAnyDrawerItemOpen("FIND"));
     qtyData.add('1');
     qtyData.add('2');
     qtyData.add('3');

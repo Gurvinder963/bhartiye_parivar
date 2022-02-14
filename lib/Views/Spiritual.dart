@@ -228,14 +228,14 @@ class SpiritualPageState extends State<SpiritualPage> {
 
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
-    String status = "0";
-    if (is_subscribed==1) {
-      status = "0";
-
-    } else {
-
-      status = "1";
-    }
+    String status = "1";
+    // if (is_subscribed==1) {
+    //   status = "0";
+    //
+    // } else {
+    //
+    //   status = "1";
+    // }
 
     var body =json.encode({"channel_id":channelId,"is_subscribed":status});
     MainRepository repository=new MainRepository();
@@ -254,14 +254,14 @@ class SpiritualPageState extends State<SpiritualPage> {
 
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id, bool isBookMarked) async {
-    String status = "0";
-    if (isBookMarked) {
-      status = "0";
-
-    } else {
-
-      status = "1";
-    }
+    String status = "1";
+    // if (isBookMarked) {
+    //   status = "0";
+    //
+    // } else {
+    //
+    //   status = "1";
+    // }
     print('my_token'+token);
     var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
@@ -319,15 +319,15 @@ class SpiritualPageState extends State<SpiritualPage> {
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      if(is_subscribed==1){
-
-        mainData[index].is_subscribed=false;
-        msg="Unsubscribe channel successfully";
-      }
-      else{
-        mainData[index].is_subscribed=true;
+      // if(is_subscribed==1){
+      //
+      //   mainData[index].is_subscribed=false;
+      //   msg="Unsubscribe channel successfully";
+      // }
+      // else{
+        mainData[index].is_subscribed=1;
         msg="Subscribe channel successfully";
-      }
+      //}
 
       if(res.status==1){
 
@@ -370,7 +370,7 @@ class SpiritualPageState extends State<SpiritualPage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark){
+  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark,int watched_percent){
 
     String url="";
     if(videoSourceType=='facebook' || videoSourceType=='brighteon'){
@@ -432,8 +432,7 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                       )),
 
-
-                  AspectRatio(
+                  thumbnail!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -444,29 +443,12 @@ class SpiritualPageState extends State<SpiritualPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(thumbnail),
                           ),
                         ),
 
-                      )),
+                      )):Container(height: 0,width: 0,),
 
-                  /*  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,3),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color: Color(0xFF5a5a5a),
-                              child: Text(lang,  style: GoogleFonts.roboto(
-                                fontSize:16.0,
-
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
-
-
-                      )),*/
                   Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomRight,
@@ -482,8 +464,32 @@ class SpiritualPageState extends State<SpiritualPage> {
 
                               ),))
 
-
                       )),
+
+                  watched_percent>0?Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomLeft,
+                          child:
+                          SliderTheme(
+                            child: Container(
+                                height: 1,
+                                child:Slider(
+                                  value: watched_percent.toDouble(),
+
+                                  max: 100,
+                                  min: 0,
+                                  activeColor: Colors.red,
+                                  inactiveColor: Colors.grey,
+                                  onChanged: (double value) {},
+                                )),
+                            data: SliderTheme.of(context).copyWith(
+                                trackHeight: 1,
+                                trackShape: CustomTrackShape(),
+                                thumbColor: Colors.transparent,
+
+                                thumbShape: SliderComponentShape.noThumb),
+                          ))):Container(height: 0,width: 0,),
+
                 ],
               ),
 
@@ -641,49 +647,7 @@ class SpiritualPageState extends State<SpiritualPage> {
                                   }
                                   else if(newValue==4){
 
-                                    if(is_subscribed==1){
-                                      Widget okButton = FlatButton(
-                                        child: Text("UNSUBSCRIBE"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                          subscribeAPI(channel_id.toString(),is_subscribed, index);
-
-
-                                        },
-                                      );
-                                      Widget CANCELButton = FlatButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                        },
-                                      );
-                                      // set up the AlertDialog
-                                      AlertDialog alert = AlertDialog(
-
-                                        content: Text("Unsubscribe from "+channel),
-                                        actions: [
-                                          CANCELButton,
-                                          okButton,
-
-                                        ],
-                                      );
-
-                                      // show the dialog
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return alert;
-                                        },
-                                      );
-                                    }
-                                    else{
-
-                                      subscribeAPI(channel_id.toString(),is_subscribed,index);
-
-                                    }
-
+                                    subscribeAPI(channel_id.toString(),is_subscribed,index);
                                   }
 
                                 },
@@ -779,7 +743,7 @@ class SpiritualPageState extends State<SpiritualPage> {
                     mainData[index].videoSourceType,
                     mainData[index].is_subscribed,
                     mainData[index].bookmark,
-
+                    mainData[index].watched_percent,
 
                   )
 
@@ -793,4 +757,19 @@ class SpiritualPageState extends State<SpiritualPage> {
       );
   }
 
+}
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
 }

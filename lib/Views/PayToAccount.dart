@@ -30,6 +30,7 @@ class PayToAccountPageState extends State<PayToAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text('Account Transfer'),
       ),

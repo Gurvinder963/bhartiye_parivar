@@ -230,10 +230,10 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
   }
 
-  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,bool is_subscribed) async {
+  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
     String status = "0";
-    if (is_subscribed) {
+    if (is_subscribed==1) {
       status = "0";
 
     } else {
@@ -308,7 +308,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 5,),
+                SizedBox(height: 2,),
                 Expanded(
                   child: _buildList(),
 
@@ -318,11 +318,11 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
     );
   }
-  subscribeAPI(String channel_id,bool is_subscribed,int index){
+  subscribeAPI(String channel_id,int is_subscribed,int index){
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      if(is_subscribed){
+      if(is_subscribed==1){
 
         mainData[index].is_subscribed=false;
         msg="Unsubscribe channel successfully";
@@ -375,36 +375,11 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
   }
   Widget _buildBoxVideo(BuildContext context,int index,Series seriesData){
 
-    String url="";
-    if(seriesData.videoSourceType=='facebook' || seriesData.videoSourceType=='brighteon'){
 
-    }
-    else if(seriesData.videoSourceType=='dailymotion'){
-      String videoId=seriesData.videoUrl.substring(seriesData.videoUrl.lastIndexOf("/") + 1);
-      url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    }
-    else {
-      var videoIdd;
-      try {
-        videoIdd = YoutubePlayer.convertUrlToId(seriesData.videoUrl);
-        print('this is ' + videoIdd);
-      } on Exception catch (exception) {
-        // only executed if error is of type Exception
-        print('exception');
-      } catch (error) {
-        // executed for errors of all types other than Exception
-        print('catch error');
-        //  videoIdd="error";
-
-      }
-      // mqdefault
-      url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    }
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(seriesData.createdAt));
 
-   // channel=channel==null?"My Channel":channel;
-    // duration=channel==null?"4:50":duration;
+
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
@@ -436,7 +411,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                       )),
 
 
-                  AspectRatio(
+                  seriesData.videoImage!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -447,29 +422,12 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(url),
+                            image: NetworkImage(seriesData.videoImage),
                           ),
                         ),
 
-                      )),
+                      )):Container(height: 0,width: 0,),
 
-                  /*  Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,3),
-                              margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color: Color(0xFF5a5a5a),
-                              child: Text(lang,  style: GoogleFonts.roboto(
-                                fontSize:16.0,
-
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-
-                              ),))
-
-
-                      )),*/
                   Positioned.fill(
                       child:Align(
                           alignment: Alignment.bottomRight,
@@ -485,8 +443,32 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
                               ),))
 
-
                       )),
+
+                  seriesData.watchedPercent>0?Positioned.fill(
+                      child:Align(
+                          alignment: Alignment.bottomLeft,
+                          child:
+                          SliderTheme(
+                            child: Container(
+                                height: 1,
+                                child:Slider(
+                                  value: seriesData.watchedPercent.toDouble(),
+
+                                  max: 100,
+                                  min: 0,
+                                  activeColor: Colors.red,
+                                  inactiveColor: Colors.grey,
+                                  onChanged: (double value) {},
+                                )),
+                            data: SliderTheme.of(context).copyWith(
+                                trackHeight: 1,
+                                trackShape: CustomTrackShape(),
+                                thumbColor: Colors.transparent,
+
+                                thumbShape: SliderComponentShape.noThumb),
+                          ))):Container(height: 0,width: 0,),
+
                 ],
               ),
 
@@ -518,7 +500,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       SizedBox(height: 5),
-                                      Text(seriesData.seriesName,
+                                      Text(seriesData.title,
 
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
@@ -644,7 +626,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                                   }
                                   else if(newValue==4){
 
-                                    if(seriesData.isSubscribed){
+                                    if(seriesData.isSubscribed==1){
                                       Widget okButton = FlatButton(
                                         child: Text("UNSUBSCRIBE"),
                                         onPressed: () {
@@ -784,4 +766,19 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
       );
   }
 
+}
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
 }

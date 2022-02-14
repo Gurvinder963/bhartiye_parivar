@@ -41,6 +41,7 @@ class Live {
   String liveChannelImage;
   String liveScheduledAt;
 
+
   Live(
       {this.liveStatus,
         this.liveId,

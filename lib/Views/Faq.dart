@@ -30,7 +30,7 @@ class FaqPageState extends State<FaqPage> {
   Future<FaqDataResponse> getFaqList(String user_Token) async {
 
 
-   // String pageIndex = page.toString();
+    // String pageIndex = page.toString();
     var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page":"1"});
     MainRepository repository=new MainRepository();
     return repository.fetchFaqsListJAVA(body);
@@ -58,8 +58,8 @@ class FaqPageState extends State<FaqPage> {
           value) async {
 
         setState(() {
-         // isLoading = false;
-         // mainData.addAll(value.faqs);
+          // isLoading = false;
+          // mainData.addAll(value.faqs);
 
 
           for(var k=0;k<value.faqs.length;k++)
@@ -181,21 +181,9 @@ class ListItemState extends State
 
     List listItem=listItems;
     return  Padding(
-      padding: (isExpand==true)?const EdgeInsets.all(8.0):const EdgeInsets.all(12.0),
-      child: Container(
-        decoration:BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.6),
-              spreadRadius: 2,
-              blurRadius: 2,
-              offset: Offset(0, 7), // changes position of shadow
-            ),
-          ],
-            color: Colors.white,
-            borderRadius: (isExpand!=true)?BorderRadius.all(Radius.circular(8)):BorderRadius.all(Radius.circular(22)),
-
-        ),
+      padding: (isExpand==true)?const EdgeInsets.all(8.0):const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 5,
         child: ExpansionTile(
           key: PageStorageKey(headerTitle),
           title: Container(
@@ -223,7 +211,7 @@ class ListItemState extends State
 
                           color:Color(0xFF81c784),
                           borderRadius: BorderRadius.all(Radius.circular(4)),
-                          border: Border.all(color: Colors.grey)
+                          border: Border.all(color: Colors.white)
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

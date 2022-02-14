@@ -8,7 +8,7 @@ abstract class Languages {
 
 
   String get langCode;
-
+  String get adminPanel;
   String get appName;
   String get aboutUs;
   String get joinUs;

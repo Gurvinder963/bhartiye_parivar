@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import 'package:bhartiye_parivar/Views/InformationPage.dart';
+import 'package:bhartiye_parivar/Views/WhyDonateUs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'PayToAccount.dart';
@@ -92,7 +94,31 @@ class DonateUsPageState extends State<DonateUsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
-        title: Text(AppStrings.DonatetoBhartiyaParivar),
+          toolbarHeight: 50,
+        title: Text(AppStrings.Donate+" "+Constants.AppName),
+          actions: <Widget>[
+
+
+            GestureDetector(
+                onTap: () {
+
+                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                      MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return InformationPage();
+                          }
+                      ) );
+
+                },child: new Image(
+              image: new AssetImage("assets/ic_question.png"),
+              width: 30,
+              height: 30,
+              color: null,
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+            )),
+            SizedBox(width: 15,)
+          ]
       ),
       body:  ModalProgressHUD(
     inAsyncCall: _isInAsyncCall,
@@ -187,11 +213,7 @@ class DonateUsPageState extends State<DonateUsPage> {
           ),
           SizedBox(height: 10),
           _DonateHistoryButton(),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10,10,10,10),
-            child:  Text("Why donate us", textAlign: TextAlign.center,
-                style: TextStyle( fontSize: 14,color: Colors.black)),
-          ),
+          _whyDonateUsButton(),
           Container(
               padding: EdgeInsets.fromLTRB(10.0,20.0,10.0,10.0),
 
@@ -283,6 +305,46 @@ class DonateUsPageState extends State<DonateUsPage> {
       ),
     );
   }
+
+  Widget _whyDonateUsButton() {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                 return WhyDonateUsPage(link:"",name:"Why Donate Us");
+                }
+            ) );
+
+      },
+
+      child: Container(
+        width: 150,
+        margin: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xFF20d256), Color(0xFF20d256)])),
+        child: Text(
+          'Why Donate Us',
+          style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+
 
   Widget _submitButton() {
     return InkWell(

@@ -41,6 +41,7 @@ import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../ApiResponses/VideoDetailJAVAResponse.dart';
 import '../ApiResponses/FaqDataResponse.dart';
 import '../ApiResponses/ChatGroupResponse.dart';
+import '../ApiResponses/JoinUsNewResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -177,6 +178,14 @@ class MainRepository {
     return SocialMediaResponse.fromJson(response);
   }
 
+  Future<AddToCartResponse> fetchSaveJoinUsJAVA(var body) async {
+    final response = await _provider.postJAVA("api/savejoinus",body);
+    return AddToCartResponse.fromJson(response);
+  }
+  Future<JoinUsNewResponse> fetchGetJoinUsJAVA(var body) async {
+    final response = await _provider.postJAVA("api/getjoinus",body);
+    return JoinUsNewResponse.fromJson(response);
+  }
   Future<LoginResponse> fetchLoginData(String body) async {
     final response = await _provider.post("public/api/v1/auth/login",body);
     return LoginResponse.fromJson(response);

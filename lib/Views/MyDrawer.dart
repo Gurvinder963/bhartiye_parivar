@@ -1,6 +1,7 @@
 
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
+import 'package:bhartiye_parivar/Views/AdminPanel.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
 import 'package:bhartiye_parivar/Views/terms.dart';
@@ -84,6 +85,8 @@ class MyDrawerPageState extends State<MyDrawerPage> {
   bool isSound;
   String logoutMessage="";
   String sideBarOTP="No OTP";
+
+  String url1;
   Future<SideBarApiResponse> callSideBarAPI(String userid,String token) async {
 
     var body =json.encode({'userid':userid,"appcode":Constants.AppCode,"token":token,});
@@ -99,6 +102,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
   @override
   void initState() {
     super.initState();
+    eventBusDO.fire(OnAnyDrawerItemOpen("FIND"));
     isNotification=false;
     isSound=false;
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -109,6 +113,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
       USER_NAME=prefs.getString(Prefs.USER_NAME);
       USER_ID=prefs.getString(Prefs.USER_ID);
 
+       url1="https://sabkiapp.com:8443/Admin/Admin_login_app_Action.jsp?appcode="+Constants.AppCode+"&userid="+USER_ID+"&token="+user_Token;
       callLogoutAPI("check",USER_ID,user_Token).then((value) async {
         if(value.status==1){
 
@@ -148,14 +153,50 @@ class MyDrawerPageState extends State<MyDrawerPage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               createDrawerHeader(context,sideBarOTP),
+
+              createDrawerBodyItem(
+                  icon: Image(image: AssetImage('assets/ic_admin_new.png'), width: 25,height: 40,),
+                  text: Languages
+                      .of(context)
+                      .adminPanel,
+                  onTap: () =>{
+
+
+
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return AdminPanelPage(link:url1,name:"Admin Page");
+                            }
+                        ))
+
+                  }
+                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
+
+              Padding(
+                  padding: EdgeInsets.fromLTRB(15,0,15,0),
+                  child:
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Colors.orange,
+                  )),
               createDrawerBodyItem(
                   icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
                   text: Languages
                       .of(context)
                       .aboutUs,
                   onTap: () =>{
-                  eventBusDO.fire(OnAnyDrawerItemOpen("FIND")),
 
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return JoinUsPage();
+                            }
+                        ))
                   }
                 // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
@@ -164,15 +205,18 @@ class MyDrawerPageState extends State<MyDrawerPage> {
                   text: Languages
                       .of(context)
                       .joinUs,
-                  onTap: () =>{
+                  onTap: () =>
+                  {
 
-                  eventBusDO.fire(OnAnyDrawerItemOpen("FIND")),
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
                         MaterialPageRoute(
                             builder: (BuildContext context) {
                               return JoinUsPage();
                             }
-                        ) )}
+                        ))
+                  }
+
                 // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
               createDrawerBodyItem(
@@ -525,12 +569,27 @@ class MyDrawerPageState extends State<MyDrawerPage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(Constants.AppName),
-      content: Text(message),
-      actions: [
-        SingleButton,
-        //logoutmessage=="multiple app"?BothButton:null,
-        CancelButton,
-      ],
+      content: Container(
+        height: 130,
+        child:
+        Column( children: <Widget>[Text(message),
+          SizedBox(height: 20,),
+          Row (
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+
+                SingleButton,
+                SizedBox(width: 20,),
+                //logoutmessage=="multiple app"?BothButton:null,
+                CancelButton, // button 2
+              ]
+          )
+        ])),
+      // actions: [
+      //   SingleButton,
+      //   //logoutmessage=="multiple app"?BothButton:null,
+      //   CancelButton,
+      // ],
     );
 
     // show the dialog

@@ -279,7 +279,7 @@ class SeriesPageState extends State<SeriesPage> {
   @override
   Widget build(BuildContext context) {
     var height=MediaQuery.of(context).size.height;
-    print("device_height"+height.toString());
+
 
     ScreenUtil.init(
         BoxConstraints(
@@ -296,6 +296,7 @@ class SeriesPageState extends State<SeriesPage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                SizedBox(height: 2,),
                 Expanded(
                   child: _buildList(),
 
@@ -363,36 +364,8 @@ class SeriesPageState extends State<SeriesPage> {
   Widget _buildBoxVideo(BuildContext context,int index,Series seriesData,){
 
     String url=seriesData.seriesThumbnail;
-    // if(seriesData.videoSourceType=='facebook' || videoSourceType=='brighteon'){
-    //
-    // }
-    // else if(videoSourceType=='dailymotion'){
-    //   String videoId=videoUrl.substring(videoUrl.lastIndexOf("/") + 1);
-    //   url="https://www.dailymotion.com/thumbnail/video/"+videoId;
-    // }
-    // else {
-    //   var videoIdd;
-    //   try {
-    //     videoIdd = YoutubePlayer.convertUrlToId(videoUrl);
-    //     print('this is ' + videoIdd);
-    //   } on Exception catch (exception) {
-    //     // only executed if error is of type Exception
-    //     print('exception');
-    //   } catch (error) {
-    //     // executed for errors of all types other than Exception
-    //     print('catch error');
-    //     //  videoIdd="error";
-    //
-    //   }
-    //   // mqdefault
-    //   url = "https://img.youtube.com/vi/" + videoIdd + "/mqdefault.jpg";
-    // }
-    //final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    //final String formatted = formatter.format(DateTime.parse(createdAt));
 
-   // channel=channel==null?"My Channel":channel;
-    // duration=channel==null?"4:50":duration;
-    return    Container(
+    return Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
         child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,7 +396,7 @@ class SeriesPageState extends State<SeriesPage> {
                       )),
 
 
-                  AspectRatio(
+                  url !=null?AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -438,7 +411,7 @@ class SeriesPageState extends State<SeriesPage> {
                           ),
                         ),
 
-                      )),
+                      )):Container(height: 0,width: 0,),
 
                   /*  Positioned.fill(
                       child:Align(

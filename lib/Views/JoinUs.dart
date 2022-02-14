@@ -13,6 +13,7 @@ import '../ApiResponses/AddToCartResponse.dart';
 import '../Repository/MainRepository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import '../ApiResponses/JoinUsNewResponse.dart';
 
 class DayObject {
   String title;
@@ -22,6 +23,13 @@ class DayObject {
     this.title,
     this.isSelected,
   });
+}
+
+class User {
+  const User(this.id,this.name);
+
+  final String name;
+  final int id;
 }
 
 String amount="";
@@ -38,9 +46,32 @@ class JoinUsPage extends StatefulWidget {
 
 class JoinUsPageState extends State<JoinUsPage> {
 
-  String _chosenValue1="Select your answer";
-  String _chosenValue2="Select your answer";
-  String _chosenValue3="Select your answer";
+  //String _chosenValue1="Select your answer";
+  User _chosenValue1;
+  User _chosenValue2;
+  User _chosenValue3;
+
+  List<User> ansList1 = <User>[const User(0,'Select your answer'),
+      const User(1,'Yes, at the national level I can give at least 15-20 days in a month and can also come to Delhi for this'),
+     const User(2,'Yes, I can give at least 3-4 days in a month to strengthen the organization at district level')
+    , const User(3,'Not much, but can come for meetings at the district level once or twice a month')
+    , const User(4,'No, I don not have time')
+  ];
+
+  List<User> ansList2 = <User>[const User(0,'Select your answer'),
+    const User(1,'Yes, I can be active on social media.'),
+    const User(2,'No, I can not.')
+  ];
+
+  List<User> ansList3 = <User>[const User(0,'Select your answer'),
+    const User(1,'Yes, every Month'),
+    const User(2,'Yes, once in a year'),
+    const User(3,'No, I am not financially capable'),
+  ];
+
+
+
+
 
   bool checkedValue1=false;
   bool checkedValue2=false;
@@ -55,8 +86,13 @@ class JoinUsPageState extends State<JoinUsPage> {
   bool _isInAsyncCall = false;
   String user_Token;
   bool isLoading = false;
+
+  String USER_ID;
   @override
   void initState() {
+    _chosenValue1=ansList1[0];
+    _chosenValue2=ansList2[0];
+    _chosenValue3=ansList3[0];
     SystemChrome.setPreferredOrientations([
 
       DeviceOrientation.portraitUp,
@@ -68,6 +104,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
       if (!isLoading) {
         setState(() {
           isLoading = true;
@@ -75,13 +112,23 @@ class JoinUsPageState extends State<JoinUsPage> {
       }
 
 
-      getJoinUsDataAPI(user_Token).then((value) => {
 
-        setJoinUsData(value)
+      getJoinUsDatajavaAPI(user_Token).then((value) => {
+
+       setJoinUsData(value),
 
 
 
       });
+
+
+      // getJoinUsDataAPI(user_Token).then((value) => {
+      //
+      //   setJoinUsData(value)
+      //
+      //
+      //
+      // });
 
 
 
@@ -130,71 +177,78 @@ class JoinUsPageState extends State<JoinUsPage> {
 
   setJoinUsData(value){
 
-    var lists = json.decode(value.data.content);
+
+    if(value.data.length>0){
+
+
+
+
+
+    //var lists = json.decode(value.data.content);
     setState(() {
-      _chosenValue1 = lists[0];
-      _chosenValue2 = lists[1];
-      _chosenValue3 = lists[2];
+      _chosenValue1 = ansList1[int.parse(value.data[0].timeLevel)];
+      _chosenValue2 = ansList2[int.parse(value.data[0].socialMedia)];
+      _chosenValue3 = ansList3[int.parse(value.data[0].donationFrequency)];
 
     });
-    var lists1 = json.decode(value.data.contentMultiple);
+    var lists1 =  value.data[0].contentMultiple.split(',');
      for(int i = 0; i < lists1.length; i++){
         print(lists1[i]);
-       if (lists1[i]=="Satsang or Dharmguru") {
+       if (lists1[i]=="1") {
          setState(() {
            checkedValue1 = true;
 
          });
        }
-       if (lists1[i]=="Political Party") {
+       if (lists1[i]=="6") {
          setState(() {
            checkedValue6 = true;
 
          });
        }
-       if (lists1[i]=="Non-Political Movement") {
+       if (lists1[i]=="2") {
          setState(() {
            checkedValue2 = true;
 
          });
        }
-        if (lists1[i]=="Ambedkarite Ideology") {
+        if (lists1[i]=="3") {
           setState(() {
             checkedValue3 = true;
 
           });
         }
-        if (lists1[i]=="Rajiv Dixit Ideology") {
+        if (lists1[i]=="4") {
           setState(() {
             checkedValue4 = true;
 
           });
         }
-        if (lists1[i]=="Communist Ideology") {
+        if (lists1[i]=="5") {
           setState(() {
             checkedValue5 = true;
 
           });
         }
-        if (lists1[i]=="Socialist Ideology") {
+        if (lists1[i]=="7") {
           setState(() {
             checkedValue7 = true;
 
           });
         }
-        if (lists1[i]=="RSS Ideology") {
+        if (lists1[i]=="8") {
           setState(() {
             checkedValue8 = true;
 
           });
         }
-        if (lists1[i]=="Gandhian Ideology") {
+        if (lists1[i]=="9") {
           setState(() {
             checkedValue9 = true;
 
           });
         }
-        if (lists1[i]=="Others") {
+        if (lists1[i]=="10") {
           setState(() {
             checkedValue10 = true;
 
@@ -205,26 +259,26 @@ class JoinUsPageState extends State<JoinUsPage> {
 
      }
 
-
+    }
   }
 
-  Future<AddToCartResponse> saveJoinUsAPI(message,message1) async {
+  Future<AddToCartResponse> saveJoinUsAPI(message1) async {
     //  final String requestBody = json.encoder.convert(order_items);
 
 
-    var body =json.encode({"content":message,"content_multiple":message1,"amount":amount,"remainder_date":selectedDate,"remainder_type":selectedDonateType});
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"userid":USER_ID,"token":user_Token,"social_media":_chosenValue2.id.toString(),"time_level":_chosenValue1.id.toString(),"donation_frequency":_chosenValue3.id.toString(),"amount":amount,"promise_date":selectedDate,"content_multiple":message1});
     MainRepository repository=new MainRepository();
 
-    return repository.fetchJoinUsSave(body,user_Token);
+    return repository.fetchSaveJoinUsJAVA(body);
 
 
   }
 
-  Future<JoinUsResponse> getJoinUsDataAPI(String user_Token) async {
+  Future<JoinUsNewResponse> getJoinUsDatajavaAPI(String user_Token) async {
 
-    var body ={'lang_code':""};
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"userid":USER_ID,"token":user_Token});
     MainRepository repository=new MainRepository();
-    return repository.fetchJoinUsData(body,user_Token);
+    return repository.fetchGetJoinUsJAVA(body);
 
   }
   showAlertDialogValidation(BuildContext context,String message) {
@@ -269,7 +323,7 @@ class JoinUsPageState extends State<JoinUsPage> {
         String selectedDay = "";
         List mainData = new List();
 
-        for(int i = 1; i < 32; i++){
+        for(int i = 1; i < 29; i++){
 
           mainData.add(DayObject(title: i.toString(), isSelected: false,));
         }
@@ -485,7 +539,8 @@ class JoinUsPageState extends State<JoinUsPage> {
 
                 amount=selectedRadio.toString();
                 selectedDonateType="1";
-                selectedDate=arr[0]+"/"+arr[1]+"/"+selectedDay;
+               // selectedDate=arr[0]+"/"+arr[1]+"/"+selectedDay;
+                selectedDate=selectedDay;
                 print(selectedRadio);
                 print(selectedDate);
 
@@ -726,7 +781,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                           fontSize:15.0,
 
                           color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
 
                         ),),
                       SizedBox(height: 5,),
@@ -748,26 +803,19 @@ class JoinUsPageState extends State<JoinUsPage> {
                                 data: new ThemeData(
                                   primaryColor: Colors.orange,
                                 ),
-                                child: DropdownButton<String>(
+                                child: DropdownButton<User>(
                                   isExpanded: true,
                                   focusColor:Colors.orange,
                                   value: _chosenValue1,
                                   //elevation: 5,
                                   style: TextStyle(color: Colors.white),
                                   iconEnabledColor:Colors.orange,
-                                  items: <String>[
-                                    'Select your answer',
-                                    'Yes, at the national level I can give at least 15-20 days in a month and can also come to Delhi for this',
-                                    'Yes, I can give at least 3-4 days in a month to strengthen the organization at district level',
-                                    'Not much, but can come for meetings at the district level once or twice a month',
-                                    'No, I don not have time',
-
-                                  ].map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
+                                  items: ansList1.map((User user) {
+                                    return DropdownMenuItem<User>(
+                                      value: user,
                                       child: Container(
                                           padding:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
-                                          child:Text(value,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
+                                          child:Text(user.name,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
                                           fontWeight: FontWeight.w500),)),
                                     );
                                   }).toList(),
@@ -778,7 +826,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                                         fontSize: ScreenUtil().setSp(14),
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  onChanged: (String value) {
+                                  onChanged: (User value) {
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     setState(() {
                                       _chosenValue1 = value;
@@ -820,7 +868,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                           fontSize:15.0,
 
                           color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
 
                         ),),
                       SizedBox(height: 5,),
@@ -842,24 +890,19 @@ class JoinUsPageState extends State<JoinUsPage> {
                                 data: new ThemeData(
                                   primaryColor: Colors.orange,
                                 ),
-                                child: DropdownButton<String>(
+                                child: DropdownButton<User>(
                                   isExpanded: true,
                                   focusColor:Colors.orange,
                                   value: _chosenValue2,
                                   //elevation: 5,
                                   style: TextStyle(color: Colors.white),
                                   iconEnabledColor:Colors.orange,
-                                  items: <String>[
-                                    'Select your answer',
-                                    'Yes, I can be active on social media.',
-                                        'No, I can not.',
-
-                                  ].map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
+                                  items: ansList2.map((User user) {
+                                    return DropdownMenuItem<User>(
+                                      value: user,
                                       child: Container(
                                           padding:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
-                                          child:Text(value,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
+                                          child:Text(user.name,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
                                               fontWeight: FontWeight.w500),)),
                                     );
                                   }).toList(),
@@ -867,10 +910,10 @@ class JoinUsPageState extends State<JoinUsPage> {
                                     "Please choose a langauage",
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: ScreenUtil().setSp(15),
+                                        fontSize: ScreenUtil().setSp(14),
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  onChanged: (String value) {
+                                  onChanged: (User value) {
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     setState(() {
                                       _chosenValue2 = value;
@@ -910,7 +953,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                           fontSize:15.0,
 
                           color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
 
                         ),),
                       SizedBox(height: 5,),
@@ -932,26 +975,19 @@ class JoinUsPageState extends State<JoinUsPage> {
                                 data: new ThemeData(
                                   primaryColor: Colors.orange,
                                 ),
-                                child: DropdownButton<String>(
+                                child: DropdownButton<User>(
                                   isExpanded: true,
                                   focusColor:Colors.orange,
                                   value: _chosenValue3,
                                   //elevation: 5,
                                   style: TextStyle(color: Colors.white),
                                   iconEnabledColor:Colors.orange,
-                                  items: <String>[
-                                    'Select your answer',
-                                    'Yes, every Month',
-                                    'Yes, once in a year',
-
-                                    'No, I am not financially capable',
-
-                                  ].map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
+                                  items: ansList3.map((User user) {
+                                    return DropdownMenuItem<User>(
+                                      value: user,
                                       child: Container(
                                           padding:EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0) ,
-                                          child:Text(value,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
+                                          child:Text(user.name,style:TextStyle(color:Colors.black, fontSize: ScreenUtil().setSp(14),
                                               fontWeight: FontWeight.w500),)),
                                     );
                                   }).toList(),
@@ -959,27 +995,26 @@ class JoinUsPageState extends State<JoinUsPage> {
                                     "Please choose a langauage",
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: ScreenUtil().setSp(15),
+                                        fontSize: ScreenUtil().setSp(14),
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  onChanged: (String value) {
+                                  onChanged: (User value) {
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     setState(() {
                                       _chosenValue3 = value;
                                     });
 
-                                    if(value=='Yes, every Month'){
+
+                                    if(value.name=='Yes, every Month'){
                                       _asyncInputDialog(context);
 
-                                    }else if(value=='Yes, once in a year'){
+                                    }else if(value.name=='Yes, once in a year'){
                                       _asyncInputDialogYearly(context);
 
                                     }
 
-
-
                                   },
-                                ), // Your Dropdown Code Here,
+                                ),// Your Dropdown Code Here,
                               )),
 
                         ),
@@ -1013,7 +1048,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                           fontSize:15.0,
 
                           color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
 
                         ),),
                       SizedBox(height: 5,),
@@ -1240,83 +1275,80 @@ class JoinUsPageState extends State<JoinUsPage> {
               List mainData = new List();
               List<String> checkedMainData = new List();
 
-           if(_chosenValue1=="Select your answer"){
+           if(_chosenValue1.name=="Select your answer"){
                showAlertDialogValidation(context, "Please select your answer");
            }
-           else if(_chosenValue2=="Select your answer"){
+           else if(_chosenValue2.name=="Select your answer"){
              showAlertDialogValidation(context, "Please select your answer");
            }
-           else if(_chosenValue3=="Select your answer"){
+           else if(_chosenValue3.name=="Select your answer"){
              showAlertDialogValidation(context, "Please select your answer");
            }
            else{
-             mainData.add('"'+_chosenValue1+'"');
-             mainData.add('"'+_chosenValue2+'"');
-             mainData.add('"'+_chosenValue3+'"');
+           //  mainData.add('"'+_chosenValue1+'"');
+
 
              if(checkedValue1){
 
-               var value="Satsang or Dharmguru";
-               checkedMainData.add('"'+value+'"');
+               var value="1";
+               checkedMainData.add(value);
 
              }
              if(checkedValue2){
-               var value="Non-Political Movement";
-               checkedMainData.add('"'+value+'"');
+               var value="2";
+               checkedMainData.add(value);
 
               }
              if(checkedValue3){
-               var value="Ambedkarite Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="3";
+               checkedMainData.add(value);
 
              }
              if(checkedValue4){
 
-               var value="Rajiv Dixit Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="4";
+               checkedMainData.add(value);
 
              }
              if(checkedValue5){
 
-               var value="Communist Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="5";
+               checkedMainData.add(value);
              }
              if(checkedValue6){
 
-               var value="Political Party";
-               checkedMainData.add('"'+value+'"');
+               var value="6";
+               checkedMainData.add(value);
              }
              if(checkedValue7){
 
-               var value="Socialist Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="7";
+               checkedMainData.add(value);
              }
              if(checkedValue8){
 
-               var value="RSS Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="8";
+               checkedMainData.add(value);
              }
              if(checkedValue9){
 
-               var value="Gandhian Ideology";
-               checkedMainData.add('"'+value+'"');
+               var value="9";
+               checkedMainData.add(value);
              }
              if(checkedValue10){
 
-               var value="Others";
-               checkedMainData.add('"'+value+'"');
+               var value="10";
+               checkedMainData.add(value);
              }
 
-            /// mainData.add('"'+checkedMainData.toString()+'"');
-
-             print(mainData);
+             String s = checkedMainData.join(',');
 
              setState(() {
                _isInAsyncCall = true;
              });
 
 
-             saveJoinUsAPI(mainData.toString(),checkedMainData.toString()).then((res) async {
+             saveJoinUsAPI(s.toString()).then((res) async {
                String msg;
                setState(() {
                  _isInAsyncCall = false;
@@ -1338,8 +1370,8 @@ class JoinUsPageState extends State<JoinUsPage> {
 
 
             },child:Container(
-          height: 50,
-          width:150,
+          height: 45,
+          width:140,
           margin:EdgeInsets.fromLTRB(0,0,0,10) ,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),

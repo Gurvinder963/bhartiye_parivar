@@ -9,28 +9,28 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Utils/AppColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FacebookPage extends StatefulWidget {
+class WhyDonateUsPage extends StatefulWidget {
   String link;
   String name;
-  FacebookPage({Key key,@required this.link,@required this.name}) : super(key: key);
+  WhyDonateUsPage({Key key,@required this.link,@required this.name}) : super(key: key);
 
 
   @override
-  FacebookPageState createState() {
-    return FacebookPageState(link,name);
+  WhyDonateUsPageState createState() {
+    return WhyDonateUsPageState(link,name);
   }
 }
 
-class FacebookPageState extends State<FacebookPage> {
+class WhyDonateUsPageState extends State<WhyDonateUsPage> {
   // WebViewController _controller;
   String fileUrl="";
   // InAppWebViewController webView;
- // String url = "";
+  // String url = "";
   double progress = 0;
   String link;
   String name;
 
-  FacebookPageState(String link,String name){
+  WhyDonateUsPageState(String link,String name){
     this.link=link;
     this.name=name;
   }
@@ -43,6 +43,7 @@ class FacebookPageState extends State<FacebookPage> {
     // TODO: implement initState
     super.initState();
 
+
   }
 
   @override
@@ -53,14 +54,7 @@ class FacebookPageState extends State<FacebookPage> {
         toolbarHeight: 50,
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
-          actions: <Widget>[
-            Center(child:GestureDetector( onTap: () {
-              launch(
-                  link,
-                  forceSafariVC: false);
-    }, child:Text("Open App", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 16,color: Color(0xFFFFFFFF))))),
-            SizedBox(width:15,),
-          ]
+
       ),
       body: link.isNotEmpty?InAppWebView(
         initialUrl: link,

@@ -28,6 +28,9 @@ class ReferDetailData {
   int weekReferred;
   int monthInstall;
   int monthReferred;
+  int lastMonthInstall;
+  int lastMonthReferred;
+
   int totalReferred;
   int totalInstall;
   ReferDetailData(
@@ -39,6 +42,9 @@ class ReferDetailData {
         this.weekReferred,
         this.monthInstall,
         this.monthReferred,
+        this.lastMonthInstall,
+        this.lastMonthReferred,
+
         this.totalInstall,
         this.totalReferred,
       });
@@ -52,6 +58,11 @@ class ReferDetailData {
     weekReferred = json['week_referred'];
     monthInstall = json['month_install'];
     monthReferred = json['month_referred'];
+
+    lastMonthInstall = json['last_month_install'];
+    lastMonthReferred = json['last_month_referred'];
+
+
     totalInstall = json['total_install'];
     totalReferred = json['total_referred'];
   }
@@ -66,6 +77,11 @@ class ReferDetailData {
     data['week_referred'] = this.weekReferred;
     data['month_install'] = this.monthInstall;
     data['month_referred'] = this.monthReferred;
+
+
+    data['last_month_install'] = this.lastMonthInstall;
+    data['last_month_referred'] = this.lastMonthReferred;
+
     data['total_install'] = this.totalInstall;
     data['total_referred'] = this.totalReferred;
     return data;

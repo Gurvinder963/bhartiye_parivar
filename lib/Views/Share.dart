@@ -23,6 +23,7 @@ import '../Utils/AppStrings.dart';
 import'../ApiResponses/ReferHistoryResponse.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 class SharePage extends StatefulWidget {
   @override
   SharePageState createState() {
@@ -53,6 +54,13 @@ class SharePageState extends State<SharePage> {
   int twentyDaysReferred=0;
   int twentyDaysInstalled=0;
   int twentyDaysPending=0;
+
+  int lastMonthReferred=0;
+  int lastMonthInstalled=0;
+  int lastMonthPending=0;
+
+
+
 
   int totalDaysReferred=0;
   int totalDaysInstalled=0;
@@ -91,31 +99,56 @@ class SharePageState extends State<SharePage> {
        // if(todayReferred-todayInstalled>0){
           todayPending=todayReferred-todayInstalled;
         //}
+        if(todayPending<0){
+          todayPending=0;
+        }
 
         yesterdayInstalled=value.data.yesterdayInstall;
         yesterdayReferred=value.data.yesterdayReferred;
         //if(yesterdayReferred-yesterdayInstalled>0){
           yesterdayPending=yesterdayReferred-yesterdayInstalled;
         //}
+        if(yesterdayPending<0){
+          yesterdayPending=0;
+        }
 
         sevenDaysInstalled=value.data.weekInstall;
         sevenDaysReferred=value.data.weekReferred;
         //if(sevenDaysReferred-sevenDaysInstalled>0){
           sevenDaysPending=sevenDaysReferred-sevenDaysInstalled;
         //}
-
+        if(sevenDaysPending<0){
+          sevenDaysPending=0;
+        }
 
         twentyDaysInstalled=value.data.monthInstall;
         twentyDaysReferred=value.data.monthReferred;
         //if(twentyDaysReferred-twentyDaysInstalled>0){
           twentyDaysPending=twentyDaysReferred-twentyDaysInstalled;
         //}
+        if(twentyDaysPending<0){
+          twentyDaysPending=0;
+        }
+
+
+        lastMonthInstalled=value.data.lastMonthInstall;
+        lastMonthReferred=value.data.lastMonthReferred;
+        //if(twentyDaysReferred-twentyDaysInstalled>0){
+        lastMonthPending=lastMonthReferred-lastMonthInstalled;
+        //}
+        if(lastMonthPending<0){
+          lastMonthPending=0;
+        }
+
 
         totalDaysInstalled=value.data.totalInstall;
         totalDaysReferred=value.data.totalReferred;
         //if(totalDaysReferred-totalDaysInstalled>0){
           totalDaysPending=totalDaysReferred-totalDaysInstalled;
         //}
+        if(totalDaysPending<0){
+          totalDaysPending=0;
+        }
 
       })
 
@@ -209,7 +242,7 @@ class SharePageState extends State<SharePage> {
         return AlertDialog(
           title: Text(Constants.AppName),
           content: SizedBox(
-              height: 200,
+              height: 220,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -423,7 +456,7 @@ class SharePageState extends State<SharePage> {
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
         title: Text("Share App"),
-
+          toolbarHeight: 50,
           actions: <Widget>[
 
 
@@ -458,14 +491,14 @@ class SharePageState extends State<SharePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
 
           children: <Widget>[
-            SizedBox(height: 10,),
+            SizedBox(height: 7,),
     GestureDetector(
     onTap: () {
 
      String url= 'https://sabkiapp.com:8443/web/scanqr.jsp?id='+USER_ID+'&app_code='+Constants.AppCode;
 
 
-      _onShare(context,"You must download this amazing "+ AppStrings.AppName +" from "+
+      _onShare(context,"You must download this amazing "+ AppStrings.AppName +" app from "+
                  ' ' +
                  url,"");
 
@@ -484,7 +517,7 @@ class SharePageState extends State<SharePage> {
       // });
     },child:
     Container(
-                padding: const EdgeInsets.fromLTRB(5.0,10.0,5.0,10.0),
+                padding: const EdgeInsets.fromLTRB(5.0,7.0,5.0,10.0),
                 child:
             Row(
 
@@ -560,7 +593,7 @@ class SharePageState extends State<SharePage> {
                   )),
                   SizedBox(width: 20,),
                 ]))),
-            SizedBox(height: 20,),
+            SizedBox(height: 15,),
             Center(child:Text("Sharing report of "+USER_NAME,
 
               overflow: TextOverflow.ellipsis,
@@ -572,7 +605,7 @@ class SharePageState extends State<SharePage> {
                 fontWeight: FontWeight.w500,
 
               ),)),
-SizedBox(height: 20,),
+SizedBox(height: 15,),
             Row(
                 children: <Widget>[
                   Expanded(
@@ -751,73 +784,73 @@ SizedBox(height: 20,),
               color: Color(AppColors.textBaseColor),
             ),
             SizedBox(height: 10,),
+            // Row(
+            //     children: <Widget>[
+            //       Expanded(
+            //           flex: 1,
+            //           child:    Text("Last 7 Days",
+            //               textAlign: TextAlign.center,
+            //               style: GoogleFonts.roboto(
+            //                 fontSize:15.0,
+            //
+            //                 color: Color(0xFF000000),
+            //                 fontWeight: FontWeight.w500,
+            //
+            //               ))),
+            //       Expanded(
+            //           flex: 1,
+            //           child:Text(sevenDaysReferred.toString(),
+            //             textAlign: TextAlign.center,
+            //
+            //             style: GoogleFonts.roboto(
+            //               fontSize:15.0,
+            //
+            //               color: Color(0xFF000000),
+            //               fontWeight: FontWeight.w500,
+            //
+            //             ),)),
+            //       Expanded(
+            //           flex: 1,
+            //           child:Text(sevenDaysInstalled.toString(),
+            //
+            //             textAlign: TextAlign.center,
+            //             style: GoogleFonts.roboto(
+            //               fontSize:15.0,
+            //
+            //               color: Color(0xFF000000),
+            //               fontWeight: FontWeight.w500,
+            //
+            //             ),)),
+            //       Expanded(
+            //           flex: 1,
+            //           child:Text((sevenDaysPending).toString(),
+            //             textAlign: TextAlign.center,
+            //
+            //             style: GoogleFonts.roboto(
+            //               fontSize:15.0,
+            //
+            //               color: Color(0xFF000000),
+            //               fontWeight: FontWeight.w500,
+            //
+            //             ),)),
+            //
+            //     ]
+            //
+            // ),
+            // SizedBox(height: 5,),
+            // Divider(
+            //
+            //   height: 1,
+            //
+            //   thickness: 1,
+            //   color: Color(AppColors.textBaseColor),
+            // ),
+            // SizedBox(height: 10,),
             Row(
                 children: <Widget>[
                   Expanded(
                       flex: 1,
-                      child:    Text("Last 7 Days",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.roboto(
-                            fontSize:15.0,
-
-                            color: Color(0xFF000000),
-                            fontWeight: FontWeight.w500,
-
-                          ))),
-                  Expanded(
-                      flex: 1,
-                      child:Text(sevenDaysReferred.toString(),
-                        textAlign: TextAlign.center,
-
-                        style: GoogleFonts.roboto(
-                          fontSize:15.0,
-
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
-
-                        ),)),
-                  Expanded(
-                      flex: 1,
-                      child:Text(sevenDaysInstalled.toString(),
-
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.roboto(
-                          fontSize:15.0,
-
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
-
-                        ),)),
-                  Expanded(
-                      flex: 1,
-                      child:Text((sevenDaysPending).toString(),
-                        textAlign: TextAlign.center,
-
-                        style: GoogleFonts.roboto(
-                          fontSize:15.0,
-
-                          color: Color(0xFF000000),
-                          fontWeight: FontWeight.w500,
-
-                        ),)),
-
-                ]
-
-            ),
-            SizedBox(height: 5,),
-            Divider(
-
-              height: 1,
-
-              thickness: 1,
-              color: Color(AppColors.textBaseColor),
-            ),
-            SizedBox(height: 10,),
-            Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: 1,
-                      child:    Text("Last 28 Days",
+                      child:    Text("This Month",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(
                             fontSize:15.0,
@@ -853,6 +886,68 @@ SizedBox(height: 20,),
                   Expanded(
                       flex: 1,
                       child:Text((twentyDaysPending).toString(),
+                        textAlign: TextAlign.center,
+
+                        style: GoogleFonts.roboto(
+                          fontSize:15.0,
+
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+
+                        ),)),
+
+                ]
+
+            ),
+            SizedBox(height: 5,),
+            Divider(
+
+              height: 1,
+
+              thickness: 1,
+              color: Color(AppColors.textBaseColor),
+            ),
+            SizedBox(height: 10,),
+            Row(
+                children: <Widget>[
+                  Expanded(
+                      flex: 1,
+                      child:    Text("Last Month",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.roboto(
+                            fontSize:15.0,
+
+                            color: Color(0xFF000000),
+                            fontWeight: FontWeight.w500,
+
+                          ))),
+                  Expanded(
+                      flex: 1,
+                      child:Text(lastMonthReferred.toString(),
+                        textAlign: TextAlign.center,
+
+                        style: GoogleFonts.roboto(
+                          fontSize:15.0,
+
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+
+                        ),)),
+                  Expanded(
+                      flex: 1,
+                      child:Text(lastMonthInstalled.toString(),
+
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.roboto(
+                          fontSize:15.0,
+
+                          color: Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+
+                        ),)),
+                  Expanded(
+                      flex: 1,
+                      child:Text((lastMonthPending).toString(),
                         textAlign: TextAlign.center,
 
                         style: GoogleFonts.roboto(
@@ -960,7 +1055,7 @@ SizedBox(height: 20,),
                             })
                           },
                           child: Container(
-                              margin: const EdgeInsets.all(15.0),
+                              margin: const EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
                               padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black38),
@@ -987,7 +1082,7 @@ SizedBox(height: 20,),
                           },
                           child:Container(
 
-                              margin: const EdgeInsets.all(15.0),
+                              margin: const EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
                               padding: const EdgeInsets.fromLTRB(6.0,8.0,6.0,8.0),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black38),
@@ -1009,7 +1104,7 @@ SizedBox(height: 20,),
                 ]
 
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 10,),
             Container(
                 color: Colors.black54,
                 padding: const EdgeInsets.fromLTRB(0.0,8.0,0.0,8.0),
@@ -1090,6 +1185,15 @@ SizedBox(height: 20,),
 
     );
   }
+
+  _makingPhoneCall(String phone) async {
+    var url = 'tel:'+phone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
   Widget _buildList() {
 
 
@@ -1119,6 +1223,7 @@ SizedBox(height: 20,),
                                 Expanded(
                                     flex: 1,
                                     child:    Text(mainData[index].name,
+                                        overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.roboto(
                                           fontSize:14.0,
@@ -1129,7 +1234,12 @@ SizedBox(height: 20,),
                                         ))),
                                 Expanded(
                                     flex: 1,
-                                    child:Text(mainData[index].mobile,
+                                    child:GestureDetector(
+                                        onTap: () =>
+                                        {
+                                          _makingPhoneCall(mainData[index].mobile)
+
+                                        },child:Text(mainData[index].mobile,
                                       textAlign: TextAlign.center,
 
                                       style: GoogleFonts.roboto(
@@ -1138,7 +1248,7 @@ SizedBox(height: 20,),
                                         color: Color(0xFF0000ff),
                                         fontWeight: FontWeight.w500,
 
-                                      ),)),
+                                      ),))),
                                 Expanded(
                                     flex: 1,
                                     child:Text(mainData[index].pincode,
@@ -1181,7 +1291,7 @@ SizedBox(height: 20,),
                                           alignment: Alignment.center,
                                         ),
                                         SizedBox(width: 10,),
-                                        mainData[index].refer_status?Container(): GestureDetector(
+                                        mainData[index].refer_status?Container(width: 18,): GestureDetector(
                                             onTap: () =>
                                             {
 
