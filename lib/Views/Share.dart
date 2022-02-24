@@ -1225,6 +1225,7 @@ SizedBox(height: 15,),
                                     child:    Text(mainData[index].name,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
+                                        maxLines: 2,
                                         style: GoogleFonts.roboto(
                                           fontSize:14.0,
 
@@ -1281,17 +1282,16 @@ SizedBox(height: 15,),
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         SizedBox(width: 10,),
+                                        mainData[index].refer_status?
                                         Image(
-                                          image: mainData[index].refer_status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
+                                          image: new AssetImage("assets/green_tick_pay.png"),
                                           width: 18,
                                           height:  18
                                           ,
                                           color: null,
                                           fit: BoxFit.scaleDown,
                                           alignment: Alignment.center,
-                                        ),
-                                        SizedBox(width: 10,),
-                                        mainData[index].refer_status?Container(width: 18,): GestureDetector(
+                                        ):GestureDetector(
                                             onTap: () =>
                                             {
 
@@ -1304,7 +1304,22 @@ SizedBox(height: 15,),
                                               color: null,
                                               fit: BoxFit.scaleDown,
                                               alignment: Alignment.center,
-                                            ))
+                                            )),
+
+                                        // mainData[index].refer_status?Container(width: 18,): GestureDetector(
+                                        //     onTap: () =>
+                                        //     {
+                                        //
+                                        //       showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
+                                        //     },
+                                        //     child:  Image(
+                                        //       image: new AssetImage("assets/ic_remove.png"),
+                                        //       width: 20,
+                                        //       height:  20,
+                                        //       color: null,
+                                        //       fit: BoxFit.scaleDown,
+                                        //       alignment: Alignment.center,
+                                        //     ))
                                       ])
                                   ,),
                               ]

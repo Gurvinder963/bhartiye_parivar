@@ -24,7 +24,7 @@ class AdminPanelPage extends StatefulWidget {
 class AdminPanelPageState extends State<AdminPanelPage> {
   // WebViewController _controller;
   String fileUrl="";
-  // InAppWebViewController webView;
+   InAppWebViewController webView;
   // String url = "";
   double progress = 0;
   String link;
@@ -53,8 +53,8 @@ class AdminPanelPageState extends State<AdminPanelPage> {
     return WillPopScope(child:Scaffold(
       resizeToAvoidBottomInset: false,
 
-      body: link.isNotEmpty? Container(
-          margin: EdgeInsets.fromLTRB(0,33,0,0),
+      body: link.isNotEmpty? SafeArea(child:Container(
+          margin: EdgeInsets.fromLTRB(0,0,0,0),
           child: Stack(
 
           children: <Widget>[
@@ -71,7 +71,7 @@ class AdminPanelPageState extends State<AdminPanelPage> {
             )
         ),
         onWebViewCreated: (InAppWebViewController controller) {
-          //  webView = controller;
+            webView = controller;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
@@ -116,13 +116,24 @@ class AdminPanelPageState extends State<AdminPanelPage> {
 
                     )),))))),
 
-        ]))
+        ])))
 
         :Container(),
 
     ),
-      onWillPop: () => Future.value(false),);
+      onWillPop: () => _exitApp(context));
   }
 
-
+  Future<bool> _exitApp(BuildContext context) async {
+    if (await webView.canGoBack()) {
+      print("onwill goback");
+      webView.goBack();
+      return Future.value(false);
+    } else {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text("No back history item")),
+      );
+      return Future.value(false);
+    }
+  }
 }

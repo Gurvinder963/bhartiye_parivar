@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573074605695:android:f1809a46ad2ecf830a614a",
+        "android_client_info": {
+          "package_name": "com.navnirman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573074605695-l3qsn4k1n6ie14lm5dldrtlk90jkkc0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh_XZijmX8NCoH_btwCq2fHiGQ50sA21s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573074605695-l3qsn4k1n6ie14lm5dldrtlk90jkkc0d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

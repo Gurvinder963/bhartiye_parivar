@@ -232,14 +232,8 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
   Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
-    String status = "0";
-    if (is_subscribed==1) {
-      status = "0";
+    String status = "1";
 
-    } else {
-
-      status = "1";
-    }
 
     var body =json.encode({"channel_id":channelId,"is_subscribed":status});
     MainRepository repository=new MainRepository();
@@ -258,15 +252,8 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id, bool isBookMarked) async {
-    String status = "0";
-    if (isBookMarked) {
-      status = "0";
+    String status = "1";
 
-    } else {
-
-      status = "1";
-    }
-    print('my_token'+token);
     var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
     return repository.fetchAddBookMark(body,token);
@@ -322,15 +309,10 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      if(is_subscribed==1){
 
-        mainData[index].is_subscribed=false;
-        msg="Unsubscribe channel successfully";
-      }
-      else{
-        mainData[index].is_subscribed=true;
+      mainData[index].isSubscribed=1;
         msg="Subscribe channel successfully";
-      }
+
 
       if(res.status==1){
 
@@ -375,7 +357,9 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
   }
   Widget _buildBoxVideo(BuildContext context,int index,Series seriesData){
 
-
+   print("watchchchhc");
+   print(seriesData.watchedPercent.toString());
+   print(seriesData.videoId.toString());
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(seriesData.createdAt));
 
@@ -559,7 +543,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                                         .then((res) async {
 
 
-                                      getShortLink(seriesData.seriesId.toString()).then((res) {
+                                      getShortLink(seriesData.videoId.toString()).then((res) {
                                         setState(() {
                                           _isInAsyncCall = false;
                                         });
@@ -580,7 +564,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
 
                                   else if(newValue==2){
 
-                                    _asyncInputDialog(context,seriesData.seriesId.toString());
+                                    _asyncInputDialog(context,seriesData.videoId.toString());
 
                                   }
                                   else if(newValue==3){
@@ -589,7 +573,7 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                                       _isInAsyncCall = true;
                                     });
 
-                                    postAddBookMark("1",user_Token,seriesData.seriesId.toString(),seriesData.bookmark)
+                                    postAddBookMark("1",user_Token,seriesData.videoId.toString(),seriesData.bookmark)
                                         .then((res) async {
                                       setState(() {
                                         _isInAsyncCall = false;
@@ -626,48 +610,11 @@ class SeriesChildListPageState extends State<SeriesChildListPage> {
                                   }
                                   else if(newValue==4){
 
-                                    if(seriesData.isSubscribed==1){
-                                      Widget okButton = FlatButton(
-                                        child: Text("UNSUBSCRIBE"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                          subscribeAPI(seriesData.channelId.toString(),seriesData.isSubscribed, index);
 
 
-                                        },
-                                      );
-                                      Widget CANCELButton = FlatButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+                                      subscribeAPI(seriesData.channelId.toString(),1,index);
 
-                                        },
-                                      );
-                                      // set up the AlertDialog
-                                      AlertDialog alert = AlertDialog(
 
-                                        content: Text("Unsubscribe from "+seriesData.channel),
-                                        actions: [
-                                          CANCELButton,
-                                          okButton,
-
-                                        ],
-                                      );
-
-                                      // show the dialog
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return alert;
-                                        },
-                                      );
-                                    }
-                                    else{
-
-                                      subscribeAPI(seriesData.channelId.toString(),seriesData.isSubscribed,index);
-
-                                    }
 
                                   }
 

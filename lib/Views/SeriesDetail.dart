@@ -7,7 +7,7 @@ import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../ApiResponses/VideoDetailJAVAResponse.dart';
-import '../Views/JoinUs.dart';
+import '../Views/JoinDonateWhom.dart';
 import 'DonateUs.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -32,6 +32,7 @@ import '../localization/locale_constant.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
 String videoCategory;
+int _start = 0;
 class SeriesDetailPage extends StatefulWidget {
   final Series content;
 
@@ -55,7 +56,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
   // Group Value for Radio Button.
   int radioid = -1;
-
+  Timer _timer;
 
   bool _isInAsyncCall = false;
   var marginPixel=0;
@@ -84,7 +85,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   String USER_ID;
   SeriesDetailPageState(Series content){
     mContent=content;
-    var videoIdd="nPt8bK2gbaU";
+    var videoIdd="A0pmI3FhoO4";
     if(mContent.videoSourceType=='youtube'){
       try {
         videoIdd = YoutubePlayer.convertUrlToId(mContent.videoUrl);
@@ -103,6 +104,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   }
   @override
   dispose(){
+    _timer.cancel();
     if (_controller.value.isFullScreen) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
           .then((_) {
@@ -186,10 +188,11 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
       getVideoDetail(user_Token,mContent.videoId.toString()).then((value) => {
 
         setState(() {
-        //  mContent=value.data[0];
-          isBookMarked=mContent.bookmark;
-          isSubscribed=mContent.isSubscribed;
-          likeStatus=mContent.isLike;
+         // mContent=value.data[0];
+          isBookMarked=value.data[0].bookmark;
+          isSubscribed=value.data[0].is_subscribed;
+          likeStatus=value.data[0].is_like
+          ;
           //   isLoading = false;
           // mainData.addAll(value.data);
 
@@ -233,17 +236,18 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
         apiCall();
       }
     });
-
+    _start=0;
+    startTimer();
   }
   void listener() {
-    if (_isPlayerReady && mounted) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-
-
-      });
-    }
+    // if (_isPlayerReady && mounted) {
+    //   setState(() {
+    //     _playerState = _controller.value.playerState;
+    //     _videoMetaData = _controller.metadata;
+    //
+    //
+    //   });
+    // }
   }
   @override
   void deactivate() {
@@ -258,17 +262,64 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
         .then((res) async {});
     super.deactivate();
   }
+  int convertTime(String duration) {
 
+    RegExp regex = new RegExp(r'(\d+)');
+    List<String> a = regex.allMatches(duration).map((e) => e.group(0)).toList();
+
+    if (duration.indexOf('M') >= 0 &&
+        duration.indexOf('H') == -1 &&
+        duration.indexOf('S') == -1) {
+      a = ["0", a[0], "0"];
+    }
+
+    if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+      a = [a[0], "0", a[1]];
+    }
+    if (duration.indexOf('H') >= 0 &&
+        duration.indexOf('M') == -1 &&
+        duration.indexOf('S') == -1) {
+      a = [a[0], "0", "0"];
+    }
+
+    int seconds = 0;
+
+    if (a.length == 3) {
+      seconds = seconds + int.parse(a[0]) * 3600;
+      seconds = seconds + int.parse(a[1]) * 60;
+      seconds = seconds + int.parse(a[2]);
+    }
+
+    if (a.length == 2) {
+      seconds = seconds + int.parse(a[0]) * 60;
+      seconds = seconds + int.parse(a[1]);
+    }
+
+    if (a.length == 1) {
+      seconds = seconds + int.parse(a[0]);
+    }
+    return seconds;
+  }
 
   Future<AddToCartResponse> postSaveVideoInput(String token,String clickedStatus,String videoPlayTime,String share,String content_id) async {
 
-    var body =json.encode({"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
+    String watchTimeNow=_start.toString();
+    var body =json.encode({"video_duration":convertTime(mContent.videoDuration) ,"video_clicked_status": clickedStatus, "video_watch_time": watchTimeNow,"shared_link_click_number": share,"video_unique_id":content_id});
     MainRepository repository=new MainRepository();
     return repository.fetchSaveVideoInput(body,token);
 
   }
 
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        _start=_start+1;
 
+      },
+    );
+  }
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id) async {
     String status = "0";
     if (isBookMarked) {
@@ -855,7 +906,46 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                                 child: GestureDetector(
                                                     onTap: () {
 
-                                                      if(isSubscribed==1){
+                                                      if(isSubscribed==2){
+                                                        Widget okButton = FlatButton(
+                                                          child: Text("OK"),
+                                                          onPressed: () {
+                                                            Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                            subscribeAPI();
+
+                                                          },
+                                                        );
+                                                        Widget CANCELButton = FlatButton(
+                                                          child: Text("CANCEL"),
+                                                          onPressed: () {
+                                                            Navigator.of(context, rootNavigator: true).pop('dialog');
+
+                                                          },
+                                                        );
+                                                        // set up the AlertDialog
+                                                        AlertDialog alert = AlertDialog(
+
+                                                          content: Text("Are you sure you want subscribe channel "+mContent.channel),
+                                                          actions: [
+                                                            CANCELButton,
+                                                            okButton,
+
+                                                          ],
+                                                        );
+
+                                                        // show the dialog
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return alert;
+                                                          },
+                                                        );
+
+
+
+                                                      }
+
+                                                      else if(isSubscribed==1){
                                                         Widget okButton = FlatButton(
                                                           child: Text("UNSUBSCRIBE"),
                                                           onPressed: () {
@@ -908,7 +998,17 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                                     color: Color(0xFF000000),
                                                     fontWeight: FontWeight.w600,
 
-                                                  ),):Text("SUBSCRIBE \nNOTIFICATIONS",
+                                                  ),):isSubscribed==2?Text("BLOCKED",
+                                                  textAlign: TextAlign.center,
+
+
+                                                  style: GoogleFonts.roboto(
+                                                    fontSize:16.0,
+
+                                                    color: Color(0xFFFF0000),
+                                                    fontWeight: FontWeight.w600,
+
+                                                  ),):Text("SUBSCRIBE",
                                                   textAlign: TextAlign.center,
 
 
@@ -1401,7 +1501,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
     subscribeChannelAPISINGLE(channel_id.toString(),is_subscribed.toString()).then((res) async {
       String msg;
 
-      mainData[index].is_subscribed=1;
+      mainData[index].isSubscribed=1;
       msg="Subscribe channel successfully";
 
       if(res.status==1){
@@ -1448,7 +1548,13 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
           return GestureDetector(
               onTap: () =>
               {
+                _controller.pause(),
+                _timer.cancel(),
+                postSaveVideoInput(user_Token,"","","",mContent.videoId.toString())
+                    .then((res) async {
 
+                  _start=0;
+                }),
                 Navigator.of(context, rootNavigator: true)
                     .pushReplacement( // ensures fullscreen
                     MaterialPageRoute(
@@ -1477,10 +1583,22 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   Widget _joinButton() {
     return InkWell(
       onTap: () {
+
+        _controller.pause();
+        _timer.cancel();
+
+        Duration position=_controller.value.position;
+        int sec=position.inSeconds;
+
+        postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.videoId.toString())
+            .then((res) async {
+
+          _start=0;
+        });
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return JoinUsPage();
+                  return JoinDonateWhomPage(from:"Join");
                 }
             ) );
       },
@@ -1515,13 +1633,28 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   Widget _DonateButton() {
     return InkWell(
       onTap: () {
+
+        _controller.pause();
+        _timer.cancel();
+
+
+        Duration position=_controller.value.position;
+        int sec=position.inSeconds;
+
+        postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.videoId.toString())
+            .then((res) async {
+          _start=0;
+
+        });
+
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return DonateUsPage();
+                  return JoinDonateWhomPage(from:"Donate");
                 }
             ) );
       },
+
 
       child: Container(
         width: 140,

@@ -111,6 +111,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
   @override
   void initState() {
     super.initState();
+    myControllerPageNo.text="1";
     WidgetsFlutterBinding.ensureInitialized();
     FlutterDownloader.initialize(
         debug: true // optional: set false to disable printing logs to console
@@ -198,6 +199,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                       child:Text(mainData[index].name,
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
+                                          maxLines: 2,
                                           style: GoogleFonts.roboto(
                                             fontSize:14.0,
 
@@ -254,30 +256,29 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             SizedBox(width: 10,),
-                                      Image(
-                                        image: mainData[index].refer_status?new AssetImage("assets/green_tick_pay.png"):new AssetImage("assets/ic_failure.png"),
-                                        width: 18,
-                                        height:  18
-                                        ,
-                                        color: null,
-                                        fit: BoxFit.scaleDown,
-                                        alignment: Alignment.center,
-                                      ),
-                                            SizedBox(width: 10,),
-                                            mainData[index].refer_status?Container(width: 20,):GestureDetector(
-                                        onTap: () =>
-                                        {
-
-                                          showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
-                                        },
-                                        child:Image(
-                                              image:new AssetImage("assets/ic_remove.png"),
-                                              width: 20,
-                                              height:  20,
+                                            mainData[index].refer_status?
+                                            Image(
+                                              image: new AssetImage("assets/green_tick_pay.png"),
+                                              width: 18,
+                                              height:  18
+                                              ,
                                               color: null,
                                               fit: BoxFit.scaleDown,
                                               alignment: Alignment.center,
-                                            ))
+                                            ):GestureDetector(
+                                                onTap: () =>
+                                                {
+
+                                                  showAlertDialogValidationdELETE(context,"Are you sure you want to remove this item?",mainData[index].id.toString(),index)
+                                                },
+                                                child:  Image(
+                                                  image: new AssetImage("assets/ic_remove.png"),
+                                                  width: 20,
+                                                  height:  20,
+                                                  color: null,
+                                                  fit: BoxFit.scaleDown,
+                                                  alignment: Alignment.center,
+                                                )),
                                     ])
                                     ,),
                                 ]
@@ -319,6 +320,7 @@ class ReferHistoryPageState extends State<ReferHistoryPage> {
       appBar: AppBar(
         backgroundColor: Color(AppColors.BaseColor),
         title: Text("Refer History"),
+        toolbarHeight: 50,
       ),
       body:  ModalProgressHUD(
           inAsyncCall: _isInAsyncCall,
@@ -400,11 +402,14 @@ Container(
                     ]
 
                 )),
-          Container(height: (MediaQuery.of(context).size.height) * 0.68, child:
+          Container(height: (MediaQuery.of(context).size.height) * 0.66, child:
 
                  _buildList()),
 
+        Container(
 
+          padding: const EdgeInsets.fromLTRB(0.0,5.0,0.0,0.0),
+          child:
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -441,7 +446,7 @@ Container(
 
 
                   Container(
-                      margin: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                      margin: const EdgeInsets.fromLTRB(20.0,0.0,0.0,0.0),
                       width: (MediaQuery.of(context).size.width) * 0.2, child:
 
 
@@ -494,7 +499,9 @@ Container(
 
 
                 ]
-              )
+              ))
+
+
                 ,
             Center(child: _searchButton())
 

@@ -48,10 +48,21 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child:Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 50,
+
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => {
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp])
+                  .then((_) {
+                Navigator.of(context, rootNavigator: true).pop(context);
+              })
+            }
+        ),
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
 
@@ -84,7 +95,8 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
         },
       ):Container(),
 
-    );
+    ),
+      onWillPop: () => Future.value(false),);
   }
 
 

@@ -218,17 +218,32 @@ class LogoutMultiplePageState extends State<LogoutMultiplePage> {
     //   },
     // );
 
+
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(Constants.AppName),
-      content: Text(message),
-      actions: [
-        SingleButton,
-        //logoutmessage=="multiple app"?BothButton:null,
-        CancelButton,
-      ],
-    );
+      content: Container(
+          height: 130,
+          child:
+          Column( children: <Widget>[Text(message),
+            SizedBox(height: 20,),
+            Row (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
 
+                  SingleButton,
+                  SizedBox(width: 20,),
+                  //logoutmessage=="multiple app"?BothButton:null,
+                  CancelButton, // button 2
+                ]
+            )
+          ])),
+      // actions: [
+      //   SingleButton,
+      //   //logoutmessage=="multiple app"?BothButton:null,
+      //   CancelButton,
+      // ],
+    );
     // show the dialog
     showDialog(
       context: context,

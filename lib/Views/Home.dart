@@ -1,9 +1,13 @@
 
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
+import 'package:bhartiye_parivar/Interfaces/OnHomeTabChange.dart';
 import 'package:bhartiye_parivar/Interfaces/OnHomeTapped.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
+import 'package:bhartiye_parivar/Views/SearchScreenNew.dart';
+import 'package:bhartiye_parivar/Views/SearchScreenNewSeries.dart';
+import 'package:bhartiye_parivar/Views/VideoBookMarkList.dart';
 import 'package:bhartiye_parivar/Views/terms.dart';
 import 'package:intl/intl.dart';
 import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
@@ -57,6 +61,7 @@ import '../Views/SearchScreen.dart';
 import '../Views/NotificationList.dart';
 import '../Views/DonationReminder.dart';
 import 'VideoDetailNew.dart';
+import 'SearchScreenNewLive.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/VideoDetailResponse.dart';
 import '../Views/JoinUs.dart';
@@ -103,6 +108,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   String USER_ID;
   String logoutMessage="";
   String sideBarOTP="No OTP";
+
+  String video_category="main";
+
   HomePageState(int contentId,String contentType,String invitedBy){
     MyContentId=contentId;
     mContentType=contentType;
@@ -192,6 +200,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
      // fABBottomAppBarState.updateIndexByNews(0);
 
     });
+
+
+    eventBusHTC.on<OnHomeTabChange>().listen((event) {
+
+      setState(() {
+        video_category =event.tabName;
+      });
+    });
+
     eventBusN.on<NewNotificationRecieved>().listen((event) {
       // All events are of type UserLoggedInEvent (or subtypes of it).
       // print("my_cart_count"+event.count);
@@ -200,13 +217,16 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     });
 
     eventBusLSP.on<OnLandScape>().listen((event) {
+      var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-      if(event.count=='Land'){
+
+      if(event.count=='Land' && isPortrait){
+
         setState(() {
           isFullScreen=true;
         });
       }
-      else{
+      else if(event.count=='Port' && !isPortrait){
         setState(() {
           isFullScreen=false;
         });
@@ -410,25 +430,68 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
 
   void showForceUpdate(){
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
 
+
+    Widget okButton =  InkWell(
+      onTap: () {
         LaunchReview.launch();
-
       },
+
+      child: Container(
+        width: 100,
+        margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(1, 1),
+                  blurRadius: 0,
+                  spreadRadius: 0)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(AppColors.BaseColor),
+                  Color(AppColors.BaseColor)
+                ])),
+        child: Text(
+          'UPDATE',
+          style: GoogleFonts.poppins(
+
+              color: Colors.white,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
     );
+
+
+
+
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
 
       
-      content: Text("New Version of app available. Please update for latest features."),
-      actions: [
+      content:Container(
+          height: 130,
+          child:
+          Column( children: <Widget>[Text("New Version of app available. Please update for latest features."),
+            SizedBox(height: 20,),
+            Row (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
 
-        okButton,
+                  okButton// button 2
+                ]
+            )
+          ])),
 
-      ],
+
+
     );
 
     // show the dialog
@@ -436,7 +499,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return alert;
+        return WillPopScope(
+            onWillPop: (){},
+        child:alert);
       },
     );
 
@@ -568,7 +633,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         appBar:selectedIndex==1 || isFullScreen?null: AppBar(
           elevation: 0,
 
-          toolbarHeight: 56,
+          toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
           title: Text(tit, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
 
@@ -578,13 +643,37 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
             GestureDetector(
                 onTap: () {
 
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return SearchScreenPage();
-                          }
-                      ) );
 
+                  if(video_category=='series'){
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return SearchScreenNewSeriesPage(
+                                  video_category: video_category);
+                            }
+                        ));
+                  }
+                  else if(video_category=='live'){
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return SearchScreenNewLivePage(
+                                  video_category: video_category);
+                            }
+                        ));
+                  }
+                  else {
+                    Navigator.of(context, rootNavigator: true)
+                        .push( // ensures fullscreen
+                        MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return SearchScreenNewPage(
+                                  video_category: video_category);
+                            }
+                        ));
+                  }
                 },child: Icon(Icons.search,color: Colors.white,size: 25,)):Container(),
             SizedBox(
               width: 7,
@@ -595,7 +684,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
           MaterialPageRoute(
               builder: (BuildContext context) {
-                return BookmarkListPage();
+                return VideoBookMarkListPage();
               }
           ) );
 

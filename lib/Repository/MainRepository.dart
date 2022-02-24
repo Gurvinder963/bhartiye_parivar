@@ -1,3 +1,4 @@
+import 'package:bhartiye_parivar/ApiResponses/CheckDonateResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/LiveDataResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesHomeListResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
@@ -186,6 +187,46 @@ class MainRepository {
     final response = await _provider.postJAVA("api/getjoinus",body);
     return JoinUsNewResponse.fromJson(response);
   }
+
+  Future<CheckDonateResponse> fetchCheckJoinDonateJAVA(var body) async {
+    final response = await _provider.postJAVA("api/checkjoindonate",body);
+    return CheckDonateResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoBookmarkListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/videobookmarks",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoSearchQueryListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/videosearchquery",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<SeriesHomeListResponse> fetchVideoSeriesSearchQueryListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/SeriesSearchQuery",body);
+    return SeriesHomeListResponse.fromJson(response);
+  }
+
+  Future<LiveDataResponse> fetchVideoLiveSearchQueryListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/LiveSearchQuery",body);
+    return LiveDataResponse.fromJson(response);
+  }
+
+  Future<VideoTrendingListResponse> fetchVideoSearchResultListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/videosearchResult",body);
+    return VideoTrendingListResponse.fromJson(response);
+  }
+
+  Future<SeriesHomeListResponse> fetchVideoSeriesSearchResultListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/SeriesSearchResult",body);
+    return SeriesHomeListResponse.fromJson(response);
+  }
+  Future<LiveDataResponse> fetchVideoLiveSearchResultListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/LiveSearchResult",body);
+    return LiveDataResponse.fromJson(response);
+  }
+
   Future<LoginResponse> fetchLoginData(String body) async {
     final response = await _provider.post("public/api/v1/auth/login",body);
     return LoginResponse.fromJson(response);

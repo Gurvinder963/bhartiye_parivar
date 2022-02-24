@@ -84,7 +84,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
   String USER_ID;
   LiveVideoDetailPageState(Live content){
     mContent=content;
-    var videoIdd="nPt8bK2gbaU";
+    var videoIdd="A0pmI3FhoO4";
     if(mContent.liveVideoSourceType=='youtube'){
       try {
         videoIdd = YoutubePlayer.convertUrlToId(mContent.liveVideoUrl);

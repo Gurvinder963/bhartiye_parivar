@@ -46,7 +46,7 @@ class InformationPageState extends State<InformationPage> {
                   child:  Text("The Payment to this account goes to bhartiya pariwar which is registerd orgaination.The Payment to this account goes to bhartiya pariwar which is registerd orgaination.",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
                 ),
-
+                 SizedBox(height: 40,),
                 _aboutButton(),
                 _ContactButton(),
 
@@ -68,7 +68,7 @@ class InformationPageState extends State<InformationPage> {
       },
 
       child: Container(
-        width: 200,
+        width: 220,
         margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
@@ -104,7 +104,7 @@ class InformationPageState extends State<InformationPage> {
       },
 
       child: Container(
-        width: 200,
+        width: 220,
         margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,

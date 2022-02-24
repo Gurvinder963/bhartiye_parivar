@@ -24,16 +24,34 @@ import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Interfaces/OnLangChange.dart';
-String videoCategory="health";
+import '../Utils/AppColors.dart';
+String videoCategory="trending";
 
-class HealthPage extends StatefulWidget {
+class VideoSearchResultPage extends StatefulWidget {
+
+  final String video_id;
+  final String video_category;
+
+
+  VideoSearchResultPage({Key key,@required this.video_id,@required this.video_category}) : super(key: key);
+
   @override
-  HealthPageState createState() {
-    return HealthPageState();
+  VideoSearchResultPageState createState() {
+    return VideoSearchResultPageState(video_id,video_category);
   }
 }
 
-class HealthPageState extends State<HealthPage> {
+class VideoSearchResultPageState extends State<VideoSearchResultPage> {
+   String video_id;
+   String video_category;
+
+  VideoSearchResultPageState(video_id,video_category){
+    this.video_id=video_id;
+    this.video_category=video_category;
+
+  }
+
+
   ScrollController _sc = new ScrollController();
   List mainData = new List();
   int page = 1;
@@ -54,17 +72,7 @@ class HealthPageState extends State<HealthPage> {
   @override
   void initState() {
     super.initState();
-    eventBusLC.on<OnLangChange>().listen((event) {
-      setState(() {
-        isLoading = false;
 
-        mainData.clear();
-        page = 1;
-
-      });
-
-      apiCall();
-    });
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
@@ -73,12 +81,7 @@ class HealthPageState extends State<HealthPage> {
 
       USER_ID=prefs.getString(Prefs.USER_ID);
 
-
-
       apiCall();
-
-
-
 
       return (prefs.getString('token'));
     });
@@ -95,13 +98,9 @@ class HealthPageState extends State<HealthPage> {
       setState(() {
         isLoading = true;
       });}
-    getLocaleContentLang().then((locale) {
 
-      if(locale==null){
-        locale="";
-      }
 
-      getVideosList(user_Token,videoCategory,locale).then((value) => {
+      getVideosList(user_Token,videoCategory).then((value) => {
 
         setState(() {
           isLoading = false;
@@ -114,7 +113,6 @@ class HealthPageState extends State<HealthPage> {
       });
 
 
-    });
 
   }
   Future<ShortDynamicLink> getShortLink(String id) async {
@@ -270,20 +268,13 @@ class HealthPageState extends State<HealthPage> {
   }
 
 
-  Future<VideoTrendingListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
+  Future<VideoTrendingListResponse> getVideosList(String user_Token,String videoCategory) async {
 
-    /*String pageIndex = page.toString();
-    String perPage = "10";
-    print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
-      'per_page': perPage,};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoData(body,user_Token);*/
 
     String pageIndex = page.toString();
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex});
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page_category":video_category,"video_id":video_id});
     MainRepository repository=new MainRepository();
-    return repository.fetchVideoListOthersJAVA(body);
+    return repository.fetchVideoSearchResultListJAVA(body);
 
   }
   @override
@@ -298,17 +289,24 @@ class HealthPageState extends State<HealthPage> {
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     return Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 50,
+
+
+          backgroundColor: Color(AppColors.BaseColor),
+          title: Text("Search Results", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,color: Color(0xFFFFFFFF))),
+
+        ),
 
         body:   Container(
           height: (MediaQuery.of(context).size.height),
 
 
+
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  height: 2,
-                ),
+                SizedBox(height: 2,),
                 Expanded(
                   child: _buildList(),
 
@@ -626,8 +624,8 @@ class HealthPageState extends State<HealthPage> {
 
                                   }
                                   else if(newValue==4){
-                                    subscribeAPI(channel_id.toString(),is_subscribed, index);
 
+                                    subscribeAPI(channel_id.toString(),is_subscribed,index);
 
                                   }
 
@@ -725,6 +723,7 @@ class HealthPageState extends State<HealthPage> {
                     mainData[index].is_subscribed,
                     mainData[index].bookmark,
                     mainData[index].watched_percent,
+
 
                   )
 

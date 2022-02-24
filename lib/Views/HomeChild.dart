@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/Interfaces/OnHomeTabChange.dart';
 import 'package:bhartiye_parivar/Views/LivePage.dart';
 import 'package:bhartiye_parivar/Views/SocialMedia.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,44 @@ class HomeChildPageState extends State<HomeChildPage> with SingleTickerProviderS
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabController = new TabController(vsync: this, length: 11);
+    tabController = new TabController(vsync: this, length: 11)  ..addListener(() {
+      if(tabController.indexIsChanging) {
+        print("tab is animating. from active (getting the index) to inactive(getting the index) ");
+      }else {
+        //tab is finished animating you get the current index
+        //here you can get your index or run some method once.
+        if(tabController.index==0){
+          eventBusHTC.fire(OnHomeTabChange("main"));
+        }
+        else if(tabController.index==1){
+          eventBusHTC.fire(OnHomeTabChange("trending"));
+        }
+        else if(tabController.index==2){
+          eventBusHTC.fire(OnHomeTabChange("series"));
+        }
+        else if(tabController.index==3){
+          eventBusHTC.fire(OnHomeTabChange("live"));
+        }
+        else if(tabController.index==4){
+          eventBusHTC.fire(OnHomeTabChange("health"));
+        }
+        else if(tabController.index==5){
+          eventBusHTC.fire(OnHomeTabChange("spiritual"));
+        }
+        else if(tabController.index==6){
+          eventBusHTC.fire(OnHomeTabChange("history"));
+        }
+        else if(tabController.index==7){
+          eventBusHTC.fire(OnHomeTabChange("culture"));
+        }
+        else if(tabController.index==8){
+          eventBusHTC.fire(OnHomeTabChange("conspiracy"));
+        }
+
+
+        print(tabController.index);
+      }
+    });
 
     eventBusHT.on<OnHomeTapped>().listen((event) {
       tabController.animateTo(0);
@@ -47,12 +85,16 @@ class HomeChildPageState extends State<HomeChildPage> with SingleTickerProviderS
 
     eventBusLSP.on<OnLandScape>().listen((event) {
 
-      if(event.count=='Land'){
+      var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+
+      if(event.count=='Land' && isPortrait){
+
         setState(() {
           isFullScreen=true;
         });
       }
-      else{
+      else if(event.count=='Port' && !isPortrait){
         setState(() {
           isFullScreen=false;
         });
@@ -77,7 +119,7 @@ class HomeChildPageState extends State<HomeChildPage> with SingleTickerProviderS
              // shape: Border(bottom: BorderSide(color:Color(0xFF5a5a5a))),
               leading: new Container(),
               backgroundColor: Color(AppColors.BaseColor),
-              toolbarHeight: 40,
+              toolbarHeight: 34,
               flexibleSpace: TabBar(
                 controller: tabController,
                 isScrollable: true,

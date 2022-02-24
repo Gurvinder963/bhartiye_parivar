@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bhartiye_parivar/Views/JoinDonateWhom.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ import '../localization/locale_constant.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Interfaces/OnAnyDrawerItemOpen.dart';
 String videoCategory;
+int _start = 0;
 class VideoDetailNewPage extends StatefulWidget {
   final VideoData content;
 
@@ -55,7 +57,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   // Group Value for Radio Button.
   int radioid = -1;
-
+  Timer _timer;
 
   bool _isInAsyncCall = false;
   var marginPixel=0;
@@ -84,7 +86,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   String USER_ID;
   VideoDetailNewPageState(VideoData content){
     mContent=content;
-    var videoIdd="nPt8bK2gbaU";
+
+    var videoIdd="A0pmI3FhoO4";
    if(mContent.videoSourceType=='youtube'){
     try {
       videoIdd = YoutubePlayer.convertUrlToId(mContent.videoUrl);
@@ -103,6 +106,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   }
   @override
   dispose(){
+    _timer.cancel();
     if (_controller.value.isFullScreen) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
           .then((_) {
@@ -168,25 +172,15 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
   }
 
   Future<AddToCartResponse> subscribeChannelAPISINGLE(String channelId,String is_subscribed) async {
-    //  final String requestBody = json.encoder.convert(order_items);
+
     String status = "1";
-    // if (isSubscribed==1) {
-    //   status = "0";
-    //
-    // } else {
-    //
-    //   status = "1";
-    // }
 
     var body =json.encode({"channel_id":channelId,"is_subscribed":status});
     MainRepository repository=new MainRepository();
 
     return repository.fetchSubscribeChannel(body,user_Token);
 
-
   }
-
-
 
 
 
@@ -208,6 +202,17 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
 
   }
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+            _start=_start+1;
+
+      },
+    );
+  }
+
   @override
   void initState() {
 
@@ -283,19 +288,19 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           apiCall();
         }
       });
-
-
+      _start=0;
+      startTimer();
 
   }
   void listener() {
-    if (_isPlayerReady && mounted) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-        print(_videoMetaData);
-
-      });
-    }
+    // if (_isPlayerReady && mounted) {
+    //   setState(() {
+    //     _playerState = _controller.value.playerState;
+    //     _videoMetaData = _controller.metadata;
+    //     print(_videoMetaData);
+    //
+    //   });
+    // }
   }
   @override
   void deactivate() {
@@ -314,7 +319,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
   Future<AddToCartResponse> postSaveVideoInput(String token,String clickedStatus,String videoPlayTime,String share,String content_id) async {
 
-    var body =json.encode({"video_duration":convertTime(mContent.video_duration) ,"video_clicked_status": clickedStatus, "video_watch_time": videoPlayTime,"shared_link_click_number": share,"video_unique_id":content_id});
+    String watchTimeNow=_start.toString();
+
+    var body =json.encode({"video_duration":convertTime(mContent.video_duration) ,"video_clicked_status": clickedStatus, "video_watch_time": watchTimeNow,"shared_link_click_number": share,"video_unique_id":content_id});
     MainRepository repository=new MainRepository();
     return repository.fetchSaveVideoInput(body,token);
 
@@ -642,7 +649,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     var channel=mContent.channel==null?"My Channel":mContent.channel;
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-    final height = MediaQuery.of(context).size.height;
+
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(DateTime.parse(mContent.created_at));
 
@@ -1168,11 +1175,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
 
     }
 
-    var channel=mContent.channel==null?"My Channel":mContent.channel;
 
-    final height = MediaQuery.of(context).size.height;
+
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(DateTime.parse(mContent.created_at));
+
 
     if(mContent.videoSourceType=='facebook' || mContent.videoSourceType=='brighteon'){
 
@@ -1537,7 +1543,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
           return GestureDetector(
               onTap: () =>
               {
+              _controller.pause(),
+              _timer.cancel(),
+              postSaveVideoInput(user_Token,"","","",mContent.id.toString())
+                  .then((res) async {
 
+              _start=0;
+              }),
                 Navigator.of(context, rootNavigator: true)
                     .pushReplacement( // ensures fullscreen
                     MaterialPageRoute(
@@ -1581,19 +1593,22 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
       onTap: () {
 
         _controller.pause();
-
+        _timer.cancel();
 
         Duration position=_controller.value.position;
         int sec=position.inSeconds;
 
         postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.id.toString())
-            .then((res) async {});
+            .then((res) async {
+
+              _start=0;
+        });
 
 
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return JoinUsPage();
+                  return JoinDonateWhomPage(from:"Join");
                 }
             ) );
       },
@@ -1629,18 +1644,22 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage> {
     return InkWell(
       onTap: () {
         _controller.pause();
+        _timer.cancel();
 
 
         Duration position=_controller.value.position;
         int sec=position.inSeconds;
 
         postSaveVideoInput(user_Token,"",sec.toString(),"",mContent.id.toString())
-            .then((res) async {});
+            .then((res) async {
+              _start=0;
+
+        });
 
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return DonateUsPage();
+                  return JoinDonateWhomPage(from:"Donate");
                 }
             ) );
       },

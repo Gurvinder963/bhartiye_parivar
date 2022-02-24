@@ -306,6 +306,9 @@ class SpiritualPageState extends State<SpiritualPage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                SizedBox(
+                  height: 2,
+                ),
                 Expanded(
                   child: _buildList(),
 

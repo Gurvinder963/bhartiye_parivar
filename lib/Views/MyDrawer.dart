@@ -155,7 +155,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
               createDrawerHeader(context,sideBarOTP),
 
               createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/ic_admin_new.png'), width: 25,height: 40,),
+                  icon: Image(image: AssetImage('assets/ic_admin_new.jpg'), width: 22,height: 22,),
                   text: Languages
                       .of(context)
                       .adminPanel,

@@ -32,9 +32,9 @@ class User {
   final int id;
 }
 
-String amount="";
+String amount="0";
 String selectedDonateType="";
-String selectedDate="";
+String selectedDate="0";
 class JoinUsPage extends StatefulWidget {
 
 
@@ -181,11 +181,13 @@ class JoinUsPageState extends State<JoinUsPage> {
     if(value.data.length>0){
 
 
-
-
+      String date=value.data[0].promiseDate;
+      var arr=date.split("-");
 
     //var lists = json.decode(value.data.content);
     setState(() {
+       amount=value.data[0].amount;
+       selectedDate=arr[2];
       _chosenValue1 = ansList1[int.parse(value.data[0].timeLevel)];
       _chosenValue2 = ansList2[int.parse(value.data[0].socialMedia)];
       _chosenValue3 = ansList3[int.parse(value.data[0].donationFrequency)];
@@ -264,6 +266,10 @@ class JoinUsPageState extends State<JoinUsPage> {
 
   Future<AddToCartResponse> saveJoinUsAPI(message1) async {
     //  final String requestBody = json.encoder.convert(order_items);
+
+
+    print("--f aggggn----");
+    print(selectedDate);
 
 
     var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"userid":USER_ID,"token":user_Token,"social_media":_chosenValue2.id.toString(),"time_level":_chosenValue1.id.toString(),"donation_frequency":_chosenValue3.id.toString(),"amount":amount,"promise_date":selectedDate,"content_multiple":message1});
@@ -350,7 +356,7 @@ class JoinUsPageState extends State<JoinUsPage> {
             new Row(
 
               children: <Widget>[
-                SizedBox(width: 5,),
+                SizedBox(width: 2,),
                 new Radio(
                   value: 100,
                   activeColor: Colors.orange,
@@ -362,9 +368,9 @@ class JoinUsPageState extends State<JoinUsPage> {
                 new Text(
                   '100',
 
-                  style: new TextStyle(fontSize: 14.0),
+                  style: new TextStyle(fontSize: 13.0),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 7,),
                 new Radio(
                   value: 200,
                   activeColor: Colors.orange,
@@ -376,10 +382,10 @@ class JoinUsPageState extends State<JoinUsPage> {
                 new Text(
                   '200',
                   style: new TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 13.0,
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 7,),
                 new Radio(
                   value: 300,
                   activeColor: Colors.orange,
@@ -391,7 +397,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                 ),
                 new Text(
                   '300',
-                  style: new TextStyle(fontSize: 14.0),
+                  style: new TextStyle(fontSize: 13.0),
                 ),
               ],
             ),
@@ -408,7 +414,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                   ),
                   new Text(
                     '1000',
-                    style: new TextStyle(fontSize: 14.0),
+                    style: new TextStyle(fontSize: 13.0),
                   ),
                   new Radio(
                     value: 2000,
@@ -421,7 +427,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                   new Text(
                     '2000',
                     style: new TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 13.0,
                     ),
                   ),
                   new Radio(
@@ -434,11 +440,11 @@ class JoinUsPageState extends State<JoinUsPage> {
                   ),
                   new Text(
                     '5000',
-                    style: new TextStyle(fontSize: 14.0),
+                    style: new TextStyle(fontSize: 13.0),
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 7,),
 
               Divider(
                 thickness: 1.5,
@@ -709,15 +715,15 @@ class JoinUsPageState extends State<JoinUsPage> {
               }
               else {
                 final DateTime now = DateTime.now();
-                final DateFormat formatter = DateFormat('yyyy/MM/dd');
+                final DateFormat formatter = DateFormat('yyyy-MM-dd');
                 final String formatted = formatter.format(now);
 
                 amount=selectedRadio.toString();
                 selectedDonateType="2";
-                selectedDate=formatted;
+                selectedDate="0";
                 Navigator.of(context).pop();
-
-                print(selectedRadio);
+                print("----selected date-----");
+                print(selectedDate);
 
               }
 
@@ -744,7 +750,7 @@ class JoinUsPageState extends State<JoinUsPage> {
           onPressed: () =>
               Navigator.of(context, rootNavigator: true).pop(context),
         ),
-        title: Text("Join Bhartiya Parivar"),
+        title: Text("Join "+Constants.AppName),
       ),
 
       body:   ModalProgressHUD(
@@ -766,24 +772,28 @@ class JoinUsPageState extends State<JoinUsPage> {
           children: <Widget>[
             Container(
                 decoration: BoxDecoration(
+
                     border: Border.all(color: Color(0xFFc3c3c3)),
           borderRadius: BorderRadius.all(
           Radius.circular(5.0) //                 <--- border radius here
     ),
                 ),
-                padding:EdgeInsets.fromLTRB(7.0,13.0,7.0,13.0) ,
+                padding:EdgeInsets.fromLTRB(2,2.0,2.0,2.0) ,
                 child:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("Will you be able to give some time to strengthen the organization at grassroot level?",
+                     Container(
+                         padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
+                         color:Color(0xFFff0000),
+                         child:Text("Will you be able to give some time to strengthen the organization at grassroot level?",
 
                         style: GoogleFonts.roboto(
                           fontSize:15.0,
 
-                          color: Color(0xFF000000),
+                          color: Color(0xFFffffff),
                           fontWeight: FontWeight.bold,
 
-                        ),),
+                        ),)),
                       SizedBox(height: 5,),
                       Divider(
                         thickness: 0.5,
@@ -791,7 +801,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       ),
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0,0,10,0),
+                        padding: EdgeInsets.fromLTRB(5,0,10,0),
                         child:
                         Container(
                           height: 38,
@@ -846,7 +856,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 ,
             SizedBox(height: 5,),
             Divider(
-              thickness: 0.5,
+              thickness: 1,
               color:Color(0xFFFFA500),
             ),
 
@@ -857,20 +867,25 @@ class JoinUsPageState extends State<JoinUsPage> {
                       Radius.circular(5.0) //                 <--- border radius here
                   ),
                 ),
+
                 margin:EdgeInsets.fromLTRB(0.0,7.0,0.0,0.0) ,
-                padding:EdgeInsets.fromLTRB(7.0,13.0,7.0,13.0) ,
+                padding:EdgeInsets.fromLTRB(2.0,2.0,2.0,0.0) ,
                 child:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("Will you be part of our social media team?",
+    Container(
+      width:MediaQuery.of(context).size.width,
+    padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
+    color:Color(0xFFff0000),
+    child:  Text("Will you be part of our social media team?",
 
                         style: GoogleFonts.roboto(
                           fontSize:15.0,
 
-                          color: Color(0xFF000000),
+                          color: Color(0xFFffffff),
                           fontWeight: FontWeight.bold,
 
-                        ),),
+                        ),)),
                       SizedBox(height: 5,),
                       Divider(
                         thickness: 0.5,
@@ -878,7 +893,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       ),
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0,0,10,0),
+                        padding: EdgeInsets.fromLTRB(5,0,10,0),
                         child:
                         Container(
                           height: 38,
@@ -932,7 +947,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                     ]))
 ,  SizedBox(height: 5,),
             Divider(
-              thickness: 0.5,
+              thickness: 1,
               color:Color(0xFFFFA500),
             ),
             Container(
@@ -942,20 +957,24 @@ class JoinUsPageState extends State<JoinUsPage> {
                       Radius.circular(5.0) //                 <--- border radius here
                   ),
                 ),
-                padding:EdgeInsets.fromLTRB(7.0,13.0,7.0,13.0) ,
+                padding:EdgeInsets.fromLTRB(2.0,2.0,2.0,2.0) ,
                 margin:EdgeInsets.fromLTRB(0.0,7.0,0.0,0.0) ,
                 child:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("Will you be able to provide financial support to strengthen the organization?",
+    Container(
+    width:MediaQuery.of(context).size.width,
+    padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
+    color:Color(0xFFff0000),
+    child:Text("Will you be able to provide financial support to strengthen the organization?",
 
                         style: GoogleFonts.roboto(
                           fontSize:15.0,
 
-                          color: Color(0xFF000000),
+                          color: Color(0xFFffffff),
                           fontWeight: FontWeight.bold,
 
-                        ),),
+                        ),)),
                       SizedBox(height: 5,),
                       Divider(
                         thickness: 0.5,
@@ -963,7 +982,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       ),
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0,0,10,0),
+                        padding: EdgeInsets.fromLTRB(5,0,10,0),
                         child:
                         Container(
                           height: 38,
@@ -1012,6 +1031,11 @@ class JoinUsPageState extends State<JoinUsPage> {
                                       _asyncInputDialogYearly(context);
 
                                     }
+                                    else{
+                                     selectedDate="0";
+                                     amount="0";
+
+                                     }
 
                                   },
                                 ),// Your Dropdown Code Here,
@@ -1027,7 +1051,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                     ]))
 ,  SizedBox(height: 5,),
             Divider(
-              thickness: 0.5,
+              thickness: 1,
               color:Color(0xFFFFA500),
             ),
             Container(
@@ -1037,27 +1061,32 @@ class JoinUsPageState extends State<JoinUsPage> {
                       Radius.circular(5.0) //                 <--- border radius here
                   ),
                 ),
-                padding:EdgeInsets.fromLTRB(7.0,13.0,7.0,13.0) ,
+                padding:EdgeInsets.fromLTRB(2.0,2.0,2.0,2.0) ,
                 margin:EdgeInsets.fromLTRB(0.0,7.0,0.0,0.0) ,
                 child:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("Are you associated with any religious, social or political organization, movement, person or idea?",
+    Container(
+    width:MediaQuery.of(context).size.width,
+    padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
+
+    color:Color(0xFFff0000),
+    child:   Text("Are you associated with any religious, social or political organization, movement, person or idea?",
 
                         style: GoogleFonts.roboto(
                           fontSize:15.0,
 
-                          color: Color(0xFF000000),
+                          color: Color(0xFFffffff),
                           fontWeight: FontWeight.bold,
 
-                        ),),
+                        ),)),
                       SizedBox(height: 5,),
                       Divider(
                         thickness: 0.5,
                         color:Color(0xff666666),
                       ),
                 Container(
-                    height: 38,child:  CheckboxListTile(
+                    height: 35,child:  CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: ScreenUtil().setWidth(1)),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1077,7 +1106,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       )),
                 Container(
-                    height: 40,child:  CheckboxListTile(
+                    height: 35,child:  CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1098,7 +1127,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       )),
 
                 Container(
-                    height: 40,child: CheckboxListTile(
+                    height: 35,child: CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1118,7 +1147,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       )),
                 Container(
-                    height: 40,child: CheckboxListTile(
+                    height: 35,child: CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1139,7 +1168,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       )),
 
                 Container(
-                    height: 40,child:CheckboxListTile(
+                    height: 35,child:CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1160,7 +1189,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       )),
 
                 Container(
-                    height: 40,child: CheckboxListTile(
+                    height: 35,child: CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1181,7 +1210,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       )),
 
                 Container(
-                    height: 40,child: CheckboxListTile(
+                    height: 35,child: CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1201,7 +1230,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       )),
                 Container(
-                    height: 40,child:CheckboxListTile(
+                    height: 35,child:CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1222,7 +1251,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       )),
 
                 Container(
-                    height: 40,child:CheckboxListTile(
+                    height: 35,child:CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1242,7 +1271,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       )),
                 Container(
-                    height: 40,child: CheckboxListTile(
+                    height: 35,child: CheckboxListTile(
                         contentPadding:EdgeInsets.symmetric(horizontal: 4.0,vertical: 0),
                         activeColor:Colors.orange,
                         checkColor: Colors.white,
@@ -1261,6 +1290,9 @@ class JoinUsPageState extends State<JoinUsPage> {
                         },
                         controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                       )),
+
+
+                      SizedBox(height: 20,)
                     ]))
 
 

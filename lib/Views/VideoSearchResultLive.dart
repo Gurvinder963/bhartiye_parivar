@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/Views/LiveVideoDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../localization/locale_constant.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/LiveDataResponse.dart';
 import '../ApiResponses/BookMarkSaveResponse.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
@@ -24,16 +26,28 @@ import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
 import '../Interfaces/OnLangChange.dart';
-String videoCategory="health";
+import '../Utils/AppColors.dart';
+String videoCategory="live";
 
-class HealthPage extends StatefulWidget {
+class VideoSearchResultLivePage extends StatefulWidget {
+
+  final String video_id;
+  final String video_category;
+  VideoSearchResultLivePage({Key key,@required this.video_id,@required this.video_category}) : super(key: key);
+
   @override
-  HealthPageState createState() {
-    return HealthPageState();
+  VideoSearchResultLivePageState createState() {
+    return VideoSearchResultLivePageState(video_id);
   }
 }
 
-class HealthPageState extends State<HealthPage> {
+class VideoSearchResultLivePageState extends State<VideoSearchResultLivePage> {
+
+ String live_id;
+ VideoSearchResultLivePageState(String live_id){
+   this.live_id=live_id;
+ }
+
   ScrollController _sc = new ScrollController();
   List mainData = new List();
   int page = 1;
@@ -44,6 +58,7 @@ class HealthPageState extends State<HealthPage> {
   //bool isBookMarked = false;
   // bool isSubscribed= false;
   bool _isInAsyncCall = false;
+
   @override
   void dispose() {
 
@@ -105,7 +120,7 @@ class HealthPageState extends State<HealthPage> {
 
         setState(() {
           isLoading = false;
-          mainData.addAll(value.data);
+          mainData.addAll(value.live);
           if (!mainData.isEmpty) {
             page++;
           }
@@ -226,16 +241,16 @@ class HealthPageState extends State<HealthPage> {
 
   }
 
-  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,int is_subscribed) async {
+  Future<AddToCartResponse> subscribeChannelAPI(String channelId,String xyz,bool is_subscribed) async {
     //  final String requestBody = json.encoder.convert(order_items);
-    String status = "1";
-    // if (is_subscribed==1) {
-    //   status = "0";
-    //
-    // } else {
-    //
-    //   status = "1";
-    // }
+    String status = "0";
+    if (is_subscribed) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
 
     var body =json.encode({"channel_id":channelId,"is_subscribed":status});
     MainRepository repository=new MainRepository();
@@ -254,14 +269,14 @@ class HealthPageState extends State<HealthPage> {
 
 
   Future<BookMarkSaveResponse> postAddBookMark(String content_type,String token,String content_id, bool isBookMarked) async {
-    String status = "1";
-    // if (isBookMarked) {
-    //   status = "0";
-    //
-    // } else {
-    //
-    //   status = "1";
-    // }
+    String status = "0";
+    if (isBookMarked) {
+      status = "0";
+
+    } else {
+
+      status = "1";
+    }
     print('my_token'+token);
     var body =json.encode({"content_type": content_type, "content_id": content_id,"bookmark_type": status});
     MainRepository repository=new MainRepository();
@@ -270,20 +285,12 @@ class HealthPageState extends State<HealthPage> {
   }
 
 
-  Future<VideoTrendingListResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
-
-    /*String pageIndex = page.toString();
-    String perPage = "10";
-    print(locale.toString());
-    var body ={'video_category':videoCategory,'lang_code':locale, 'page': pageIndex,
-      'per_page': perPage,};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoData(body,user_Token);*/
+  Future<LiveDataResponse> getVideosList(String user_Token,String videoCategory, String locale) async {
 
     String pageIndex = page.toString();
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"video_category":videoCategory,"page":pageIndex});
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page_category":videoCategory,"page":pageIndex,"video_id":live_id});
     MainRepository repository=new MainRepository();
-    return repository.fetchVideoListOthersJAVA(body);
+    return repository.fetchVideoLiveSearchResultListJAVA(body);
 
   }
   @override
@@ -298,7 +305,14 @@ class HealthPageState extends State<HealthPage> {
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     return Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 50,
 
+
+          backgroundColor: Color(AppColors.BaseColor),
+          title: Text("Search Results", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,color: Color(0xFFFFFFFF))),
+
+        ),
         body:   Container(
           height: (MediaQuery.of(context).size.height),
 
@@ -306,9 +320,7 @@ class HealthPageState extends State<HealthPage> {
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  height: 2,
-                ),
+                SizedBox(height: 2,),
                 Expanded(
                   child: _buildList(),
 
@@ -318,19 +330,19 @@ class HealthPageState extends State<HealthPage> {
 
     );
   }
-  subscribeAPI(String channel_id,int is_subscribed,int index){
+  subscribeAPI(String channel_id,bool is_subscribed,int index){
 
     subscribeChannelAPI(channel_id.toString(),"1",is_subscribed).then((res) async {
       String msg;
-      // if(is_subscribed==1){
-      //
-      //   mainData[index].is_subscribed=false;
-      //   msg="Unsubscribe channel successfully";
-      // }
-      // else{
-      mainData[index].is_subscribed=1;
-      msg="Subscribe channel successfully";
-      //}
+      if(is_subscribed){
+
+        mainData[index].is_subscribed=false;
+        msg="Unsubscribe channel successfully";
+      }
+      else{
+        mainData[index].is_subscribed=true;
+        msg="Subscribe channel successfully";
+      }
 
       if(res.status==1){
 
@@ -373,13 +385,13 @@ class HealthPageState extends State<HealthPage> {
       );
     }
   }
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title,String thumbnail,String createdAt,String channel_id,String channel,String channel_image,String duration,String videoUrl,String videoSourceType,int is_subscribed,bool bookmark,int watched_percent){
+  Widget _buildBoxVideo(BuildContext context,int index,Live liveData){
 
 
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(DateTime.parse(createdAt));
+    //  final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    // final String formatted = formatter.format(DateTime.parse(liveData.liv));
 
-    channel=channel==null?"My Channel":channel;
+    //  channel=channel==null?"My Channel":channel;
     // duration=channel==null?"4:50":duration;
     return    Container(
         margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
@@ -412,7 +424,7 @@ class HealthPageState extends State<HealthPage> {
                       )),
 
 
-                  thumbnail!=null? AspectRatio(
+                  liveData.liveVideoImage!=null? AspectRatio(
                       aspectRatio: 16 / 9,
                       child:   Container(
                         margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -423,53 +435,46 @@ class HealthPageState extends State<HealthPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(thumbnail),
+                            image: NetworkImage(liveData.liveVideoImage),
                           ),
                         ),
 
-                      )):Container(height: 0,width: 0,),
+                      )):Container(width: 0,height: 0,),
 
-                  Positioned.fill(
+                  /*  Positioned.fill(
                       child:Align(
-                          alignment: Alignment.bottomRight,
+                          alignment: Alignment.bottomLeft,
                           child: Container(
-                              padding: EdgeInsets.fromLTRB(10,3,10,5),
+                              padding: EdgeInsets.fromLTRB(10,3,10,3),
                               margin: EdgeInsets.fromLTRB(0,0,0,0.7),
-                              color:  Color(0xFF5a5a5a),
-                              child: Text(duration,  style: GoogleFonts.roboto(
-                                fontSize:14.0,
+                              color: Color(0xFF5a5a5a),
+                              child: Text(lang,  style: GoogleFonts.roboto(
+                                fontSize:16.0,
 
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
 
                               ),))
 
-                      )),
 
-                  watched_percent>0?Positioned.fill(
-                      child:Align(
-                          alignment: Alignment.bottomLeft,
-                          child:
-                          SliderTheme(
-                            child: Container(
-                                height: 1,
-                                child:Slider(
-                                  value: watched_percent.toDouble(),
-
-                                  max: 100,
-                                  min: 0,
-                                  activeColor: Colors.red,
-                                  inactiveColor: Colors.grey,
-                                  onChanged: (double value) {},
-                                )),
-                            data: SliderTheme.of(context).copyWith(
-                                trackHeight: 1,
-                                trackShape: CustomTrackShape(),
-                                thumbColor: Colors.transparent,
-
-                                thumbShape: SliderComponentShape.noThumb),
-                          ))):Container(height: 0,width: 0,),
-
+                      )),*/
+                  // Positioned.fill(
+                  //     child:Align(
+                  //         alignment: Alignment.bottomRight,
+                  //         child: Container(
+                  //             padding: EdgeInsets.fromLTRB(10,3,10,5),
+                  //             margin: EdgeInsets.fromLTRB(0,0,0,0.7),
+                  //             color:  Color(0xFF5a5a5a),
+                  //             child: Text(duration,  style: GoogleFonts.roboto(
+                  //               fontSize:14.0,
+                  //
+                  //               color: Colors.white,
+                  //               fontWeight: FontWeight.w500,
+                  //
+                  //             ),))
+                  //
+                  //
+                  //     )),
                 ],
               ),
 
@@ -480,7 +485,7 @@ class HealthPageState extends State<HealthPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
 
-                        new Container(
+                        liveData.liveChannelImage!=null? new Container(
                             width: 44.0,
                             height: 44.0,
                             decoration: new BoxDecoration(
@@ -488,9 +493,9 @@ class HealthPageState extends State<HealthPage> {
                                 image: new DecorationImage(
                                     fit: BoxFit.fill,
                                     image: new NetworkImage(
-                                        channel_image)
+                                        liveData.liveChannelImage)
                                 )
-                            )),
+                            )):Container(width: 0,height: 0,),
                         SizedBox(height: 5,width: 8,),
 
                         new Expanded(
@@ -501,7 +506,7 @@ class HealthPageState extends State<HealthPage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       SizedBox(height: 5),
-                                      Text(title,
+                                      Text(liveData.liveTitle,
 
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
@@ -518,140 +523,29 @@ class HealthPageState extends State<HealthPage> {
 
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                Text(channel,   overflow: TextOverflow.ellipsis,
+                                                liveData.liveChannel!=null? Text(liveData.liveChannel,   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1, style: GoogleFonts.roboto(
                                                     fontSize:12.0,
                                                     color: Color(0xFF5a5a5a),
 
-                                                  ),),
+                                                  ),):Container(width: 0,height: 0,),
                                                 SizedBox(width: 10),
 
-                                                Container(
-                                                  width: 8,
-                                                  height: 8,
+                                                // Container(
+                                                //   width: 8,
+                                                //   height: 8,
+                                                //
+                                                //   decoration: BoxDecoration(
+                                                //       shape: BoxShape.circle,
+                                                //       color: Color(0xFF5a5a5a)),
+                                                // ),
 
-                                                  decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Color(0xFF5a5a5a)),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(formatted,   overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1, style: GoogleFonts.roboto(
-                                                    fontSize:12.0,
-                                                    color: Color(0xFF5a5a5a),
-
-                                                  ),),
-                                                SizedBox(width: 10),
                                               ])),
 
 
 
                                     ]))),
-                        new Expanded(
-                            flex: 1,
 
-                            child:PopupMenuButton(
-                                icon: Icon(Icons.more_vert),
-                                onSelected: (newValue) { // add this property
-
-                                  if(newValue==1){
-
-                                    postSaveVideoInput(user_Token,"","","1",id.toString())
-                                        .then((res) async {
-
-
-                                      getShortLink(id.toString()).then((res) {
-                                        setState(() {
-                                          _isInAsyncCall = false;
-                                        });
-                                        var url = res.shortUrl
-                                            .toString();
-
-                                        _onShare(
-                                            context, title +
-                                            ' ' +
-                                            url, thumbnail);
-                                      });
-
-
-                                    });
-
-
-                                  }
-
-                                  else if(newValue==2){
-
-                                    _asyncInputDialog(context,id.toString());
-
-                                  }
-                                  else if(newValue==3){
-
-                                    setState(() {
-                                      _isInAsyncCall = true;
-                                    });
-
-                                    postAddBookMark("1",user_Token,id.toString(),bookmark)
-                                        .then((res) async {
-                                      setState(() {
-                                        _isInAsyncCall = false;
-                                      });
-
-
-                                      String mmsg="";
-                                      if (res.bookmarkType == 1) {
-
-                                        mmsg="Bookmark added!";
-                                        mainData[index].bookmark=true;
-
-
-
-                                      }
-                                      else {
-                                        mmsg="Bookmark removed!";
-                                        mainData[index].bookmark=false;
-
-                                      }
-
-
-                                      Fluttertoast.showToast(
-                                          msg: mmsg,
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          timeInSecForIosWeb: 1,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-
-                                    });
-
-                                  }
-                                  else if(newValue==4){
-                                    subscribeAPI(channel_id.toString(),is_subscribed, index);
-
-
-                                  }
-
-                                },
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    child: Text("Share"),
-                                    value: 1,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Report"),
-                                    value: 2,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Bookmark"),
-                                    value: 3,
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Subscribe Notifications"),
-                                    value: 4,
-                                  )
-                                ]
-                            )
-                        )
 
 
                       ]))
@@ -703,7 +597,7 @@ class HealthPageState extends State<HealthPage> {
                         .push( // ensures fullscreen
                         MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return VideoDetailNewPage(content: mainData[index]);
+                              return LiveVideoDetailPage(content: mainData[index]);
                             }
                         ))
                   },
@@ -711,20 +605,9 @@ class HealthPageState extends State<HealthPage> {
                   _buildBoxVideo(
                     context,
                     index,
-                    mainData[index].id,
-                    mainData[index].title,
-                    mainData[index].videoImage,
+                    mainData[index],
 
-                    mainData[index].created_at,
-                    mainData[index].channel_id,
-                    mainData[index].channel,
-                    mainData[index].channel_image,
-                    mainData[index].video_duration,
-                    mainData[index].videoUrl,
-                    mainData[index].videoSourceType,
-                    mainData[index].is_subscribed,
-                    mainData[index].bookmark,
-                    mainData[index].watched_percent,
+
 
                   )
 
@@ -738,19 +621,4 @@ class HealthPageState extends State<HealthPage> {
       );
   }
 
-}
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  Rect getPreferredRect({
-    @required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    @required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final double trackHeight = sliderTheme.trackHeight;
-    final double trackLeft = offset.dx;
-    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
-    final double trackWidth = parentBox.size.width;
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
-  }
 }

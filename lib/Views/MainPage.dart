@@ -168,14 +168,14 @@ class MainPageState extends State<MainPage> {
 
   }
   void listener() {
-    if (_isPlayerReady && mounted) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-        print(_videoMetaData);
-
-      });
-    }
+    // if (_isPlayerReady && mounted) {
+    //   setState(() {
+    //     _playerState = _controller.value.playerState;
+    //     _videoMetaData = _controller.metadata;
+    //     print(_videoMetaData);
+    //
+    //   });
+    // }
   }
   void apiCall(){
     if (!isLoading) {
