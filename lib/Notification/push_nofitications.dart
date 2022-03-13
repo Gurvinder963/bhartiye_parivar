@@ -7,8 +7,8 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 import 'dart:async';
 import 'dart:convert';
-
-
+import 'dart:typed_data';
+import '../Utils/Prefer.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
 //import 'package:event_bus/event_bus.dart';
 import '../Interfaces/NewNotificationRecieved.dart';
@@ -17,6 +17,151 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import '../Interfaces/OnNotificationPayload.dart';
 import 'package:flutter/material.dart';
+ random(min, max){
+    var rn = new Random();
+    return min + rn.nextInt(max - min);
+  }
+
+  Future<String> _downloadAndSaveFile(String url, String fileName) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String filePath = '${directory.path}/$fileName';
+    final http.Response response = await http.get(Uri.parse(url));
+    final File file = File(filePath);
+    await file.writeAsBytes(response.bodyBytes);
+    return filePath;
+  }
+ Future<void> _showBigPictureNotification( int notificationId,
+      String notificationTitle,
+      String notificationContent,
+      String payload,String bigImageUrl,String smallImageUrl) async {
+    final String largeIconPath = await _downloadAndSaveFile(
+        smallImageUrl, 'largeIcon');
+    final String bigPicturePath = await _downloadAndSaveFile(
+        bigImageUrl, 'bigPicture');
+    final BigPictureStyleInformation bigPictureStyleInformation =
+    BigPictureStyleInformation(FilePathAndroidBitmap(bigPicturePath),
+        largeIcon: FilePathAndroidBitmap(largeIconPath),
+        contentTitle: notificationTitle,
+        htmlFormatContentTitle: true,
+        summaryText: notificationContent,
+        htmlFormatSummaryText: true);
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('big text channel id',
+        'big text channel name', 'big text channel description',playSound: true,
+        styleInformation: bigPictureStyleInformation);
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
+
+
+
+    var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.show(
+        notificationId,  notificationTitle,
+        notificationContent, platformChannelSpecifics , payload: payload,);
+  }
+Future<void> _showBigTextNotification( int notificationId,
+      final String notificationTitle,
+      final String notificationContent,
+      String payload, {
+        String channelId = '1234',
+        String channelTitle = 'Android Channel',
+        String channelDescription = 'Default Android Channel for notifications',
+
+      }) async {
+
+Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+      var isSound=prefs.getBool(Prefs.SOUND)?? false;
+      
+      print("my sound---");
+      print(isSound);
+
+
+      String chName="";
+      String chId="";
+       String chDes="";
+
+       if(isSound){
+chName="Noti_with_sound";
+chId="Noti_with_id_sound";
+chDes="Noti_with_des_sound";
+       }
+       else{
+chName="Noti_with_sound_no";
+chId="Noti_with_id_sound_no";
+chDes="Noti_with_des_sound_no";
+       }
+
+    
+     final Int64List vibrationPattern = Int64List(4);
+    vibrationPattern[0] = 0;
+    vibrationPattern[1] = 1000;
+    vibrationPattern[2] = 5000;
+    vibrationPattern[3] = 2000;
+
+
+ const int insistentFlag = 4;
+    final String title=notificationTitle;
+    final String desc=notificationContent;
+
+     BigTextStyleInformation bigTextStyleInformation =
+    BigTextStyleInformation(
+      desc,
+      htmlFormatBigText: true,
+      contentTitle: title,
+      htmlFormatContentTitle: true,
+
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
+     AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(chId,
+        chName, chDes, importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false,
+        playSound: isSound,
+        sound: isSound?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+         vibrationPattern: vibrationPattern,
+        styleInformation: bigTextStyleInformation,
+        );
+    var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+     flutterLocalNotificationsPlugin.show(
+      notificationId,
+      title,
+      desc,
+      platformChannelSpecifics,
+      payload: payload,
+    );
+    
+    });
+
+
+
+
+  }
+
+  Future<dynamic> backgroundMessageHandler(Map<String, dynamic> message) {
+
+     print("on-message-back");
+              print(message);
+  _showBigTextNotification(
+                     random(1, 5), message['data']['Title'],
+                     message['data']['bodyText'], message['data']['type']);
+
+  // var big_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
+    //         var  small_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
+
+           
+              
+              
+             //    _showBigPictureNotification(
+               //      random(1, 5), message['data']['bodyText'],
+                 //    message['data']['Title'], message['data']['type'],big_image_url,small_image_url);
+
+  return Future<void>.value();
+}
+
 class PushNotificationsManager {
 
   PushNotificationsManager._();
@@ -33,9 +178,11 @@ class PushNotificationsManager {
     return min + rn.nextInt(max - min);
   }
 
+Future bgMsgHdl(Map<String, dynamic> message) async {
+  print("onbgMessage: $message");
+}
 
-
-  Future<void> init(BuildContext context) async {
+  Future<void> init() async {
  //   if (!_initialized) {
       // For iOS request permission first.
       _firebaseMessaging.requestNotificationPermissions();
@@ -93,6 +240,7 @@ class PushNotificationsManager {
               });*/
           //  }
           },
+           onBackgroundMessage: Platform.isAndroid ? backgroundMessageHandler : null,
           onLaunch: (Map<String, dynamic> message) async {
 
             Future.delayed(const Duration(milliseconds: 1000), () {
@@ -121,8 +269,13 @@ class PushNotificationsManager {
          // }
           },
 
+
+
+
           onMessage: (Map<String, dynamic> message) async {
 
+
+             ///https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg
 
             Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
             Future<String> token;
@@ -187,18 +340,27 @@ class PushNotificationsManager {
                 title=message['data']['body'];
               }
 
+            //  big_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
+              //small_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
+
               if(big_image_url!=null && !big_image_url.toString().isEmpty){
                 print("in-big_image-url");
+              
+              
                 _showBigPictureNotification(
-                    random(1, 5), msg,
-                    title, type,big_image_url,small_image_url);
+                    random(1, 5), message['data']['bodyText'],
+                    message['data']['Title'], message['data']['type'],big_image_url,small_image_url);
               }
               else {
                 print("in-only-notififaction");
 
+                // _showBigTextNotification(
+                //     random(1, 5), msg,
+                //     title, type);
+
                 _showBigTextNotification(
-                    random(1, 5), msg,
-                    title, type);
+                    random(1, 5), message['data']['Title'],
+                    message['data']['bodyText'], message['data']['type']);
               }
 
               return (prefs.getString('token'));
@@ -217,6 +379,7 @@ class PushNotificationsManager {
       _initialized = true;
   //  }
   }
+
   Future<String> _downloadAndSaveFile(String url, String fileName) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final String filePath = '${directory.path}/$fileName';
@@ -265,6 +428,39 @@ class PushNotificationsManager {
 
       }) async {
 
+Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+      var isSound=prefs.getBool(Prefs.SOUND)?? false;
+      
+      print("my sound---");
+      print(isSound);
+
+
+      String chName="";
+      String chId="";
+       String chDes="";
+
+       if(isSound){
+chName="Noti_with_sound";
+chId="Noti_with_id_sound";
+chDes="Noti_with_des_sound";
+       }
+       else{
+chName="Noti_with_sound_no";
+chId="Noti_with_id_sound_no";
+chDes="Noti_with_des_sound_no";
+       }
+
+    
+     final Int64List vibrationPattern = Int64List(4);
+    vibrationPattern[0] = 0;
+    vibrationPattern[1] = 1000;
+    vibrationPattern[2] = 5000;
+    vibrationPattern[3] = 2000;
+
+
+ const int insistentFlag = 4;
     final String title=notificationTitle;
     final String desc=notificationContent;
 
@@ -278,23 +474,29 @@ class PushNotificationsManager {
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
      AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('big text channel id',
-        'big text channel name', 'big text channel description', importance: Importance.max,
+    AndroidNotificationDetails(chId,
+        chName, chDes, importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
-        playSound: true,
-        sound: RawResourceAndroidNotificationSound('bell_in_temple'),
-
-        styleInformation: bigTextStyleInformation);
+        playSound: isSound,
+        sound: isSound?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+         vibrationPattern: vibrationPattern,
+        styleInformation: bigTextStyleInformation,
+        );
     var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.show(
+     flutterLocalNotificationsPlugin.show(
       notificationId,
       title,
       desc,
       platformChannelSpecifics,
       payload: payload,
     );
+    
+    });
+
+
+
 
   }
 

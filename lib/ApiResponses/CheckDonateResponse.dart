@@ -1,13 +1,13 @@
 class CheckDonateResponse {
-  List<Data> data;
+  List<CheckData> data;
 
   CheckDonateResponse({this.data});
 
   CheckDonateResponse.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = new List<Data>();
+      data = new List<CheckData>();
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new CheckData.fromJson(v));
       });
     }
   }
@@ -21,14 +21,14 @@ class CheckDonateResponse {
   }
 }
 
-class Data {
+class CheckData {
   String channelId;
   String channelImage;
   String channelName;
 
-  Data({this.channelId, this.channelImage, this.channelName});
+  CheckData({this.channelId, this.channelImage, this.channelName});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  CheckData.fromJson(Map<String, dynamic> json) {
     channelId = json['channel_id'];
     channelImage = json['channel_image'];
     channelName = json['channel_name'];

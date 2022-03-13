@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/ApiResponses/DonateHomePageResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Utils/AppColors.dart';
@@ -7,15 +8,24 @@ import '../Utils/AppStrings.dart';
 
 
 class PayToAccountPage extends StatefulWidget {
+ final DonateHome donateData;
+
+  PayToAccountPage({Key key, @required this.donateData}) : super(key: key);
+
   @override
   PayToAccountPageState createState() {
-    return PayToAccountPageState();
+    return PayToAccountPageState(donateData);
   }
 }
 
 
 class PayToAccountPageState extends State<PayToAccountPage> {
 
+DonateHome donateData;
+
+PayToAccountPageState(DonateHome donateData){
+this.donateData=donateData;
+}
 
   @override
   void dispose() {
@@ -57,30 +67,41 @@ class PayToAccountPageState extends State<PayToAccountPage> {
 
             Padding(
             padding: EdgeInsets.fromLTRB(30,30,30,10),
-      child:  Text("Name : Bhartiya Parivar",
+      child:  Text("Name : "+donateData.accountName,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
     ),
 
               Padding(
                 padding: EdgeInsets.fromLTRB(30,10,30,10),
-                child:  Text("Account No. : 20123456789343",
+                child:  Text("Account No. : "+donateData.accountNumber,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(30,10,30,10),
-                child:  Text("Account Type : Current Account",
+                child:  Text("Account Type : "+donateData.accountType,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(30,10,30,10),
-                child:  Text("IFSC : YES001001",
+                child:  Text("IFSC : " +donateData.ifsc,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(30,10,30,30),
-                child:  Text("Bank Name : YES Bank",
+                child:  Text("Bank Name : "+donateData.bankName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
               ),
+
+ Padding(
+                padding: EdgeInsets.fromLTRB(30,10,30,30),
+                child:  Text("UPI Id : "+donateData.upiId,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
+              ),
+
+              
+
+
+
 ])
 
 

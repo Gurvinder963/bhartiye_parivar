@@ -137,7 +137,7 @@ class VerifyOTPPageState extends State<VerifyOTPPage> with WidgetsBindingObserve
       if(fcm_token==null){
         print("in null");
         PushNotificationsManager pfg =new PushNotificationsManager();
-        pfg.init(context);
+        pfg.init();
         Future.delayed(const Duration(milliseconds: 1000), () {
 
           Future<SharedPreferences> _prefs = SharedPreferences.getInstance();

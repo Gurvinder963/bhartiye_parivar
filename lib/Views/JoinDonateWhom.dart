@@ -30,10 +30,12 @@ import 'VideoDetailNew.dart';
 import 'NewsDetail.dart';
 import 'BooksDetail.dart';
 import '../ApiResponses/BookmarkResponse.dart';
+import '../ApiResponses/CheckDonateResponse.dart';
 import '../ApiResponses/VideoData.dart';
 import '../ApiResponses/NewsData.dart';
 import '../localization/language/languages.dart';
 import '../Interfaces/OnAnyDrawerItemOpen.dart';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 
 class ItemData {
 
@@ -60,23 +62,29 @@ VideoData videodata=new VideoData();
 NewsData newsData=new NewsData();
 class JoinDonateWhomPage extends StatefulWidget {
   final String from;
+  final String fromScreen;
+  final String channel_id;
 
 
-  JoinDonateWhomPage({Key key,@required this.from}) : super(key: key);
+  JoinDonateWhomPage({Key key,@required this.fromScreen,@required this.from,@required this.channel_id}) : super(key: key);
 
 
   @override
   JoinDonateWhomPageState createState() {
-    return JoinDonateWhomPageState(from);
+    return JoinDonateWhomPageState(from,fromScreen,channel_id);
   }
 }
 
 class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
 
   String from;
+  String channelId;
+  String fromScreen;
 
-  JoinDonateWhomPageState(String content){
+  JoinDonateWhomPageState(String content,String fromScreen,String channel_id){
     from=content;
+    this.channelId=channel_id;
+    this.fromScreen=fromScreen;
   }
 
   List mainData = new List();
@@ -85,6 +93,7 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
   String _chosenValue="1";
   bool _isInAsyncCall = false;
   String user_Token;
+   bool _isApiCalled = false;
 
   var _controller = TextEditingController();
   String USER_ID;
@@ -108,7 +117,7 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
         _isInAsyncCall = true;
       });
 
-      getList(user_Token).then((value) => {
+      getList(user_Token,"").then((value) => {
         {
 
 
@@ -128,15 +137,21 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
 
   }
 
-  Future<CheckDonateResponse> getList(String user_Token) async {
-
-    var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"token": user_Token,"userid": USER_ID,"type":from});
+  Future<CheckDonateResponse> getList(String user_Token,String keyword) async {
+   print(keyword);
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":channelId,"token": user_Token,"userid": USER_ID,"type":from,"search":keyword,"page_no":"1"});
     MainRepository repository=new MainRepository();
     return repository.fetchCheckJoinDonateJAVA(body);
 
   }
 
-
+void addData(List<CheckData> videoData) {
+    setState(() {
+      _isInAsyncCall = false;
+      isLoading = false;
+      mainData.addAll(videoData);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var height=MediaQuery.of(context).size.height;
@@ -153,7 +168,7 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
         appBar: AppBar(
           toolbarHeight: 50,
           backgroundColor: Color(AppColors.BaseColor),
-          title: Text(from+" Whom", style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
+          title: Text(from+" Whom ?"),
 
 
         ),
@@ -164,13 +179,31 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
             opacity: 0.01,
             progressIndicator: CircularProgressIndicator(),
             child:   Container(
-
+              color: Color(0xFFf1f1f1),
               child: Column(  children: [
                 SizedBox(height: 20,),
+
+
+                fromScreen=='Menu'?Text(Constants.AppName +" has not faculty for "+from+". \n" +from +" Others", textAlign: TextAlign.center):Container(width: 0,height: 0,),
+               SizedBox(height: 20,),
                 Container(
                   color: Colors.white,
                   child: TextField(
                     controller: _controller,
+                      onChanged: (value) {
+            if (value.length > 1 && !_isApiCalled) {
+              mainData.clear();
+              setState(() {
+                _isApiCalled = true;
+              });
+              getList(user_Token, value).then((value) => {
+                    addData(value.data),
+                    setState(() {
+                      _isApiCalled = false;
+                    })
+                  });
+            }
+          },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -194,12 +227,12 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
     );
   }
 
- openPage(){
+ openPage(String mchannelId){
     if(from=='Join'){
       Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
           MaterialPageRoute(
               builder: (BuildContext context) {
-                return JoinUsPage();
+                return JoinUsPage(channel_id:mchannelId);
               }
           ));
     }
@@ -207,7 +240,7 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
       Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
           MaterialPageRoute(
               builder: (BuildContext context) {
-                return DonateUsPage();
+                return DonateUsPage(channel_id:mchannelId);
               }
           ));
     }
@@ -230,7 +263,7 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
             onTap: () =>
             {
 
-              openPage()
+              openPage(mainData[index].channelId)
 
             },
             child:_buildBoxBook(context,index, mainData[index].channelImage, mainData[index].channelName));
@@ -251,25 +284,25 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
 
 
     return    SizedBox(child:Container(
-        margin:EdgeInsets.fromLTRB(10.0,12.0,10.0,0.0) ,
+        color: Colors.white,
+        margin:EdgeInsets.fromLTRB(0.0,12.0,0.0,0.0) ,
         //  height: 170,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-
-            borderRadius: BorderRadius.all(Radius.circular(10))
-        ),
+      
         child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-
+                  padding:EdgeInsets.fromLTRB(0.0,12.0,0.0,12.0) ,
                   child:
                   Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                     crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+                    
 
                       children: <Widget>[
                         SizedBox(
-                          width: 10,
+                          width: 15,
                         ),
                         Container(
                           margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
@@ -292,10 +325,10 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
                         Text(mainData[index].channelName,
 
                             style: GoogleFonts.roboto(
-                              fontSize:14.0,
+                              fontSize:16.0,
 
                               color: Color(0xFF000000),
-                              fontWeight: FontWeight.bold,
+                          
 
                             )),
 
@@ -304,16 +337,6 @@ class JoinDonateWhomPageState extends State<JoinDonateWhomPage> {
 
 
 
-              SizedBox(
-                height: 20,
-              ),
-              Divider(
-
-                height: 1,
-
-                thickness: 1,
-                color: Color(AppColors.textBaseColor),
-              )
 
             ]
         )));

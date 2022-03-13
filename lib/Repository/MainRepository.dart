@@ -1,4 +1,5 @@
 import 'package:bhartiye_parivar/ApiResponses/CheckDonateResponse.dart';
+import 'package:bhartiye_parivar/ApiResponses/DonateHomePageResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/LiveDataResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesHomeListResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
@@ -12,6 +13,8 @@ import '../ApiResponses/BookListResponse.dart';
 import '../ApiResponses/OTPResponse.dart';
 import '../ApiResponses/BookGroupListResponse.dart';
 import '../ApiResponses/AddToCartResponse.dart';
+import '../ApiResponses/ContactUsResponse.dart';
+
 import '../ApiResponses/OrderResponse.dart';
 import '../ApiResponses/TxnResponse.dart';
 import '../ApiResponses/PinCodeResponse.dart';
@@ -43,6 +46,7 @@ import '../ApiResponses/VideoDetailJAVAResponse.dart';
 import '../ApiResponses/FaqDataResponse.dart';
 import '../ApiResponses/ChatGroupResponse.dart';
 import '../ApiResponses/JoinUsNewResponse.dart';
+import '../ApiResponses/DonateHomePageResponse.dart';
 
 class MainRepository {
   ApiProvider _provider = ApiProvider();
@@ -153,6 +157,11 @@ class MainRepository {
     return FaqDataResponse.fromJson(response);
   }
 
+Future<ContactUsResponse> fetchContactListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/contactus",body);
+    return ContactUsResponse.fromJson(response);
+  }
+
   Future<SeriesHomeListResponse> fetchSeriesHomeJAVA(var body) async {
     final response = await _provider.postJAVA("api/HomeSeries",body);
     return SeriesHomeListResponse.fromJson(response);
@@ -213,6 +222,12 @@ class MainRepository {
     return LiveDataResponse.fromJson(response);
   }
 
+Future<ChatGroupResponse> fetchChatSearchQueryListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/ChatGroupSearchQuery",body);
+    return ChatGroupResponse.fromJson(response);
+  }
+
+
   Future<VideoTrendingListResponse> fetchVideoSearchResultListJAVA(var body) async {
     final response = await _provider.postJAVA("api/videosearchResult",body);
     return VideoTrendingListResponse.fromJson(response);
@@ -225,6 +240,21 @@ class MainRepository {
   Future<LiveDataResponse> fetchVideoLiveSearchResultListJAVA(var body) async {
     final response = await _provider.postJAVA("api/LiveSearchResult",body);
     return LiveDataResponse.fromJson(response);
+  }
+
+  Future<ChatGroupResponse> fetchChatSearchResultListJAVA(var body) async {
+    final response = await _provider.postJAVA("api/ChatGroupSearchResult",body);
+    return ChatGroupResponse.fromJson(response);
+  }
+
+ Future<AddToCartResponse> fetchReportSaveJAVA(var body) async {
+    final response = await _provider.postJAVA("api/reportcontent",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+ Future<DonateHomePageResponse> fetchDonateHomeJAVA(var body) async {
+    final response = await _provider.postJAVA("api/donateus",body);
+    return DonateHomePageResponse.fromJson(response);
   }
 
   Future<LoginResponse> fetchLoginData(String body) async {

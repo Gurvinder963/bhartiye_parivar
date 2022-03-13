@@ -50,7 +50,7 @@ dependencies:
   flutter_windowmanager: ^0.0.1+1
   youtube_player_iframe: ^1.2.0+2
   share: ^0.6.5+4
-  firebase_messaging: ^5.0.2
+  firebase_messaging: ^6.0.15
   carousel_slider: ^2.1.0
   firebase_dynamic_links: ^0.5.0+1
   youtube_plyr_iframe: ^1.3.7
@@ -59,6 +59,7 @@ dependencies:
   url_launcher: ^5.7.10
   syncfusion_flutter_barcodes: ^18.4.49
   launch_review: ^2.0.0
+  provider: ^4.3.3
 
   flutter:
     sdk: flutter
@@ -163,6 +164,12 @@ flutter:
     - assets/ic_question.png
     - assets/ic_arrow_top_left.png
     - assets/ic_search_new.png
+    - assets/time_watch.png
+    - assets/pc_1.jpg
+    - assets/pc_2.png
+    - assets/pc_3.jpg
+    - assets/pc_4.png
+    - assets/arrow_back.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

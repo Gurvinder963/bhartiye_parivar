@@ -193,40 +193,45 @@ class SocialMediaPageState extends State<SocialMediaPage> {
               children: <Widget>[
 
                 GestureDetector( onTap: () {
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.koo,name:"Koo");
-                          }
-                      ) );
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return FacebookPage(link:socialMediaObject.koo,name:"Koo");
+                }
+            ) );
 
-                }, child:  Container(
-                  width:MediaQuery.of(context).size.width/2-2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
+      }, child:  Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+          width:MediaQuery.of(context).size.width/2-2,
+          child:
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
 
-                        Image(
-                          image: new AssetImage("assets/ic_koo.png"),
-                          width: 40,
-                          height:  40,
-                          color: null,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
-                        SizedBox(width: 15,),
-                        Text("Koo",
+          children: <Widget>[
 
-                            style: GoogleFonts.roboto(
-                              fontSize:15.0,
+            Image(
+              image: new AssetImage("assets/ic_koo.png"),
+              width: 37,
+              height:  37,
+              color: null,
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+            ),
+            SizedBox(width: 15,),
+            Text("Koo",
 
-                              color: Color(0xFF000000),
-                              fontWeight: FontWeight.bold,
+                style: GoogleFonts.roboto(
+                  fontSize:15.0,
 
-                            ))
-                      ])),
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
 
-                ),  GestureDetector( onTap: () {
+                ))
+          ]))), GestureDetector( onTap: () {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                       MaterialPageRoute(
                           builder: (BuildContext context) {
@@ -284,41 +289,46 @@ class SocialMediaPageState extends State<SocialMediaPage> {
 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                GestureDetector( onTap: () {
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.youtube,name:"Youtube");
-                          }
-                      ) );
+               GestureDetector( onTap: () {
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return FacebookPage(link:socialMediaObject.youtube,name:"Youtube");
+                }
+            ) );
 
-                }, child:
-                Container(
-                  width:MediaQuery.of(context).size.width/2-2,
-                  child:  Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(width: 10,),
-                        Image(
-                          image: new AssetImage("assets/ic_youtube.png"),
-                          width: 40,
-                          height:  40,
-                          color: null,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
-                        SizedBox(width: 15,),
-                        Text("Youtube",
+      }, child:  Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+          width:MediaQuery.of(context).size.width/2-2,
+          child:
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
 
-                            style: GoogleFonts.roboto(
-                              fontSize:15.0,
+          children: <Widget>[
 
-                              color: Color(0xFF000000),
-                              fontWeight: FontWeight.bold,
+            Image(
+              image: new AssetImage("assets/ic_youtube.png"),
+              width: 37,
+              height:  37,
+              color: null,
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+            ),
+            SizedBox(width: 15,),
+            Text("Youtube",
 
-                            ))
-                      ])),
-                ),
+                style: GoogleFonts.roboto(
+                  fontSize:15.0,
+
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+
+                ))
+          ]))),
         GestureDetector( onTap: () {
     Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
     MaterialPageRoute(
@@ -374,45 +384,52 @@ class SocialMediaPageState extends State<SocialMediaPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
 
+               
+      GestureDetector( onTap: () {
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return FacebookPage(link:socialMediaObject.website,name:"Website");
+                }
+            ) );
+
+      }, child:  Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.grey, width: 1),
+            ),
+          ),
+          width:MediaQuery.of(context).size.width/2-2,
+          child:
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: <Widget>[
+
+            Image(
+              image: new AssetImage("assets/ic_website.jpg"),
+              width: 37,
+              height:  37,
+              color: null,
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+            ),
+            SizedBox(width: 15,),
+            Text("Website",
+
+                style: GoogleFonts.roboto(
+                  fontSize:15.0,
+
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.bold,
+
+                ))
+          ]))),
                 GestureDetector( onTap: () {
                   Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
                       MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.website,name:"Website");
-                          }
-                      ) );
-
-                }, child:  Container(
-                  width:MediaQuery.of(context).size.width/2-2,
-                  child:  Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(width: 10,),
-                        Image(
-                          image: new AssetImage("assets/ic_website.jpg"),
-                          width: 37,
-                          height:  37,
-                          color: null,
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                        ),
-                        SizedBox(width: 15,),
-                        Text("Website",
-
-                            style: GoogleFonts.roboto(
-                              fontSize:15.0,
-
-                              color: Color(0xFF000000),
-                              fontWeight: FontWeight.bold,
-
-                            ))
-                      ])),
-                ),
-                GestureDetector( onTap: () {
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return FacebookPage(link:socialMediaObject.download,name:"Download");
+                            return FacebookPage(link:socialMediaObject.download,name:"Downloads");
                           }
                       ) );
 
@@ -436,7 +453,7 @@ class SocialMediaPageState extends State<SocialMediaPage> {
                           alignment: Alignment.center,
                         ),
                         SizedBox(width: 15,),
-                        Text("Download",
+                        Text("Downloads",
 
                             style: GoogleFonts.roboto(
                               fontSize:15.0,

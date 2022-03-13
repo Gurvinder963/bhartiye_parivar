@@ -8,6 +8,7 @@ import '../Utils/AppStrings.dart';
 import '../ApiResponses/VideoTrendingListResponse.dart';
 import '../ApiResponses/VideoDetailJAVAResponse.dart';
 import '../Views/JoinUs.dart';
+import '../Views/JoinDonateWhom.dart';
 import 'DonateUs.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -660,14 +661,14 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                                       )),
 
                                   Container(
-                                      margin:  EdgeInsets.fromLTRB(20,0,10,0),
+                                      margin:  EdgeInsets.fromLTRB(20,0,20,0),
                                       child:Row(
 
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
 
                                             _joinButton(),
-                                            SizedBox(width: 30,),
+                                          Spacer(),
                                             _DonateButton()
 
 
@@ -1010,7 +1011,8 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return JoinUsPage();
+
+               return JoinDonateWhomPage(from:"Join",fromScreen:"Detail",channel_id:mContent.liveChannelId);
                 }
             ) );
       },
@@ -1048,7 +1050,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return DonateUsPage();
+                   return JoinDonateWhomPage(from:"Donate",fromScreen:"Detail",channel_id:mContent.liveChannelId);
                 }
             ) );
       },

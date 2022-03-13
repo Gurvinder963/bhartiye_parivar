@@ -13,14 +13,28 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
-class ChatPage extends StatefulWidget {
+class ChatSearchResultPage extends StatefulWidget {
+ final String video_id;
+ 
+
+
+  ChatSearchResultPage({Key key,@required this.video_id}) : super(key: key);
+
+
   @override
-  ChatPageState createState() {
-    return ChatPageState();
+  ChatSearchResultPageState createState() {
+    return ChatSearchResultPageState(video_id);
   }
 }
 
-class ChatPageState extends State<ChatPage> {
+class ChatSearchResultPageState extends State<ChatSearchResultPage> {
+
+  String video_id;
+  ChatSearchResultPageState(String video_id){
+  this.video_id=video_id;
+  }
+
+
   String user_Token;
   //bool isBookMarked = false;
   // bool isSubscribed= false;
@@ -68,9 +82,9 @@ class ChatPageState extends State<ChatPage> {
 
 
     // String pageIndex = page.toString();
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page":"1"});
+    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page":"1","video_id":video_id,"page_category":"chat"});
     MainRepository repository=new MainRepository();
-    return repository.fetchChatListJAVA(body);
+    return repository.fetchChatSearchResultListJAVA(body);
 
 
 
@@ -79,7 +93,14 @@ class ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+ appBar: AppBar(
+          toolbarHeight: 50,
 
+
+          backgroundColor: Color(AppColors.BaseColor),
+          title: Text("Search Results", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,color: Color(0xFFFFFFFF))),
+
+        ),
       body: Container(
           child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +173,7 @@ class ChatPageState extends State<ChatPage> {
                           child:
                           Row(
                               children: <Widget>[
-                               mainData[index].chatGroupPic!=null? CircleAvatar(
+                                 mainData[index].chatGroupPic!=null? CircleAvatar(
                                   radius: 24.0,
                                   backgroundImage:
                                   NetworkImage(mainData[index].chatGroupPic),

@@ -68,6 +68,9 @@ class MainPageState extends State<MainPage> {
 
   @override
   dispose(){
+print("main page dispose called");
+
+
     if (_controller!=null && _controller.value.isFullScreen) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
           .then((_) {
@@ -82,7 +85,7 @@ class MainPageState extends State<MainPage> {
         _seekToController.dispose();
       }
 
-      super.dispose();
+    
     }
 
     super.dispose();
@@ -573,12 +576,38 @@ class MainPageState extends State<MainPage> {
 
   }
 
+void scheduleAlarm(
+      ) async {
+
+DateTime scheduleAlarmDateTime;
+   
+      scheduleAlarmDateTime = DateTime.now().add(Duration(minutes:1));
+   
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm_notif',
+      'alarm_notif',
+      'Channel for Alarm notification',
+     
+      sound: RawResourceAndroidNotificationSound('simple_ring'),
+    
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        sound: 'simple_ring.mp3',
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true);
+    var platformChannelSpecifics = NotificationDetails(
+        android:androidPlatformChannelSpecifics,iOS: iOSPlatformChannelSpecifics);
+ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.schedule(0, Constants.AppName ,"Video is Live now",
+        scheduleAlarmDateTime, platformChannelSpecifics);
+  }
+
+
 
   Widget mainWidget(Widget player){
-
-
-
-
 
 
     String html;
@@ -590,25 +619,11 @@ class MainPageState extends State<MainPage> {
      ''';
 
 
-
-
     }
 
 
-    return WillPopScope(
-        onWillPop: () {
-
-
-          SystemChrome.setPreferredOrientations(
-              [DeviceOrientation.portraitUp])
-              .then((_) {
-            Navigator.of(context, rootNavigator: true).pop(context);
-          });
-
-
-          return Future.value(false);
-        },
-        child:Scaffold(
+    return 
+   Scaffold(
 
 
           body: ModalProgressHUD(
@@ -750,17 +765,44 @@ class MainPageState extends State<MainPage> {
                                                 ),
                                                 onSelected: (newValue) { // add this property
                                                   if(newValue==1){
-                                                   scheduleNotification(1,liveData.liveTitle);
+                                                  // scheduleNotification(1,liveData.liveTitle);
+                                                 scheduleAlarm();
+                                                 
                                                  }
 
                                                 },
                                                 itemBuilder: (context) => [
                                                   PopupMenuItem(
-                                                    child: Text("Notification"),
+                                                    child: Container(child:
+                                                    Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                 Icon(
+                                  Icons.notifications_rounded,
+                                  color: Colors.black,
+                                  size: 25,
+                                ),
+                                SizedBox(width: 10),
+
+                                                          Text("  RING  ", style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 16)),
+                                                    ])),
+                                                
                                                     value: 1,
                                                   ),
                                                   PopupMenuItem(
-                                                    child: Text("None"),
+                                                    child: Container(child:
+                                                    Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                 Icon(
+                                  Icons.notifications_none,
+                                  color: Colors.black,
+                                  size: 25,
+                                ),
+                                SizedBox(width: 10),
+
+                                                          Text("  NONE  ", style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 16)),
+                                                    ])),
                                                     value: 2,
                                                   ),
 
@@ -773,14 +815,14 @@ class MainPageState extends State<MainPage> {
                                             flex: 3,
                                             child:Container(
                                                 color:  Color(0xFFff0000),
-                                                padding:EdgeInsets.fromLTRB(5,5,5,5),
+                                                padding:EdgeInsets.fromLTRB(1,3,1,3),
                                                 child:
                                             Center(child:Text(liveData.liveScheduledAt,
 
 
 
                                               style: GoogleFonts.roboto(
-                                                fontSize:14.0,
+                                                fontSize:13.0,
 
 
                                                 color: Color(0xFFffffff),
@@ -832,7 +874,7 @@ class MainPageState extends State<MainPage> {
 
               )),
 
-        ));
+        );
   }
 
   Future<void> scheduleNotification(int count,String title) async {

@@ -1,9 +1,10 @@
-
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
 import 'package:bhartiye_parivar/Views/AdminPanel.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
+import 'package:bhartiye_parivar/Views/JoinDonateWhom.dart';
 import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
+import 'package:bhartiye_parivar/Views/ContactUs.dart';
 import 'package:bhartiye_parivar/Views/terms.dart';
 import 'package:intl/intl.dart';
 import 'package:bhartiye_parivar/Interfaces/NewNotificationRecieved.dart';
@@ -67,8 +68,6 @@ import '../Interfaces/OnAnyDrawerItemOpen.dart';
 import 'NewsDetail.dart';
 import '../Views/Faq.dart';
 
-
-
 class MyDrawerPage extends StatefulWidget {
   @override
   MyDrawerPageState createState() {
@@ -79,396 +78,413 @@ class MyDrawerPage extends StatefulWidget {
 class MyDrawerPageState extends State<MyDrawerPage> {
   bool _isInAsyncCall = false;
   String user_Token;
-  String USER_NAME="";
-  String USER_ID="";
+  String USER_NAME = "";
+  String USER_ID = "";
   bool isNotification;
   bool isSound;
-  String logoutMessage="";
-  String sideBarOTP="No OTP";
+  String logoutMessage = "";
+  String sideBarOTP = "No OTP";
+  String isJoinUs = "Yes";
+  String isDonate = "Yes";
 
   String url1;
-  Future<SideBarApiResponse> callSideBarAPI(String userid,String token) async {
-
-    var body =json.encode({'userid':userid,"appcode":Constants.AppCode,"token":token,});
+  Future<SideBarApiResponse> callSideBarAPI(String userid, String token) async {
+    var body = json.encode({
+      'userid': userid,
+      "appcode": Constants.AppCode,
+      "token": token,
+    });
 
     //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
-    MainRepository repository=new MainRepository();
+    MainRepository repository = new MainRepository();
     return repository.fetchSidebarApI(body);
-
   }
-
-
 
   @override
   void initState() {
     super.initState();
     eventBusDO.fire(OnAnyDrawerItemOpen("FIND"));
-    isNotification=false;
-    isSound=false;
+    isNotification = false;
+    isSound = false;
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
+      user_Token = prefs.getString(Prefs.KEY_TOKEN);
+      USER_NAME = prefs.getString(Prefs.USER_NAME);
+      USER_ID = prefs.getString(Prefs.USER_ID);
 
-      user_Token=prefs.getString(Prefs.KEY_TOKEN);
-      USER_NAME=prefs.getString(Prefs.USER_NAME);
-      USER_ID=prefs.getString(Prefs.USER_ID);
-
-       url1="https://sabkiapp.com:8443/Admin/Admin_login_app_Action.jsp?appcode="+Constants.AppCode+"&userid="+USER_ID+"&token="+user_Token;
-      callLogoutAPI("check",USER_ID,user_Token).then((value) async {
-        if(value.status==1){
-
-
+      url1 =
+          "https://sabkiapp.com:8443/Admin/Admin_login_app_Action.jsp?appcode=" +
+              Constants.AppCode +
+              "&userid=" +
+              USER_ID +
+              "&token=" +
+              user_Token;
+      callLogoutAPI("check", USER_ID, user_Token).then((value) async {
+        if (value.status == 1) {
           setState(() {
-            logoutMessage=value.msg;
+            logoutMessage = value.msg;
           });
-
-
         }
-
       });
 
-
-
-      callSideBarAPI(USER_ID,user_Token).then((value) async {
-        if(value.status==1){
-
+      callSideBarAPI(USER_ID, user_Token).then((value) async {
+        if (value.status == 1) {
           setState(() {
-            sideBarOTP=value.sideBarOTP;
+            sideBarOTP = value.sideBarOTP;
+            isJoinUs = value.join;
+            isDonate = value.donate;
           });
-
-
         }
-
       });
       return (prefs.getString('token'));
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Drawer(
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          createDrawerHeader(context, sideBarOTP),
 
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              createDrawerHeader(context,sideBarOTP),
-
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/ic_admin_new.jpg'), width: 22,height: 22,),
-                  text: Languages
-                      .of(context)
-                      .adminPanel,
-                  onTap: () =>{
-
-
-
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/ic_admin_new.jpg'),
+                width: 22,
+                height: 22,
+              ),
+              text: Languages.of(context).adminPanel,
+              onTap: () => {
                     Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return AdminPanelPage(link:url1,name:"Admin Page");
-                            }
-                        ))
-
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return AdminPanelPage(link: url1, name: "Admin Page");
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
 
-              Padding(
-                  padding: EdgeInsets.fromLTRB(15,0,15,0),
-                  child:
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.orange,
-                  )),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .aboutUs,
-                  onTap: () =>{
-
+          Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/about.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).aboutUs,
+              onTap: () => {
                     Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return JoinUsPage();
-                            }
-                        ))
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return JoinUsPage(
+                        channel_id: Constants.AppCode,
+                      );
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/joinus.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .joinUs,
-                  onTap: () =>
-                  {
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/joinus.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).joinUs,
+              onTap: () => {
+                    if (isJoinUs == 'Yes')
+                      {
+                        Navigator.of(context, rootNavigator: true).push(
+                            // ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return JoinUsPage(
+                            channel_id: Constants.AppCode,
+                          );
+                        }))
+                      }
+                    else
+                      {
+                        Navigator.of(context, rootNavigator: true).push(
+                            // ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return JoinDonateWhomPage(
+                             fromScreen:"Menu",
+                            from: "Join",
+                            channel_id: Constants.AppCode,
+                          );
+                        }))
+                      }
+                  }
 
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/donate.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).donateUs,
+              onTap: () => {
+                    if (isDonate == 'Yes')
+                      {
+                        Navigator.of(context, rootNavigator: true).push(
+                            // ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return DonateUsPage(
+                            channel_id: Constants.AppCode,
+                          );
+                        }))
+                      }
+                    else
+                      {
+                        Navigator.of(context, rootNavigator: true).push(
+                            // ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return JoinDonateWhomPage(
+                            fromScreen:"Menu",
+                            from: "Donate",
+                            channel_id: Constants.AppCode,
+                          );
+                        }))
+                      }
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/contactus.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).contactUs,
+              onTap: () => {
                     Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return JoinUsPage();
-                            }
-                        ))
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return ContactUsPage();
+                    }))
                   }
-
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.contact),
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/donate.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .donateUs,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return DonateUsPage();
-                            }
-                        ) )
-
-                  }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/profile.png'),
+                width: 20,
+                height: 20,
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .contactUs,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return DonationReminderPage();
-                            }
-                        ) )
-
-
+              text: Languages.of(context).profile,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return EditProfilePage();
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.contact),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(15,0,15,0),
-                  child:
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.orange,
-                  )),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/profile.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .profile,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return EditProfilePage();
-                            }
-                        ) )
-
-                  }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
 
-
-
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/app_language.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .appLanguage,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return AppLanguageInnerPage(from:"Home");
-                            }
-                        ) )
-
-                  }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/app_language.png'),
+                width: 20,
+                height: 20,
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .contentLanguage,
-                  onTap: () =>{
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return ContentLanguagePage();
-                            }
-                        ) )
-
-
+              text: Languages.of(context).appLanguage,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return AppLanguageInnerPage(from: "Home");
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/notifications.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .notificationsSetting,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return NotificationSettingPage();
-                            }
-                        ) )
-
-
-
-                  }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/content.png'),
+                width: 20,
+                height: 20,
               ),
-              // createDrawerBodyItem(
-              //     icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
-              //     text: Languages
-              //         .of(context)
-              //         .darkMode,
-              //     onTap: () =>{}
-              //   // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-              // ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/faq.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .faq,
-                  onTap: () =>{
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return FaqPage();
-                            }
-                        ) )
-
-
+              text: Languages.of(context).contentLanguage,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return ContentLanguagePage();
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/share.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .shareApp,
-                  onTap: () =>{
-
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return SharePage();
-                            }
-                        ) )
-
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/notifications.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).notificationsSetting,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return NotificationSettingPage();
+                    }))
                   }
-                // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
+          // createDrawerBodyItem(
+          //     icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
+          //     text: Languages
+          //         .of(context)
+          //         .darkMode,
+          //     onTap: () =>{}
+          //   // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+          // ),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/faq.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).faq,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return FaqPage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/share.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).shareApp,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return SharePage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),
 
-              Padding(
-                  padding: EdgeInsets.fromLTRB(15,0,15,0),
-                  child:
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.orange,
-                  )),
-              createDrawerBodyItem(
-                  icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
-                  text: Languages
-                      .of(context)
-                      .termsndPrivacy,
-                  onTap: () =>{
-                    Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return TermScreen();
-                            }
-                        ) )
-
-                  }
-                //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+          Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
+          createDrawerBodyItem(
+              icon: Image(
+                image: AssetImage('assets/advertise.png'),
+                width: 20,
+                height: 20,
               ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0,0,15,0),
-                  child:
-
-                  createDrawerBodyItem(
-                      icon: Image(image: AssetImage('assets/ic_logout.png'), width: 20,height: 20,),
-                      text: Languages
-                          .of(context)
-                          .logout,
-                      onTap: () =>{
-
-                        if(logoutMessage=="multiple app"){
-                          Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return LogoutMultiplePage( logoutMessage: logoutMessage,);
-                                  }
-                              ) )
-                        }
+              text: Languages.of(context).termsndPrivacy,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return TermScreen();
+                    }))
+                  }
+              //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+              ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+              child: createDrawerBodyItem(
+                  icon: Image(
+                    image: AssetImage('assets/ic_logout.png'),
+                    width: 20,
+                    height: 20,
+                  ),
+                  text: Languages.of(context).logout,
+                  onTap: () => {
+                        if (logoutMessage == "multiple app")
+                          {
+                            Navigator.of(context, rootNavigator: true).push(
+                                // ensures fullscreen
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return LogoutMultiplePage(
+                                logoutMessage: logoutMessage,
+                              );
+                            }))
+                          }
                         else
                           {
-                            showAlertDialogValidation(context,
+                            showAlertDialogValidation(
+                                context,
                                 "Are you sure you want to logout from this device?",
-                                USER_ID, user_Token, logoutMessage),
+                                USER_ID,
+                                user_Token,
+                                logoutMessage),
                           }
                       }
-                    //Navigator.pushReplacementNamed(context, pageRoutes.notification),
-                  ) ),
-            ],
-          ),
-        );
-
+                  //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+                  )),
+        ],
+      ),
+    );
   }
-  Future<LogoutResponse> callLogoutAPI(String type,String userid,String token) async {
 
-    var body =json.encode({'logouttype':type,'userid':userid,"appcode":Constants.AppCode,"token":token,});
+  Future<LogoutResponse> callLogoutAPI(
+      String type, String userid, String token) async {
+    var body = json.encode({
+      'logouttype': type,
+      'userid': userid,
+      "appcode": Constants.AppCode,
+      "token": token,
+    });
 
     //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
-    MainRepository repository=new MainRepository();
+    MainRepository repository = new MainRepository();
     return repository.fetchLogoutJava(body);
-
   }
+
   removeFromSF(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
-
 
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => LoginPage(from: "splash")),
         ModalRoute.withName("/Login"));
   }
-  showAlertDialogValidation(BuildContext context,String message,String userId,String token,String logoutmessage) {
 
+  showAlertDialogValidation(BuildContext context, String message, String userId,
+      String token, String logoutmessage) {
     print(userId);
 
-    Widget SingleButton =  InkWell(
+    Widget SingleButton = InkWell(
       onTap: () {
-        callLogoutAPI("thisapp",userId,token).then((value) async {
-          if(value.status==1){
+        callLogoutAPI("thisapp", userId, token).then((value) async {
+          if (value.status == 1) {
             Navigator.of(context, rootNavigator: true).pop('dialog');
             removeFromSF(context);
           }
-
         });
       },
-
       child: Container(
         width: 100,
         margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -486,20 +502,14 @@ class MyDrawerPageState extends State<MyDrawerPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [
-                  Color(0xFFD8D8D8),
-                  Color(0xFFD8D8D8)
-                ])),
+                colors: [Color(0xFFD8D8D8), Color(0xFFD8D8D8)])),
         child: Text(
           'Yes',
           style: GoogleFonts.poppins(
-
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
-
 
     // Widget SingleButton = FlatButton(
     //   child: Text("This App"),
@@ -514,11 +524,10 @@ class MyDrawerPageState extends State<MyDrawerPage> {
     //   },
     // );
 
-    Widget CancelButton =  InkWell(
+    Widget CancelButton = InkWell(
       onTap: () {
         Navigator.of(context, rootNavigator: true).pop('dialog');
       },
-
       child: Container(
         width: 100,
         margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -543,13 +552,10 @@ class MyDrawerPageState extends State<MyDrawerPage> {
         child: Text(
           'No',
           style: GoogleFonts.poppins(
-
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
-
 
     // Widget BothButton = FlatButton(
     //   child: Text("All Apps"),
@@ -570,21 +576,21 @@ class MyDrawerPageState extends State<MyDrawerPage> {
     AlertDialog alert = AlertDialog(
       title: Text(Constants.AppName),
       content: Container(
-        height: 130,
-        child:
-        Column( children: <Widget>[Text(message),
-          SizedBox(height: 20,),
-          Row (
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-
-                SingleButton,
-                SizedBox(width: 20,),
-                //logoutmessage=="multiple app"?BothButton:null,
-                CancelButton, // button 2
-              ]
-          )
-        ])),
+          height: 130,
+          child: Column(children: <Widget>[
+            Text(message),
+            SizedBox(
+              height: 20,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              SingleButton,
+              SizedBox(
+                width: 20,
+              ),
+              //logoutmessage=="multiple app"?BothButton:null,
+              CancelButton, // button 2
+            ])
+          ])),
       // actions: [
       //   SingleButton,
       //   //logoutmessage=="multiple app"?BothButton:null,
@@ -600,12 +606,13 @@ class MyDrawerPageState extends State<MyDrawerPage> {
       },
     );
   }
-  Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap}) {
-    bool isSwitchShow=false;
-    if(text=='Dark Mode' || text=='डार्क मोड'){
-      isSwitchShow=true;
-    }
 
+  Widget createDrawerBodyItem(
+      {Image icon, String text, GestureTapCallback onTap}) {
+    bool isSwitchShow = false;
+    if (text == 'Dark Mode' || text == 'डार्क मोड') {
+      isSwitchShow = true;
+    }
 
     return ListTile(
       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -615,58 +622,52 @@ class MyDrawerPageState extends State<MyDrawerPage> {
           Padding(
             padding: EdgeInsets.only(left: 15.0),
             child: Text(text),
-          )
-          ,isSwitchShow?Expanded(child:Align(
-            alignment: Alignment.centerRight,
-            child: Switch(
-              value: true,
-              onChanged: (value) {
-
-              },
-              activeTrackColor: Colors.grey,
-              activeColor: Colors.orange,
-            ),
-          )):Container()
-
-
+          ),
+          isSwitchShow
+              ? Expanded(
+                  child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Switch(
+                    value: true,
+                    onChanged: (value) {},
+                    activeTrackColor: Colors.grey,
+                    activeColor: Colors.orange,
+                  ),
+                ))
+              : Container()
         ],
       ),
       onTap: onTap,
     );
   }
-  Widget createDrawerHeader(BuildContext context,String sideBarOTP) {
+
+  Widget createDrawerHeader(BuildContext context, String sideBarOTP) {
     return DrawerHeader(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
-
         child: Container(
             color: Colors.orange,
-            child:
-            Column( children: <Widget>[
+            child: Column(children: <Widget>[
               SizedBox(height: 20),
               new Image(
                 image: new AssetImage("assets/splash.png"),
                 width: 100,
-                height:  100,
+                height: 100,
                 color: null,
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.center,
               ),
               SizedBox(height: 5),
-              Text(sideBarOTP=='No OTP'?Languages.of(context).appName:sideBarOTP,
+              Text(
+                sideBarOTP == 'No OTP'
+                    ? Languages.of(context).appName
+                    : sideBarOTP,
                 style: TextStyle(
                   fontSize: 20.0,
-
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-
                 ),
               ),
-
-
-
             ])));
   }
-
-
 }

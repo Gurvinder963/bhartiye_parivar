@@ -36,15 +36,25 @@ String amount="0";
 String selectedDonateType="";
 String selectedDate="0";
 class JoinUsPage extends StatefulWidget {
+final String channel_id;
+
+
+  JoinUsPage({Key key,@required this.channel_id}) : super(key: key);
 
 
   @override
   JoinUsPageState createState() {
-    return JoinUsPageState();
+    return JoinUsPageState(channel_id);
   }
 }
 
 class JoinUsPageState extends State<JoinUsPage> {
+
+  String channelId;
+
+  JoinUsPageState(String channel_id){
+   this.channelId=channel_id;
+  }
 
   //String _chosenValue1="Select your answer";
   User _chosenValue1;
@@ -272,7 +282,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     print(selectedDate);
 
 
-    var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"userid":USER_ID,"token":user_Token,"social_media":_chosenValue2.id.toString(),"time_level":_chosenValue1.id.toString(),"donation_frequency":_chosenValue3.id.toString(),"amount":amount,"promise_date":selectedDate,"content_multiple":message1});
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":channelId,"userid":USER_ID,"token":user_Token,"social_media":_chosenValue2.id.toString(),"time_level":_chosenValue1.id.toString(),"donation_frequency":_chosenValue3.id.toString(),"amount":amount,"promise_date":selectedDate,"content_multiple":message1});
     MainRepository repository=new MainRepository();
 
     return repository.fetchSaveJoinUsJAVA(body);
@@ -282,7 +292,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
   Future<JoinUsNewResponse> getJoinUsDatajavaAPI(String user_Token) async {
 
-    var body =json.encode({"app_code":Constants.AppCode,"channel_id":Constants.AppCode,"userid":USER_ID,"token":user_Token});
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":channelId,"userid":USER_ID,"token":user_Token});
     MainRepository repository=new MainRepository();
     return repository.fetchGetJoinUsJAVA(body);
 
@@ -356,7 +366,7 @@ class JoinUsPageState extends State<JoinUsPage> {
             new Row(
 
               children: <Widget>[
-                SizedBox(width: 2,),
+              
                 new Radio(
                   value: 100,
                   activeColor: Colors.orange,
@@ -370,7 +380,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
                   style: new TextStyle(fontSize: 13.0),
                 ),
-                SizedBox(width: 7,),
+                SizedBox(width: 5,),
                 new Radio(
                   value: 200,
                   activeColor: Colors.orange,
@@ -385,9 +395,15 @@ class JoinUsPageState extends State<JoinUsPage> {
                     fontSize: 13.0,
                   ),
                 ),
-                SizedBox(width: 7,),
-                new Radio(
-                  value: 300,
+                SizedBox(width: 5,),
+               
+              ],
+            ),
+              new Row(
+               
+                children: <Widget>[
+                   new Radio(
+                  value: 500,
                   activeColor: Colors.orange,
 
                   groupValue: selectedRadio,
@@ -396,16 +412,11 @@ class JoinUsPageState extends State<JoinUsPage> {
                   },
                 ),
                 new Text(
-                  '300',
+                  '500',
                   style: new TextStyle(fontSize: 13.0),
                 ),
-              ],
-            ),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
                   new Radio(
-                    value: 1000,
+                    value: 1100,
                     activeColor: Colors.orange,
                     groupValue: selectedRadio,
                     onChanged: (int value) {
@@ -413,25 +424,33 @@ class JoinUsPageState extends State<JoinUsPage> {
                     },
                   ),
                   new Text(
-                    '1000',
+                    '1100',
                     style: new TextStyle(fontSize: 13.0),
                   ),
-                  new Radio(
-                    value: 2000,
-                    activeColor: Colors.orange,
-                    groupValue: selectedRadio,
-                    onChanged: (int value) {
-                      setState(() => selectedRadio = value);
-                    },
-                  ),
+              
+                ],
+              ),
+              SizedBox(height: 7,),
+ new Row(
+               
+                children: <Widget>[
+                   new Radio(
+                  value: 5100,
+                  activeColor: Colors.orange,
+
+                  groupValue: selectedRadio,
+                  onChanged: (int value) {
+                    setState(() => selectedRadio = value);
+                  },
+                ),
                   new Text(
-                    '2000',
+                    '5100',
                     style: new TextStyle(
                       fontSize: 13.0,
                     ),
                   ),
                   new Radio(
-                    value: 5000,
+                    value: 11000,
                     activeColor: Colors.orange,
                     groupValue: selectedRadio,
                     onChanged: (int value) {
@@ -439,13 +458,11 @@ class JoinUsPageState extends State<JoinUsPage> {
                     },
                   ),
                   new Text(
-                    '5000',
+                    '11000',
                     style: new TextStyle(fontSize: 13.0),
                   ),
                 ],
               ),
-              SizedBox(height: 7,),
-
               Divider(
                 thickness: 1.5,
                 color:Colors.orange,
@@ -579,7 +596,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
         return AlertDialog(
           content:  SizedBox(
-              height: 200,child:StatefulBuilder(
+              height: 220,child:StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return SizedBox(
                   height: 200 ,child:Column(
@@ -612,7 +629,7 @@ class JoinUsPageState extends State<JoinUsPage> {
 
                           style: new TextStyle(fontSize: 14.0),
                         ),
-                        SizedBox(width: 8,),
+                        SizedBox(width: 15,),
                         new Radio(
                           value: 2100,
                           activeColor: Colors.orange,
@@ -627,7 +644,16 @@ class JoinUsPageState extends State<JoinUsPage> {
                             fontSize: 14.0,
                           ),
                         ),
-                        SizedBox(width: 8,),
+                      
+                      ],
+                    ),
+
+
+ new Row(
+
+                      children: <Widget>[
+
+                     
                         new Radio(
                           value: 5100,
                           activeColor: Colors.orange,
@@ -641,12 +667,8 @@ class JoinUsPageState extends State<JoinUsPage> {
                           '5100',
                           style: new TextStyle(fontSize: 14.0),
                         ),
-                      ],
-                    ),
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Radio(
+   SizedBox(width: 10,),
+                          new Radio(
                           value: 11000,
                           activeColor: Colors.orange,
                           groupValue: selectedRadio,
@@ -658,20 +680,15 @@ class JoinUsPageState extends State<JoinUsPage> {
                           '11000',
                           style: new TextStyle(fontSize: 13.0),
                         ),
-                        new Radio(
-                          value: 21000,
-                          activeColor: Colors.orange,
-                          groupValue: selectedRadio,
-                          onChanged: (int value) {
-                            setState(() => selectedRadio = value);
-                          },
-                        ),
-                        new Text(
-                          '21000',
-                          style: new TextStyle(
-                            fontSize: 13.0,
-                          ),
-                        ),
+                      ],
+                    ),
+
+
+                    new Row(
+                    
+                      children: <Widget>[
+                      
+                      
                         new Radio(
                           value: 51000,
                           activeColor: Colors.orange,
@@ -683,6 +700,21 @@ class JoinUsPageState extends State<JoinUsPage> {
                         new Text(
                           '51000',
                           style: new TextStyle(fontSize: 13.0),
+                        ),
+SizedBox(width: 2,),
+                          new Radio(
+                          value: 125000,
+                          activeColor: Colors.orange,
+                          groupValue: selectedRadio,
+                          onChanged: (int value) {
+                            setState(() => selectedRadio = value);
+                          },
+                        ),
+                        new Text(
+                          '125000',
+                          style: new TextStyle(
+                            fontSize: 13.0,
+                          ),
                         ),
                       ],
                     ),
@@ -750,7 +782,7 @@ class JoinUsPageState extends State<JoinUsPage> {
           onPressed: () =>
               Navigator.of(context, rootNavigator: true).pop(context),
         ),
-        title: Text("Join "+Constants.AppName),
+        title: Text("Join "+Constants.AppName+" ?"),
       ),
 
       body:   ModalProgressHUD(
@@ -761,7 +793,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     child:Stack(  children: [
 
       Container(
-          height:(MediaQuery.of(context).size.height)*0.82 ,
+          height:(MediaQuery.of(context).size.height)*0.87 ,
           child:
 
     SingleChildScrollView (
@@ -784,7 +816,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                     children: <Widget>[
                      Container(
                          padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
-                         color:Color(0xFFff0000),
+                         color:Color(0xFFFFFFA500),
                          child:Text("Will you be able to give some time to strengthen the organization at grassroot level?",
 
                         style: GoogleFonts.roboto(
@@ -876,7 +908,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     Container(
       width:MediaQuery.of(context).size.width,
     padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
-    color:Color(0xFFff0000),
+    color:Color(0xFFFFFFA500),
     child:  Text("Will you be part of our social media team?",
 
                         style: GoogleFonts.roboto(
@@ -965,7 +997,7 @@ class JoinUsPageState extends State<JoinUsPage> {
     Container(
     width:MediaQuery.of(context).size.width,
     padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
-    color:Color(0xFFff0000),
+    color:Color(0xFFFFFFA500),
     child:Text("Will you be able to provide financial support to strengthen the organization?",
 
                         style: GoogleFonts.roboto(
@@ -998,6 +1030,10 @@ class JoinUsPageState extends State<JoinUsPage> {
                                   isExpanded: true,
                                   focusColor:Colors.orange,
                                   value: _chosenValue3,
+                                   underline: Container(
+          height: 1,
+          color: Colors.transparent,
+        ),
                                   //elevation: 5,
                                   style: TextStyle(color: Colors.white),
                                   iconEnabledColor:Colors.orange,
@@ -1070,11 +1106,11 @@ class JoinUsPageState extends State<JoinUsPage> {
     width:MediaQuery.of(context).size.width,
     padding:EdgeInsets.fromLTRB(5,5.0,5.0,5.0) ,
 
-    color:Color(0xFFff0000),
+    color:Color(0xFFFFFFA500),
     child:   Text("Are you associated with any religious, social or political organization, movement, person or idea?",
 
                         style: GoogleFonts.roboto(
-                          fontSize:15.0,
+                          fontSize:16.0,
 
                           color: Color(0xFFffffff),
                           fontWeight: FontWeight.bold,
@@ -1295,11 +1331,7 @@ class JoinUsPageState extends State<JoinUsPage> {
                       SizedBox(height: 20,)
                     ]))
 
-
-
-          ]))))
-
-     ,Align(
+  ,Align(
         alignment: FractionalOffset.bottomCenter,
         child:    GestureDetector(
             onTap: () {
@@ -1404,7 +1436,7 @@ class JoinUsPageState extends State<JoinUsPage> {
             },child:Container(
           height: 45,
           width:140,
-          margin:EdgeInsets.fromLTRB(0,0,0,10) ,
+          margin:EdgeInsets.fromLTRB(0,20,0,10) ,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               boxShadow: <BoxShadow>[
@@ -1430,6 +1462,10 @@ class JoinUsPageState extends State<JoinUsPage> {
         )),
       )
 
+
+          ]))))
+
+   
     ])),
 
     );

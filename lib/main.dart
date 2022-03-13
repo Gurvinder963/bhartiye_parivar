@@ -16,6 +16,8 @@ import 'localization/localizations_delegate.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/services.dart';
 import 'Interfaces/OnDeepLinkContent.dart';
+import 'package:provider/provider.dart';
+import 'Interfaces/FullScreenChangeListner.dart';
 
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -23,9 +25,13 @@ FlutterLocalNotificationsPlugin();
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+
+   PushNotificationsManager pfg =new PushNotificationsManager();
+    pfg.init();
   NotificationAppLaunchDetails notificationAppLaunchDetails;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+  
   /*if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
    debugPrint("didNotificationLauchAPP");
     Future.delayed(const Duration(milliseconds: 5000), () {
@@ -42,7 +48,13 @@ Future<void> main() async {
 
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
-    runApp(new MyApp());
+   // runApp(new MyApp());
+   runApp(
+    ChangeNotifierProvider(
+      create: (context) => FullScreenChangeListner(),
+      child: MyApp(),
+    ),
+  );
   });
 }
 class NavigationService {
@@ -67,8 +79,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    PushNotificationsManager pfg =new PushNotificationsManager();
-    pfg.init(context);
+   
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();

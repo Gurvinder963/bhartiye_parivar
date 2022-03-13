@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
 import 'package:bhartiye_parivar/Interfaces/OnHomeTabChange.dart';
@@ -6,6 +5,7 @@ import 'package:bhartiye_parivar/Interfaces/OnHomeTapped.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:bhartiye_parivar/Views/LogoutMultiple.dart';
 import 'package:bhartiye_parivar/Views/SearchScreenNew.dart';
+import 'package:bhartiye_parivar/Views/SearchChat.dart';
 import 'package:bhartiye_parivar/Views/SearchScreenNewSeries.dart';
 import 'package:bhartiye_parivar/Views/VideoBookMarkList.dart';
 import 'package:bhartiye_parivar/Views/terms.dart';
@@ -72,50 +72,52 @@ import 'NewsDetail.dart';
 import '../Views/Faq.dart';
 import '../Views/MyDrawer.dart';
 import '../Interfaces/OnLandScape.dart';
-
+import '../Interfaces/FullScreenChangeListner.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-
   final int myContentId;
   final String contentType;
   final String invitedBy;
-  HomePage({Key key,@required this.myContentId,@required this.contentType,@required this.invitedBy}) : super(key: key);
-
-
-
+  HomePage(
+      {Key key,
+      @required this.myContentId,
+      @required this.contentType,
+      @required this.invitedBy})
+      : super(key: key);
 
   @override
-  HomePageState createState() => HomePageState(myContentId,contentType,invitedBy);
+  HomePageState createState() =>
+      HomePageState(myContentId, contentType, invitedBy);
 }
 
-class HomePageState extends State<HomePage> with WidgetsBindingObserver{
+class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   static final homeChildPageState = new GlobalKey<HomeChildPageState>();
   int MyContentId;
   int selectedIndex = 0;
-  bool isFullScreen=false;
-  String cartCount='0';
+  // bool isFullScreen = false;
+  String cartCount = '0';
   String mContentType;
-  String mInvitedBy="";
+  String mInvitedBy = "";
   List<Widget> _children;
-  bool checkedValue=false;
+  bool checkedValue = false;
   bool _isInAsyncCall = false;
-  bool isNewNotification=false;
+  bool isNewNotification = false;
   bool _isHidden = true;
 
   String user_Token;
   String mC_code;
   String mMobile;
   String USER_ID;
-  String logoutMessage="";
-  String sideBarOTP="No OTP";
+  String logoutMessage = "";
+  String sideBarOTP = "No OTP";
 
-  String video_category="main";
+  String video_category = "main";
 
-  HomePageState(int contentId,String contentType,String invitedBy){
-    MyContentId=contentId;
-    mContentType=contentType;
-    mInvitedBy=invitedBy;
-
+  HomePageState(int contentId, String contentType, String invitedBy) {
+    MyContentId = contentId;
+    mContentType = contentType;
+    mInvitedBy = invitedBy;
   }
 
 //  static final myTabbedPageKey = new GlobalKey<MyStatefulWidgetState>();
@@ -132,12 +134,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   String model;
   String ipAddress;
 
-  String SCREEN_NAME="Login_Screen";
+  String SCREEN_NAME = "Login_Screen";
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -145,32 +148,27 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     }
   }
 
-  setCartCount() async{
+  setCartCount() async {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
-
-      var user_Token=prefs.getString(Prefs.KEY_TOKEN);
-      cartCount=prefs.getString(Prefs.CART_COUNT);
-
+      var user_Token = prefs.getString(Prefs.KEY_TOKEN);
+      cartCount = prefs.getString(Prefs.CART_COUNT);
 
       print("----babu---------");
       print(mC_code);
       print(mMobile);
 
-
       setState(() {});
 
-        setState(() {
-          cartCount = cartCount;
-
-        });
-
+      setState(() {
+        cartCount = cartCount;
+      });
 
       return (prefs.getString('token'));
     });
-
   }
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -182,8 +180,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       new NewsMainPage(),
       new BooksPage(),
 
-    //  new QuickPage(),
-     // new ChatPage(),
+      //  new QuickPage(),
+      // new ChatPage(),
       //  new SettingsScreen(),
     ];
 
@@ -197,15 +195,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       });
 
       //FABBottomAppBarState fABBottomAppBarState=new FABBottomAppBarState();
-     // fABBottomAppBarState.updateIndexByNews(0);
-
+      // fABBottomAppBarState.updateIndexByNews(0);
     });
 
-
     eventBusHTC.on<OnHomeTabChange>().listen((event) {
-
       setState(() {
-        video_category =event.tabName;
+        video_category = event.tabName;
       });
     });
 
@@ -217,42 +212,31 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
     });
 
     eventBusLSP.on<OnLandScape>().listen((event) {
-      var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
-
-      if(event.count=='Land' && isPortrait){
-
-        setState(() {
-          isFullScreen=true;
-        });
+      if (event.count == 'Land') {
+        context.read<FullScreenChangeListner>().setFullScreen(true);
+      } else if (event.count == 'Port') {
+        context.read<FullScreenChangeListner>().setFullScreen(false);
       }
-      else if(event.count=='Port' && !isPortrait){
-        setState(() {
-          isFullScreen=false;
-        });
-      }
-
     });
-   // EventBus eventBus = EventBus();
+    // EventBus eventBus = EventBus();
     eventBus.on<OnCartCount>().listen((event) {
       // All events are of type UserLoggedInEvent (or subtypes of it).
-     // print("my_cart_count"+event.count);
+      // print("my_cart_count"+event.count);
       homeAPICall();
     });
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
+      user_Token = prefs.getString(Prefs.KEY_TOKEN);
 
-      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      mC_code = prefs.getString(Prefs.USER_C_CODE);
 
-      mC_code=prefs.getString(Prefs.USER_C_CODE);
-
-      USER_ID= prefs.getString(Prefs.USER_ID);
-      mMobile=prefs.getString(Prefs.USER_MOBILE);
+      USER_ID = prefs.getString(Prefs.USER_ID);
+      mMobile = prefs.getString(Prefs.USER_MOBILE);
       getNationalProfile(prefs.getString(Prefs.USER_ID));
       //getAppLauchCountAPI(user_Token);
       homeAPICall();
-   /*   callLogoutAPI("check",USER_ID,user_Token).then((value) async {
+      /*   callLogoutAPI("check",USER_ID,user_Token).then((value) async {
         if(value.status==1){
 
 
@@ -279,104 +263,77 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       });
 */
 
-
       return (prefs.getString('token'));
     });
 
     eventBusDL.on<OnDeepLinkContent>().listen((event) {
       // All events are of type UserLoggedInEvent (or subtypes of it).
       // print("my_cart_count"+event.count);
-        print(event.type);
-      if(event.type=='videos'){
-
-        getVideoDetail(user_Token,event.key.toString()).then((value) => {
-
-        Navigator.of(context, rootNavigator: true)
-            .push( // ensures fullscreen
-        MaterialPageRoute(
-        builder: (BuildContext context) {
-        return VideoDetailNewPage(content: value.data);
-        }
-        ))
-
-        });
-
+      print(event.type);
+      if (event.type == 'videos') {
+        getVideoDetail(user_Token, event.key.toString()).then((value) => {
+              Navigator.of(context, rootNavigator: true)
+                  .push(// ensures fullscreen
+                      MaterialPageRoute(builder: (BuildContext context) {
+                return VideoDetailNewPage(content: value.data);
+              }))
+            });
+      } else if (event.type == 'news') {
+        getNewsDetail(event.key.toString(), user_Token).then((value) => {
+              Navigator.of(context, rootNavigator: true)
+                  .push(// ensures fullscreen
+                      MaterialPageRoute(builder: (BuildContext context) {
+                return NewsDetailPage(content: value.data);
+              }))
+            });
       }
-       else if(event.type=='news'){
-
-        getNewsDetail(event.key.toString(),user_Token).then((value) => {
-
-            Navigator.of(context, rootNavigator: true)
-                .push( // ensures fullscreen
-                MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return NewsDetailPage(content: value.data);
-                    }
-                ))
-
-          });
-
-        }
     });
-
-
-
   }
 
   Future<AddToCartResponse> getNationalProfile(String id) async {
-    var body =json.encode({'userid':id,"appcode":Constants.AppCode,"token":user_Token});
+    var body = json.encode(
+        {'userid': id, "appcode": Constants.AppCode, "token": user_Token});
 
- //   var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
-    MainRepository repository=new MainRepository();
+    //   var body ={'unique_id':id,"appcode":Constants.AppCode,"password":user_Token};
+    MainRepository repository = new MainRepository();
     return repository.fetchActiveUsers(body);
-
-  }
-  Future<NewsDetailResponse> getNewsDetail(String id,String user_Token) async {
-
-    var body ={'lang_code':''};
-    MainRepository repository=new MainRepository();
-    return repository.fetchNewsDetailData(id,body,user_Token);
-
   }
 
-
-  Future<VideoDetailResponse> getVideoDetail(String user_Token,String id) async {
-
-    var body ={'lang_code':''};
-    MainRepository repository=new MainRepository();
-    return repository.fetchVideoDetailData(id,body,user_Token);
-
+  Future<NewsDetailResponse> getNewsDetail(String id, String user_Token) async {
+    var body = {'lang_code': ''};
+    MainRepository repository = new MainRepository();
+    return repository.fetchNewsDetailData(id, body, user_Token);
   }
 
+  Future<VideoDetailResponse> getVideoDetail(
+      String user_Token, String id) async {
+    var body = {'lang_code': ''};
+    MainRepository repository = new MainRepository();
+    return repository.fetchVideoDetailData(id, body, user_Token);
+  }
 
-
-  void homeAPICall(){
+  void homeAPICall() {
     getHOMEAPI(user_Token).then((res) async {
-
-      if(res.status==1) {
+      if (res.status == 1) {
         SharedPreferences _prefs = await SharedPreferences.getInstance();
-
 
         Prefs.setCartCount(_prefs, (res.data.cartCount).toString());
         setState(() {
-          cartCount=res.data.cartCount.toString();
-          isNewNotification=res.data.notification;
+          cartCount = res.data.cartCount.toString();
+          isNewNotification = res.data.notification;
         });
 
+        int Amount = res.data.Amount;
+        //if(Amount!=null) {
+        Prefs.setDonationAmount(_prefs, (Amount).toString());
+        //}
 
-        int Amount=res.data.Amount;
-       //if(Amount!=null) {
-         Prefs.setDonationAmount(_prefs, (Amount).toString());
-       //}
+        if (res.data.app_version > Constants.Version_Code) {
+          showForceUpdate();
+        }
 
-
-         if(res.data.app_version>Constants.Version_Code){
-           showForceUpdate();
-         }
-
-
-        String remainder_date=res.data.remainder_date;
-        if(remainder_date!=null && !remainder_date.isEmpty) {
+        String remainder_date = res.data.remainder_date;
+        if (remainder_date != null && !remainder_date.isEmpty) {
           final DateTime now = DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
           final String formatted = formatter.format(now);
@@ -384,12 +341,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
           if (remainder_date == formatted) {
             Future.delayed(const Duration(milliseconds: 1000), () {
               Navigator.of(context, rootNavigator: true)
-                  .push( // ensures fullscreen
-                  MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return DonationReminderPage();
-                      }
-                  ));
+                  .push(// ensures fullscreen
+                      MaterialPageRoute(builder: (BuildContext context) {
+                return DonationReminderPage();
+              }));
             });
           }
         }
@@ -398,19 +353,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
   Future<HomeAPIResponse> getHOMEAPI(String user_Token) async {
-
-    var body ={'app_code':Constants.AppCode};
-    MainRepository repository=new MainRepository();
-    return repository.fetchHomeData(body,user_Token);
-
+    var body = {'app_code': Constants.AppCode};
+    MainRepository repository = new MainRepository();
+    return repository.fetchHomeData(body, user_Token);
   }
 
   Future<AddToCartResponse> getAppLauchCountAPI(String user_Token) async {
-
-    var body ={'none':'none'};
-    MainRepository repository=new MainRepository();
-    return repository.fetchAppLauchCount(body,user_Token);
-
+    var body = {'none': 'none'};
+    MainRepository repository = new MainRepository();
+    return repository.fetchAppLauchCount(body, user_Token);
   }
 
   void onItemTapped(int index) {
@@ -420,23 +371,17 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       selectedIndex = index;
     });
 
-    if(index==0){
-     // homeChildPageState.currentState.tabController.animateTo(0);
+    if (index == 0) {
+      // homeChildPageState.currentState.tabController.animateTo(0);
       eventBusHT.fire(OnHomeTapped("FIND"));
-
     }
-
   }
 
-
-  void showForceUpdate(){
-
-
-    Widget okButton =  InkWell(
+  void showForceUpdate() {
+    Widget okButton = InkWell(
       onTap: () {
         LaunchReview.launch();
       },
-
       child: Container(
         width: 100,
         margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -461,37 +406,25 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         child: Text(
           'UPDATE',
           style: GoogleFonts.poppins(
-
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
 
-
-
-
-
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-
-      
-      content:Container(
+      content: Container(
           height: 130,
-          child:
-          Column( children: <Widget>[Text("New Version of app available. Please update for latest features."),
-            SizedBox(height: 20,),
-            Row (
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-
-                  okButton// button 2
-                ]
-            )
+          child: Column(children: <Widget>[
+            Text(
+                "New Version of app available. Please update for latest features."),
+            SizedBox(
+              height: 20,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              okButton // button 2
+            ])
           ])),
-
-
-
     );
 
     // show the dialog
@@ -499,16 +432,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: (){},
-        child:alert);
+        return WillPopScope(onWillPop: () {}, child: alert);
       },
     );
-
-
   }
 
-  void showDialogCart(){
+  void showDialogCart() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -518,85 +447,73 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
               SizedBox(
                 height: 10,
               ),
-
-             Text("Are you sure you want to\n close application?"),
-             Row(
-             mainAxisSize: MainAxisSize.min,
-             children: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-
-                },
-
-                child: Container(
-                  width: 100,
-                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey.shade200,
-                            offset: Offset(1, 1),
-                            blurRadius: 0,
-                            spreadRadius: 0)
-                      ],
-                      gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            Color(AppColors.BaseColor),
-                            Color(AppColors.BaseColor)
-                          ])),
-                  child: Text(
-                    'Yes',
-                    style: GoogleFonts.poppins(
-
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+              Text("Are you sure you want to\n close application?"),
+              Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 100,
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                              color: Colors.grey.shade200,
+                              offset: Offset(1, 1),
+                              blurRadius: 0,
+                              spreadRadius: 0)
+                        ],
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Color(AppColors.BaseColor),
+                              Color(AppColors.BaseColor)
+                            ])),
+                    child: Text(
+                      'Yes',
+                      style: GoogleFonts.poppins(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-
-
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-
-                },
-
-                child: Container(
-                  width: 100,
-                  margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey.shade200,
-                            offset: Offset(1, 1),
-                            blurRadius: 0,
-                            spreadRadius: 0)
-                      ],
-                      gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            Color(AppColors.BaseColor),
-                            Color(AppColors.BaseColor)
-                          ])),
-                  child: Text(
-                    'No',
-                    style: GoogleFonts.poppins(
-
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 100,
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                              color: Colors.grey.shade200,
+                              offset: Offset(1, 1),
+                              blurRadius: 0,
+                              spreadRadius: 0)
+                        ],
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Color(AppColors.BaseColor),
+                              Color(AppColors.BaseColor)
+                            ])),
+                    child: Text(
+                      'No',
+                      style: GoogleFonts.poppins(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              )]),
+                )
+              ]),
               SizedBox(
                 height: 10,
               ),
@@ -605,179 +522,253 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
         });
   }
 
-  onBackNews(){
+  onBackNews() {
+
+    print("on news back"+selectedIndex.toString());
     eventBus1.fire(OnNewsBack("FIND"));
   }
+
   @override
   Widget build(BuildContext context) {
+    var isFullScreen = context.watch<FullScreenChangeListner>().isFullScreen;
+    // final fullScreeenListner = Provider.of<FullScreenChangeListner>(context);
 
-    var tit=selectedIndex==0?Languages
-        .of(context)
-        .appName:"Books";
+    print("build fulscreen " + isFullScreen.toString());
+    // print(fullScreeenListner.isFullScreen);
 
-    var shouldShowBadge=int.parse(cartCount)>0?true:false;
-    var mfontSize=20.0;
-    if(Languages.of(context).langCode=='en'){
-      mfontSize=24.0;
+    var tit = selectedIndex == 0 ? Languages.of(context).appName : "Books";
+
+    var shouldShowBadge = int.parse(cartCount) > 0 ? true : false;
+    var mfontSize = 20.0;
+    if (Languages.of(context).langCode == 'en') {
+      mfontSize = 24.0;
+    } else if (Languages.of(context).langCode == 'hi') {
+      mfontSize = 28.0;
     }
-    else if(Languages.of(context).langCode=='hi'){
-      mfontSize=28.0;
-    }
-
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(AppColors.StatusBarColor).withOpacity(1), //or set color with: Color(0xFF0000FF)
+      statusBarColor: Color(AppColors.StatusBarColor)
+          .withOpacity(1), //or set color with: Color(0xFF0000FF)
     ));
-      return  WillPopScope(
-        child:Scaffold(
-        appBar:selectedIndex==1 || isFullScreen?null: AppBar(
-          elevation: 0,
-
-          toolbarHeight: 50,
-          backgroundColor: Color(AppColors.BaseColor),
-          title: Text(tit, style: GoogleFonts.roboto(fontSize: 23,color: Color(0xFFFFFFFF).withOpacity(1),fontWeight: FontWeight.w600)),
-
-          actions: <Widget>[
-
-            selectedIndex==0?
-            GestureDetector(
-                onTap: () {
-
-
-                  if(video_category=='series'){
-                    Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return SearchScreenNewSeriesPage(
-                                  video_category: video_category);
+    return WillPopScope(
+      child: Scaffold(
+        appBar: selectedIndex == 1 || isFullScreen
+            ? null
+            : AppBar(
+                elevation: 0,
+                toolbarHeight: 52,
+                backgroundColor: Color(AppColors.BaseColor),
+                title: Text(tit,
+                    style: GoogleFonts.roboto(
+                        fontSize: 23,
+                        color: Color(0xFFFFFFFF).withOpacity(1),
+                        fontWeight: FontWeight.w600)),
+                actions: <Widget>[
+                  selectedIndex == 0
+                      ? GestureDetector(
+                          onTap: () {
+                            if (video_category == 'chat') {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  // ensures fullscreen
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return SearchChatPage(
+                                    video_category: video_category);
+                              }));
+                            } else if (video_category == 'series') {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  // ensures fullscreen
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return SearchScreenNewSeriesPage(
+                                    video_category: video_category);
+                              }));
+                            } else if (video_category == 'live') {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  // ensures fullscreen
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return SearchScreenNewLivePage(
+                                    video_category: video_category);
+                              }));
+                            } else {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  // ensures fullscreen
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return SearchScreenNewPage(
+                                    video_category: video_category);
+                              }));
                             }
-                        ));
-                  }
-                  else if(video_category=='live'){
-                    Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return SearchScreenNewLivePage(
-                                  video_category: video_category);
-                            }
-                        ));
-                  }
-                  else {
-                    Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return SearchScreenNewPage(
-                                  video_category: video_category);
-                            }
-                        ));
-                  }
-                },child: Icon(Icons.search,color: Colors.white,size: 25,)):Container(),
-            SizedBox(
-              width: 7,
-            ),
-            selectedIndex==0? GestureDetector(
-    onTap: () {
+                          },
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                            size: 25,
+                          ))
+                      : Container(),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  selectedIndex == 0
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                                // ensures fullscreen
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return VideoBookMarkListPage();
+                            }));
+                          },
+                          child: Icon(
+                            Icons.bookmark_outlined,
+                            color: Colors.white,
+                            size: 25,
+                          ))
+                      : Container(),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  selectedIndex == 0
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isNewNotification = false;
+                            });
 
-      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-          MaterialPageRoute(
-              builder: (BuildContext context) {
-                return VideoBookMarkListPage();
-              }
-          ) );
-
-    },child:
-    Icon(Icons.bookmark_outlined,color: Colors.white,size: 25,)):Container(),
-            SizedBox(
-              width: 7,
-            ),
-            selectedIndex==0?  GestureDetector(
-    onTap: () {
-
-      setState(() {
-        isNewNotification = false;
-      });
-
-      Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-          MaterialPageRoute(
-              builder: (BuildContext context) {
-                return NotificationListPage();
-              }
-          ) );
-
-
-    },child: isNewNotification?Image(
-              image: new AssetImage("assets/ic_not_bell.png"),
-
-              height:  20,
-              width:  22,
-
-
-              alignment: Alignment.center,
-            ):Icon(Icons.notifications_rounded,color: Colors.white,size: 25,)):Container(),
-
-            selectedIndex==2?
-            GestureDetector(
-              onTap: () {
-
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return MyCartPage();
-                        }
-                    ) );
-
-              },child:
-    Badge(
-      showBadge: shouldShowBadge,
-      position: BadgePosition.topEnd(top: 0, end: -4),
-      animationDuration: Duration(milliseconds: 300),
-      animationType: BadgeAnimationType.slide,
-    badgeContent: Text(cartCount,
-        style: GoogleFonts.poppins(fontSize: 11,color: Colors.white,fontWeight: FontWeight.w500)),
-    child: Icon(Icons.shopping_cart,color: Colors.white,size: 26,),
-    ),
-            ):Container(),
-            selectedIndex==2? SizedBox(
-              width: 10,
-            ):Container(),
-            SizedBox(
-              width: 10,
-            ),
-
-          ],
-
-        ),
+                            Navigator.of(context, rootNavigator: true).push(
+                                // ensures fullscreen
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return NotificationListPage();
+                            }));
+                          },
+                          child: isNewNotification
+                              ? Image(
+                                  image:
+                                      new AssetImage("assets/ic_not_bell.png"),
+                                  height: 20,
+                                  width: 22,
+                                  alignment: Alignment.center,
+                                )
+                              : Icon(
+                                  Icons.notifications_rounded,
+                                  color: Colors.white,
+                                  size: 25,
+                                ))
+                      : Container(),
+                  selectedIndex == 2
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                                // ensures fullscreen
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return MyCartPage();
+                            }));
+                          },
+                          child: Badge(
+                            showBadge: shouldShowBadge,
+                            position: BadgePosition.topEnd(top: 0, end: -4),
+                            animationDuration: Duration(milliseconds: 300),
+                            animationType: BadgeAnimationType.slide,
+                            badgeContent: Text(cartCount,
+                                style: GoogleFonts.poppins(
+                                    fontSize: 11,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500)),
+                            child: Icon(
+                              Icons.shopping_cart,
+                              color: Colors.white,
+                              size: 26,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  selectedIndex == 2
+                      ? SizedBox(
+                          width: 10,
+                        )
+                      : Container(),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
         drawer: MyDrawerPage(),
         body: _children[selectedIndex],
-        bottomNavigationBar: selectedIndex==1 || isFullScreen?null:FABBottomAppBar(
-          backgroundColor: Color(AppColors.BaseColor),
-          selectedColor:Colors.white,
-          onTabSelected: onItemTapped,
-
-          items: [
-            FABBottomAppBarItem(iconData: selectedIndex==0?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/ic_home_unsel.png'), width: 28,height: 28,), text: Text(
-              'Home',
-              style: GoogleFonts.roboto(color: selectedIndex==0? Colors.white:Colors.black,fontSize: 12,),
-            )),
-            FABBottomAppBarItem(iconData: selectedIndex==1?  Image(image: AssetImage('assets/ic_home_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/news_unselected.png'), width: 28,height: 28,), text: Text(
-              'News',
-              style: GoogleFonts.roboto(color: selectedIndex==1? Colors.white:Colors.black,fontSize: 12,),
-            )),
-            FABBottomAppBarItem(iconData: selectedIndex==2?  Image(image: AssetImage('assets/ic_book_sel.png'), width: 28,height: 28,)
-                : Image(image: AssetImage('assets/book_unselected.png'), width: 28,height: 28,), text: Text(
-              'Books',
-              style: GoogleFonts.roboto(color: selectedIndex==2? Colors.white:Colors.black,fontSize: 12,),
-            )),
-
-          ],
-        ),
+        bottomNavigationBar: selectedIndex == 1 || isFullScreen
+            ? null
+            : FABBottomAppBar(
+                backgroundColor: Color(AppColors.BaseColor),
+                selectedColor: Colors.white,
+                onTabSelected: onItemTapped,
+                items: [
+                  FABBottomAppBarItem(
+                      iconData: selectedIndex == 0
+                          ? Image(
+                              image: AssetImage('assets/ic_home_sel.png'),
+                              width: 28,
+                              height: 28,
+                            )
+                          : Image(
+                              image: AssetImage('assets/ic_home_unsel.png'),
+                              width: 28,
+                              height: 28,
+                            ),
+                      text: Text(
+                        'Home',
+                        style: GoogleFonts.roboto(
+                          color:
+                              selectedIndex == 0 ? Colors.white : Colors.black,
+                          fontSize: 12,
+                        ),
+                      )),
+                  FABBottomAppBarItem(
+                      iconData: selectedIndex == 1
+                          ? Image(
+                              image: AssetImage('assets/ic_home_sel.png'),
+                              width: 28,
+                              height: 28,
+                            )
+                          : Image(
+                              image: AssetImage('assets/news_unselected.png'),
+                              width: 28,
+                              height: 28,
+                            ),
+                      text: Text(
+                        'News',
+                        style: GoogleFonts.roboto(
+                          color:
+                              selectedIndex == 1 ? Colors.white : Colors.black,
+                          fontSize: 12,
+                        ),
+                      )),
+                  FABBottomAppBarItem(
+                      iconData: selectedIndex == 2
+                          ? Image(
+                              image: AssetImage('assets/ic_book_sel.png'),
+                              width: 28,
+                              height: 28,
+                            )
+                          : Image(
+                              image: AssetImage('assets/book_unselected.png'),
+                              width: 28,
+                              height: 28,
+                            ),
+                      text: Text(
+                        'Books',
+                        style: GoogleFonts.roboto(
+                          color:
+                              selectedIndex == 2 ? Colors.white : Colors.black,
+                          fontSize: 12,
+                        ),
+                      )),
+                ],
+              ),
       ),
-          onWillPop: () => selectedIndex==1 || selectedIndex==2? onBackNews():showModalBottomSheet(
+      onWillPop: () => selectedIndex == 0 && !isFullScreen? 
+           showModalBottomSheet(
               context: context,
               builder: (context) {
                 return Column(
@@ -786,104 +777,98 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     SizedBox(
                       height: 30,
                     ),
-
-                    Text("Are you sure you want to\n close application?",
-                      textAlign: TextAlign.center,),
-                    Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              if (Platform.isAndroid) {
-                                SystemNavigator.pop();
-                              } else if (Platform.isIOS) {
-                                exit(0);
-                              }
-
-                            },
-
-                            child: Container(
-                              width: 100,
-                              margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(
-                                        color: Colors.grey.shade200,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 0,
-                                        spreadRadius: 0)
-                                  ],
-                                  gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        Color(0xFFD8D8D8),
-                                        Color(0xFFD8D8D8)
-                                      ])),
-                              child: Text(
-                                'Yes',
-                                style: GoogleFonts.poppins(
-
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                    Text(
+                      "Are you sure you want to\n close application?",
+                      textAlign: TextAlign.center,
+                    ),
+                    Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          if (Platform.isAndroid) {
+                            SystemNavigator.pop();
+                          } else if (Platform.isIOS) {
+                            exit(0);
+                          }
+                        },
+                        child: Container(
+                          width: 100,
+                          margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.grey.shade200,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 0,
+                                    spreadRadius: 0)
+                              ],
+                              gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    Color(0xFFD8D8D8),
+                                    Color(0xFFD8D8D8)
+                                  ])),
+                          child: Text(
+                            'Yes',
+                            style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
-
-                          SizedBox(
-                            width: 20,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: Container(
+                          width: 100,
+                          margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.grey.shade200,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 0,
+                                    spreadRadius: 0)
+                              ],
+                              gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    Color(AppColors.BaseColor),
+                                    Color(AppColors.BaseColor)
+                                  ])),
+                          child: Text(
+                            'No',
+                            style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
-
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context, false);
-
-                            },
-
-                            child: Container(
-                              width: 100,
-                              margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(
-                                        color: Colors.grey.shade200,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 0,
-                                        spreadRadius: 0)
-                                  ],
-                                  gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        Color(AppColors.BaseColor),
-                                        Color(AppColors.BaseColor)
-                                      ])),
-                              child: Text(
-                                'No',
-                                style: GoogleFonts.poppins(
-
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )]),
+                        ),
+                      )
+                    ]),
                     SizedBox(
                       height: 10,
                     ),
                   ],
                 );
-              }),);
-    }
+              }):onBackNews(),
+    );
   }
+}
 
 class navigationDrawer extends StatelessWidget {
-
   String mobile;
   String cCode;
   String token;
@@ -891,18 +876,18 @@ class navigationDrawer extends StatelessWidget {
   String logoutMessage;
   String sideBarOTP;
 
-  navigationDrawer(String mMobile,String mC_code,String token,String userid,String logoutMessage,String sideBarOTP){
-    mobile=mMobile;
-    cCode=mC_code;
-    this.token=token;
-    this.userid=userid;
-    this.logoutMessage=logoutMessage;
-    this.sideBarOTP=sideBarOTP;
+  navigationDrawer(String mMobile, String mC_code, String token, String userid,
+      String logoutMessage, String sideBarOTP) {
+    mobile = mMobile;
+    cCode = mC_code;
+    this.token = token;
+    this.userid = userid;
+    this.logoutMessage = logoutMessage;
+    this.sideBarOTP = sideBarOTP;
   }
 
   @override
   Widget build(BuildContext context) {
-
     print("logout message");
     print(logoutMessage);
 
@@ -910,155 +895,141 @@ class navigationDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          createDrawerHeader(context,sideBarOTP),
+          createDrawerHeader(context, sideBarOTP),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/about.png'), width: 20,height: 20,color: Colors.black,),
-              text: Languages
-                  .of(context)
-                  .aboutUs,
-              onTap: () =>{}
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/about.png'),
+                width: 20,
+                height: 20,
+                color: Colors.black,
+              ),
+              text: Languages.of(context).aboutUs,
+              onTap: () => {}
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/joinus.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .joinUs,
-              onTap: () =>{
-
-
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-              MaterialPageRoute(
-              builder: (BuildContext context) {
-              return JoinUsPage();
-              }
-              ) )}
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/joinus.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).joinUs,
+              onTap: () => {
+                    // Navigator.of(context, rootNavigator: true)
+                    //     .push(// ensures fullscreen
+                    //         MaterialPageRoute(builder: (BuildContext context) {
+                    //   return JoinUsPage();
+                    // }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/donate.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .donateUs,
-              onTap: () =>{
-
-                 Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return DonateUsPage();
-                        }
-                    ) )
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/donate.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).donateUs,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return DonateUsPage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/contactus.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .contactUs,
-              onTap: () =>{
-
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return DonationReminderPage();
-                        }
-                    ) )
-
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.contact),
-          ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(15,0,15,0),
-        child:
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.orange,
-          )),
+              icon: Image(
+                image: AssetImage('assets/contactus.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).contactUs,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return DonationReminderPage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.contact),
+              ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.orange,
+              )),
           createDrawerBodyItem(
-            icon: Image(image: AssetImage('assets/profile.png'), width: 20,height: 20,),
-            text: Languages
-                .of(context)
-                .profile,
-            onTap: () =>{
-
-              print("hiii"),
-              print(cCode),
-              print(mobile),
-
-
-              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                  MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return EditProfilePage();
-                      }
-                  ) )
-
-
-
-
-          }
-               // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
-
-
+              icon: Image(
+                image: AssetImage('assets/profile.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).profile,
+              onTap: () => {
+                    print("hiii"),
+                    print(cCode),
+                    print(mobile),
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return EditProfilePage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
 
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/app_language.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .appLanguage,
-              onTap: () =>{
-
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return AppLanguageInnerPage(from:"Home");
-                        }
-                    ) )
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/app_language.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).appLanguage,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return AppLanguageInnerPage(from: "Home");
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/content.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .contentLanguage,
-              onTap: () =>{
-               Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return ContentLanguagePage();
-                        }
-                    ) )
-
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/content.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).contentLanguage,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return ContentLanguagePage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/notifications.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .notificationsSetting,
-              onTap: () =>{
-
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return NotificationSettingPage();
-                        }
-                    ) )
-
-
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/notifications.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).notificationsSetting,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return NotificationSettingPage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           // createDrawerBodyItem(
           //     icon: Image(image: AssetImage('assets/dark.png'), width: 20,height: 20,),
           //     text: Languages
@@ -1068,126 +1039,129 @@ class navigationDrawer extends StatelessWidget {
           //   // Navigator.pushReplacementNamed(context, pageRoutes.profile),
           // ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/faq.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .faq,
-              onTap: () =>{
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return FaqPage();
-                        }
-                    ) )
-
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/faq.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).faq,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return FaqPage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/share.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .shareApp,
-              onTap: () =>{
-
-                Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                    MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return SharePage();
-                        }
-                    ) )
-
-              }
-            // Navigator.pushReplacementNamed(context, pageRoutes.profile),
-          ),
+              icon: Image(
+                image: AssetImage('assets/share.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).shareApp,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return SharePage();
+                    }))
+                  }
+              // Navigator.pushReplacementNamed(context, pageRoutes.profile),
+              ),
 
           Padding(
-              padding: EdgeInsets.fromLTRB(15,0,15,0),
-              child:
-              Divider(
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Divider(
                 height: 1,
                 thickness: 1,
                 color: Colors.orange,
               )),
           createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/advertise.png'), width: 20,height: 20,),
-            text: Languages
-                .of(context)
-                .termsndPrivacy,
-            onTap: () =>{
-              Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                  MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return TermScreen();
-                      }
-                  ) )
-
-            }
-                //Navigator.pushReplacementNamed(context, pageRoutes.notification),
-          ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(0,0,15,0),
-              child:
-
-          createDrawerBodyItem(
-              icon: Image(image: AssetImage('assets/ic_logout.png'), width: 20,height: 20,),
-              text: Languages
-                  .of(context)
-                  .logout,
-              onTap: () =>{
-
-                if(logoutMessage=="multiple app"){
-                  Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-                      MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return LogoutMultiplePage( logoutMessage: logoutMessage,);
-                          }
-                      ) )
-                }
-                else
-                  {
-                    showAlertDialogValidation(context,
-                        "Are you sure you want to logout from this device?",
-                        userid, token, logoutMessage),
+              icon: Image(
+                image: AssetImage('assets/advertise.png'),
+                width: 20,
+                height: 20,
+              ),
+              text: Languages.of(context).termsndPrivacy,
+              onTap: () => {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(// ensures fullscreen
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return TermScreen();
+                    }))
                   }
-                }
-            //Navigator.pushReplacementNamed(context, pageRoutes.notification),
-          ) ),
+              //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+              ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+              child: createDrawerBodyItem(
+                  icon: Image(
+                    image: AssetImage('assets/ic_logout.png'),
+                    width: 20,
+                    height: 20,
+                  ),
+                  text: Languages.of(context).logout,
+                  onTap: () => {
+                        if (logoutMessage == "multiple app")
+                          {
+                            Navigator.of(context, rootNavigator: true).push(
+                                // ensures fullscreen
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return LogoutMultiplePage(
+                                logoutMessage: logoutMessage,
+                              );
+                            }))
+                          }
+                        else
+                          {
+                            showAlertDialogValidation(
+                                context,
+                                "Are you sure you want to logout from this device?",
+                                userid,
+                                token,
+                                logoutMessage),
+                          }
+                      }
+                  //Navigator.pushReplacementNamed(context, pageRoutes.notification),
+                  )),
         ],
       ),
     );
   }
 }
 
-
-
-Future<SideBarApiResponse> callSideBarAPI(String userid,String token) async {
-
-  var body =json.encode({'userid':userid,"appcode":Constants.AppCode,"token":token,});
+Future<SideBarApiResponse> callSideBarAPI(String userid, String token) async {
+  var body = json.encode({
+    'userid': userid,
+    "appcode": Constants.AppCode,
+    "token": token,
+  });
 
   //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
-  MainRepository repository=new MainRepository();
+  MainRepository repository = new MainRepository();
   return repository.fetchSidebarApI(body);
-
 }
 
-
-
-Future<LogoutResponse> callLogoutAPI(String type,String userid,String token) async {
-
-  var body =json.encode({'logouttype':type,'userid':userid,"appcode":Constants.AppCode,"token":token,});
+Future<LogoutResponse> callLogoutAPI(
+    String type, String userid, String token) async {
+  var body = json.encode({
+    'logouttype': type,
+    'userid': userid,
+    "appcode": Constants.AppCode,
+    "token": token,
+  });
 
   //var body ={'userid':USER_ID,"appcode":Constants.AppCode,"token":user_Token,"name":name,"phone":mobile,"pincode":pincode};
-  MainRepository repository=new MainRepository();
+  MainRepository repository = new MainRepository();
   return repository.fetchLogoutJava(body);
-
 }
 
 removeFromSF(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.clear();
-
 
   Navigator.pushAndRemoveUntil(
       context,
@@ -1195,21 +1169,19 @@ removeFromSF(BuildContext context) async {
       ModalRoute.withName("/Login"));
 }
 
-showAlertDialogValidation(BuildContext context,String message,String userId,String token,String logoutmessage) {
-
+showAlertDialogValidation(BuildContext context, String message, String userId,
+    String token, String logoutmessage) {
   print(userId);
 
-  Widget SingleButton =  InkWell(
+  Widget SingleButton = InkWell(
     onTap: () {
-      callLogoutAPI("thisapp",userId,token).then((value) async {
-        if(value.status==1){
+      callLogoutAPI("thisapp", userId, token).then((value) async {
+        if (value.status == 1) {
           Navigator.of(context, rootNavigator: true).pop('dialog');
           removeFromSF(context);
         }
-
       });
     },
-
     child: Container(
       width: 100,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -1227,20 +1199,14 @@ showAlertDialogValidation(BuildContext context,String message,String userId,Stri
           gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [
-                Color(0xFFD8D8D8),
-                Color(0xFFD8D8D8)
-              ])),
+              colors: [Color(0xFFD8D8D8), Color(0xFFD8D8D8)])),
       child: Text(
         'Yes',
         style: GoogleFonts.poppins(
-
-            color: Colors.white,
-            fontWeight: FontWeight.bold),
+            color: Colors.white, fontWeight: FontWeight.bold),
       ),
     ),
   );
-
 
   // Widget SingleButton = FlatButton(
   //   child: Text("This App"),
@@ -1255,11 +1221,10 @@ showAlertDialogValidation(BuildContext context,String message,String userId,Stri
   //   },
   // );
 
-  Widget CancelButton =  InkWell(
+  Widget CancelButton = InkWell(
     onTap: () {
       Navigator.of(context, rootNavigator: true).pop('dialog');
     },
-
     child: Container(
       width: 100,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -1284,13 +1249,10 @@ showAlertDialogValidation(BuildContext context,String message,String userId,Stri
       child: Text(
         'No',
         style: GoogleFonts.poppins(
-
-            color: Colors.white,
-            fontWeight: FontWeight.bold),
+            color: Colors.white, fontWeight: FontWeight.bold),
       ),
     ),
   );
-
 
   // Widget BothButton = FlatButton(
   //   child: Text("All Apps"),
@@ -1326,12 +1288,13 @@ showAlertDialogValidation(BuildContext context,String message,String userId,Stri
     },
   );
 }
-Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap}) {
-  bool isSwitchShow=false;
-  if(text=='Dark Mode' || text=='डार्क मोड'){
-    isSwitchShow=true;
-  }
 
+Widget createDrawerBodyItem(
+    {Image icon, String text, GestureTapCallback onTap}) {
+  bool isSwitchShow = false;
+  if (text == 'Dark Mode' || text == 'डार्क मोड') {
+    isSwitchShow = true;
+  }
 
   return ListTile(
     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -1341,57 +1304,51 @@ Widget createDrawerBodyItem({Image icon, String text, GestureTapCallback onTap})
         Padding(
           padding: EdgeInsets.only(left: 15.0),
           child: Text(text),
-        )
-        ,isSwitchShow?Expanded(child:Align(
-          alignment: Alignment.centerRight,
-          child: Switch(
-            value: true,
-            onChanged: (value) {
-
-            },
-            activeTrackColor: Colors.grey,
-            activeColor: Colors.orange,
-          ),
-        )):Container()
-
-
+        ),
+        isSwitchShow
+            ? Expanded(
+                child: Align(
+                alignment: Alignment.centerRight,
+                child: Switch(
+                  value: true,
+                  onChanged: (value) {},
+                  activeTrackColor: Colors.grey,
+                  activeColor: Colors.orange,
+                ),
+              ))
+            : Container()
       ],
     ),
     onTap: onTap,
   );
 }
-Widget createDrawerHeader(BuildContext context,String sideBarOTP) {
+
+Widget createDrawerHeader(BuildContext context, String sideBarOTP) {
   return DrawerHeader(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
-
       child: Container(
-        color: Colors.orange,
-          child:
-          Column( children: <Widget>[
+          color: Colors.orange,
+          child: Column(children: <Widget>[
             SizedBox(height: 20),
             new Image(
               image: new AssetImage("assets/splash.png"),
               width: 100,
-              height:  100,
+              height: 100,
               color: null,
               fit: BoxFit.scaleDown,
               alignment: Alignment.center,
             ),
             SizedBox(height: 5),
-           Text(sideBarOTP=='No OTP'?Languages.of(context).appName:sideBarOTP,
-                style: TextStyle(
-                  fontSize: 20.0,
-
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-
-                ),
+            Text(
+              sideBarOTP == 'No OTP'
+                  ? Languages.of(context).appName
+                  : sideBarOTP,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
-
-
-
-      ])));
+            ),
+          ])));
 }
-
-

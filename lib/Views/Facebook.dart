@@ -24,7 +24,7 @@ class FacebookPage extends StatefulWidget {
 class FacebookPageState extends State<FacebookPage> {
   // WebViewController _controller;
   String fileUrl="";
-  // InAppWebViewController webView;
+  InAppWebViewController webView;
  // String url = "";
   double progress = 0;
   String link;
@@ -64,11 +64,11 @@ class FacebookPageState extends State<FacebookPage> {
         backgroundColor: Color(AppColors.BaseColor),
         title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
           actions: <Widget>[
-            Center(child:GestureDetector( onTap: () {
+          Center(child:GestureDetector( onTap: () {
               launch(
                   link,
                   forceSafariVC: false);
-    }, child:Text("Open App", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 16,color: Color(0xFFFFFFFF))))),
+    }, child:Text(name!="Website" && name!="Downloads" ? "Open "+name +" App":"", style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 16,color: Color(0xFFFFFFFF))))),
             SizedBox(width:15,),
           ]
       ),
@@ -81,7 +81,7 @@ class FacebookPageState extends State<FacebookPage> {
             )
         ),
         onWebViewCreated: (InAppWebViewController controller) {
-          //  webView = controller;
+           webView = controller;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
@@ -101,8 +101,19 @@ class FacebookPageState extends State<FacebookPage> {
       ):Container(),
 
     ),
-      onWillPop: () => Future.value(false),);
+          onWillPop: () => _exitApp(context));
   }
-
+ Future<bool> _exitApp(BuildContext context) async {
+    if (await webView.canGoBack()) {
+      print("onwill goback");
+      webView.goBack();
+      return Future.value(false);
+    } else {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text("No back history item")),
+      );
+      return Future.value(false);
+    }
+  }
 
 }

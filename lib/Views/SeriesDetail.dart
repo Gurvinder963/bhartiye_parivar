@@ -351,7 +351,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
     // MainRepository repository=new MainRepository();
     // return repository.fetchVideoDetailData(id,body,user_Token);
 
-    var body =json.encode({"userid": USER_ID, "video_category": videoCategory,"video_id": id,"appcode":Constants.AppCode,"token":user_Token});
+    var body =json.encode({"userid": USER_ID, "video_category": videoCategory,"video_id": id,"appcode":mContent.channelId.toString(),"token":user_Token});
     MainRepository repository=new MainRepository();
     return repository.fetchVideoDetailDataJAVA(body);
   }
@@ -409,7 +409,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
   }
 
 
-  Future<AddToCartResponse> saveReportAPI(message) async {
+  Future<AddToCartResponse> saveReportAPI(message, val,checked) async {
     //  final String requestBody = json.encoder.convert(order_items);
 
 
@@ -420,60 +420,196 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
 
   }
-  Future _asyncInputDialog(BuildContext context,String id) async {
-    String teamName = '';
+  Future _asyncInputDialogReportNew(BuildContext context, String id) async {
+  
     return showDialog(
       context: context,
       barrierDismissible: false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
+       
+     
+//SingingCharacter _character = SingingCharacter.lafayette;
+ String val = "";
+ String teamName="";
+ bool checkedValue=false;
         return AlertDialog(
-          title: Text("Report Video"),
-          content: SingleChildScrollView(
+            content:  SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            reverse: true,
-            child: SizedBox(
-              height: 250,
+             reverse: true,
+             
+             child:SizedBox(
+            height: 510,child:StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return SizedBox(
+              height: 580 ,
+          child:Column(
+            children: <Widget>[
+              Text("Please enter valid reason for reporting", style: const TextStyle(
+                         
+                          fontSize: 14.0,fontWeight: FontWeight.bold,
+                        ),),
+           SizedBox(
+              height: 15,),               
+         LabeledRadio(
+            label: 'Sexual content',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Sexual content",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+          LabeledRadio(
+            label: 'Violent or repulsive content',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Violent or repulsive content",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+  LabeledRadio(
+            label: 'Hateful or abusive content ',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Hateful or abusive content ",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+           LabeledRadio(
+            label: 'Anti-national content',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Anti-national content",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+           LabeledRadio(
+            label: 'Inappropriate content',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Inappropriate content",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+ LabeledRadio(
+            label: 'Spam or wrong information',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Spam or wrong information",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+           LabeledRadio(
+            label: 'Others',
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+            value: "Others",
+            groupValue: val,
+            onChanged: (String newValue) {
+              setState(() {
+                val = newValue;
+              });
+            },
+          ),
+ SizedBox(
+              height: 5,),
+        SizedBox(
+              height: 70,
               width: 400,
               child: new TextField(
                 autofocus: false,
-                maxLines: 500,
+                maxLines: 200,
                 onChanged: (value) {
                   teamName = value;
                 },
                 decoration: new InputDecoration(
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
+                   labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700),
+              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(12),),
 
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Colors.grey, width: 0.0),
+                  ),
                   focusedBorder: const OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                    borderSide:
+                        const BorderSide(color: Colors.grey, width: 0.0),
                   ),
                   border: const OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                    borderSide:
+                        const BorderSide(color: Colors.grey, width: 0.0),
                   ),
                   hintText: 'Enter your report reason here',
                 ),
               ),
             ),
+                     CheckboxListTile(
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.0,
+                                            vertical:5),
+                                        activeColor: Colors.orange,
+                                        checkColor: Colors.white,
+                                        title: Text("Do not recommend me any content from this channel", style: const TextStyle(
+                         
+                          fontSize: 13.0,
+                        ),),
+
+                                        value: checkedValue,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            checkedValue = newValue;
+                                          });
+                                        },
+                                        controlAffinity: ListTileControlAffinity
+                                            .leading, //  <-- leading Checkbox
+                                      ),
+            
+           
+           
+           
+            ]
+          ));
+        },
+        ))), actions: [
+          FlatButton(
+            child: Text('CANCEL',style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 13.0,
+                        ),),
+            onPressed: () {
+              setState(() {
+              
+              });
+
+
+              Navigator.of(context).pop();
+            },
           ),
 
-          actions: [
-            FlatButton(
-              child: Text('CANCEL'),
-              onPressed: () {
+          FlatButton(
+            child: Text('REPORT',style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13.0,
+                        ),),
+            onPressed: () {
 
-                Navigator.of(context).pop(teamName);
-              },
-            ),
-
-            FlatButton(
-              child: Text('REPORT'),
-              onPressed: () {
-                setState(() {
-                  _isInAsyncCall = true;
-                });
-                Navigator.of(context).pop(teamName);
-                saveReportAPI(teamName).then((res) async {
+             print(val);
+              saveReportAPI(teamName,val,checkedValue).then((res) async {
                   String msg;
                   setState(() {
                     _isInAsyncCall = false;
@@ -486,15 +622,93 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                       backgroundColor: Colors.black,
                       textColor: Colors.white,
                       fontSize: 16.0);
-
                 });
-              },
-            ),
-          ],
+
+            },
+          ),
+        ],
+
+
+
         );
       },
     );
   }
+  // Future _asyncInputDialog(BuildContext context,String id) async {
+  //   String teamName = '';
+  //   return showDialog(
+  //     context: context,
+  //     barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Report Video"),
+  //         content: SingleChildScrollView(
+  //           scrollDirection: Axis.vertical,
+  //           reverse: true,
+  //           child: SizedBox(
+  //             height: 250,
+  //             width: 400,
+  //             child: new TextField(
+  //               autofocus: false,
+  //               maxLines: 500,
+  //               onChanged: (value) {
+  //                 teamName = value;
+  //               },
+  //               decoration: new InputDecoration(
+  //                 enabledBorder: const OutlineInputBorder(
+  //                   borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+  //                 ),
+
+  //                 focusedBorder: const OutlineInputBorder(
+  //                   borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+  //                 ),
+  //                 border: const OutlineInputBorder(
+  //                   borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+  //                 ),
+  //                 hintText: 'Enter your report reason here',
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+
+  //         actions: [
+  //           FlatButton(
+  //             child: Text('CANCEL'),
+  //             onPressed: () {
+
+  //               Navigator.of(context).pop(teamName);
+  //             },
+  //           ),
+
+  //           FlatButton(
+  //             child: Text('REPORT'),
+  //             onPressed: () {
+  //               setState(() {
+  //                 _isInAsyncCall = true;
+  //               });
+  //               Navigator.of(context).pop(teamName);
+  //               saveReportAPI(teamName).then((res) async {
+  //                 String msg;
+  //                 setState(() {
+  //                   _isInAsyncCall = false;
+  //                 });
+  //                 Fluttertoast.showToast(
+  //                     msg: "Report save successfully",
+  //                     toastLength: Toast.LENGTH_SHORT,
+  //                     gravity: ToastGravity.BOTTOM,
+  //                     timeInSecForIosWeb: 1,
+  //                     backgroundColor: Colors.black,
+  //                     textColor: Colors.white,
+  //                     fontSize: 16.0);
+
+  //               });
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  //}
   subscribeAPI(){
 
     subscribeChannelAPI(mContent.channelId.toString(),"1").then((res) async {
@@ -803,7 +1017,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                                 icon: Icon(Icons.report_outlined,size: 28,color:Colors.black,),
 
                                                 onPressed: () {
-                                                  _asyncInputDialog(context,mContent.videoId.toString());
+                                                  _asyncInputDialogReportNew(context,mContent.videoId.toString());
 
 
                                                 }),
@@ -1013,7 +1227,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
 
                                                   style: GoogleFonts.roboto(
-                                                    fontSize:14.0,
+                                                    fontSize:16.0,
 
                                                     color: Color(AppColors.BaseColor),
                                                     fontWeight: FontWeight.w600,
@@ -1028,14 +1242,14 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
                                       )),
 
                                   Container(
-                                      margin:  EdgeInsets.fromLTRB(20,0,10,0),
+                                      margin:  EdgeInsets.fromLTRB(20,0,20,0),
                                       child:Row(
 
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
 
                                             _joinButton(),
-                                            SizedBox(width: 30,),
+                                            Spacer(),
                                             _DonateButton()
 
 
@@ -1380,7 +1594,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
                                   else if(newValue==2){
 
-                                    _asyncInputDialog(context,seriesData.videoId.toString());
+                                    _asyncInputDialogReportNew(context,seriesData.videoId.toString());
 
                                   }
                                   else if(newValue==3){
@@ -1598,7 +1812,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return JoinDonateWhomPage(from:"Join");
+                  return JoinDonateWhomPage(from:"Join",fromScreen:"Detail",channel_id:mContent.channelId);
                 }
             ) );
       },
@@ -1650,7 +1864,7 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
         Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
             MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return JoinDonateWhomPage(from:"Donate");
+                  return JoinDonateWhomPage(from:"Donate",fromScreen:"Detail",channel_id:mContent.channelId);
                 }
             ) );
       },
@@ -1861,4 +2075,42 @@ class SeriesDetailPageState extends State<SeriesDetailPage> {
 
 
             ]));}
+}
+class LabeledRadio extends StatelessWidget {
+  const LabeledRadio({
+    Key key,@required this.label,@required this.padding,@required this.groupValue,@required this.value,@required this.onChanged,
+  }) : super(key: key);
+
+  final String label;
+  final EdgeInsets padding;
+  final String groupValue;
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (value != groupValue) {
+          onChanged(value);
+        }
+      },
+      child: Padding(
+        padding: padding,
+        child: Row(
+          children: <Widget>[
+            Radio<String>(
+              groupValue: groupValue,
+              value: value,
+              onChanged: (String newValue) {
+                onChanged(newValue);
+              },
+            ),
+            Text(label,  style: GoogleFonts.roboto(
+              fontSize: 14)),
+          ],
+        ),
+      ),
+    );
+  }
 }

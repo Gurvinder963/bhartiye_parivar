@@ -32,11 +32,10 @@ import '../Interfaces/OnLangChange.dart';
 //String videoCategory="main";
 
 class SearchScreenNewLivePage extends StatefulWidget {
-
   final String video_category;
 
-  SearchScreenNewLivePage({Key key,@required this.video_category}) : super(key: key);
-
+  SearchScreenNewLivePage({Key key, @required this.video_category})
+      : super(key: key);
 
   @override
   SearchScreenNewLivePageState createState() {
@@ -45,23 +44,23 @@ class SearchScreenNewLivePage extends StatefulWidget {
 }
 
 class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
-
-
-
   String video_category;
 
-  SearchScreenNewLivePageState(video_category){
-
-    this.video_category=video_category;
-
+  SearchScreenNewLivePageState(video_category) {
+    this.video_category = video_category;
   }
-
 
   ScrollController _sc = new ScrollController();
   bool _isApiCalled = false;
-  Widget appBarTitle = new Text("", style: new TextStyle(color: Colors.black),);
+  Widget appBarTitle = new Text(
+    "",
+    style: new TextStyle(color: Colors.black),
+  );
   List mainData = new List();
-  Icon actionIcon = new Icon(Icons.search, color: Colors.black,);
+  Icon actionIcon = new Icon(
+    Icons.search,
+    color: Colors.black,
+  );
   TextEditingController _searchQuery = new TextEditingController();
   int page = 1;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -78,105 +77,96 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
     super.dispose();
   }
 
-
-  void setSearchBar(){
-    this.actionIcon = new Icon(Icons.close, color: Colors.black,);
+  void setSearchBar() {
+    this.actionIcon = new Icon(
+      Icons.close,
+      color: Colors.black,
+    );
     this.appBarTitle = new Container(
-        margin: EdgeInsets.fromLTRB(0.0,8.0,0.0,0.0) ,
+        margin: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
         height: 38,
-
         child: TextField(
-
           autofocus: true,
           textInputAction: TextInputAction.search,
-          onChanged: (value){
-
-
-            if(value.length>3 && !_isApiCalled){
+          onSubmitted: (value) {
+            if (mainData != null && mainData.length > 0) {
+              var item = mainData[0];
+            Navigator.of(context, rootNavigator: true).push(
+                          // ensures fullscreen
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return VideoSearchResultLivePage(
+                            video_id: item.liveId.toString(),
+                            video_category: "live");
+                      }));
+            }
+          },
+          onChanged: (value) {
+            if (value.length > 1 && !_isApiCalled) {
               mainData.clear();
               setState(() {
                 _isApiCalled = true;
               });
-              getSearchList(user_Token,value).then((value) => {
-                addData(value.live),
-                setState(() {
-                  _isApiCalled = false;
-                })
-
-              });
-
+              getSearchList(user_Token, value).then((value) => {
+                    addData(value.live),
+                    setState(() {
+                      _isApiCalled = false;
+                    })
+                  });
             }
-
-
-
-
           },
-
           controller: _searchQuery,
-
-          style: new TextStyle(
-              color: Colors.black,
-              fontSize: 15
-
-          ),
+          style: new TextStyle(color: Colors.black, fontSize: 15),
           decoration: new InputDecoration(
-              contentPadding: EdgeInsets.only(left: 0, bottom: 0, top: 10, right: 0),
+              contentPadding:
+                  EdgeInsets.only(left: 15, bottom: 0, top: 10, right: 0),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(20),
-
+                borderRadius: BorderRadius.circular(8),
               ),
-
 
               //  prefixIcon: new Icon(Icons.search, color: Colors.black),
-              hintText: "Search in " +video_category,
+              hintText: "Search in " + video_category,
               suffixIcon: IconButton(
-              onPressed:() => {
+                onPressed: () => {
+                  setState(() {
+                    _searchQuery.clear();
 
-          setState(() {
-          _searchQuery.clear();
-
-          mainData.clear();
-
-          }),
-
-          },
-                icon: Icon(Icons.clear),
+                    mainData.clear();
+                  }),
+                },
+                icon: Icon(Icons.clear,color:Color(0xFF000000)),
               ),
-              prefixIcon: IconButton(
-
-                icon: Icon(Icons.search),
-              ),
+              // prefixIcon: IconButton(
+              //   icon: Icon(Icons.search,color:Color(0xFF000000)),
+              // ),
               hintStyle: new TextStyle(color: Colors.black),
-              fillColor: Color(0xFFefefef),
-              filled: true
-
-          ),
+             fillColor: Color(0xFFf1f1f1),
+              filled: true),
         ));
     // _handleSearchStart();
-
   }
-  void addData(List<Live> videoData){
 
-
+  void addData(List<Live> videoData) {
     setState(() {
-
       _isInAsyncCall = false;
       isLoading = false;
       mainData.addAll(videoData);
-
     });
-
   }
 
-  Future<LiveDataResponse> getSearchList(String user_Token,String keyword) async {
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page_category":video_category,"search":keyword});
+  Future<LiveDataResponse> getSearchList(
+      String user_Token, String keyword) async {
+    var body = json.encode({
+      "appcode": Constants.AppCode,
+      "token": user_Token,
+      "userid": USER_ID,
+      "page_category": video_category,
+      "search": keyword
+    });
     //  var body ={'keyword':'India'};
-    MainRepository repository=new MainRepository();
+    MainRepository repository = new MainRepository();
     return repository.fetchVideoLiveSearchQueryListJAVA(body);
-
   }
-
 
   @override
   void initState() {
@@ -186,17 +176,11 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
     token = _prefs.then((SharedPreferences prefs) {
+      user_Token = prefs.getString(Prefs.KEY_TOKEN);
 
-      user_Token=prefs.getString(Prefs.KEY_TOKEN);
-
-      USER_ID=prefs.getString(Prefs.USER_ID);
-
-
+      USER_ID = prefs.getString(Prefs.USER_ID);
 
       // apiCall();
-
-
-
 
       return (prefs.getString('token'));
     });
@@ -205,48 +189,42 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
         // apiCall();
       }
     });
-
   }
 
-  void apiCall(){
+  void apiCall() {
     if (!isLoading) {
       setState(() {
         isLoading = true;
-      });}
-
+      });
+    }
 
     getVideosList(user_Token).then((value) => {
-
-      setState(() {
-        isLoading = false;
-        mainData.addAll(value.data);
-        if (!mainData.isEmpty) {
-          page++;
-        }
-      })
-
-    });
-
-
-
-
+          setState(() {
+            isLoading = false;
+            mainData.addAll(value.data);
+            if (!mainData.isEmpty) {
+              page++;
+            }
+          })
+        });
   }
-
-
 
   Future<VideoTrendingListResponse> getVideosList(String user_Token) async {
-
-
     String pageIndex = page.toString();
-    var body =json.encode({"appcode":Constants.AppCode, "token": user_Token,"userid": USER_ID,"page":pageIndex});
-    MainRepository repository=new MainRepository();
+    var body = json.encode({
+      "appcode": Constants.AppCode,
+      "token": user_Token,
+      "userid": USER_ID,
+      "page": pageIndex
+    });
+    MainRepository repository = new MainRepository();
     return repository.fetchVideoSearchQueryListJAVA(body);
-
   }
+
   @override
   Widget build(BuildContext context) {
-    var height=MediaQuery.of(context).size.height;
-    print("device_height"+height.toString());
+    var height = MediaQuery.of(context).size.height;
+    print("device_height" + height.toString());
 
     ScreenUtil.init(
         BoxConstraints(
@@ -255,57 +233,136 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
         designSize: Size(360, 690),
         orientation: Orientation.portrait);
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          toolbarHeight: 50,
-          backgroundColor: Color(0xFFffffff),
-          title: appBarTitle,
-          elevation: 0,
-
-
-        ),
-        body:   Container(
+        // appBar: AppBar(
+        //   iconTheme: IconThemeData(
+        //     color: Colors.black, //change your color here
+        //   ),
+        //   toolbarHeight: 50,
+        //   backgroundColor: Color(0xFFffffff),
+        //   title: appBarTitle,
+        //   elevation: 0,
+        // ),
+        body: SafeArea(child:Container(
           height: (MediaQuery.of(context).size.height),
           color: Color(0xFFffffff),
-
-          child:Column(
+          child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 56,
+                  child:
+                Row(children: [
+                   SizedBox(width: 15),
+                   GestureDetector(
+                      onTap: () => {
+                     Navigator.of(context, rootNavigator: true)
+                                  .pop(context)
+
+                      }
+                    ,
+                    child:Image(
+                              image: new AssetImage("assets/arrow_back.png"),
+                              width: 20,
+                              height: 20,
+                              color: null,
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.center,
+                            )),
+                            SizedBox(width: 15),
+                          SizedBox(width: (MediaQuery.of(context).size.width*.85),height: 50, child: Container(
+        margin: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+        height: 38,
+        child: TextField(
+          autofocus: true,
+          textInputAction: TextInputAction.search,
+          onSubmitted: (value) {
+            if (mainData != null && mainData.length > 0) {
+              var item = mainData[0];
+              Navigator.of(context, rootNavigator: true)
+                  .push(// ensures fullscreen
+                      MaterialPageRoute(builder: (BuildContext context) {
+                return VideoSearchResultLivePage(
+                            video_id: item.liveId.toString(),
+                            video_category: "live");
+              }));
+            }
+          },
+          onChanged: (value) {
+            if (value.length > 1 && !_isApiCalled) {
+              mainData.clear();
+              setState(() {
+                _isApiCalled = true;
+              });
+              getSearchList(user_Token, value).then((value) => {
+                    addData(value.live),
+                    setState(() {
+                      _isApiCalled = false;
+                    })
+                  });
+            }
+          },
+          controller: _searchQuery,
+          style: new TextStyle(color: Colors.black, fontSize: 15),
+          decoration: new InputDecoration(
+              contentPadding:
+                  EdgeInsets.only(left: 15, bottom: 0, top: 10, right: 0),
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(8),
+              ),
+
+              //  prefixIcon: new Icon(Icons.search, color: Colors.black),
+              hintText: "Search in " + video_category,
+              // prefixIcon: IconButton(
+              //   icon: Icon(Icons.search,color:Color(0xFF000000)),
+              // ),
+              suffixIcon: IconButton(
+                onPressed: () => {
+                  setState(() {
+                    _searchQuery.clear();
+
+                    mainData.clear();
+                  }),
+                },
+                icon: Icon(Icons.clear,color:Color(0xFF000000) ,),
+              ),
+              hintStyle: new TextStyle(color: Colors.black),
+              fillColor: Color(0xFFf1f1f1),
+              filled: true),
+        )))
+
+
+
+                ],)),
+
+
+                SizedBox(
+                  height: 10,
+                ),
                 Expanded(
                   child: _buildList(),
-
                 )
-
-              ]) ,)
-
-    );
+              ]),
+        )));
   }
 
-
-
-
-  Widget _buildBoxVideo(BuildContext context,int index,int id,String title){
-
-
-    return    Container(
+  Widget _buildBoxVideo(
+      BuildContext context, int index, int id, String title, String thumbnail) {
+    return Container(
         width: MediaQuery.of(context).size.width,
-
-        margin:EdgeInsets.fromLTRB(0.0,0.0,0.0,12.0) ,
-        child:Column(
+        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
               Container(
-                  margin:  EdgeInsets.fromLTRB(10,5,10,0),
-                  padding:EdgeInsets.fromLTRB(0,5,0,5) ,
-                  child:Row(
-
+                  margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Image(
                           image: new AssetImage("assets/ic_search_new.png"),
                           width: 18,
@@ -314,34 +371,50 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.center,
                         ),
-                        SizedBox(width: 15,),
-
-
+                        SizedBox(
+                          width: 15,
+                        ),
                         new Expanded(
                             flex: 7,
-                            child:Container(
-
-                                child:Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Container(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
-
-                                      Text(title,
-
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: GoogleFonts.roboto(
-                                          fontSize:15.0,
-
-                                          color: Color(0xFF000000),
-                                          fontWeight: FontWeight.w500,
-
-                                        ),),
-
-
-
-
-                                    ]))),
-
+                                  Text(
+                                    title,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 15.0,
+                                      color: Color(0xFF000000),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ]))),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        thumbnail != null
+                            ? Container(
+                                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                alignment: Alignment.center,
+                                height: 54,
+                                width: 96,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(thumbnail),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 54,
+                                width: 96,
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Image(
                           image: new AssetImage("assets/ic_arrow_top_left.png"),
                           width: 14,
@@ -350,11 +423,13 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.center,
                         ),
-                        SizedBox(width: 10,),
-
+                        SizedBox(
+                          width: 2,
+                        ),
                       ]))
+            ]));
+  }
 
-            ]));}
   Widget _buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),
@@ -374,56 +449,45 @@ class SearchScreenNewLivePageState extends State<SearchScreenNewLivePage> {
       isLoading = false;
       mainData.clear();
       page = 1;
-
     });
 
     apiCall();
-
   }
 
   Widget _buildList() {
-    return
-      RefreshIndicator(
-        key: refreshKey,
-        child:
-        ListView.builder(
-          itemCount: mainData.length+ 1 , // Add one more item for progress indicator
+    return RefreshIndicator(
+      key: refreshKey,
+      child: ListView.builder(
+        itemCount:
+            mainData.length + 1, // Add one more item for progress indicator
 
-          itemBuilder: (BuildContext context, int index) {
-            if (index == mainData.length) {
-              return _buildProgressIndicator();
-            } else {
-              return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () =>
-                  {
-
-                    Navigator.of(context, rootNavigator: true)
-                        .push( // ensures fullscreen
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return VideoSearchResultLivePage(video_id:mainData[index].liveId.toString(),video_category: "live");
-                            }
-                        ))
-                  },
-                  child:
-                  _buildBoxVideo(
-                    context,
-                    index,
-                    mainData[index].liveId,
-                    mainData[index].liveTitle,
-
-
-                  )
-
-
-              );
-            }
-          },
-          controller: _sc,
-        ),
-        onRefresh: _getData,
-      );
+        itemBuilder: (BuildContext context, int index) {
+          if (index == mainData.length) {
+            return _buildProgressIndicator();
+          } else {
+            return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => {
+                      Navigator.of(context, rootNavigator: true).push(
+                          // ensures fullscreen
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return VideoSearchResultLivePage(
+                            video_id: mainData[index].liveId.toString(),
+                            video_category: "live");
+                      }))
+                    },
+                child: _buildBoxVideo(
+                  context,
+                  index,
+                  mainData[index].liveId,
+                  mainData[index].liveTitle,
+                  mainData[index].liveVideoImage,
+                ));
+          }
+        },
+        controller: _sc,
+      ),
+      onRefresh: _getData,
+    );
   }
-
 }
