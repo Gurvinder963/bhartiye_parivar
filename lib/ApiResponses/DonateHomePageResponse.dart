@@ -35,6 +35,8 @@ class DonateHome {
   String bankName;
   String upiId;
   String upiButton;
+  String mid;
+  String gateway;
 
   DonateHome(
       {this.onlinePayment,
@@ -49,7 +51,11 @@ class DonateHome {
       this.ifsc,
       this.bankName,
       this.upiId,
-      this.upiButton});
+      this.upiButton,
+      this.mid,
+      this.gateway
+      
+      });
 
   DonateHome.fromJson(Map<String, dynamic> json) {
     onlinePayment = json['online_payment'];
@@ -65,6 +71,9 @@ class DonateHome {
     bankName = json['bank_name'];
     upiId = json['upi_id'];
     upiButton = json['upi_button'];
+
+    mid = json['mid'];
+    gateway = json['gateway'];
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +91,9 @@ class DonateHome {
     data['bank_name'] = this.bankName;
     data['upi_id'] = this.upiId;
     data['upi_button'] = this.upiButton;
+
+    data['mid'] = this.mid;
+    data['gateway'] = this.gateway;
     return data;
   }
 }

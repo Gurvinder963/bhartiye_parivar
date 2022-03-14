@@ -17,46 +17,30 @@ class DonateOrderSaveResponse {
 }
 
 class DonateSaveData {
-  int id;
+ 
   String orderId;
-  String amount;
-  Null paymentStatus;
-  String createdAt;
-  String createdBy;
-  String updatedAt;
-  Null updatedBy;
+  String trxntoken;
+
 
   DonateSaveData(
-      {this.id,
+      {
         this.orderId,
-        this.amount,
-        this.paymentStatus,
-        this.createdAt,
-        this.createdBy,
-        this.updatedAt,
-        this.updatedBy});
+        this.trxntoken,
+     });
 
   DonateSaveData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  
     orderId = json['order_id'];
-    amount = json['amount'];
-    paymentStatus = json['payment_status'];
-    createdAt = json['created_at'];
-    createdBy = json['created_by'];
-    updatedAt = json['updated_at'];
-    updatedBy = json['updated_by'];
+    trxntoken = json['trxntoken'];
+ 
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+   
     data['order_id'] = this.orderId;
-    data['amount'] = this.amount;
-    data['payment_status'] = this.paymentStatus;
-    data['created_at'] = this.createdAt;
-    data['created_by'] = this.createdBy;
-    data['updated_at'] = this.updatedAt;
-    data['updated_by'] = this.updatedBy;
+    data['trxntoken'] = this.trxntoken;
+ 
     return data;
   }
 }

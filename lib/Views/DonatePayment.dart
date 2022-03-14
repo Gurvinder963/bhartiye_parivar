@@ -14,18 +14,21 @@ import '../ApiResponses/TxnResponse.dart';
 import '../ApiResponses/DonateOrderSaveResponse.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Interfaces/OnCartCount.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'MyBooksTab.dart';
 class DonatePaymentPage extends StatefulWidget {
 
   final String orderId;
   final String amount;
   final String id;
+ final String trxnToken;
+  
 
-  DonatePaymentPage({Key key,@required this.orderId,@required this.amount,@required this.id}) : super(key: key);
+  DonatePaymentPage({Key key,@required this.orderId,@required this.amount,@required this.id,@required this.trxnToken}) : super(key: key);
 
   @override
   DonatePaymentPageState createState() {
-    return DonatePaymentPageState(orderId,amount,id);
+    return DonatePaymentPageState(orderId,amount,id,trxnToken);
   }
 }
 
@@ -35,10 +38,17 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
   String user_Token;
 
   String uniqueOrderId;
-  DonatePaymentPageState(String orderId,String amount,String id){
+
+ static const platform = const MethodChannel("razorpay_flutter");
+
+   Razorpay _razorpay;
+
+
+  DonatePaymentPageState(String orderId,String amount,String id,String trxnToken){
     this.orderId=orderId;
     this.amount=amount;
     this.uniqueOrderId=id;
+    this.txnToken=trxnToken;
 
   }
 
@@ -54,6 +64,10 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     Future<String> token;
@@ -63,30 +77,30 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
 
 
-      setState(() {
-        _isInAsyncCall = true;
-      });
-      callTXNTokenAPI(userId,amount,orderId,user_Token).then((value) => {
+      // setState(() {
+      //   _isInAsyncCall = true;
+      // });
+      // callTXNTokenAPI(userId,amount,orderId,user_Token).then((value) => {
 
-        setState(() {
-          _isInAsyncCall = false;
-        }),
+      //   setState(() {
+      //     _isInAsyncCall = false;
+      //   }),
 
-        if(value.body!=null && value.body.txnToken!=null && !value.body.txnToken.isEmpty){
-          setState(() {
-            txnToken = value.body.txnToken;
-          }),
-
-
-          startPayment()
-        }
+      //   if(value.body!=null && value.body.txnToken!=null && !value.body.txnToken.isEmpty){
+      //     setState(() {
+      //       txnToken = value.body.txnToken;
+      //     }),
 
 
+      //     startPayment()
+      //   }
 
 
-      });
 
 
+      // });
+    //  startPayment();
+openCheckout();
 
 
 
@@ -94,7 +108,32 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
     });
 
   }
+ @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
 
+  void openCheckout() async {
+    var options = {
+      'key': 'rzp_live_ILgsfZCZoFIKMb',
+      'amount': amount,
+      'name': 'Acme Corp.',
+      'description': 'Fine T-Shirt',
+      'retry': {'enabled': true, 'max_count': 1},
+      'send_sms_hash': true,
+      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(
@@ -332,6 +371,22 @@ class DonatePaymentPageState extends State<DonatePaymentPage> {
     return repository.fetchUpdateDonateOrder(orderId,body,user_Token);
 
   }
+void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Fluttertoast.showToast(
+    //     msg: "SUCCESS: " + response.paymentId!,
+    //     toastLength: Toast.LENGTH_SHORT);
+  }
 
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Fluttertoast.showToast(
+    //     msg: "ERROR: " + response.code.toString() + " - " + response.message!,
+    //     toastLength: Toast.LENGTH_SHORT);
+  }
 
+  void _handleExternalWallet(ExternalWalletResponse response) {
+  //   Fluttertoast.showToast(
+  //       msg: "EXTERNAL_WALLET: " + response.walletName!,
+  //       toastLength: Toast.LENGTH_SHORT);
+  // }
+  }
 }

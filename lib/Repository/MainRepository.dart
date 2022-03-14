@@ -257,6 +257,11 @@ Future<ChatGroupResponse> fetchChatSearchQueryListJAVA(var body) async {
     return DonateHomePageResponse.fromJson(response);
   }
 
+   Future<DonateOrderSaveResponse> fetchDonateOrderSaveJAVA(var body) async {
+    final response = await _provider.postJAVA("api/paytm",body);
+    return DonateOrderSaveResponse.fromJson(response);
+  }
+
   Future<LoginResponse> fetchLoginData(String body) async {
     final response = await _provider.post("public/api/v1/auth/login",body);
     return LoginResponse.fromJson(response);

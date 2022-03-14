@@ -59,7 +59,7 @@ import 'package:flutter/material.dart';
         notificationId,  notificationTitle,
         notificationContent, platformChannelSpecifics , payload: payload,);
   }
-Future<void> _showBigTextNotification( int notificationId,
+Future<void> _showBigTextNotification(String isSound, int notificationId,
       final String notificationTitle,
       final String notificationContent,
       String payload, {
@@ -69,20 +69,14 @@ Future<void> _showBigTextNotification( int notificationId,
 
       }) async {
 
-Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-    Future<String> token;
-    token = _prefs.then((SharedPreferences prefs) {
-      var isSound=prefs.getBool(Prefs.SOUND)?? false;
-      
-      print("my sound---");
-      print(isSound);
+
 
 
       String chName="";
       String chId="";
        String chDes="";
 
-       if(isSound){
+       if(isSound=='true'){
 chName="Noti_with_sound";
 chId="Noti_with_id_sound";
 chDes="Noti_with_des_sound";
@@ -101,7 +95,7 @@ chDes="Noti_with_des_sound_no";
     vibrationPattern[3] = 2000;
 
 
- const int insistentFlag = 4;
+
     final String title=notificationTitle;
     final String desc=notificationContent;
 
@@ -119,8 +113,8 @@ chDes="Noti_with_des_sound_no";
         chName, chDes, importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
-        playSound: isSound,
-        sound: isSound?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+        playSound: isSound=='true'?isSound:false,
+        sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
          vibrationPattern: vibrationPattern,
         styleInformation: bigTextStyleInformation,
         );
@@ -134,7 +128,7 @@ chDes="Noti_with_des_sound_no";
       payload: payload,
     );
     
-    });
+  
 
 
 
@@ -145,7 +139,7 @@ chDes="Noti_with_des_sound_no";
 
      print("on-message-back");
               print(message);
-  _showBigTextNotification(
+  _showBigTextNotification(message['data']['sound'],
                      random(1, 5), message['data']['Title'],
                      message['data']['bodyText'], message['data']['type']);
 
@@ -358,7 +352,7 @@ Future bgMsgHdl(Map<String, dynamic> message) async {
                 //     random(1, 5), msg,
                 //     title, type);
 
-                _showBigTextNotification(
+                _showBigTextNotification(message['data']['sound'],
                     random(1, 5), message['data']['Title'],
                     message['data']['bodyText'], message['data']['type']);
               }
@@ -418,7 +412,7 @@ Future bgMsgHdl(Map<String, dynamic> message) async {
         notificationId,  notificationTitle,
         notificationContent, platformChannelSpecifics , payload: payload,);
   }
-  Future<void> _showBigTextNotification( int notificationId,
+  Future<void> _showBigTextNotification(String isSound, int notificationId,
       final String notificationTitle,
       final String notificationContent,
       String payload, {
@@ -428,20 +422,14 @@ Future bgMsgHdl(Map<String, dynamic> message) async {
 
       }) async {
 
-Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-    Future<String> token;
-    token = _prefs.then((SharedPreferences prefs) {
-      var isSound=prefs.getBool(Prefs.SOUND)?? false;
-      
-      print("my sound---");
-      print(isSound);
+
 
 
       String chName="";
       String chId="";
        String chDes="";
 
-       if(isSound){
+       if(isSound=='true'){
 chName="Noti_with_sound";
 chId="Noti_with_id_sound";
 chDes="Noti_with_des_sound";
@@ -478,8 +466,8 @@ chDes="Noti_with_des_sound_no";
         chName, chDes, importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
-        playSound: isSound,
-        sound: isSound?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+        playSound: isSound=='true'?true:false,
+        sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
          vibrationPattern: vibrationPattern,
         styleInformation: bigTextStyleInformation,
         );
@@ -493,10 +481,7 @@ chDes="Noti_with_des_sound_no";
       payload: payload,
     );
     
-    });
-
-
-
+  
 
   }
 

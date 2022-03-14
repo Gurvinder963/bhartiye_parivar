@@ -397,10 +397,10 @@ if(donateHome.donateUsVideo.isNotEmpty){
   Future<DonateOrderSaveResponse> saveOrderAPI() async {
     //  final String requestBody = json.encoder.convert(order_items);
 
-    var body = json.encode({"amount": myControllerAmount.text.toString()});
+    var body = json.encode({"token":user_Token,"appcode":Constants.AppCode,"userid":USER_ID,"channel_id":channel_id,"amount": myControllerAmount.text.toString()});
     MainRepository repository = new MainRepository();
 
-    return repository.fetchDonateOrderSave(body, user_Token);
+    return repository.fetchDonateOrderSaveJAVA(body);
   }
 
   showAlertDialogValidation(BuildContext context, String message) {
@@ -523,7 +523,11 @@ if(donateHome.donateUsVideo.isNotEmpty){
               return DonatePaymentPage(
                   amount: myControllerAmount.text.trim().toString(),
                   orderId: res.data.orderId.toString(),
-                  id: res.data.id.toString());
+                  id: res.data.orderId.toString(),
+                  trxnToken:res.data.trxntoken.toString(),
+                  
+                  
+                  );
             }));
           });
         }
