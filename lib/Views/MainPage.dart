@@ -542,15 +542,19 @@ print("main page dispose called");
 
             },
           ),
-          builder: (context, player) => mainWidget(player));
+          builder: (context, player) => mainWidget(player,Orientation.portrait));
     }
     else if(liveData != null && liveData.liveVideoSourceType=='facebook'){
-
+return OrientationBuilder(
+      builder: (context, orientation) {
       return Scaffold(
-
-        body: mainWidget(null)
+        backgroundColor:
+              orientation == Orientation.portrait ? null : Colors.black,
+        body: mainWidget(null,orientation)
 
       );
+      });
+   
     }
 
     else if (mainData.length > 0) {
@@ -576,7 +580,7 @@ print("main page dispose called");
 
   }
 
-void scheduleAlarm(
+void scheduleAlarm(String title
       ) async {
 
 DateTime scheduleAlarmDateTime;
@@ -601,21 +605,22 @@ DateTime scheduleAlarmDateTime;
     var platformChannelSpecifics = NotificationDetails(
         android:androidPlatformChannelSpecifics,iOS: iOSPlatformChannelSpecifics);
  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin.schedule(0, Constants.AppName ,"Video is Live now",
+    await flutterLocalNotificationsPlugin.schedule(0, Constants.AppName ,title,
         scheduleAlarmDateTime, platformChannelSpecifics);
   }
 
 
 
-  Widget mainWidget(Widget player){
+  Widget mainWidget(Widget player, Orientation orientation){
 
 
     String html;
     if(liveData!=null && liveData.liveVideoSourceType=='facebook'){
       html = '''
-          <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
+          <div autoplay muted loop id="myVideo">
+  <iframe style="width:100%;height:100%;position:absolute;left:0px;top:100px;overflow:visible;"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            &autoplay=false&href=${liveData.liveVideoUrl}" allowfullscreen></iframe></div>
+            &autoplay=false&href=${liveData.liveVideoUrl}" allowfullscreen</iframe></div>
      ''';
 
 
@@ -624,7 +629,6 @@ DateTime scheduleAlarmDateTime;
 
     return 
    Scaffold(
-
 
           body: ModalProgressHUD(
               inAsyncCall: _isInAsyncCall,
@@ -643,14 +647,32 @@ DateTime scheduleAlarmDateTime;
 
                         liveData.liveStatus=="1"?
                         liveData.liveVideoSourceType=='facebook' ?
-                        AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child:
-                            HtmlWidget(
+                       
+                           Row(
+                children: [
+                  
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
+                  ),
 
-                              html,
-                              webView: true,
-                            )): player:
+                  Flexible(
+                    flex: 15,
+                    child: HtmlWidget(
+                      html,
+                      // ignore: deprecated_member_use
+                      webView: true,
+                      // ignore: deprecated_member_use
+                    ),
+                  ),
+                
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
+                  ),
+
+
+                ] ): player:
                        Container(width: 0,height: 0,)
                         ):Container(width: 0.0, height: 0.0),
 
@@ -766,8 +788,13 @@ DateTime scheduleAlarmDateTime;
                                                 onSelected: (newValue) { // add this property
                                                   if(newValue==1){
                                                   // scheduleNotification(1,liveData.liveTitle);
-                                                 scheduleAlarm();
+                                                 scheduleAlarm(liveData.liveTitle+" is Live now");
                                                  
+                                                 }
+
+                                                 else {
+                                                    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+                                                     flutterLocalNotificationsPlugin.cancel(0);
                                                  }
 
                                                 },

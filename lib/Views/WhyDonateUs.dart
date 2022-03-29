@@ -29,6 +29,7 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
   double progress = 0;
   String link;
   String name;
+    InAppWebViewController webView;
 
   WhyDonateUsPageState(String link,String name){
     this.link=link;
@@ -67,7 +68,11 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
         title: Text(name, style: GoogleFonts.roboto(fontWeight: FontWeight.w600,fontSize: 23,color: Color(0xFFFFFFFF))),
 
       ),
-      body: link.isNotEmpty?InAppWebView(
+      body: link.isNotEmpty?SafeArea(child:Container(
+          margin: EdgeInsets.fromLTRB(0,0,0,0),
+          child: Stack(
+
+          children: <Widget>[InAppWebView(
         initialUrl: link,
         initialHeaders: {},
         initialOptions: InAppWebViewGroupOptions(
@@ -76,7 +81,7 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
             )
         ),
         onWebViewCreated: (InAppWebViewController controller) {
-          //  webView = controller;
+          webView = controller;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           setState(() {
@@ -93,11 +98,22 @@ class WhyDonateUsPageState extends State<WhyDonateUsPage> {
             this.progress = progress / 100;
           });
         },
-      ):Container(),
+      )]))):Container(),
 
     ),
-      onWillPop: () => Future.value(false),);
+      onWillPop: () => _exitApp(context));
   }
-
+  Future<bool> _exitApp(BuildContext context) async {
+    if (await webView.canGoBack()) {
+      print("onwill goback");
+      webView.goBack();
+      return Future.value(false);
+    } else {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text("No back history item")),
+      );
+      return Future.value(false);
+    }
+  }
 
 }

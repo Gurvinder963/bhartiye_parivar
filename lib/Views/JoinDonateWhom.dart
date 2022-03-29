@@ -227,7 +227,7 @@ void addData(List<CheckData> videoData) {
     );
   }
 
- openPage(String mchannelId){
+ openPage(String mchannelId,String mchannelName){
     if(from=='Join'){
       Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
           MaterialPageRoute(
@@ -240,7 +240,7 @@ void addData(List<CheckData> videoData) {
       Navigator.of(context, rootNavigator: true).push( // ensures fullscreen
           MaterialPageRoute(
               builder: (BuildContext context) {
-                return DonateUsPage(channel_id:mchannelId);
+                return DonateUsPage(channel_id:mchannelId,channel_name:mchannelName);
               }
           ));
     }
@@ -263,7 +263,7 @@ void addData(List<CheckData> videoData) {
             onTap: () =>
             {
 
-              openPage(mainData[index].channelId)
+              openPage(mainData[index].channelId,mainData[index].channelName)
 
             },
             child:_buildBoxBook(context,index, mainData[index].channelImage, mainData[index].channelName));

@@ -1,9 +1,28 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
+
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as image;
+
+
 
 import 'package:intl/intl.dart';
-
+import 'package:flutter/services.dart';
 import 'dart:math';
 import 'dart:async';
 import 'dart:convert';
@@ -17,6 +36,13 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import '../Interfaces/OnNotificationPayload.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayer/audioplayer.dart';
+//import 'package:just_audio/just_audio.dart';
+import 'package:flutter_beep/flutter_beep.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+
+
  random(min, max){
     var rn = new Random();
     return min + rn.nextInt(max - min);
@@ -59,19 +85,42 @@ import 'package:flutter/material.dart';
         notificationId,  notificationTitle,
         notificationContent, platformChannelSpecifics , payload: payload,);
   }
-Future<void> _showBigTextNotification(String isSound, int notificationId,
+//   void onStart() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//    AudioPlayer player = AudioPlayer();
+//   await player.setAsset('assets/audio/simple_ring.mp3');
+//   player.play();
+// }
+Future<void> _showBigTextNotification(String content_id,String image_url,String isSound, int notificationId,
       final String notificationTitle,
       final String notificationContent,
-      String payload, {
-        String channelId = '1234',
-        String channelTitle = 'Android Channel',
-        String channelDescription = 'Default Android Channel for notifications',
+      String ntype) async {
 
-      }) async {
+//AudioPlayer player = AudioPlayer();
+ //var duration = await player.play('https://www.mediacollege.com/downloads/sound-effects/nature/forest/rainforest-ambient.mp3');
+
+if(ntype=='4'){
+
+FlutterRingtonePlayer.play(
+  android: AndroidSounds.ringtone,
+  ios: IosSounds.glass,
+  looping: false, // Android only - API >= 28
+  volume: 1.0, // Android only - API >= 28
+  asAlarm: false, // Android only - all APIs
+);
+
+Future.delayed(const Duration(milliseconds: 30000), () {
+
+// Here you can write your code
+FlutterRingtonePlayer.stop();
 
 
-
-
+});
+}
+//FlutterRingtonePlayer.playRingtone();
+      //SystemSound.play(SystemSoundType.alert);
+//FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_ABBR_ALERT);
       String chName="";
       String chId="";
        String chDes="";
@@ -107,29 +156,74 @@ chDes="Noti_with_des_sound_no";
       htmlFormatContentTitle: true,
 
     );
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
-     AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(chId,
-        chName, chDes, importance: Importance.max,
-        priority: Priority.high,
-        showWhen: false,
-        playSound: isSound=='true'?isSound:false,
-        sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
-         vibrationPattern: vibrationPattern,
-        styleInformation: bigTextStyleInformation,
-        );
-    var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-     flutterLocalNotificationsPlugin.show(
-      notificationId,
-      title,
-      desc,
-      platformChannelSpecifics,
-      payload: payload,
-    );
+    // var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
+    //  AndroidNotificationDetails androidPlatformChannelSpecifics =
+    // AndroidNotificationDetails(chId,
+    //     chName, chDes, importance: Importance.max,
+    //     priority: Priority.high,
+    //     showWhen: false,
+    //     playSound: isSound=='true'?true:false,
+    //     sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+    //      vibrationPattern: vibrationPattern,
+    //     styleInformation: bigTextStyleInformation,
+    //     );
+    // var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
+    // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    //  flutterLocalNotificationsPlugin.show(
+    //   notificationId,
+    //   title,
+    //   desc,
+    //   platformChannelSpecifics,
+    //   payload: payload,
+    // );
     
-  
-
+   if(image_url.isNotEmpty){
+AwesomeNotifications().createNotification(
+      content: NotificationContent(
+      title: title,
+      body: desc,
+       largeIcon: image_url,
+      bigPicture: image_url,
+        id: int.parse(content_id),
+        
+      notificationLayout: NotificationLayout.BigPicture,
+        channelKey: 'call_channel',
+      ),
+        // actionButtons: [
+        //     NotificationActionButton(
+        //   key: 'accept',
+        //   label: 'Accept',
+        // ),
+        // NotificationActionButton(
+        //   key: 'cancel',
+        //   label: 'Cancel',
+        // ),
+        //   ]
+    );
+   }
+   else{
+     AwesomeNotifications().createNotification(
+      content: NotificationContent(
+      title: title,
+      body: desc,
+      
+        id: 1,
+        
+    
+        channelKey: 'call_channel',
+      ),
+        actionButtons: [
+            NotificationActionButton(
+          key: 'accept',
+          label: 'Accept',
+        ),
+        NotificationActionButton(
+          key: 'cancel',
+          label: 'Cancel',
+        ),
+          ]
+    );
+   }
 
 
 
@@ -139,7 +233,7 @@ chDes="Noti_with_des_sound_no";
 
      print("on-message-back");
               print(message);
-  _showBigTextNotification(message['data']['sound'],
+  _showBigTextNotification(message['data']['content_id'],message['data']['big_image_url'],message['data']['sound'],
                      random(1, 5), message['data']['Title'],
                      message['data']['bodyText'], message['data']['type']);
 
@@ -337,25 +431,13 @@ Future bgMsgHdl(Map<String, dynamic> message) async {
             //  big_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
               //small_image_url="https://img.youtube.com/vi/FoK7qvfdhIc/mqdefault.jpg";
 
-              if(big_image_url!=null && !big_image_url.toString().isEmpty){
-                print("in-big_image-url");
-              
-              
-                _showBigPictureNotification(
-                    random(1, 5), message['data']['bodyText'],
-                    message['data']['Title'], message['data']['type'],big_image_url,small_image_url);
-              }
-              else {
-                print("in-only-notififaction");
+          
+             
 
-                // _showBigTextNotification(
-                //     random(1, 5), msg,
-                //     title, type);
-
-                _showBigTextNotification(message['data']['sound'],
+                _showBigTextNotification(message['data']['content_id'],message['data']['big_image_url'],message['data']['sound'],
                     random(1, 5), message['data']['Title'],
                     message['data']['bodyText'], message['data']['type']);
-              }
+            
 
               return (prefs.getString('token'));
             });
@@ -412,19 +494,39 @@ Future bgMsgHdl(Map<String, dynamic> message) async {
         notificationId,  notificationTitle,
         notificationContent, platformChannelSpecifics , payload: payload,);
   }
-  Future<void> _showBigTextNotification(String isSound, int notificationId,
+  Future<void> _showBigTextNotification(String content_id,String image_url,String isSound, int notificationId,
       final String notificationTitle,
       final String notificationContent,
-      String payload, {
-        String channelId = '1234',
-        String channelTitle = 'Android Channel',
-        String channelDescription = 'Default Android Channel for notifications',
+      String nType) async {
 
-      }) async {
+// final ByteArrayAndroidBitmap largeIcon = ByteArrayAndroidBitmap(
+//         await _getByteArrayFromUrl('https://via.placeholder.com/48x48'));
+//     final ByteArrayAndroidBitmap bigPicture = ByteArrayAndroidBitmap(
+//         await _getByteArrayFromUrl('https://via.placeholder.com/400x800'));
+ 
+ //AudioPlayer player = AudioPlayer();
+ //var duration = await player.play('https://www.mediacollege.com/downloads/sound-effects/nature/forest/rainforest-ambient.mp3');
+ 
+ 
+ if(nType=='4'){
+ 
+ FlutterRingtonePlayer.play(
+  android: AndroidSounds.ringtone,
+  ios: IosSounds.glass,
+  looping: false, // Android only - API >= 28
+  volume: 1.0, // Android only - API >= 28
+  asAlarm: false, // Android only - all APIs
+);
+Future.delayed(const Duration(milliseconds: 30000), () {
+
+// Here you can write your code
+FlutterRingtonePlayer.stop();
 
 
-
-
+});
+ }
+//SystemSound.play(SystemSoundType.alert);
+//FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_ABBR_ALERT);
       String chName="";
       String chId="";
        String chDes="";
@@ -452,6 +554,10 @@ chDes="Noti_with_des_sound_no";
     final String title=notificationTitle;
     final String desc=notificationContent;
 
+
+
+
+
      BigTextStyleInformation bigTextStyleInformation =
     BigTextStyleInformation(
       desc,
@@ -460,28 +566,77 @@ chDes="Noti_with_des_sound_no";
       htmlFormatContentTitle: true,
 
     );
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
-     AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(chId,
-        chName, chDes, importance: Importance.max,
-        priority: Priority.high,
-        showWhen: false,
-        playSound: isSound=='true'?true:false,
-        sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
-         vibrationPattern: vibrationPattern,
-        styleInformation: bigTextStyleInformation,
-        );
-    var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-     flutterLocalNotificationsPlugin.show(
-      notificationId,
-      title,
-      desc,
-      platformChannelSpecifics,
-      payload: payload,
-    );
+    // var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentSound: false);
+    //  AndroidNotificationDetails androidPlatformChannelSpecifics =
+    // AndroidNotificationDetails(chId,
+    //     chName, chDes, importance: Importance.max,
+    //     priority: Priority.high,
+    //     showWhen: false,
+    //     playSound: isSound=='true'?true:false,
+    //     sound: isSound=='true'?RawResourceAndroidNotificationSound('bell_in_temple'):null,
+    //      vibrationPattern: vibrationPattern,
+    //     styleInformation: bigTextStyleInformation,
+    //     );
+    // var platformChannelSpecifics = new NotificationDetails(android:androidPlatformChannelSpecifics);
+    // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    //  flutterLocalNotificationsPlugin.show(
+    //   notificationId,
+    //   title,
+    //   desc,
+    //   platformChannelSpecifics,
+    //   payload: payload,
+    // );
     
-  
+  if(image_url.isNotEmpty){
+
+  AwesomeNotifications().createNotification(
+      content: NotificationContent(
+      title: title,
+      body: desc,
+       largeIcon: image_url,
+      bigPicture: image_url,
+        id: int.parse(content_id),
+        
+      notificationLayout: NotificationLayout.BigPicture,
+        channelKey: 'call_channel',
+      ),
+        // actionButtons: [
+        //     NotificationActionButton(
+        //   key: 'accept',
+        //   label: 'Accept',
+        // ),
+        // NotificationActionButton(
+        //   key: 'cancel',
+        //   label: 'Cancel',
+        // ),
+        //   ]
+    );
+  }
+  else{
+
+  AwesomeNotifications().createNotification(
+      content: NotificationContent(
+      title: title,
+      body: desc,
+   
+        id: 1,
+        
+   
+        channelKey: 'call_channel',
+      ),
+        actionButtons: [
+            NotificationActionButton(
+          key: 'accept',
+          label: 'Accept',
+        ),
+        NotificationActionButton(
+          key: 'cancel',
+          label: 'Cancel',
+        ),
+          ]
+    );
+
+  }
 
   }
 

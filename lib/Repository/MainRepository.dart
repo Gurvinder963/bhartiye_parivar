@@ -1,5 +1,7 @@
+import 'package:bhartiye_parivar/ApiResponses/AboutUsResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/CheckDonateResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/DonateHomePageResponse.dart';
+import 'package:bhartiye_parivar/ApiResponses/InformationAPIResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/LiveDataResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesHomeListResponse.dart';
 import 'package:bhartiye_parivar/ApiResponses/SeriesListResponse.dart';
@@ -162,6 +164,12 @@ Future<ContactUsResponse> fetchContactListJAVA(var body) async {
     return ContactUsResponse.fromJson(response);
   }
 
+Future<AboutUsResponse> fetchAboutUsJAVA(var body) async {
+    final response = await _provider.postJAVA("api/aboutus",body);
+    return AboutUsResponse.fromJson(response);
+  }
+  
+
   Future<SeriesHomeListResponse> fetchSeriesHomeJAVA(var body) async {
     final response = await _provider.postJAVA("api/HomeSeries",body);
     return SeriesHomeListResponse.fromJson(response);
@@ -201,6 +209,12 @@ Future<ContactUsResponse> fetchContactListJAVA(var body) async {
     final response = await _provider.postJAVA("api/checkjoindonate",body);
     return CheckDonateResponse.fromJson(response);
   }
+
+Future<InformationAPIResponse> fetchInformationAPIJAVA(var body) async {
+    final response = await _provider.postJAVA("api/information",body);
+    return InformationAPIResponse.fromJson(response);
+  }
+
 
   Future<VideoTrendingListResponse> fetchVideoBookmarkListJAVA(var body) async {
     final response = await _provider.postJAVA("api/videobookmarks",body);
@@ -260,6 +274,16 @@ Future<ChatGroupResponse> fetchChatSearchQueryListJAVA(var body) async {
    Future<DonateOrderSaveResponse> fetchDonateOrderSaveJAVA(var body) async {
     final response = await _provider.postJAVA("api/paytm",body);
     return DonateOrderSaveResponse.fromJson(response);
+  }
+
+  Future<AddToCartResponse> fetchDonateOrderUpdateJAVA(var body) async {
+    final response = await _provider.postJAVA("api/updatedonatestatus",body);
+    return AddToCartResponse.fromJson(response);
+  }
+
+ Future<DonateHistoryResponse> fetchDonateHistoryJAVA(var body) async {
+    final response = await _provider.postJAVA("api/donationhistory",body);
+    return DonateHistoryResponse.fromJson(response);
   }
 
   Future<LoginResponse> fetchLoginData(String body) async {

@@ -23,20 +23,23 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class DonateUsPage extends StatefulWidget {
   final String channel_id;
+   final String channel_name;
 
-  DonateUsPage({Key key, @required this.channel_id}) : super(key: key);
+  DonateUsPage({Key key, @required this.channel_id, @required this.channel_name}) : super(key: key);
 
   @override
   DonateUsPageState createState() {
-    return DonateUsPageState(channel_id);
+    return DonateUsPageState(channel_id,channel_name);
   }
 }
 
 class DonateUsPageState extends State<DonateUsPage> {
   String channel_id;
+  String mChannelName;
 
-  DonateUsPageState(String channel_id) {
+  DonateUsPageState(String channel_id,String channel_name) {
     this.channel_id = channel_id;
+    this.mChannelName=channel_name;
   }
 
   List<String> ansList1 = <String>['Select'];
@@ -87,11 +90,11 @@ class DonateUsPageState extends State<DonateUsPage> {
             donateHome=value.data[0];
 
  
-             if(donateHome.onlinePayment=="Yes"){
+             if(donateHome.onlinePayment=="yes" && donateHome.mid!=null && donateHome.mid.isNotEmpty){
                ansList1.add(AppStrings.OnlinePayment);
              }
-              if(donateHome.accountDeposit=="Yes"){
-               ansList1.add(AppStrings.Paytoaccount);
+              if(donateHome.accountDeposit=="yes"){
+               ansList1.add("Account Deposit");
              }
 
 if(donateHome.donateUsVideo.isNotEmpty){
@@ -217,7 +220,7 @@ if(donateHome.donateUsVideo.isNotEmpty){
                                       .push(// ensures fullscreen
                                           MaterialPageRoute(
                                               builder: (BuildContext context) {
-                                    return PayToAccountPage(donateData:donateHome);
+                                    return InformationPage(channelId:channel_id);
                                   }));
                 },
                 child: new Image(
@@ -297,14 +300,7 @@ if(donateHome.donateUsVideo.isNotEmpty){
                                   _chosenValue = value;
                                 });
 
-                                if (value == 'Pay to account') {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(// ensures fullscreen
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                    return PayToAccountPage(donateData:donateHome);
-                                  }));
-                                }
+                               
                               },
                             )))),
                 SizedBox(height: 20),
@@ -319,10 +315,14 @@ if(donateHome.donateUsVideo.isNotEmpty){
                 Divider(
                   color: Colors.orange,
                 ),
-                _whyDonateUsButton(),
+donateHome!=null?(
+                donateHome.donateUsVideo.isEmpty && donateHome.donateUsLink.isEmpty
+                ?Container(height: 0,width: 0,):_whyDonateUsButton()
+):Container(height: 0,width: 0,),
+               donateHome!=null && donateHome.donateUsVideo!=null && donateHome.donateUsVideo.isNotEmpty?
                 Container(
                     padding: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
-                    child: player),
+                    child: player):Container(width: 0,height: 0,),
               ])))),
     );
   }
@@ -506,7 +506,24 @@ if(donateHome.donateUsVideo.isNotEmpty){
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        if (myControllerAmount.text.trim().toString().isEmpty) {
+
+       if(_chosenValue=='Select'){
+
+  showAlertDialogValidation(context, "Please select method of payment");
+       }
+
+       else if (_chosenValue == 'Account Deposit')
+           {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(// ensures fullscreen
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                    return PayToAccountPage(donateData:donateHome);
+                                  }));
+                                }
+       
+
+       else if (myControllerAmount.text.trim().toString().isEmpty) {
           showAlertDialogValidation(context, "Please enter amount");
         } else {
           setState(() {
@@ -525,6 +542,9 @@ if(donateHome.donateUsVideo.isNotEmpty){
                   orderId: res.data.orderId.toString(),
                   id: res.data.orderId.toString(),
                   trxnToken:res.data.trxntoken.toString(),
+                  mID:donateHome.mid,
+                  gateway:donateHome.gateway,
+                  channel_name:mChannelName
                   
                   
                   );

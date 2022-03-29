@@ -115,10 +115,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
           .then((res) async {
         _start = 0;
       });
-    }
-    else if(state == AppLifecycleState.resumed){
-   _start = 0;
-    startTimer();
+    } else if (state == AppLifecycleState.resumed) {
+      _start = 0;
+      startTimer();
     }
   }
 
@@ -487,218 +486,228 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
     }
   }
 
-  Future<AddToCartResponse> saveReportAPI(message,reason,status,channel_id) async {
+  Future<AddToCartResponse> saveReportAPI(
+      message, reason, status, channel_id) async {
     //  final String requestBody = json.encoder.convert(order_items);
-
-    
 
     var body = json.encode({
       "content_id": mContent.id.toString(),
       "content_type": "1",
       "message": message,
-      "report_reason":reason,
-      "channel_id":channel_id,
-      "app_code":Constants.AppCode,
-      "block_status":status?1:0,
-      "userid":USER_ID,
-      "token":user_Token
+      "report_reason": reason,
+      "channel_id": channel_id,
+      "app_code": Constants.AppCode,
+      "block_status": status ? 1 : 0,
+      "userid": USER_ID,
+      "token": user_Token
     });
     MainRepository repository = new MainRepository();
 
     return repository.fetchReportSaveJAVA(body);
   }
 
-
-
-
-   Future _asyncInputDialogReportNew(BuildContext context, String id,String channel_id) async {
-  
+  Future _asyncInputDialogReportNew(
+      BuildContext context, String id, String channel_id) async {
     return showDialog(
       context: context,
-      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
-       
-     
 //SingingCharacter _character = SingingCharacter.lafayette;
- String val = "";
- String teamName="";
- bool checkedValue=false;
+        String val = "";
+        String teamName = "";
+        bool checkedValue = false;
         return AlertDialog(
-            content:  SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-             reverse: true,
-             
-             child:SizedBox(
-            height: 510,child:StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return SizedBox(
-              height: 580 ,
-          child:Column(
-            children: <Widget>[
-              Text("Please enter valid reason for reporting", style: const TextStyle(
-                         
-                          fontSize: 14.0,fontWeight: FontWeight.bold,
-                        ),),
-           SizedBox(
-              height: 15,),               
-         LabeledRadio(
-            label: 'Sexual content',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Sexual content",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
-          LabeledRadio(
-            label: 'Violent or repulsive content',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Violent or repulsive content",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
-  LabeledRadio(
-            label: 'Hateful or abusive content ',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Hateful or abusive content ",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
-           LabeledRadio(
-            label: 'Anti-national content',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Anti-national content",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
-           LabeledRadio(
-            label: 'Inappropriate content',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Inappropriate content",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
- LabeledRadio(
-            label: 'Spam or wrong information',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Spam or wrong information",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
-           LabeledRadio(
-            label: 'Others',
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            value: "Others",
-            groupValue: val,
-            onChanged: (String newValue) {
-              setState(() {
-                val = newValue;
-              });
-            },
-          ),
- SizedBox(
-              height: 5,),
-        SizedBox(
-              height: 70,
-              width: 400,
-              child: new TextField(
-                autofocus: false,
-                maxLines: 200,
-                onChanged: (value) {
-                  teamName = value;
-                },
-                decoration: new InputDecoration(
-                   labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12),color: Colors.grey,fontWeight: FontWeight.w700),
-              hintStyle: TextStyle(fontSize: ScreenUtil().setSp(12),),
+          content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              reverse: true,
+              child: SizedBox(
+                  height: 510,
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return SizedBox(
+                          height: 580,
+                          child: Column(children: <Widget>[
+                            Text(
+                              "Please enter valid reason for reporting",
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            LabeledRadio(
+                              label: 'Sexual content',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Sexual content",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Violent or repulsive content',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Violent or repulsive content",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Hateful or abusive content ',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Hateful or abusive content ",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Anti-national content',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Anti-national content",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Inappropriate content',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Inappropriate content",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Spam or wrong information',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Spam or wrong information",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            LabeledRadio(
+                              label: 'Others',
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              value: "Others",
+                              groupValue: val,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  val = newValue;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            SizedBox(
+                              height: 70,
+                              width: 400,
+                              child: new TextField(
+                                autofocus: false,
+                                maxLines: 200,
+                                onChanged: (value) {
+                                  teamName = value;
+                                },
+                                decoration: new InputDecoration(
+                                  labelStyle: TextStyle(
+                                      fontSize: ScreenUtil().setSp(12),
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w700),
+                                  hintStyle: TextStyle(
+                                    fontSize: ScreenUtil().setSp(12),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.grey, width: 0.0),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.grey, width: 0.0),
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.grey, width: 0.0),
+                                  ),
+                                  hintText: 'Enter your report reason here',
+                                ),
+                              ),
+                            ),
+                            CheckboxListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 4.0, vertical: 5),
+                              activeColor: Colors.orange,
+                              checkColor: Colors.white,
+                              title: Text(
+                                "Do not recommend me any content from this channel",
+                                style: const TextStyle(
+                                  fontSize: 13.0,
+                                ),
+                              ),
 
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
-                  border: const OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.grey, width: 0.0),
-                  ),
-                  hintText: 'Enter your report reason here',
+                              value: checkedValue,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  checkedValue = newValue;
+                                });
+                              },
+                              controlAffinity: ListTileControlAffinity
+                                  .leading, //  <-- leading Checkbox
+                            ),
+                          ]));
+                    },
+                  ))),
+          actions: [
+            FlatButton(
+              child: Text(
+                'CANCEL',
+                style: const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 13.0,
                 ),
               ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-                     CheckboxListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.0,
-                                            vertical:5),
-                                        activeColor: Colors.orange,
-                                        checkColor: Colors.white,
-                                        title: Text("Do not recommend me any content from this channel", style: const TextStyle(
-                         
-                          fontSize: 13.0,
-                        ),),
-
-                                        value: checkedValue,
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            checkedValue = newValue;
-                                          });
-                                        },
-                                        controlAffinity: ListTileControlAffinity
-                                            .leading, //  <-- leading Checkbox
-                                      ),
-            
-           
-           
-           
-            ]
-          ));
-        },
-        ))), actions: [
-          FlatButton(
-            child: Text('CANCEL',style: const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 13.0,
-                        ),),
-            onPressed: () {
-            
-
-
-              Navigator.of(context).pop();
-            },
-          ),
-
-          FlatButton(
-            child: Text('REPORT',style: const TextStyle(
-                        color: Colors.blue,
-                          fontSize: 13.0,
-                        ),),
-            onPressed: () {
-              Navigator.of(context).pop();
-             print(val);
-              saveReportAPI(teamName,val,checkedValue,channel_id).then((res) async {
+            FlatButton(
+              child: Text(
+                'REPORT',
+                style: const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 13.0,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                print(val);
+                saveReportAPI(teamName, val, checkedValue, channel_id)
+                    .then((res) async {
                   String msg;
                   setState(() {
                     _isInAsyncCall = false;
@@ -712,19 +721,13 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                       textColor: Colors.white,
                       fontSize: 16.0);
                 });
-
-            },
-          ),
-        ],
-
-
-
+              },
+            ),
+          ],
         );
       },
     );
   }
-
-
 
   // Future _asyncInputDialog(BuildContext context, String id) async {
   //   String teamName = '';
@@ -880,17 +883,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
     final String formatted =
         formatter.format(DateTime.parse(mContent.created_at));
 
-    return WillPopScope(
-        onWillPop: () {
-          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-              .then((_) {
-            Navigator.of(context, rootNavigator: true).pop(context);
-          });
-
-          return Future.value(false);
-        },
-        child: Scaffold(
-          appBar: isPortrait
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return  Scaffold(
+           backgroundColor:
+              orientation == Orientation.portrait ? null : Colors.black,
+             appBar: isPortrait
               ? AppBar(
                   toolbarHeight: 50,
                   backgroundColor: Color(AppColors.BaseColor),
@@ -917,7 +915,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                       children: <Widget>[
                     mContent.videoSourceType == 'facebook' ||
                             mContent.videoSourceType == 'brighteon'
-                        ? _buildBoxVideo(context, mContent)
+                        ? _buildBoxVideo(context, mContent,orientation)
                         : player,
                     Expanded(
                         child: ListView(controller: _sc, children: <Widget>[
@@ -1119,7 +1117,9 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                                     ),
                                     onPressed: () {
                                       _asyncInputDialogReportNew(
-                                          context, mContent.id.toString(),mContent.channel_id.toString());
+                                          context,
+                                          mContent.id.toString(),
+                                          mContent.channel_id.toString());
                                     }),
                                 IconButton(
                                     icon: Image(
@@ -1345,14 +1345,11 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                           )),
                       Container(
                           margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Row(
-                              
-                              children: <Widget>[
-                                
-                                _joinButton(),
-                               Spacer(),
-                                _DonateButton()
-                              ])),
+                          child: Row(children: <Widget>[
+                            _joinButton(),
+                            Spacer(),
+                            _DonateButton()
+                          ])),
                       Padding(
                           padding: EdgeInsets.fromLTRB(10, 3, 10, 7),
                           child: Divider(
@@ -1361,7 +1358,7 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                       _buildList(),
                     ]))
                   ]))),
-        ));
+        );});
   }
 
   @override
@@ -1435,7 +1432,22 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
             onReady: () {
               _isPlayerReady = true;
             },
-            onEnded: (data) {},
+            onEnded: (data) {
+
+              if(mainData!=null && mainData.length>0){
+              _controller.pause();
+              _timer.cancel();
+              postSaveVideoInput(user_Token, "", "", "", mContent.id.toString())
+                  .then((res) async {
+                _start = 0;
+              });
+              Navigator.of(context, rootNavigator: true)
+                  .pushReplacement(// ensures fullscreen
+                      MaterialPageRoute(builder: (BuildContext context) {
+                return VideoDetailNewPage(content: mainData[0]);
+              }));
+              }
+            },
           ),
           builder: (context, player) => mainWidget(player));
     }
@@ -1634,7 +1646,8 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
                               });
                             });
                           } else if (newValue == 2) {
-                            _asyncInputDialogReportNew(context, id.toString(),channel_id.toString());
+                            _asyncInputDialogReportNew(
+                                context, id.toString(), channel_id.toString());
                           } else if (newValue == 3) {
                             postAddBookMarkSINGLE(
                                     "1", user_Token, id.toString())
@@ -1763,7 +1776,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
 
         Navigator.of(context, rootNavigator: true).push(// ensures fullscreen
             MaterialPageRoute(builder: (BuildContext context) {
-          return JoinDonateWhomPage(from: "Join",fromScreen:"Detail",channel_id:mContent.channel_id);
+          return JoinDonateWhomPage(
+              from: "Join",
+              fromScreen: "Detail",
+              channel_id: mContent.channel_id);
         }));
       },
       child: Container(
@@ -1813,7 +1829,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
 
         Navigator.of(context, rootNavigator: true).push(// ensures fullscreen
             MaterialPageRoute(builder: (BuildContext context) {
-          return JoinDonateWhomPage(from: "Donate",fromScreen:"Detail",channel_id:mContent.channel_id);
+          return JoinDonateWhomPage(
+              from: "Donate",
+              fromScreen: "Detail",
+              channel_id: mContent.channel_id);
         }));
       },
       child: Container(
@@ -1843,9 +1862,10 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
     );
   }
 
-  Widget _buildBoxVideo(BuildContext context, VideoData content) {
+  Widget _buildBoxVideo(BuildContext context, VideoData content, Orientation orientation) {
     var channel = content.channel == null ? "My Channel" : content.channel;
     final width = MediaQuery.of(context).size.width;
+       var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     String html;
     // content.videoUrl="https://www.facebook.com/facebook/videos/10153231379946729/";
@@ -1858,11 +1878,12 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
      ''';
     } else if (content.videoSourceType == 'facebook') {
       html = '''
-          <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
+          <div autoplay muted loop id="myVideo">
+  <iframe style="width:100%;height:100%;position:absolute;left:0px;top:100px;overflow:visible;"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            &autoplay=false&href=${content.videoUrl}" </iframe></div>
+            &autoplay=false&href=${content.videoUrl}" allowfullscreen</iframe></div>
      ''';
-    } else if (content.videoSourceType == 'dailymotion') {
+    }  else if (content.videoSourceType == 'dailymotion') {
       html = '''
            <iframe src='${content.videoUrl}?quality=240&info=0&logo=0' allowFullScreen></iframe>
 
@@ -1895,20 +1916,39 @@ class VideoDetailNewPageState extends State<VideoDetailNewPage>
     }
 
     return Container(
-        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 12.0),
+ 
+
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+           
             children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: HtmlWidget(
-                        html,
-                        webView: true,
-                      ))
-                ],
-              ),
+            
+                 
+              Row(
+                children: [
+                  
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
+                  ),
+
+                  Flexible(
+                    flex: 15,
+                    child: HtmlWidget(
+                      html,
+                      // ignore: deprecated_member_use
+                      webView: true,
+                      // ignore: deprecated_member_use
+                    ),
+                  ),
+                
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
+                  ),
+
+
+                ] ) 
+              
             ]));
   }
 }
@@ -1928,11 +1968,16 @@ class CustomTrackShape extends RoundedRectSliderTrackShape {
     final double trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
-  
 }
+
 class LabeledRadio extends StatelessWidget {
   const LabeledRadio({
-    Key key,@required this.label,@required this.padding,@required this.groupValue,@required this.value,@required this.onChanged,
+    Key key,
+    @required this.label,
+    @required this.padding,
+    @required this.groupValue,
+    @required this.value,
+    @required this.onChanged,
   }) : super(key: key);
 
   final String label;
@@ -1960,8 +2005,7 @@ class LabeledRadio extends StatelessWidget {
                 onChanged(newValue);
               },
             ),
-            Text(label,  style: GoogleFonts.roboto(
-              fontSize: 14)),
+            Text(label, style: GoogleFonts.roboto(fontSize: 14)),
           ],
         ),
       ),

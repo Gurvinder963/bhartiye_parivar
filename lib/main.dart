@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Utils/constants.dart';
 import 'Views/Login.dart';
 import 'Utils/Prefer.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'Views/Home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'Notification/push_nofitications.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'Interfaces/OnDeepLinkContent.dart';
 import 'package:provider/provider.dart';
 import 'Interfaces/FullScreenChangeListner.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -80,6 +82,41 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
    
+
+AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+    'resource://mipmap/ic_ic_launcher',
+    [
+        NotificationChannel(
+            channelKey: 'call_channel',
+            channelName: 'Call notifications',
+            channelDescription: 'Notification channel for call tests',
+            defaultColor: Color(0xFFFFA500),
+            ledColor: Colors.white,
+            locked: true,
+          importance: NotificationImportance.High,
+          vibrationPattern: highVibrationPattern,
+        )
+    ]
+);
+AwesomeNotifications().actionStream.listen((event) {
+        FlutterRingtonePlayer.stop();
+        print(event.buttonKeyInput);
+
+      if (event.buttonKeyInput == 'cancel') {
+        print("on cancel clicked");
+      } 
+      
+      else if (event.buttonKeyInput == 'accept') {
+        print("on accept clicked");
+      }
+      else {
+       print("notification click bg killed");
+      }
+    });
+
+
+
     var initializationSettingsAndroid =
     new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();

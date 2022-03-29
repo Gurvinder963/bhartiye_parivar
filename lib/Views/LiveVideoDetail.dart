@@ -427,20 +427,11 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
    // final DateFormat formatter = DateFormat('dd-MM-yyyy');
     //final String formatted = formatter.format(DateTime.parse(mContent.created_at));
 
-    return WillPopScope(
-        onWillPop: () {
-
-
-          SystemChrome.setPreferredOrientations(
-              [DeviceOrientation.portraitUp])
-              .then((_) {
-            Navigator.of(context, rootNavigator: true).pop(context);
-          });
-
-
-          return Future.value(false);
-        },
-        child:Scaffold(
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Scaffold(
+           backgroundColor:
+              orientation == Orientation.portrait ? null : Colors.black,
           appBar:isPortrait?AppBar(
             toolbarHeight: 50,
             backgroundColor: Color(AppColors.BaseColor),
@@ -470,7 +461,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
 
                       children: <Widget>[
                         mContent.liveVideoSourceType=='facebook' || mContent.liveVideoSourceType=='brighteon'?
-                        _buildBoxVideo(context,mContent):player,
+                        _buildBoxVideo(context,mContent,orientation):player,
                         Expanded(
                             child:
                             ListView(
@@ -689,7 +680,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
 
               )),
 
-        ));
+        );});
   }
 
   @override
@@ -898,17 +889,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
                                                     color: Color(0xFF5a5a5a),
 
                                                   ),):Container(width: 0,height: 0,),
-                                                SizedBox(width: 10),
-
-                                                Container(
-                                                  width: 8,
-                                                  height: 8,
-
-                                                  decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Color(0xFF5a5a5a)),
-                                                ),
-                                                SizedBox(width: 10),
+                                                
 
                                                 SizedBox(width: 10),
                                               ])),
@@ -1081,7 +1062,7 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
       ),
     );
   }
-  Widget _buildBoxVideo(BuildContext context,Live content){
+  Widget _buildBoxVideo(BuildContext context,Live content, Orientation orientation){
    // var channel=content.channel==null?"My Channel":content.channel;
     final width = MediaQuery.of(context).size.width;
 
@@ -1098,16 +1079,13 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
     }
 
 
-    else if(content.liveVideoSourceType=='facebook'){
+   else if (content.liveVideoSourceType == 'facebook') {
       html = '''
-          <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"
+          <div autoplay muted loop id="myVideo">
+  <iframe style="width:100%;height:100%;position:absolute;left:0px;top:100px;overflow:visible;"
             src="https://www.facebook.com/v2.3/plugins/video.php? 
-            &autoplay=false&href=${content.liveVideoUrl}" </iframe></div>
+            &autoplay=false&href=${content.liveVideoUrl}" allowfullscreen</iframe></div>
      ''';
-
-
-
-
     }
 
     else if(content.liveVideoSourceType=='dailymotion'){
@@ -1200,61 +1178,32 @@ class LiveVideoDetailPageState extends State<LiveVideoDetailPage> {
         child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Stack(
+             
+                      Row(
+                children: [
+                  
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
+                  ),
 
-                children: <Widget>[
-
-                  /*  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                    height: (MediaQuery.of(context).size.height/2)-80,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new AssetImage("assets/thumbnail.png"),
-
-                        alignment: Alignment.center,
-                      ),
-
+                  Flexible(
+                    flex: 15,
+                    child: HtmlWidget(
+                      html,
+                      // ignore: deprecated_member_use
+                      webView: true,
+                      // ignore: deprecated_member_use
                     ),
-
+                  ),
+                
+                  Flexible(
+                    flex: orientation == Orientation.portrait ? 0 : 1,
+                    child: Container(),
                   ),
 
 
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
-
-                    alignment: Alignment.center,
-                    height: (MediaQuery.of(context).size.height/2)-80,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(content.videoImage),
-                      ),
-                    ),
-
-                  ),
-*/
-                  AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child:
-                      HtmlWidget(
-
-                        html,
-                        webView: true,
-                      ))
-
-
-                ],
-              ),
-
-
-
-
-
+                ] ) 
 
 
 

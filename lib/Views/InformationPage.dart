@@ -1,30 +1,91 @@
 import 'dart:convert';
 
+import 'package:bhartiye_parivar/ApiResponses/InformationAPIResponse.dart';
 import 'package:bhartiye_parivar/Utils/constants.dart';
+import 'package:bhartiye_parivar/Views/AboutUs.dart';
+import 'package:bhartiye_parivar/Views/ContactUs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Utils/AppColors.dart';
 import '../Utils/AppStrings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/Prefer.dart';
+import '../Repository/MainRepository.dart';
 
 
 class InformationPage extends StatefulWidget {
+
+final String channelId;
+
+
+  InformationPage({Key key,@required this.channelId}) : super(key: key);
+
+
   @override
   InformationPageState createState() {
-    return InformationPageState();
+    return InformationPageState(channelId);
   }
 }
 
 
 class InformationPageState extends State<InformationPage> {
 
+String channelId;
+
+InformationPageState(channelId){
+this.channelId=channelId;
+}
+
+
+
+  String USER_ID;
+  String user_Token;
+  
+  String msg="";
 
   @override
-  void dispose() {
+  void initState() {
+    super.initState();
 
-    // Clean up the controller when the widget is disposed.
 
 
-    super.dispose();
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    Future<String> token;
+    token = _prefs.then((SharedPreferences prefs) {
+
+      user_Token=prefs.getString(Prefs.KEY_TOKEN);
+      USER_ID=prefs.getString(Prefs.USER_ID);
+     
+
+      getList(user_Token,"").then((value) => {
+        {
+
+
+
+          setState(() {
+            if(value.data!=null && value.data.length>0){
+               msg=value.data[0].information;
+               print("msg---"+msg);
+               }
+           // _isInAsyncCall = false;
+           // isLoading = false;
+           //  mainData.addAll(value.data);
+
+          })
+        }
+      });
+
+      return (prefs.getString('token'));
+    });
+
+  }
+
+  Future<InformationAPIResponse> getList(String user_Token,String keyword) async {
+   print(keyword);
+    var body =json.encode({"app_code":Constants.AppCode,"channel_id":channelId,"token": user_Token,"userid": USER_ID,});
+    MainRepository repository=new MainRepository();
+    return repository.fetchInformationAPIJAVA(body);
+
   }
 
   @override
@@ -43,7 +104,7 @@ class InformationPageState extends State<InformationPage> {
 
                 Padding(
                   padding: EdgeInsets.fromLTRB(10,30,10,10),
-                  child:  Text("The Payment to this account goes to bhartiya pariwar which is registerd orgaination.The Payment to this account goes to bhartiya pariwar which is registerd orgaination.",
+                  child:  Text(msg,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14,color: Colors.black)),
                 ),
                  SizedBox(height: 40,),
@@ -59,12 +120,12 @@ class InformationPageState extends State<InformationPage> {
   Widget _aboutButton() {
     return InkWell(
       onTap: () {
-        // Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) {
-        //           return DonationHistoryPage();
-        //         }
-        //     ) );
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return AboutUsPage(channelId:channelId);
+                }
+            ) );
       },
 
       child: Container(
@@ -95,12 +156,12 @@ class InformationPageState extends State<InformationPage> {
   Widget _ContactButton() {
     return InkWell(
       onTap: () {
-        // Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) {
-        //           return DonationHistoryPage();
-        //         }
-        //     ) );
+        Navigator.of(context, rootNavigator:true).push( // ensures fullscreen
+            MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return ContactUsPage(channelId: channelId,);
+                }
+            ) );
       },
 
       child: Container(

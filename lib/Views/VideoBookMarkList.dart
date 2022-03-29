@@ -239,7 +239,24 @@ class VideoBookMarkListPageState extends State<VideoBookMarkListPage> {
                                     ),
                                   ),
 
-                                ):Container(height: 54,width: 96,),
+                                ):Container(
+                        margin: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
+                            height: 63,
+                                  width: 112,
+                        alignment: Alignment.center,
+                        // height: ScreenUtil().setHeight(175),
+                    
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new AssetImage("assets/thumbnail.png"),
+
+                            alignment: Alignment.center,
+                          ),
+
+                        ),
+
+                      ),
 
 
 

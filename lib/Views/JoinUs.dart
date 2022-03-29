@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bhartiye_parivar/Views/InformationPage.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -782,7 +783,30 @@ SizedBox(width: 2,),
           onPressed: () =>
               Navigator.of(context, rootNavigator: true).pop(context),
         ),
-        title: Text("Join "+Constants.AppName+" ?"),
+        title: Text("Join "+Constants.AppName),
+     actions: <Widget>[
+            GestureDetector(
+                onTap: () {
+                    Navigator.of(context, rootNavigator: true)
+                                      .push(// ensures fullscreen
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                    return InformationPage(channelId:channelId);
+                                  }));
+                },
+                child: new Image(
+                  image: new AssetImage("assets/ic_question.png"),
+                  width: 30,
+                  height: 30,
+                  color: null,
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.center,
+                )),
+            SizedBox(
+              width: 15,
+            )
+          ]
+     
       ),
 
       body:   ModalProgressHUD(

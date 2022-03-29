@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bhartiye_parivar/ApiResponses/SideBarApiResponse.dart';
+import 'package:bhartiye_parivar/Views/AboutUs.dart';
 import 'package:bhartiye_parivar/Views/AdminPanel.dart';
 import 'package:bhartiye_parivar/Views/EditProfile.dart';
 import 'package:bhartiye_parivar/Views/JoinDonateWhom.dart';
@@ -184,8 +185,8 @@ class MyDrawerPageState extends State<MyDrawerPage> {
                     Navigator.of(context, rootNavigator: true)
                         .push(// ensures fullscreen
                             MaterialPageRoute(builder: (BuildContext context) {
-                      return JoinUsPage(
-                        channel_id: Constants.AppCode,
+                      return AboutUsPage(channelId:Constants.AppCode
+                       
                       );
                     }))
                   }
@@ -239,7 +240,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
                             // ensures fullscreen
                             MaterialPageRoute(builder: (BuildContext context) {
                           return DonateUsPage(
-                            channel_id: Constants.AppCode,
+                            channel_id: Constants.AppCode,channel_name:Constants.AppName
                           );
                         }))
                       }
@@ -269,7 +270,7 @@ class MyDrawerPageState extends State<MyDrawerPage> {
                     Navigator.of(context, rootNavigator: true)
                         .push(// ensures fullscreen
                             MaterialPageRoute(builder: (BuildContext context) {
-                      return ContactUsPage();
+                      return ContactUsPage(channelId:Constants.AppCode);
                     }))
                   }
               // Navigator.pushReplacementNamed(context, pageRoutes.contact),

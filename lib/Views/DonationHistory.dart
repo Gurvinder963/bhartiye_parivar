@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'dart:async';
 import 'dart:io';
+import 'package:bhartiye_parivar/Utils/constants.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,6 +31,8 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
   bool isLoading = false;
   bool _isInAsyncCall = false;
   String _localPath;
+
+  String USER_ID;
 
   Future<void> _prepareSaveDir() async {
 
@@ -117,6 +120,7 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
     token = _prefs.then((SharedPreferences prefs) {
 
       user_Token=prefs.getString(Prefs.KEY_TOKEN);
+          USER_ID = prefs.getString(Prefs.USER_ID);
 
 
         setState(() {
@@ -141,9 +145,14 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
 
   Future<DonateHistoryResponse> getDonationList(String user_Token) async {
 
-    var body ={'lang_code':""};
+     var body = json.encode({
+      "appcode": Constants.AppCode,
+      "token": user_Token,
+      "userid": USER_ID,
+    
+    });
     MainRepository repository=new MainRepository();
-    return repository.fetchDonationHistoryData(body,user_Token);
+    return repository.fetchDonateHistoryJAVA(body);
 
   }
 
@@ -198,7 +207,7 @@ class DonationHistoryPageState extends State<DonationHistoryPage> {
 
 
                   children: <Widget>[
-                    Text("To: Bhartiya Parivar",   overflow: TextOverflow.ellipsis,
+                    Text("To: "+mainData[index].paid_to,   overflow: TextOverflow.ellipsis,
                       maxLines: 1, style: GoogleFonts.roboto(
                         fontSize:15.0,
                         color: Color(0xFF5a5a5a),

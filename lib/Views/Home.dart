@@ -92,7 +92,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  static final homeChildPageState = new GlobalKey<HomeChildPageState>();
+ 
   int MyContentId;
   int selectedIndex = 0;
   // bool isFullScreen = false;
@@ -176,7 +176,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     _children = [
       new HomeChildPage(),
-      //new HomeChildPage(key: homeChildPageState,),
+      
       new NewsMainPage(),
       new BooksPage(),
 
@@ -372,7 +372,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
 
     if (index == 0) {
-      // homeChildPageState.currentState.tabController.animateTo(0);
+    
       eventBusHT.fire(OnHomeTapped("FIND"));
     }
   }
@@ -931,11 +931,11 @@ class navigationDrawer extends StatelessWidget {
               ),
               text: Languages.of(context).donateUs,
               onTap: () => {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(// ensures fullscreen
-                            MaterialPageRoute(builder: (BuildContext context) {
-                      return DonateUsPage();
-                    }))
+                    // Navigator.of(context, rootNavigator: true)
+                    //     .push(// ensures fullscreen
+                    //         MaterialPageRoute(builder: (BuildContext context) {
+                    //   return DonateUsPage();
+                    // }))
                   }
               // Navigator.pushReplacementNamed(context, pageRoutes.profile),
               ),

@@ -61,7 +61,10 @@ this.donateData=donateData;
 
             color: Color(0xFFe3e3e3),
 
-        child:Column(
+        child:SizedBox(
+          width: MediaQuery.of(context).size.width-100,
+          
+          child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
@@ -107,7 +110,7 @@ this.donateData=donateData;
 
     )
 
-            ])
+          )])
 
       ),
 

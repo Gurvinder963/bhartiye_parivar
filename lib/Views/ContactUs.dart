@@ -8,15 +8,28 @@ import '../Repository/MainRepository.dart';
 import '../Utils/AppColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Prefer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsPage extends StatefulWidget {
+
+final String channelId;
+ ContactUsPage({Key key,@required this.channelId}) : super(key: key);
+
   @override
   ContactUsPageState createState() {
-    return ContactUsPageState();
+    return ContactUsPageState(channelId);
   }
 }
 
 class ContactUsPageState extends State<ContactUsPage> {
+
+String channelId;
+ContactUsPageState(channelId){
+this.channelId=channelId;
+}
+
+
+
   // WebViewController _controller;
   List list_product;
 
@@ -33,7 +46,7 @@ class ContactUsPageState extends State<ContactUsPage> {
     // String pageIndex = page.toString();
     var body = json.encode({
       "app_code": Constants.AppCode,
-      "channel_id": Constants.AppCode,
+      "channel_id": channelId,
       "token": user_Token,
       "userid": USER_ID,
       "page_no": "1"
@@ -153,6 +166,24 @@ class ListItemState extends State {
     super.initState();
     isExpand = false;
   }
+ _makingPhoneCall(String phone) async {
+    var url = 'tel:'+phone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+
+_makingEmailCall(String phone) async {
+    var url = phone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,81 +227,97 @@ class ListItemState extends State {
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       border: Border.all(color: Colors.white)),
                   child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(0,0,30,0),
                       child: Row(
                         children: [
                           Image(
                             image: new AssetImage("assets/pc_1.jpg"),
-                            width: 20,
-                            height: 20,
+                            width: 32,
+                            height: 32,
                             color: null,
-                            fit: BoxFit.scaleDown,
+                            fit: BoxFit.cover,
                             alignment: Alignment.center,
                           ),
                           SizedBox(width: 15,),
-                          Text(
+                              Padding(
+                     padding: const EdgeInsets.fromLTRB(0,8,0,8),
+                    child:Text(
                             listItem[0],
                             style: TextStyle(color: Colors.white),
-                          ),
+                          )),
                         ],
                       ))),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child: GestureDetector(onTap: () {
+
+                  String mobile= listItem[1];
+                   _makingPhoneCall(mobile);
+
+          },  child:Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                       color: Color(0xFF81c784),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       border: Border.all(color: Colors.white)),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                   padding: const EdgeInsets.fromLTRB(0,0,30,0),
                     child: Row(
                         children: [
                           Image(
                             image: new AssetImage("assets/pc_2.png"),
-                            width: 20,
-                            height: 20,
+                            width: 32,
+                            height: 32,
                             color: null,
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.center,
                           ),
                            SizedBox(width: 15,),
-                          Text(
+                             Padding(
+                     padding: const EdgeInsets.fromLTRB(0,8,0,8),
+                    child: Text(
                             listItem[1],
                             style: TextStyle(color: Colors.white),
-                          ),
+                          )),
                         ],
                       ),
-                  )),
+                  ))),
             ),
              Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child:GestureDetector(onTap: () {
+
+                  String mobile= listItem[1];
+                   _makingEmailCall(mobile);
+
+          },child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                       color: Color(0xFF81c784),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       border: Border.all(color: Colors.white)),
                   child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                     padding: const EdgeInsets.fromLTRB(0,0,30,0),
                       child: Row(
                         children: [
                           Image(
                             image: new AssetImage("assets/pc_3.jpg"),
-                            width: 20,
-                            height: 20,
+                            width: 32,
+                            height: 32,
                             color: null,
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.center,
                           ),
                           SizedBox(width: 15,),
-                          Text(
+                           Flexible(child:     Padding(
+                     padding: const EdgeInsets.fromLTRB(0,8,0,8),
+                    child:Text(
                             listItem[2],
                             style: TextStyle(color: Colors.white),
-                          ),
+                          ))),
                         ],
-                      ))),
+                      )))),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -281,22 +328,24 @@ class ListItemState extends State {
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       border: Border.all(color: Colors.white)),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                     padding: const EdgeInsets.fromLTRB(0,0,30,0),
                     child: Row(
                         children: [
                           Image(
                             image: new AssetImage("assets/pc_4.png"),
-                            width: 20,
-                            height: 20,
+                            width: 32,
+                            height: 32,
                             color: null,
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.center,
                           ),
                            SizedBox(width: 15,),
-                          Text(
+                      Flexible(child:    Padding(
+                     padding: const EdgeInsets.fromLTRB(0,10,0,10),
+                    child:Text(
                             listItem[3],
                             style: TextStyle(color: Colors.white),
-                          ),
+                          ))),
                         ],
                       ),
                   )),
